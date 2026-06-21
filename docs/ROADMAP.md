@@ -311,9 +311,11 @@ type ApiResponse<T> = {
 
 브랜치 이름:
 
-- 기능: `feat/mobile/<topic>`
-- 버그: `fix/mobile/<topic>`
-- 설정·문서: `chore/mobile/<topic>`
+- 기본 작업은 `main`에서 진행한다.
+- 규모가 크거나 실험적이거나 병렬 작업이 필요한 경우에만 브랜치를 만든다.
+- 기능: `feat/<topic>`
+- 버그: `fix/<topic>`
+- 설정·문서: `chore/<topic>`
 
 커밋 원칙:
 
