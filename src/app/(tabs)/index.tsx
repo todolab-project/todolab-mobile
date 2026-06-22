@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText, Button, Card, Screen } from '@/components/ui';
 import { spacing } from '@/theme';
 
-export default function HomeScreen() {
+export default function TodayScreen() {
   return (
     <Screen contentContainerStyle={styles.screen}>
       <View style={styles.intro}>
