@@ -187,7 +187,7 @@ type ApiResponse<T> = {
 - [x] 디자인 토큰과 공통 Theme 구성
 - [x] 공통 버튼, 텍스트, 카드, 화면 컨테이너 구성
 - [x] Expo Router 탭 구조와 기본 화면 구성
-- [ ] 환경변수 정책과 `EXPO_PUBLIC_API_URL` 예제 문서화
+- [x] 환경변수 정책과 `EXPO_PUBLIC_API_URL` 예제 문서화
 - [ ] 공통 API client, 응답 해제, timeout, 오류 타입 구성
 - [ ] 백엔드 Task/D-Day 요청·응답 TypeScript 타입 정의
 - [ ] 날짜/시간 변환 유틸리티와 타임존 규칙 정의

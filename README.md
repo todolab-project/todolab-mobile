@@ -44,6 +44,30 @@ src/
 npm ci
 ```
 
+### 환경변수
+
+예제 파일을 복사해 로컬 API 주소를 설정합니다.
+
+```bash
+cp .env.example .env.local
+```
+
+```dotenv
+EXPO_PUBLIC_API_URL=http://localhost:8080
+```
+
+`EXPO_PUBLIC_*` 값은 앱 번들에 포함되므로 API 주소처럼 공개 가능한 값만 사용하고, 토큰·비밀번호·서버 비밀 키는 넣지 않습니다.
+
+플랫폼별 로컬 백엔드 주소:
+
+| 실행 환경 | API 주소 예시 |
+| --- | --- |
+| Web, iOS Simulator | `http://localhost:8080` |
+| Android Emulator | `http://10.0.2.2:8080` |
+| 실제 Android/iOS 기기 | `http://<개발 PC의 LAN IP>:8080` |
+
+백엔드가 기본 포트 `8080`을 사용한다면 Expo Web은 기본 포트를 사용하거나 다른 포트로 실행해 충돌을 피합니다.
+
 ### 실행
 
 ```bash
