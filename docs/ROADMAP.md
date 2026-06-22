@@ -191,7 +191,7 @@ type ApiResponse<T> = {
 - [x] 공통 API client, 응답 해제, timeout, 오류 타입 구성
 - [x] 백엔드 Task/D-Day 요청·응답 TypeScript 타입 정의
 - [x] 날짜/시간 변환 유틸리티와 타임존 규칙 정의
-- [ ] 서버 상태 라이브러리 선정 및 Provider 구성
+- [x] 서버 상태 라이브러리 선정 및 Provider 구성
 - [ ] 테스트, lint, format 명령과 CI 보강
 
 완료 기준:
