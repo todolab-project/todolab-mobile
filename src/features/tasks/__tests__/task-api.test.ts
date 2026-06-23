@@ -4,15 +4,19 @@ import { apiClient } from '@/services/api';
 jest.mock('@/services/api', () => ({
   apiClient: {
     get: jest.fn(),
+    patch: jest.fn(),
   },
 }));
 
 const getMock = apiClient.get as jest.Mock;
+const patchMock = apiClient.patch as jest.Mock;
 
 describe('Task API', () => {
   beforeEach(() => {
     getMock.mockReset();
     getMock.mockResolvedValue([]);
+    patchMock.mockReset();
+    patchMock.mockResolvedValue({ id: 1 });
   });
 
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {
@@ -37,5 +41,13 @@ describe('Task API', () => {
     await taskApi.getInbox();
 
     expect(getMock).toHaveBeenCalledWith('/api/tasks/inbox', { signal: undefined });
+  });
+
+  test('Task 완료 endpoint를 호출한다', async () => {
+    await taskApi.complete(42);
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/done', undefined, {
+      signal: undefined,
+    });
   });
 });

@@ -21,4 +21,10 @@ export const taskApi = {
   getInbox(signal?: AbortSignal) {
     return apiClient.get<TaskResponse[]>(`${TASKS_PATH}/inbox`, { signal });
   },
+
+  complete(taskId: number, signal?: AbortSignal) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/done`, undefined, {
+      signal,
+    });
+  },
 };

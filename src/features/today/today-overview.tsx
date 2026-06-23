@@ -1,6 +1,7 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card } from '@/components/ui';
+import { AppText, Button, Card, EmptyState } from '@/components/ui';
+import { TaskCard, useCompleteTask } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 
@@ -13,6 +14,7 @@ type TodayOverviewProps = {
 export function TodayOverview({ date }: TodayOverviewProps) {
   const theme = useAppTheme();
   const { todayTasks, doneTasks, inboxTasks, isPending, error, refetch } = useTodayOverview(date);
+  const completeTask = useCompleteTask(date);
 
   if (isPending) {
     return (
@@ -69,6 +71,51 @@ export function TodayOverview({ date }: TodayOverviewProps) {
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="완료" value={doneTasks.length} tone="success" />
       </Card>
+
+      <View style={styles.taskSection}>
+        <View style={styles.taskSectionHeading}>
+          <View style={styles.taskSectionCopy}>
+            <AppText variant="bodyLarge" weight="bold">
+              오늘 할 일
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              실행할 순서대로 하나씩 완료해요.
+            </AppText>
+          </View>
+          <AppText tone="primary" variant="label" weight="bold">
+            {todayTasks.length}개
+          </AppText>
+        </View>
+
+        {completeTask.error ? (
+          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+            <AppText tone="danger" variant="label">
+              {completeTask.error.message}
+            </AppText>
+          </View>
+        ) : null}
+
+        {todayTasks.length === 0 ? (
+          <Card>
+            <EmptyState
+              title="오늘 할 일이 없어요"
+              description="다음 단계에서 빠르게 기록하거나 기록함에서 고를 수 있게 됩니다."
+            />
+          </Card>
+        ) : (
+          <View style={styles.taskList}>
+            {todayTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                completionDisabled={completeTask.isPending}
+                isCompleting={completeTask.isPending && completeTask.variables === task.id}
+                onComplete={() => completeTask.mutate(task.id)}
+              />
+            ))}
+          </View>
+        )}
+      </View>
     </View>
   );
 }
@@ -128,5 +175,27 @@ const styles = StyleSheet.create({
   divider: {
     height: 40,
     width: 1,
+  },
+  taskSection: {
+    gap: spacing[3],
+    paddingTop: spacing[2],
+  },
+  taskSectionHeading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[3],
+    justifyContent: 'space-between',
+  },
+  taskSectionCopy: {
+    flex: 1,
+    gap: spacing[1],
+  },
+  taskList: {
+    gap: spacing[3],
+  },
+  inlineError: {
+    borderRadius: radii.md,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
 });
