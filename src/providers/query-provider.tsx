@@ -5,6 +5,8 @@ import { AppState, Platform } from 'react-native';
 
 import { ApiClientError } from '@/services/api';
 
+const isServerRendering = Platform.OS === 'web' && typeof window === 'undefined';
+
 function shouldRetry(failureCount: number, error: Error) {
   if (failureCount >= 2) {
     return false;
@@ -25,7 +27,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
-      gcTime: 5 * 60_000,
+      gcTime: isServerRendering ? Infinity : 5 * 60_000,
       retry: shouldRetry,
       retryDelay: (attemptIndex) => Math.min(1_000 * 2 ** attemptIndex, 5_000),
       refetchOnReconnect: true,

@@ -1,24 +1,18 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { AppText, Card, Screen } from '@/components/ui';
-import { TodayHeader } from '@/features/today';
+import { Screen } from '@/components/ui';
+import { TodayHeader, TodayOverview } from '@/features/today';
 import { spacing } from '@/theme';
+import { toApiLocalDate } from '@/utils';
 
 export default function TodayScreen() {
+  const now = new Date();
+  const today = toApiLocalDate(now);
+
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <TodayHeader />
-
-      <View style={styles.section}>
-        <AppText variant="bodyLarge" weight="bold">
-          오늘의 흐름
-        </AppText>
-        <Card variant="muted" style={styles.card}>
-          <AppText tone="secondary">
-            곧 오늘 할 일과 일정을 이곳에서 한눈에 확인할 수 있어요.
-          </AppText>
-        </Card>
-      </View>
+      <TodayHeader now={now} />
+      <TodayOverview date={today} />
     </Screen>
   );
 }
@@ -27,11 +21,5 @@ const styles = StyleSheet.create({
   screen: {
     gap: spacing[8],
     paddingTop: spacing[6],
-  },
-  section: {
-    gap: spacing[3],
-  },
-  card: {
-    borderWidth: 0,
   },
 });
