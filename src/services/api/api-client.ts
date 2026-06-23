@@ -31,10 +31,10 @@ function buildUrl(path: string, query?: QueryParams) {
   try {
     baseUrl = requireApiUrl();
   } catch (error) {
-    throw new ApiClientError(
-      error instanceof Error ? error.message : 'API 주소를 확인해 주세요.',
-      { kind: 'configuration', cause: error },
-    );
+    throw new ApiClientError(error instanceof Error ? error.message : 'API 주소를 확인해 주세요.', {
+      kind: 'configuration',
+      cause: error,
+    });
   }
 
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;

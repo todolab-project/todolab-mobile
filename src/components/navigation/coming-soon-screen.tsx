@@ -12,12 +12,7 @@ type ComingSoonScreenProps = {
   icon: SymbolViewProps['name'];
 };
 
-export function ComingSoonScreen({
-  eyebrow,
-  title,
-  description,
-  icon,
-}: ComingSoonScreenProps) {
+export function ComingSoonScreen({ eyebrow, title, description, icon }: ComingSoonScreenProps) {
   const theme = useAppTheme();
 
   return (

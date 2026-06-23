@@ -83,11 +83,7 @@ export function Button({
       ) : (
         <View style={styles.content}>
           {leading}
-          <AppText
-            variant="label"
-            weight="bold"
-            style={{ color: selected.textColor }}
-          >
+          <AppText variant="label" weight="bold" style={{ color: selected.textColor }}>
             {children}
           </AppText>
         </View>

@@ -10,7 +10,7 @@
 
 ## 검증
 
-- 변경 후 `npm run typecheck`를 실행한다.
+- 변경 후 `npm run validate`를 실행한다.
 - 플랫폼별 코드를 수정하면 영향받는 Android, iOS, Web 환경을 명시한다.
 - 새 의존성은 Expo SDK 56 및 React Native 0.85 호환성을 확인한 뒤 추가한다.
 

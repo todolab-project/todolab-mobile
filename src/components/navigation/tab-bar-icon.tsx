@@ -10,12 +10,6 @@ type TabBarIconProps = {
 
 export function TabBarIcon({ color, name, size }: TabBarIconProps) {
   return (
-    <SymbolView
-      name={name}
-      size={size}
-      tintColor={color}
-      type="hierarchical"
-      weight="semibold"
-    />
+    <SymbolView name={name} size={size} tintColor={color} type="hierarchical" weight="semibold" />
   );
 }

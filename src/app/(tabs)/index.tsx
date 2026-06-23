@@ -7,20 +7,13 @@ export default function TodayScreen() {
   return (
     <Screen contentContainerStyle={styles.screen}>
       <View style={styles.intro}>
-        <AppText
-          tone="primary"
-          variant="label"
-          weight="bold"
-          style={styles.eyebrow}
-        >
+        <AppText tone="primary" variant="label" weight="bold" style={styles.eyebrow}>
           TODOLAB
         </AppText>
         <AppText variant="display" weight="bold">
           오늘 해야 할 일에 집중하세요.
         </AppText>
-        <AppText tone="secondary">
-          ToDoLab 모바일 애플리케이션의 새로운 시작입니다.
-        </AppText>
+        <AppText tone="secondary">ToDoLab 모바일 애플리케이션의 새로운 시작입니다.</AppText>
       </View>
 
       <Card style={styles.card}>

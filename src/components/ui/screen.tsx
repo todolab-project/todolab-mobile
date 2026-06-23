@@ -23,9 +23,7 @@ export function Screen({
 
   if (scroll) {
     return (
-      <SafeAreaView
-        style={[styles.safeArea, { backgroundColor: theme.colors.background }, style]}
-      >
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }, style]}>
         <ScrollView
           {...scrollViewProps}
           contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
@@ -37,9 +35,7 @@ export function Screen({
   }
 
   return (
-    <SafeAreaView
-      style={[styles.safeArea, { backgroundColor: theme.colors.background }, style]}
-    >
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }, style]}>
       <View style={[styles.content, styles.flex, contentContainerStyle]}>{children}</View>
     </SafeAreaView>
   );
