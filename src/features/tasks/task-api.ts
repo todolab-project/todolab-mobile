@@ -1,9 +1,13 @@
 import { apiClient } from '@/services/api';
-import type { LocalDateString, TaskResponse } from '@/types';
+import type { LocalDateString, TaskResponse, TaskUpsertRequest } from '@/types';
 
 const TASKS_PATH = '/api/tasks';
 
 export const taskApi = {
+  create(request: TaskUpsertRequest, signal?: AbortSignal) {
+    return apiClient.post<TaskResponse>(TASKS_PATH, request, { signal });
+  },
+
   getToday(date: LocalDateString, signal?: AbortSignal) {
     return apiClient.get<TaskResponse[]>(`${TASKS_PATH}/today`, {
       query: { date },

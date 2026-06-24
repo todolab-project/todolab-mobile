@@ -5,11 +5,13 @@ jest.mock('@/services/api', () => ({
   apiClient: {
     get: jest.fn(),
     patch: jest.fn(),
+    post: jest.fn(),
   },
 }));
 
 const getMock = apiClient.get as jest.Mock;
 const patchMock = apiClient.patch as jest.Mock;
+const postMock = apiClient.post as jest.Mock;
 
 describe('Task API', () => {
   beforeEach(() => {
@@ -17,6 +19,20 @@ describe('Task API', () => {
     getMock.mockResolvedValue([]);
     patchMock.mockReset();
     patchMock.mockResolvedValue({ id: 1 });
+    postMock.mockReset();
+    postMock.mockResolvedValue({ id: 1 });
+  });
+
+  test('제목 중심의 Task를 생성한다', async () => {
+    const request = {
+      title: '병원 예약',
+      type: 'TODO' as const,
+      allDay: false,
+    };
+
+    await taskApi.create(request);
+
+    expect(postMock).toHaveBeenCalledWith('/api/tasks', request, { signal: undefined });
   });
 
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {

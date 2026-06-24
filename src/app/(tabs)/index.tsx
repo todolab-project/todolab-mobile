@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { Screen } from '@/components/ui';
-import { TodayHeader, TodayOverview } from '@/features/today';
+import { QuickCapture, TodayHeader, TodayOverview } from '@/features/today';
 import { spacing } from '@/theme';
 import { toApiLocalDate } from '@/utils';
 
@@ -12,6 +12,7 @@ export default function TodayScreen() {
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
       <TodayHeader now={now} />
+      <QuickCapture />
       <TodayOverview date={today} />
     </Screen>
   );
