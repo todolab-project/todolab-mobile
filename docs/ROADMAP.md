@@ -208,7 +208,7 @@ type ApiResponse<T> = {
 - [x] Today/완료/기록함 조회 hook과 상태 처리
 - [x] Task 카드와 완료 체크
 - [x] 제목만 입력하는 빠른 추가
-- [ ] 기록함 항목을 Today로 이동
+- [x] 기록함 항목을 Today로 이동
 - [ ] 완료 항목 표시와 완료 취소
 - [ ] Task 상세 조회
 - [ ] Task 생성/수정 폼

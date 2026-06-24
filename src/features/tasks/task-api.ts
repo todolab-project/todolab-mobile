@@ -31,4 +31,11 @@ export const taskApi = {
       signal,
     });
   },
+
+  moveToToday(taskId: number, date: LocalDateString, signal?: AbortSignal) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/today`, undefined, {
+      query: { date },
+      signal,
+    });
+  },
 };

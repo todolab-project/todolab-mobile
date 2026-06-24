@@ -1,7 +1,7 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
-import { TaskCard, useCompleteTask } from '@/features/tasks';
+import { TaskCard, useCompleteTask, useMoveTaskToToday } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 
@@ -15,6 +15,7 @@ export function TodayOverview({ date }: TodayOverviewProps) {
   const theme = useAppTheme();
   const { todayTasks, doneTasks, inboxTasks, isPending, error, refetch } = useTodayOverview(date);
   const completeTask = useCompleteTask(date);
+  const moveToToday = useMoveTaskToToday(date);
 
   if (isPending) {
     return (
@@ -99,7 +100,7 @@ export function TodayOverview({ date }: TodayOverviewProps) {
           <Card>
             <EmptyState
               title="오늘 할 일이 없어요"
-              description="다음 단계에서 빠르게 기록하거나 기록함에서 고를 수 있게 됩니다."
+              description="빠르게 기록하거나 아래 기록함에서 오늘 할 일을 골라보세요."
             />
           </Card>
         ) : (
@@ -111,6 +112,59 @@ export function TodayOverview({ date }: TodayOverviewProps) {
                 completionDisabled={completeTask.isPending}
                 isCompleting={completeTask.isPending && completeTask.variables === task.id}
                 onComplete={() => completeTask.mutate(task.id)}
+              />
+            ))}
+          </View>
+        )}
+      </View>
+
+      <View style={styles.taskSection}>
+        <View style={styles.taskSectionHeading}>
+          <View style={styles.taskSectionCopy}>
+            <AppText variant="bodyLarge" weight="bold">
+              아직 고르지 않은 일
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              기록함에서 오늘 실행할 일을 골라요.
+            </AppText>
+          </View>
+          <AppText tone="primary" variant="label" weight="bold">
+            {inboxTasks.length}개
+          </AppText>
+        </View>
+
+        {moveToToday.error ? (
+          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+            <AppText tone="danger" variant="label">
+              {moveToToday.error.message}
+            </AppText>
+          </View>
+        ) : null}
+
+        {inboxTasks.length === 0 ? (
+          <Card variant="muted" style={styles.compactEmptyCard}>
+            <AppText align="center" tone="secondary" variant="label">
+              기록함이 비어 있어요.
+            </AppText>
+          </Card>
+        ) : (
+          <View style={styles.taskList}>
+            {inboxTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                action={
+                  <Button
+                    accessibilityLabel={`${task.title}, 오늘 할 일로 이동`}
+                    loading={moveToToday.isPending && moveToToday.variables === task.id}
+                    disabled={moveToToday.isPending}
+                    variant="secondary"
+                    onPress={() => moveToToday.mutate(task.id)}
+                    style={styles.moveButton}
+                  >
+                    오늘 하기
+                  </Button>
+                }
               />
             ))}
           </View>
@@ -197,5 +251,12 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  compactEmptyCard: {
+    borderWidth: 0,
+    paddingVertical: spacing[4],
+  },
+  moveButton: {
+    minWidth: 88,
   },
 });

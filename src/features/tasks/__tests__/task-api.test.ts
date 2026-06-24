@@ -66,4 +66,13 @@ describe('Task API', () => {
       signal: undefined,
     });
   });
+
+  test('기록함 Task를 지정한 날짜의 Today로 이동한다', async () => {
+    await taskApi.moveToToday(42, '2026-06-25');
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/today', undefined, {
+      query: { date: '2026-06-25' },
+      signal: undefined,
+    });
+  });
 });

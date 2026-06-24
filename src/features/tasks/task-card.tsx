@@ -1,4 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import type { ReactNode } from 'react';
 
 import { AppText, Card } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
@@ -10,6 +11,7 @@ type TaskCardProps = {
   onComplete?: () => void;
   isCompleting?: boolean;
   completionDisabled?: boolean;
+  action?: ReactNode;
 };
 
 export function TaskCard({
@@ -17,6 +19,7 @@ export function TaskCard({
   onComplete,
   isCompleting = false,
   completionDisabled = false,
+  action,
 }: TaskCardProps) {
   const theme = useAppTheme();
   const isDone = task.status === 'DONE';
@@ -80,6 +83,7 @@ export function TaskCard({
           </AppText>
         ) : null}
       </View>
+      {action ? <View style={styles.actionRow}>{action}</View> : null}
     </Card>
   );
 }
@@ -146,5 +150,10 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
+  },
+  actionRow: {
+    alignItems: 'flex-end',
+    paddingBottom: spacing[3],
+    paddingHorizontal: spacing[4],
   },
 });
