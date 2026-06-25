@@ -6,12 +6,14 @@ jest.mock('@/services/api', () => ({
     get: jest.fn(),
     patch: jest.fn(),
     post: jest.fn(),
+    put: jest.fn(),
   },
 }));
 
 const getMock = apiClient.get as jest.Mock;
 const patchMock = apiClient.patch as jest.Mock;
 const postMock = apiClient.post as jest.Mock;
+const putMock = apiClient.put as jest.Mock;
 
 describe('Task API', () => {
   beforeEach(() => {
@@ -21,6 +23,8 @@ describe('Task API', () => {
     patchMock.mockResolvedValue({ id: 1 });
     postMock.mockReset();
     postMock.mockResolvedValue({ id: 1 });
+    putMock.mockReset();
+    putMock.mockResolvedValue({ id: 1 });
   });
 
   test('제목 중심의 Task를 생성한다', async () => {
@@ -39,6 +43,22 @@ describe('Task API', () => {
     await taskApi.get(42);
 
     expect(getMock).toHaveBeenCalledWith('/api/tasks/42', { signal: undefined });
+  });
+
+  test('Task를 수정한다', async () => {
+    const request = {
+      title: '운동 기록 정리',
+      description: '러닝 기록 캡처 업로드',
+      category: '건강',
+      type: 'TODO' as const,
+      allDay: true,
+      startAt: null,
+      endAt: null,
+    };
+
+    await taskApi.update(42, request);
+
+    expect(putMock).toHaveBeenCalledWith('/api/tasks/42', request, { signal: undefined });
   });
 
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {

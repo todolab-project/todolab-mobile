@@ -1,10 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, Screen } from '@/components/ui';
-import { useTaskDetail } from '@/features/tasks';
+import { TaskForm, useTaskDetail, useUpdateTask } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { TaskResponse, TaskStatus, TaskType } from '@/types';
+import type { TaskResponse, TaskStatus, TaskType, TaskUpsertRequest } from '@/types';
 import { formatDateLabel, formatTimeLabel } from '@/utils';
 
 export default function TaskDetailScreen() {
@@ -13,6 +14,23 @@ export default function TaskDetailScreen() {
   const { taskId } = useLocalSearchParams<{ taskId?: string | string[] }>();
   const parsedTaskId = parseTaskId(taskId);
   const taskQuery = useTaskDetail(parsedTaskId);
+  const updateTask = useUpdateTask();
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSubmit = (request: TaskUpsertRequest) => {
+    if (parsedTaskId === null) {
+      return;
+    }
+
+    updateTask.mutate(
+      { taskId: parsedTaskId, request },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      },
+    );
+  };
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -66,14 +84,36 @@ export default function TaskDetailScreen() {
             다시 시도
           </Button>
         </Card>
+      ) : taskQuery.data && isEditing ? (
+        <View style={styles.editing}>
+          <View style={styles.titleBlock}>
+            <AppText variant="title" weight="heavy">
+              할 일 수정
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              지금 필요한 정보만 고쳐도 괜찮아요.
+            </AppText>
+          </View>
+          <TaskForm
+            errorMessage={updateTask.error?.message}
+            initialTask={taskQuery.data}
+            isSubmitting={updateTask.isPending}
+            submitLabel="수정 완료"
+            onCancel={() => {
+              updateTask.reset();
+              setIsEditing(false);
+            }}
+            onSubmit={handleSubmit}
+          />
+        </View>
       ) : taskQuery.data ? (
-        <TaskDetail task={taskQuery.data} />
+        <TaskDetail task={taskQuery.data} onEdit={() => setIsEditing(true)} />
       ) : null}
     </Screen>
   );
 }
 
-function TaskDetail({ task }: { task: TaskResponse }) {
+function TaskDetail({ task, onEdit }: { task: TaskResponse; onEdit: () => void }) {
   const theme = useAppTheme();
   const status = statusLabels[task.status];
   const scheduleLabel = getScheduleLabel(task);
@@ -118,6 +158,10 @@ function TaskDetail({ task }: { task: TaskResponse }) {
             </AppText>
           )}
         </View>
+
+        <Button variant="secondary" onPress={onEdit}>
+          수정하기
+        </Button>
       </Card>
 
       <Card style={styles.section}>
@@ -258,6 +302,9 @@ const styles = StyleSheet.create({
   },
   detail: {
     gap: spacing[3],
+  },
+  editing: {
+    gap: spacing[4],
   },
   heroCard: {
     gap: spacing[4],

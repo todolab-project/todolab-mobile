@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { AppText, Button, Card } from '@/components/ui';
 import { useCreateInboxTask } from '@/features/tasks';
@@ -7,6 +8,7 @@ import { radii, spacing, useAppTheme } from '@/theme';
 import { taskLimits } from '@/types';
 
 export function QuickCapture() {
+  const router = useRouter();
   const theme = useAppTheme();
   const inputRef = useRef<TextInput>(null);
   const createTask = useCreateInboxTask();
@@ -96,6 +98,9 @@ export function QuickCapture() {
           </AppText>
         )}
       </Card>
+      <Button variant="ghost" onPress={() => router.push('/tasks/new')}>
+        자세히 작성하기
+      </Button>
     </View>
   );
 }
