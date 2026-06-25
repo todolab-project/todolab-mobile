@@ -1,7 +1,7 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
-import { TaskCard, useCompleteTask, useMoveTaskToToday } from '@/features/tasks';
+import { TaskCard, useCompleteTask, useMoveTaskToToday, useReopenTask } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 
@@ -16,6 +16,7 @@ export function TodayOverview({ date }: TodayOverviewProps) {
   const { todayTasks, doneTasks, inboxTasks, isPending, error, refetch } = useTodayOverview(date);
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
+  const reopenTask = useReopenTask(date);
 
   if (isPending) {
     return (
@@ -163,6 +164,62 @@ export function TodayOverview({ date }: TodayOverviewProps) {
                     style={styles.moveButton}
                   >
                     오늘 하기
+                  </Button>
+                }
+              />
+            ))}
+          </View>
+        )}
+      </View>
+
+      <View style={styles.taskSection}>
+        <View style={styles.taskSectionHeading}>
+          <View style={styles.taskSectionCopy}>
+            <AppText variant="bodyLarge" weight="bold">
+              오늘 완료한 일
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              끝낸 일을 확인하며 하루의 흐름을 돌아봐요.
+            </AppText>
+          </View>
+          <AppText tone="success" variant="label" weight="bold">
+            {doneTasks.length}개
+          </AppText>
+        </View>
+
+        {reopenTask.error ? (
+          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+            <AppText tone="danger" variant="label">
+              {reopenTask.error.message}
+            </AppText>
+          </View>
+        ) : null}
+
+        {doneTasks.length === 0 ? (
+          <Card variant="muted" style={styles.compactEmptyCard}>
+            <AppText align="center" tone="secondary" variant="label">
+              아직 완료한 일이 없어요.
+            </AppText>
+          </Card>
+        ) : (
+          <View style={styles.taskList}>
+            {doneTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                completionDisabled={reopenTask.isPending}
+                isCompleting={reopenTask.isPending && reopenTask.variables === task.id}
+                onReopen={() => reopenTask.mutate(task.id)}
+                action={
+                  <Button
+                    accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
+                    loading={reopenTask.isPending && reopenTask.variables === task.id}
+                    disabled={reopenTask.isPending}
+                    variant="ghost"
+                    onPress={() => reopenTask.mutate(task.id)}
+                    style={styles.moveButton}
+                  >
+                    다시 열기
                   </Button>
                 }
               />

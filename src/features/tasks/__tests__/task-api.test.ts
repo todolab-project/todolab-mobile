@@ -75,4 +75,13 @@ describe('Task API', () => {
       signal: undefined,
     });
   });
+
+  test('완료 Task를 지정한 날짜의 Today로 다시 연다', async () => {
+    await taskApi.reopenToday(42, '2026-06-25');
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/done/cancel', undefined, {
+      query: { date: '2026-06-25' },
+      signal: undefined,
+    });
+  });
 });

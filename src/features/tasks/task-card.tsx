@@ -9,6 +9,7 @@ import { formatTimeLabel } from '@/utils';
 type TaskCardProps = {
   task: TaskResponse;
   onComplete?: () => void;
+  onReopen?: () => void;
   isCompleting?: boolean;
   completionDisabled?: boolean;
   action?: ReactNode;
@@ -17,26 +18,39 @@ type TaskCardProps = {
 export function TaskCard({
   task,
   onComplete,
+  onReopen,
   isCompleting = false,
   completionDisabled = false,
   action,
 }: TaskCardProps) {
   const theme = useAppTheme();
   const isDone = task.status === 'DONE';
-  const timeLabel = !task.allDay && task.startAt ? formatTimeLabel(task.startAt) : null;
+  const onToggle = isDone ? onReopen : onComplete;
+  const timeLabel = isDone
+    ? task.completedAt
+      ? `완료 ${formatTimeLabel(task.completedAt)}`
+      : '완료'
+    : !task.allDay && task.startAt
+      ? formatTimeLabel(task.startAt)
+      : null;
 
   return (
     <Card padded={false} style={styles.card}>
       <View style={styles.content}>
-        <View style={[styles.accent, { backgroundColor: theme.colors.primary }]} />
+        <View
+          style={[
+            styles.accent,
+            { backgroundColor: isDone ? theme.colors.success : theme.colors.primary },
+          ]}
+        />
 
         <Pressable
-          accessibilityLabel={isDone ? `${task.title}, 완료됨` : `${task.title} 완료하기`}
+          accessibilityLabel={isDone ? `${task.title}, 다시 열기` : `${task.title} 완료하기`}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: isDone, busy: isCompleting, disabled: completionDisabled }}
-          disabled={completionDisabled || isDone || !onComplete}
+          disabled={completionDisabled || !onToggle}
           hitSlop={4}
-          onPress={onComplete}
+          onPress={onToggle}
           style={({ pressed }) => [
             styles.checkbox,
             {
@@ -60,7 +74,13 @@ export function TaskCard({
         </Pressable>
 
         <View style={styles.copy}>
-          <AppText numberOfLines={2} variant="bodyLarge" weight="bold">
+          <AppText
+            numberOfLines={2}
+            tone={isDone ? 'secondary' : 'default'}
+            variant="bodyLarge"
+            weight="bold"
+            style={isDone ? styles.doneTitle : undefined}
+          >
             {task.title}
           </AppText>
 
@@ -155,5 +175,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     paddingBottom: spacing[3],
     paddingHorizontal: spacing[4],
+  },
+  doneTitle: {
+    textDecorationLine: 'line-through',
   },
 });

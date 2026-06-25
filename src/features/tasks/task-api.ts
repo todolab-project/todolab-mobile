@@ -38,4 +38,11 @@ export const taskApi = {
       signal,
     });
   },
+
+  reopenToday(taskId: number, date: LocalDateString, signal?: AbortSignal) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/done/cancel`, undefined, {
+      query: { date },
+      signal,
+    });
+  },
 };
