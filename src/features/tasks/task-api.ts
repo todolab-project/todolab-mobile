@@ -4,6 +4,10 @@ import type { LocalDateString, TaskResponse, TaskUpsertRequest } from '@/types';
 const TASKS_PATH = '/api/tasks';
 
 export const taskApi = {
+  get(taskId: number, signal?: AbortSignal) {
+    return apiClient.get<TaskResponse>(`${TASKS_PATH}/${taskId}`, { signal });
+  },
+
   create(request: TaskUpsertRequest, signal?: AbortSignal) {
     return apiClient.post<TaskResponse>(TASKS_PATH, request, { signal });
   },

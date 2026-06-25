@@ -35,6 +35,12 @@ describe('Task API', () => {
     expect(postMock).toHaveBeenCalledWith('/api/tasks', request, { signal: undefined });
   });
 
+  test('Task 상세를 id로 조회한다', async () => {
+    await taskApi.get(42);
+
+    expect(getMock).toHaveBeenCalledWith('/api/tasks/42', { signal: undefined });
+  });
+
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {
     await taskApi.getToday('2026-06-24');
 

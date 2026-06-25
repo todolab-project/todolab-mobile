@@ -5,3 +5,4 @@ export { useCompleteTask } from './use-complete-task';
 export { useCreateInboxTask } from './use-create-inbox-task';
 export { useMoveTaskToToday } from './use-move-task-to-today';
 export { useReopenTask } from './use-reopen-task';
+export { useTaskDetail } from './use-task-detail';

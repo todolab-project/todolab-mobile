@@ -1,4 +1,5 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import { TaskCard, useCompleteTask, useMoveTaskToToday, useReopenTask } from '@/features/tasks';
@@ -12,11 +13,15 @@ type TodayOverviewProps = {
 };
 
 export function TodayOverview({ date }: TodayOverviewProps) {
+  const router = useRouter();
   const theme = useAppTheme();
   const { todayTasks, doneTasks, inboxTasks, isPending, error, refetch } = useTodayOverview(date);
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
   const reopenTask = useReopenTask(date);
+  const openTask = (taskId: number) => {
+    router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
+  };
 
   if (isPending) {
     return (
@@ -110,6 +115,7 @@ export function TodayOverview({ date }: TodayOverviewProps) {
               <TaskCard
                 key={task.id}
                 task={task}
+                onOpen={() => openTask(task.id)}
                 completionDisabled={completeTask.isPending}
                 isCompleting={completeTask.isPending && completeTask.variables === task.id}
                 onComplete={() => completeTask.mutate(task.id)}
@@ -154,6 +160,7 @@ export function TodayOverview({ date }: TodayOverviewProps) {
               <TaskCard
                 key={task.id}
                 task={task}
+                onOpen={() => openTask(task.id)}
                 action={
                   <Button
                     accessibilityLabel={`${task.title}, 오늘 할 일로 이동`}
@@ -207,6 +214,7 @@ export function TodayOverview({ date }: TodayOverviewProps) {
               <TaskCard
                 key={task.id}
                 task={task}
+                onOpen={() => openTask(task.id)}
                 completionDisabled={reopenTask.isPending}
                 isCompleting={reopenTask.isPending && reopenTask.variables === task.id}
                 onReopen={() => reopenTask.mutate(task.id)}

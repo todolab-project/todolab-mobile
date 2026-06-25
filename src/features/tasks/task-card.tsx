@@ -8,6 +8,7 @@ import { formatTimeLabel } from '@/utils';
 
 type TaskCardProps = {
   task: TaskResponse;
+  onOpen?: () => void;
   onComplete?: () => void;
   onReopen?: () => void;
   isCompleting?: boolean;
@@ -17,6 +18,7 @@ type TaskCardProps = {
 
 export function TaskCard({
   task,
+  onOpen,
   onComplete,
   onReopen,
   isCompleting = false,
@@ -73,35 +75,48 @@ export function TaskCard({
           ) : null}
         </Pressable>
 
-        <View style={styles.copy}>
-          <AppText
-            numberOfLines={2}
-            tone={isDone ? 'secondary' : 'default'}
-            variant="bodyLarge"
-            weight="bold"
-            style={isDone ? styles.doneTitle : undefined}
-          >
-            {task.title}
-          </AppText>
+        <Pressable
+          accessibilityLabel={`${task.title} 상세 보기`}
+          accessibilityRole="button"
+          disabled={!onOpen}
+          onPress={onOpen}
+          style={({ pressed }) => [
+            styles.copyPressable,
+            {
+              backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent',
+            },
+          ]}
+        >
+          <View style={styles.copy}>
+            <AppText
+              numberOfLines={2}
+              tone={isDone ? 'secondary' : 'default'}
+              variant="bodyLarge"
+              weight="bold"
+              style={isDone ? styles.doneTitle : undefined}
+            >
+              {task.title}
+            </AppText>
 
-          {task.description ? (
-            <AppText numberOfLines={1} tone="secondary" variant="label">
-              {task.description}
+            {task.description ? (
+              <AppText numberOfLines={1} tone="secondary" variant="label">
+                {task.description}
+              </AppText>
+            ) : null}
+
+            <View style={styles.metadata}>
+              {task.allDay ? <MetaBadge label="종일" /> : null}
+              {task.category ? <MetaBadge label={task.category} /> : null}
+              {task.ddayGoalTitle ? <MetaBadge label={task.ddayGoalTitle} tone="primary" /> : null}
+            </View>
+          </View>
+
+          {timeLabel ? (
+            <AppText tone="secondary" variant="label" weight="bold">
+              {timeLabel}
             </AppText>
           ) : null}
-
-          <View style={styles.metadata}>
-            {task.allDay ? <MetaBadge label="종일" /> : null}
-            {task.category ? <MetaBadge label={task.category} /> : null}
-            {task.ddayGoalTitle ? <MetaBadge label={task.ddayGoalTitle} tone="primary" /> : null}
-          </View>
-        </View>
-
-        {timeLabel ? (
-          <AppText tone="secondary" variant="label" weight="bold">
-            {timeLabel}
-          </AppText>
-        ) : null}
+        </Pressable>
       </View>
       {action ? <View style={styles.actionRow}>{action}</View> : null}
     </Card>
@@ -160,6 +175,17 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
+  },
+  copyPressable: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing[2],
+    marginVertical: -spacing[1],
+    minWidth: 0,
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
   },
   metadata: {
     flexDirection: 'row',
