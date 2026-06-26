@@ -1,5 +1,6 @@
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import { TaskCard, useCompleteTask, useMoveTaskToToday, useReopenTask } from '@/features/tasks';
@@ -10,17 +11,27 @@ import { useTodayOverview } from './use-today-overview';
 
 type TodayOverviewProps = {
   date: LocalDateString;
+  overview: ReturnType<typeof useTodayOverview>;
 };
 
-export function TodayOverview({ date }: TodayOverviewProps) {
+type FeedbackMessage = {
+  tone: 'success' | 'default';
+  message: string;
+};
+
+export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const router = useRouter();
   const theme = useAppTheme();
-  const { todayTasks, doneTasks, inboxTasks, isPending, error, refetch } = useTodayOverview(date);
+  const { todayTasks, doneTasks, inboxTasks, isPending, isRefreshing, error, refetch } = overview;
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
   const reopenTask = useReopenTask(date);
+  const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
+  };
+  const showFeedback = (message: string) => {
+    setFeedback({ tone: 'success', message });
   };
 
   if (isPending) {
@@ -63,13 +74,40 @@ export function TodayOverview({ date }: TodayOverviewProps) {
   return (
     <View style={styles.container}>
       <View style={styles.heading}>
-        <AppText variant="bodyLarge" weight="bold">
-          오늘의 흐름
-        </AppText>
-        <AppText tone="secondary" variant="label">
-          해야 할 일과 기록을 한눈에 확인해요.
-        </AppText>
+        <View style={styles.headingCopy}>
+          <AppText variant="bodyLarge" weight="bold">
+            오늘의 흐름
+          </AppText>
+          <AppText tone="secondary" variant="label">
+            해야 할 일과 기록을 한눈에 확인해요.
+          </AppText>
+        </View>
+        <Button
+          accessibilityLabel="Today 정보 새로고침"
+          disabled={isRefreshing}
+          variant="ghost"
+          onPress={() => void refetch()}
+        >
+          새로고침
+        </Button>
       </View>
+
+      {feedback ? (
+        <View
+          accessibilityLiveRegion="polite"
+          style={[
+            styles.feedbackBanner,
+            {
+              backgroundColor:
+                feedback.tone === 'success' ? theme.colors.successSoft : theme.colors.primarySoft,
+            },
+          ]}
+        >
+          <AppText tone={feedback.tone} variant="label" weight="bold">
+            {feedback.message}
+          </AppText>
+        </View>
+      ) : null}
 
       <Card style={styles.summaryCard}>
         <SummaryItem label="오늘 할 일" value={todayTasks.length} />
@@ -107,6 +145,11 @@ export function TodayOverview({ date }: TodayOverviewProps) {
             <EmptyState
               title="오늘 할 일이 없어요"
               description="빠르게 기록하거나 아래 기록함에서 오늘 할 일을 골라보세요."
+              action={
+                <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
+                  자세히 작성하기
+                </Button>
+              }
             />
           </Card>
         ) : (
@@ -118,7 +161,11 @@ export function TodayOverview({ date }: TodayOverviewProps) {
                 onOpen={() => openTask(task.id)}
                 completionDisabled={completeTask.isPending}
                 isCompleting={completeTask.isPending && completeTask.variables === task.id}
-                onComplete={() => completeTask.mutate(task.id)}
+                onComplete={() =>
+                  completeTask.mutate(task.id, {
+                    onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
+                  })
+                }
               />
             ))}
           </View>
@@ -149,10 +196,16 @@ export function TodayOverview({ date }: TodayOverviewProps) {
         ) : null}
 
         {inboxTasks.length === 0 ? (
-          <Card variant="muted" style={styles.compactEmptyCard}>
-            <AppText align="center" tone="secondary" variant="label">
-              기록함이 비어 있어요.
-            </AppText>
+          <Card variant="muted">
+            <EmptyState
+              title="기록함이 비어 있어요"
+              description="생각난 일을 바로 기록하거나 자세히 작성해 보세요."
+              action={
+                <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
+                  새 할 일 작성
+                </Button>
+              }
+            />
           </Card>
         ) : (
           <View style={styles.taskList}>
@@ -167,7 +220,11 @@ export function TodayOverview({ date }: TodayOverviewProps) {
                     loading={moveToToday.isPending && moveToToday.variables === task.id}
                     disabled={moveToToday.isPending}
                     variant="secondary"
-                    onPress={() => moveToToday.mutate(task.id)}
+                    onPress={() =>
+                      moveToToday.mutate(task.id, {
+                        onSuccess: () => showFeedback('기록함에서 오늘 할 일로 옮겼어요.'),
+                      })
+                    }
                     style={styles.moveButton}
                   >
                     오늘 하기
@@ -203,10 +260,11 @@ export function TodayOverview({ date }: TodayOverviewProps) {
         ) : null}
 
         {doneTasks.length === 0 ? (
-          <Card variant="muted" style={styles.compactEmptyCard}>
-            <AppText align="center" tone="secondary" variant="label">
-              아직 완료한 일이 없어요.
-            </AppText>
+          <Card variant="muted">
+            <EmptyState
+              title="아직 완료한 일이 없어요"
+              description="작게 하나 끝내고 흐름을 만들어봐요."
+            />
           </Card>
         ) : (
           <View style={styles.taskList}>
@@ -217,14 +275,22 @@ export function TodayOverview({ date }: TodayOverviewProps) {
                 onOpen={() => openTask(task.id)}
                 completionDisabled={reopenTask.isPending}
                 isCompleting={reopenTask.isPending && reopenTask.variables === task.id}
-                onReopen={() => reopenTask.mutate(task.id)}
+                onReopen={() =>
+                  reopenTask.mutate(task.id, {
+                    onSuccess: () => showFeedback('완료 항목을 오늘 할 일로 다시 열었어요.'),
+                  })
+                }
                 action={
                   <Button
                     accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
                     loading={reopenTask.isPending && reopenTask.variables === task.id}
                     disabled={reopenTask.isPending}
                     variant="ghost"
-                    onPress={() => reopenTask.mutate(task.id)}
+                    onPress={() =>
+                      reopenTask.mutate(task.id, {
+                        onSuccess: () => showFeedback('완료 항목을 오늘 할 일로 다시 열었어요.'),
+                      })
+                    }
                     style={styles.moveButton}
                   >
                     다시 열기
@@ -263,7 +329,19 @@ const styles = StyleSheet.create({
     gap: spacing[3],
   },
   heading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[3],
+    justifyContent: 'space-between',
+  },
+  headingCopy: {
+    flex: 1,
     gap: spacing[1],
+  },
+  feedbackBanner: {
+    borderRadius: radii.md,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
   loadingCard: {
     alignItems: 'center',
@@ -316,10 +394,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
-  },
-  compactEmptyCard: {
-    borderWidth: 0,
-    paddingVertical: spacing[4],
   },
   moveButton: {
     minWidth: 88,
