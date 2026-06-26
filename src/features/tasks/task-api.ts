@@ -16,6 +16,10 @@ export const taskApi = {
     return apiClient.put<TaskResponse>(`${TASKS_PATH}/${taskId}`, request, { signal });
   },
 
+  delete(taskId: number, signal?: AbortSignal) {
+    return apiClient.delete<null>(`${TASKS_PATH}/${taskId}`, { signal });
+  },
+
   getToday(date: LocalDateString, signal?: AbortSignal) {
     return apiClient.get<TaskResponse[]>(`${TASKS_PATH}/today`, {
       query: { date },

@@ -4,6 +4,7 @@ import { apiClient } from '@/services/api';
 jest.mock('@/services/api', () => ({
   apiClient: {
     get: jest.fn(),
+    delete: jest.fn(),
     patch: jest.fn(),
     post: jest.fn(),
     put: jest.fn(),
@@ -11,6 +12,7 @@ jest.mock('@/services/api', () => ({
 }));
 
 const getMock = apiClient.get as jest.Mock;
+const deleteMock = apiClient.delete as jest.Mock;
 const patchMock = apiClient.patch as jest.Mock;
 const postMock = apiClient.post as jest.Mock;
 const putMock = apiClient.put as jest.Mock;
@@ -19,6 +21,8 @@ describe('Task API', () => {
   beforeEach(() => {
     getMock.mockReset();
     getMock.mockResolvedValue([]);
+    deleteMock.mockReset();
+    deleteMock.mockResolvedValue(null);
     patchMock.mockReset();
     patchMock.mockResolvedValue({ id: 1 });
     postMock.mockReset();
@@ -59,6 +63,12 @@ describe('Task API', () => {
     await taskApi.update(42, request);
 
     expect(putMock).toHaveBeenCalledWith('/api/tasks/42', request, { signal: undefined });
+  });
+
+  test('Task를 삭제한다', async () => {
+    await taskApi.delete(42);
+
+    expect(deleteMock).toHaveBeenCalledWith('/api/tasks/42', { signal: undefined });
   });
 
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {

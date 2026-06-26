@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, Screen } from '@/components/ui';
-import { TaskForm, useTaskDetail, useUpdateTask } from '@/features/tasks';
+import { TaskForm, useDeleteTask, useTaskDetail, useUpdateTask } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse, TaskStatus, TaskType, TaskUpsertRequest } from '@/types';
 import { formatDateLabel, formatTimeLabel } from '@/utils';
@@ -14,8 +14,10 @@ export default function TaskDetailScreen() {
   const { taskId } = useLocalSearchParams<{ taskId?: string | string[] }>();
   const parsedTaskId = parseTaskId(taskId);
   const taskQuery = useTaskDetail(parsedTaskId);
+  const deleteTask = useDeleteTask();
   const updateTask = useUpdateTask();
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   const handleSubmit = (request: TaskUpsertRequest) => {
     if (parsedTaskId === null) {
@@ -30,6 +32,18 @@ export default function TaskDetailScreen() {
         },
       },
     );
+  };
+
+  const handleDelete = () => {
+    if (parsedTaskId === null) {
+      return;
+    }
+
+    deleteTask.mutate(parsedTaskId, {
+      onSuccess: () => {
+        router.replace('/');
+      },
+    });
   };
 
   return (
@@ -107,13 +121,43 @@ export default function TaskDetailScreen() {
           />
         </View>
       ) : taskQuery.data ? (
-        <TaskDetail task={taskQuery.data} onEdit={() => setIsEditing(true)} />
+        <TaskDetail
+          deleteErrorMessage={deleteTask.error?.message}
+          isConfirmingDelete={isConfirmingDelete}
+          isDeleting={deleteTask.isPending}
+          task={taskQuery.data}
+          onCancelDelete={() => {
+            deleteTask.reset();
+            setIsConfirmingDelete(false);
+          }}
+          onConfirmDelete={handleDelete}
+          onEdit={() => setIsEditing(true)}
+          onRequestDelete={() => setIsConfirmingDelete(true)}
+        />
       ) : null}
     </Screen>
   );
 }
 
-function TaskDetail({ task, onEdit }: { task: TaskResponse; onEdit: () => void }) {
+function TaskDetail({
+  task,
+  deleteErrorMessage,
+  isConfirmingDelete,
+  isDeleting,
+  onCancelDelete,
+  onConfirmDelete,
+  onEdit,
+  onRequestDelete,
+}: {
+  task: TaskResponse;
+  deleteErrorMessage?: string | null;
+  isConfirmingDelete: boolean;
+  isDeleting: boolean;
+  onCancelDelete: () => void;
+  onConfirmDelete: () => void;
+  onEdit: () => void;
+  onRequestDelete: () => void;
+}) {
   const theme = useAppTheme();
   const status = statusLabels[task.status];
   const scheduleLabel = getScheduleLabel(task);
@@ -159,10 +203,48 @@ function TaskDetail({ task, onEdit }: { task: TaskResponse; onEdit: () => void }
           )}
         </View>
 
-        <Button variant="secondary" onPress={onEdit}>
-          수정하기
-        </Button>
+        <View style={styles.heroActions}>
+          <Button disabled={isDeleting} fullWidth variant="secondary" onPress={onEdit}>
+            수정하기
+          </Button>
+          <Button disabled={isDeleting} fullWidth variant="danger" onPress={onRequestDelete}>
+            삭제하기
+          </Button>
+        </View>
       </Card>
+
+      {isConfirmingDelete ? (
+        <Card
+          style={[
+            styles.deleteCard,
+            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
+          ]}
+        >
+          <View style={styles.stateCopy}>
+            <AppText tone="danger" variant="bodyLarge" weight="bold">
+              정말 삭제할까요?
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              삭제한 할 일은 현재 앱에서 되돌릴 수 없어요. 필요한 기록인지 한 번만 더 확인해 주세요.
+            </AppText>
+          </View>
+
+          {deleteErrorMessage ? (
+            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+              {deleteErrorMessage}
+            </AppText>
+          ) : null}
+
+          <View style={styles.deleteActions}>
+            <Button disabled={isDeleting} fullWidth variant="secondary" onPress={onCancelDelete}>
+              취소
+            </Button>
+            <Button fullWidth loading={isDeleting} variant="danger" onPress={onConfirmDelete}>
+              영구 삭제
+            </Button>
+          </View>
+        </Card>
+      ) : null}
 
       <Card style={styles.section}>
         <AppText variant="bodyLarge" weight="bold">
@@ -308,6 +390,15 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     gap: spacing[4],
+  },
+  heroActions: {
+    gap: spacing[2],
+  },
+  deleteCard: {
+    gap: spacing[4],
+  },
+  deleteActions: {
+    gap: spacing[2],
   },
   statusRow: {
     alignItems: 'center',
