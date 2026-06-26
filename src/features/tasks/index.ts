@@ -5,6 +5,7 @@ export { taskQueryKeys } from './task-query-keys';
 export { useCompleteTask } from './use-complete-task';
 export { useCreateInboxTask } from './use-create-inbox-task';
 export { useDeleteTask } from './use-delete-task';
+export { useMoveTaskToInbox } from './use-move-task-to-inbox';
 export { useMoveTaskToToday } from './use-move-task-to-today';
 export { useReopenTask } from './use-reopen-task';
 export { useTaskDetail } from './use-task-detail';

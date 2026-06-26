@@ -55,6 +55,12 @@ export const taskApi = {
     });
   },
 
+  moveToInbox(taskId: number, signal?: AbortSignal) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/inbox`, undefined, {
+      signal,
+    });
+  },
+
   reopenToday(taskId: number, date: LocalDateString, signal?: AbortSignal) {
     return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/done/cancel`, undefined, {
       query: { date },

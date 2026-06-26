@@ -3,9 +3,17 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
-import { TaskCard, useCompleteTask, useMoveTaskToToday, useReopenTask } from '@/features/tasks';
+import {
+  TaskCard,
+  useCompleteTask,
+  useDeleteTask,
+  useMoveTaskToInbox,
+  useMoveTaskToToday,
+  useReopenTask,
+} from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
+import { shiftLocalDate } from '@/utils';
 
 import { useTodayOverview } from './use-today-overview';
 
@@ -26,8 +34,13 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
     overview;
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
+  const tomorrow = shiftLocalDate(date, 1) ?? date;
+  const moveToTomorrow = useMoveTaskToToday(tomorrow);
+  const moveToInbox = useMoveTaskToInbox();
   const reopenTask = useReopenTask(date);
+  const deleteTask = useDeleteTask();
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+  const [confirmingDeleteTaskId, setConfirmingDeleteTaskId] = useState<number | null>(null);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
@@ -138,38 +151,182 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             </View>
           </View>
 
+          {completeTask.error ||
+          deleteTask.error ||
+          moveToInbox.error ||
+          moveToToday.error ||
+          moveToTomorrow.error ? (
+            <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+              <AppText tone="danger" variant="label">
+                {completeTask.error?.message ??
+                  deleteTask.error?.message ??
+                  moveToInbox.error?.message ??
+                  moveToToday.error?.message ??
+                  moveToTomorrow.error?.message}
+              </AppText>
+            </View>
+          ) : null}
+
           <View style={styles.stalePreviewList}>
             {staleTasks.slice(0, 3).map((task) => (
-              <Pressable
-                accessibilityLabel={`${task.title} 상세 보기`}
-                accessibilityRole="button"
-                key={task.id}
-                onPress={() => openTask(task.id)}
-                style={({ pressed }) => [
-                  styles.stalePreview,
-                  {
-                    backgroundColor: pressed ? theme.colors.warningSoft : theme.colors.surfaceMuted,
-                  },
-                ]}
-              >
-                <View style={styles.stalePreviewCopy}>
-                  <AppText numberOfLines={1} variant="label" weight="bold">
-                    {task.title}
+              <View key={task.id} style={styles.staleItem}>
+                <Pressable
+                  accessibilityLabel={`${task.title} 상세 보기`}
+                  accessibilityRole="button"
+                  onPress={() => openTask(task.id)}
+                  style={({ pressed }) => [
+                    styles.stalePreview,
+                    {
+                      backgroundColor: pressed
+                        ? theme.colors.warningSoft
+                        : theme.colors.surfaceMuted,
+                    },
+                  ]}
+                >
+                  <View style={styles.stalePreviewCopy}>
+                    <AppText numberOfLines={1} variant="label" weight="bold">
+                      {task.title}
+                    </AppText>
+                    <AppText tone="secondary" variant="caption">
+                      {getStaleTaskMeta(task)}
+                    </AppText>
+                  </View>
+                  <AppText tone="warning" variant="caption" weight="bold">
+                    판단 필요
                   </AppText>
-                  <AppText tone="secondary" variant="caption">
-                    {getStaleTaskMeta(task)}
-                  </AppText>
+                </Pressable>
+
+                <View style={styles.staleActionGrid}>
+                  <Button
+                    disabled={isStaleActionPending({
+                      taskId: task.id,
+                      completeTask,
+                      deleteTask,
+                      moveToInbox,
+                      moveToToday,
+                      moveToTomorrow,
+                    })}
+                    loading={moveToToday.isPending && moveToToday.variables === task.id}
+                    variant="secondary"
+                    onPress={() =>
+                      moveToToday.mutate(task.id, {
+                        onSuccess: () => showFeedback('지난 미완료를 오늘 할 일로 옮겼어요.'),
+                      })
+                    }
+                    style={styles.staleActionButton}
+                  >
+                    오늘
+                  </Button>
+                  <Button
+                    disabled={isStaleActionPending({
+                      taskId: task.id,
+                      completeTask,
+                      deleteTask,
+                      moveToInbox,
+                      moveToToday,
+                      moveToTomorrow,
+                    })}
+                    loading={moveToTomorrow.isPending && moveToTomorrow.variables === task.id}
+                    variant="secondary"
+                    onPress={() =>
+                      moveToTomorrow.mutate(task.id, {
+                        onSuccess: () => showFeedback('지난 미완료를 내일 할 일로 옮겼어요.'),
+                      })
+                    }
+                    style={styles.staleActionButton}
+                  >
+                    내일
+                  </Button>
+                  <Button
+                    disabled={isStaleActionPending({
+                      taskId: task.id,
+                      completeTask,
+                      deleteTask,
+                      moveToInbox,
+                      moveToToday,
+                      moveToTomorrow,
+                    })}
+                    variant="ghost"
+                    onPress={() => openTask(task.id)}
+                    style={styles.staleActionButton}
+                  >
+                    날짜 변경
+                  </Button>
+                  <Button
+                    disabled={isStaleActionPending({
+                      taskId: task.id,
+                      completeTask,
+                      deleteTask,
+                      moveToInbox,
+                      moveToToday,
+                      moveToTomorrow,
+                    })}
+                    loading={moveToInbox.isPending && moveToInbox.variables === task.id}
+                    variant="ghost"
+                    onPress={() =>
+                      moveToInbox.mutate(task.id, {
+                        onSuccess: () => showFeedback('지난 미완료를 기록함으로 옮겼어요.'),
+                      })
+                    }
+                    style={styles.staleActionButton}
+                  >
+                    기록함
+                  </Button>
+                  <Button
+                    disabled={isStaleActionPending({
+                      taskId: task.id,
+                      completeTask,
+                      deleteTask,
+                      moveToInbox,
+                      moveToToday,
+                      moveToTomorrow,
+                    })}
+                    loading={completeTask.isPending && completeTask.variables === task.id}
+                    variant="ghost"
+                    onPress={() =>
+                      completeTask.mutate(task.id, {
+                        onSuccess: () => showFeedback('지난 미완료를 완료 처리했어요.'),
+                      })
+                    }
+                    style={styles.staleActionButton}
+                  >
+                    완료
+                  </Button>
+                  <Button
+                    disabled={deleteTask.isPending}
+                    loading={deleteTask.isPending && deleteTask.variables === task.id}
+                    variant={confirmingDeleteTaskId === task.id ? 'danger' : 'ghost'}
+                    onPress={() => {
+                      if (confirmingDeleteTaskId !== task.id) {
+                        setConfirmingDeleteTaskId(task.id);
+                        return;
+                      }
+
+                      deleteTask.mutate(task.id, {
+                        onSuccess: () => {
+                          setConfirmingDeleteTaskId(null);
+                          showFeedback('지난 미완료를 삭제했어요.');
+                        },
+                      });
+                    }}
+                    style={styles.staleActionButton}
+                  >
+                    {confirmingDeleteTaskId === task.id ? '삭제 확인' : '삭제'}
+                  </Button>
                 </View>
-                <AppText tone="warning" variant="caption" weight="bold">
-                  판단 필요
-                </AppText>
-              </Pressable>
+
+                {confirmingDeleteTaskId === task.id ? (
+                  <AppText align="center" tone="danger" variant="caption">
+                    한 번 더 누르면 영구 삭제돼요.
+                  </AppText>
+                ) : null}
+              </View>
             ))}
           </View>
 
           {staleTasks.length > 3 ? (
             <AppText align="center" tone="secondary" variant="caption">
-              외 {staleTasks.length - 3}개는 다음 정리 액션에서 함께 다룰게요.
+              외 {staleTasks.length - 3}개는 상세 화면에서 이어서 판단할 수 있어요.
             </AppText>
           ) : null}
         </Card>
@@ -389,6 +546,30 @@ function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOver
   return `${plannedLabel}${carryOverLabel}`;
 }
 
+function isStaleActionPending({
+  taskId,
+  completeTask,
+  deleteTask,
+  moveToInbox,
+  moveToToday,
+  moveToTomorrow,
+}: {
+  taskId: number;
+  completeTask: ReturnType<typeof useCompleteTask>;
+  deleteTask: ReturnType<typeof useDeleteTask>;
+  moveToInbox: ReturnType<typeof useMoveTaskToInbox>;
+  moveToToday: ReturnType<typeof useMoveTaskToToday>;
+  moveToTomorrow: ReturnType<typeof useMoveTaskToToday>;
+}) {
+  return (
+    (completeTask.isPending && completeTask.variables === taskId) ||
+    (deleteTask.isPending && deleteTask.variables === taskId) ||
+    (moveToInbox.isPending && moveToInbox.variables === taskId) ||
+    (moveToToday.isPending && moveToToday.variables === taskId) ||
+    (moveToTomorrow.isPending && moveToTomorrow.variables === taskId)
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     gap: spacing[3],
@@ -419,6 +600,9 @@ const styles = StyleSheet.create({
   stalePreviewList: {
     gap: spacing[2],
   },
+  staleItem: {
+    gap: spacing[2],
+  },
   stalePreview: {
     alignItems: 'center',
     borderRadius: radii.md,
@@ -432,6 +616,15 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
+  },
+  staleActionGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing[2],
+  },
+  staleActionButton: {
+    flexGrow: 1,
+    minWidth: 88,
   },
   loadingCard: {
     alignItems: 'center',

@@ -14,6 +14,9 @@ export function useCompleteTask(date: LocalDateString) {
       queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.today(date), (tasks = []) =>
         tasks.filter((task) => task.id !== completedTask.id),
       );
+      queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.stale(), (tasks = []) =>
+        tasks.filter((task) => task.id !== completedTask.id),
+      );
       queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.done(date), (tasks = []) => [
         completedTask,
         ...tasks.filter((task) => task.id !== completedTask.id),

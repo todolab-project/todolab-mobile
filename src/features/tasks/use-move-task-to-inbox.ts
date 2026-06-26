@@ -5,17 +5,19 @@ import type { TaskResponse } from '@/types';
 import { taskApi } from './task-api';
 import { taskQueryKeys } from './task-query-keys';
 
-export function useDeleteTask() {
+export function useMoveTaskToInbox() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (taskId: number) => taskApi.delete(taskId),
-    onSuccess: (_result, taskId) => {
-      queryClient.removeQueries({ queryKey: taskQueryKeys.detail(taskId) });
+    mutationFn: (taskId: number) => taskApi.moveToInbox(taskId),
+    onSuccess: (movedTask) => {
       queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.stale(), (tasks = []) =>
-        tasks.filter((task) => task.id !== taskId),
+        tasks.filter((task) => task.id !== movedTask.id),
       );
-      void queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
+      queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.inbox(), (tasks = []) => [
+        movedTask,
+        ...tasks.filter((task) => task.id !== movedTask.id),
+      ]);
     },
   });
 }

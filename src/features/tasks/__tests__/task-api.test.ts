@@ -118,6 +118,14 @@ describe('Task API', () => {
     });
   });
 
+  test('Task를 기록함으로 이동한다', async () => {
+    await taskApi.moveToInbox(42);
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/inbox', undefined, {
+      signal: undefined,
+    });
+  });
+
   test('완료 Task를 지정한 날짜의 Today로 다시 연다', async () => {
     await taskApi.reopenToday(42, '2026-06-25');
 

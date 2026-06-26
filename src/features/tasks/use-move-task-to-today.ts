@@ -14,6 +14,9 @@ export function useMoveTaskToToday(date: LocalDateString) {
       queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.inbox(), (tasks = []) =>
         tasks.filter((task) => task.id !== movedTask.id),
       );
+      queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.stale(), (tasks = []) =>
+        tasks.filter((task) => task.id !== movedTask.id),
+      );
       queryClient.setQueryData<TaskResponse[]>(taskQueryKeys.today(date), (tasks = []) => [
         ...tasks.filter((task) => task.id !== movedTask.id),
         movedTask,
