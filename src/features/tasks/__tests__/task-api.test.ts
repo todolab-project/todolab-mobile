@@ -126,6 +126,21 @@ describe('Task API', () => {
     });
   });
 
+  test('Task 미룬 이유를 저장한다', async () => {
+    await taskApi.setDeferReason(42, 'TOO_BIG');
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/defer-reason', undefined, {
+      query: { reason: 'TOO_BIG' },
+      signal: undefined,
+    });
+  });
+
+  test('Task 미룬 이유를 해제한다', async () => {
+    await taskApi.clearDeferReason(42);
+
+    expect(deleteMock).toHaveBeenCalledWith('/api/tasks/42/defer-reason', { signal: undefined });
+  });
+
   test('완료 Task를 지정한 날짜의 Today로 다시 연다', async () => {
     await taskApi.reopenToday(42, '2026-06-25');
 

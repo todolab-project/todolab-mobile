@@ -12,6 +12,15 @@ export type DeferReason =
   | 'WAITING_OTHER'
   | 'ETC';
 
+export const deferReasonLabels: Record<DeferReason, string> = {
+  TOO_BIG: '너무 큼',
+  NOT_NEEDED_NOW: '지금 필요 없음',
+  AVOIDING: '회피 중',
+  NO_DEADLINE: '마감 없음',
+  WAITING_OTHER: '대기 중',
+  ETC: '기타',
+};
+
 export const taskLimits = {
   title: 30,
   description: 300,

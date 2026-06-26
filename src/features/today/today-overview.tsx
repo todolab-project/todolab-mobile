@@ -5,14 +5,17 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import {
   TaskCard,
+  useClearDeferReason,
   useCompleteTask,
   useDeleteTask,
   useMoveTaskToInbox,
   useMoveTaskToToday,
   useReopenTask,
+  useSetDeferReason,
 } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { LocalDateString } from '@/types';
+import type { DeferReason, LocalDateString } from '@/types';
+import { deferReasonLabels } from '@/types';
 import { shiftLocalDate } from '@/utils';
 
 import { useTodayOverview } from './use-today-overview';
@@ -39,6 +42,8 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const moveToInbox = useMoveTaskToInbox();
   const reopenTask = useReopenTask(date);
   const deleteTask = useDeleteTask();
+  const setDeferReason = useSetDeferReason();
+  const clearDeferReason = useClearDeferReason();
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [confirmingDeleteTaskId, setConfirmingDeleteTaskId] = useState<number | null>(null);
   const openTask = (taskId: number) => {
@@ -152,17 +157,21 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </View>
 
           {completeTask.error ||
+          clearDeferReason.error ||
           deleteTask.error ||
           moveToInbox.error ||
           moveToToday.error ||
-          moveToTomorrow.error ? (
+          moveToTomorrow.error ||
+          setDeferReason.error ? (
             <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
               <AppText tone="danger" variant="label">
                 {completeTask.error?.message ??
+                  clearDeferReason.error?.message ??
                   deleteTask.error?.message ??
                   moveToInbox.error?.message ??
                   moveToToday.error?.message ??
-                  moveToTomorrow.error?.message}
+                  moveToTomorrow.error?.message ??
+                  setDeferReason.error?.message}
               </AppText>
             </View>
           ) : null}
@@ -191,10 +200,89 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
                       {getStaleTaskMeta(task)}
                     </AppText>
                   </View>
-                  <AppText tone="warning" variant="caption" weight="bold">
-                    판단 필요
-                  </AppText>
+                  <View style={styles.stalePreviewBadges}>
+                    {task.carryOverCount > 0 ? (
+                      <View
+                        style={[styles.countPill, { backgroundColor: theme.colors.warningSoft }]}
+                      >
+                        <AppText tone="warning" variant="caption" weight="bold">
+                          이월 {task.carryOverCount}회
+                        </AppText>
+                      </View>
+                    ) : null}
+                    <AppText tone="warning" variant="caption" weight="bold">
+                      판단 필요
+                    </AppText>
+                  </View>
                 </Pressable>
+
+                <View style={styles.deferBlock}>
+                  <View style={styles.deferHeading}>
+                    <AppText variant="caption" weight="bold">
+                      미룬 이유
+                    </AppText>
+                    <AppText tone={task.deferReason ? 'warning' : 'muted'} variant="caption">
+                      {task.deferReasonLabel ?? '아직 선택하지 않았어요'}
+                    </AppText>
+                  </View>
+                  <View style={styles.deferReasonGrid}>
+                    {deferReasonOptions.map((reason) => {
+                      const selected = task.deferReason === reason;
+
+                      return (
+                        <Button
+                          disabled={isDeferReasonPending({
+                            taskId: task.id,
+                            clearDeferReason,
+                            setDeferReason,
+                          })}
+                          key={reason}
+                          loading={
+                            setDeferReason.isPending &&
+                            setDeferReason.variables?.taskId === task.id &&
+                            setDeferReason.variables.reason === reason
+                          }
+                          variant={selected ? 'secondary' : 'ghost'}
+                          onPress={() =>
+                            setDeferReason.mutate(
+                              { taskId: task.id, reason },
+                              {
+                                onSuccess: () =>
+                                  showFeedback(
+                                    `미룬 이유를 '${deferReasonLabels[reason]}'로 저장했어요.`,
+                                  ),
+                              },
+                            )
+                          }
+                          style={styles.deferReasonButton}
+                        >
+                          {deferReasonLabels[reason]}
+                        </Button>
+                      );
+                    })}
+                    {task.deferReason ? (
+                      <Button
+                        disabled={isDeferReasonPending({
+                          taskId: task.id,
+                          clearDeferReason,
+                          setDeferReason,
+                        })}
+                        loading={
+                          clearDeferReason.isPending && clearDeferReason.variables === task.id
+                        }
+                        variant="ghost"
+                        onPress={() =>
+                          clearDeferReason.mutate(task.id, {
+                            onSuccess: () => showFeedback('미룬 이유를 지웠어요.'),
+                          })
+                        }
+                        style={styles.deferReasonButton}
+                      >
+                        이유 지우기
+                      </Button>
+                    ) : null}
+                  </View>
+                </View>
 
                 <View style={styles.staleActionGrid}>
                   <Button
@@ -541,10 +629,11 @@ function SummaryItem({ label, value, tone = 'default' }: SummaryItemProps) {
 
 function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOverCount: number }) {
   const plannedLabel = task.plannedDate ? `계획일 ${task.plannedDate}` : '계획일 없음';
-  const carryOverLabel = task.carryOverCount > 0 ? ` · 이월 ${task.carryOverCount}회` : '';
 
-  return `${plannedLabel}${carryOverLabel}`;
+  return plannedLabel;
 }
+
+const deferReasonOptions = Object.keys(deferReasonLabels) as DeferReason[];
 
 function isStaleActionPending({
   taskId,
@@ -567,6 +656,21 @@ function isStaleActionPending({
     (moveToInbox.isPending && moveToInbox.variables === taskId) ||
     (moveToToday.isPending && moveToToday.variables === taskId) ||
     (moveToTomorrow.isPending && moveToTomorrow.variables === taskId)
+  );
+}
+
+function isDeferReasonPending({
+  taskId,
+  clearDeferReason,
+  setDeferReason,
+}: {
+  taskId: number;
+  clearDeferReason: ReturnType<typeof useClearDeferReason>;
+  setDeferReason: ReturnType<typeof useSetDeferReason>;
+}) {
+  return (
+    (clearDeferReason.isPending && clearDeferReason.variables === taskId) ||
+    (setDeferReason.isPending && setDeferReason.variables?.taskId === taskId)
   );
 }
 
@@ -616,6 +720,28 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
+  },
+  stalePreviewBadges: {
+    alignItems: 'flex-end',
+    gap: spacing[1],
+  },
+  deferBlock: {
+    gap: spacing[2],
+  },
+  deferHeading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[2],
+    justifyContent: 'space-between',
+  },
+  deferReasonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing[2],
+  },
+  deferReasonButton: {
+    flexGrow: 1,
+    minWidth: 112,
   },
   staleActionGrid: {
     flexDirection: 'row',

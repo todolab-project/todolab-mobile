@@ -1,5 +1,5 @@
 import { apiClient } from '@/services/api';
-import type { LocalDateString, TaskResponse, TaskUpsertRequest } from '@/types';
+import type { DeferReason, LocalDateString, TaskResponse, TaskUpsertRequest } from '@/types';
 
 const TASKS_PATH = '/api/tasks';
 
@@ -59,6 +59,17 @@ export const taskApi = {
     return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/inbox`, undefined, {
       signal,
     });
+  },
+
+  setDeferReason(taskId: number, reason: DeferReason, signal?: AbortSignal) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/defer-reason`, undefined, {
+      query: { reason },
+      signal,
+    });
+  },
+
+  clearDeferReason(taskId: number, signal?: AbortSignal) {
+    return apiClient.delete<TaskResponse>(`${TASKS_PATH}/${taskId}/defer-reason`, { signal });
   },
 
   reopenToday(taskId: number, date: LocalDateString, signal?: AbortSignal) {

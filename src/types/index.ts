@@ -18,4 +18,4 @@ export type {
   TaskUpsertRequest,
   TodayOrderDirection,
 } from './task';
-export { taskLimits } from './task';
+export { deferReasonLabels, taskLimits } from './task';
