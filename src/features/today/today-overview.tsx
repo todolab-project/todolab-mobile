@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import { TaskCard, useCompleteTask, useMoveTaskToToday, useReopenTask } from '@/features/tasks';
@@ -22,7 +22,8 @@ type FeedbackMessage = {
 export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const router = useRouter();
   const theme = useAppTheme();
-  const { todayTasks, doneTasks, inboxTasks, isPending, isRefreshing, error, refetch } = overview;
+  const { todayTasks, doneTasks, staleTasks, inboxTasks, isPending, isRefreshing, error, refetch } =
+    overview;
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
   const reopenTask = useReopenTask(date);
@@ -112,10 +113,67 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       <Card style={styles.summaryCard}>
         <SummaryItem label="오늘 할 일" value={todayTasks.length} />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
+        <SummaryItem label="미완료" value={staleTasks.length} tone="warning" />
+        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="기록함" value={inboxTasks.length} />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="완료" value={doneTasks.length} tone="success" />
       </Card>
+
+      {staleTasks.length > 0 ? (
+        <Card style={styles.staleCard}>
+          <View style={styles.taskSectionHeading}>
+            <View style={styles.taskSectionCopy}>
+              <AppText variant="bodyLarge" weight="bold">
+                지난 미완료 정리
+              </AppText>
+              <AppText tone="secondary" variant="label">
+                자동으로 오늘에 쌓지 않고, 다시 할지 직접 판단해요.
+              </AppText>
+            </View>
+            <View style={[styles.countPill, { backgroundColor: theme.colors.warningSoft }]}>
+              <AppText tone="warning" variant="caption" weight="bold">
+                {staleTasks.length}개
+              </AppText>
+            </View>
+          </View>
+
+          <View style={styles.stalePreviewList}>
+            {staleTasks.slice(0, 3).map((task) => (
+              <Pressable
+                accessibilityLabel={`${task.title} 상세 보기`}
+                accessibilityRole="button"
+                key={task.id}
+                onPress={() => openTask(task.id)}
+                style={({ pressed }) => [
+                  styles.stalePreview,
+                  {
+                    backgroundColor: pressed ? theme.colors.warningSoft : theme.colors.surfaceMuted,
+                  },
+                ]}
+              >
+                <View style={styles.stalePreviewCopy}>
+                  <AppText numberOfLines={1} variant="label" weight="bold">
+                    {task.title}
+                  </AppText>
+                  <AppText tone="secondary" variant="caption">
+                    {getStaleTaskMeta(task)}
+                  </AppText>
+                </View>
+                <AppText tone="warning" variant="caption" weight="bold">
+                  판단 필요
+                </AppText>
+              </Pressable>
+            ))}
+          </View>
+
+          {staleTasks.length > 3 ? (
+            <AppText align="center" tone="secondary" variant="caption">
+              외 {staleTasks.length - 3}개는 다음 정리 액션에서 함께 다룰게요.
+            </AppText>
+          ) : null}
+        </Card>
+      ) : null}
 
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
@@ -308,7 +366,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 type SummaryItemProps = {
   label: string;
   value: number;
-  tone?: 'default' | 'success';
+  tone?: 'default' | 'success' | 'warning';
 };
 
 function SummaryItem({ label, value, tone = 'default' }: SummaryItemProps) {
@@ -322,6 +380,13 @@ function SummaryItem({ label, value, tone = 'default' }: SummaryItemProps) {
       </AppText>
     </View>
   );
+}
+
+function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOverCount: number }) {
+  const plannedLabel = task.plannedDate ? `계획일 ${task.plannedDate}` : '계획일 없음';
+  const carryOverLabel = task.carryOverCount > 0 ? ` · 이월 ${task.carryOverCount}회` : '';
+
+  return `${plannedLabel}${carryOverLabel}`;
 }
 
 const styles = StyleSheet.create({
@@ -342,6 +407,31 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  staleCard: {
+    gap: spacing[3],
+  },
+  countPill: {
+    borderRadius: radii.full,
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
+  },
+  stalePreviewList: {
+    gap: spacing[2],
+  },
+  stalePreview: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    flexDirection: 'row',
+    gap: spacing[3],
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[3],
+  },
+  stalePreviewCopy: {
+    flex: 1,
+    gap: spacing[1],
+    minWidth: 0,
   },
   loadingCard: {
     alignItems: 'center',

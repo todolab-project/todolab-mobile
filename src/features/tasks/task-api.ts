@@ -34,6 +34,10 @@ export const taskApi = {
     });
   },
 
+  getStale(signal?: AbortSignal) {
+    return apiClient.get<TaskResponse[]>(`${TASKS_PATH}/stale`, { signal });
+  },
+
   getInbox(signal?: AbortSignal) {
     return apiClient.get<TaskResponse[]>(`${TASKS_PATH}/inbox`, { signal });
   },

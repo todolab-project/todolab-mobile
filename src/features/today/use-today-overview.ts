@@ -16,16 +16,22 @@ export function useTodayOverview(date: LocalDateString) {
     queryFn: ({ signal }) => taskApi.getDone(date, signal),
     enabled: canFetch,
   });
+  const staleQuery = useQuery({
+    queryKey: taskQueryKeys.stale(),
+    queryFn: ({ signal }) => taskApi.getStale(signal),
+    enabled: canFetch,
+  });
   const inboxQuery = useQuery({
     queryKey: taskQueryKeys.inbox(),
     queryFn: ({ signal }) => taskApi.getInbox(signal),
     enabled: canFetch,
   });
-  const queries = [todayQuery, doneQuery, inboxQuery];
+  const queries = [todayQuery, doneQuery, staleQuery, inboxQuery];
 
   return {
     todayTasks: todayQuery.data ?? [],
     doneTasks: doneQuery.data ?? [],
+    staleTasks: staleQuery.data ?? [],
     inboxTasks: inboxQuery.data ?? [],
     isPending: queries.some((query) => query.isPending),
     isRefreshing: queries.some((query) => query.isFetching),

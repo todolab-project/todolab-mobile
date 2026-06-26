@@ -4,7 +4,7 @@ import { StyleSheet, Text } from 'react-native';
 import { typography, useAppTheme } from '@/theme';
 
 type TextVariant = 'display' | 'title' | 'bodyLarge' | 'body' | 'label' | 'caption';
-type TextTone = 'default' | 'secondary' | 'muted' | 'primary' | 'success' | 'danger';
+type TextTone = 'default' | 'secondary' | 'muted' | 'primary' | 'success' | 'warning' | 'danger';
 type TextWeight = keyof typeof typography.weight;
 
 type AppTextProps = TextProps & {
@@ -58,6 +58,7 @@ export function AppText({
     muted: theme.colors.textMuted,
     primary: theme.colors.primary,
     success: theme.colors.success,
+    warning: theme.colors.warning,
     danger: theme.colors.danger,
   };
 

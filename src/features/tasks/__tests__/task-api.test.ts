@@ -89,6 +89,12 @@ describe('Task API', () => {
     });
   });
 
+  test('지난 미완료 항목을 조회한다', async () => {
+    await taskApi.getStale();
+
+    expect(getMock).toHaveBeenCalledWith('/api/tasks/stale', { signal: undefined });
+  });
+
   test('기록함을 별도 query 없이 조회한다', async () => {
     await taskApi.getInbox();
 
