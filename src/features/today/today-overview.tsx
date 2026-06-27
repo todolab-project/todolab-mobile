@@ -33,8 +33,17 @@ type FeedbackMessage = {
 export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const router = useRouter();
   const theme = useAppTheme();
-  const { todayTasks, doneTasks, staleTasks, inboxTasks, isPending, isRefreshing, error, refetch } =
-    overview;
+  const {
+    todayTasks,
+    recommendations,
+    doneTasks,
+    staleTasks,
+    inboxTasks,
+    isPending,
+    isRefreshing,
+    error,
+    refetch,
+  } = overview;
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
   const tomorrow = shiftLocalDate(date, 1) ?? date;
@@ -132,6 +141,8 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         <SummaryItem label="오늘 할 일" value={todayTasks.length} />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="미완료" value={staleTasks.length} tone="warning" />
+        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
+        <SummaryItem label="추천" value={recommendations.length} tone="primary" />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="기록함" value={inboxTasks.length} />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
@@ -420,6 +431,83 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         </Card>
       ) : null}
 
+      {recommendations.length > 0 ? (
+        <Card style={styles.recommendationCard}>
+          <View style={styles.taskSectionHeading}>
+            <View style={styles.taskSectionCopy}>
+              <AppText variant="bodyLarge" weight="bold">
+                오늘의 추천
+              </AppText>
+              <AppText tone="secondary" variant="label">
+                오늘 해볼 만한 일을 가볍게 골라보세요.
+              </AppText>
+            </View>
+            <View style={[styles.countPill, { backgroundColor: theme.colors.primarySoft }]}>
+              <AppText tone="primary" variant="caption" weight="bold">
+                {recommendations.length}개
+              </AppText>
+            </View>
+          </View>
+
+          {moveToToday.error ? (
+            <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+              <AppText tone="danger" variant="label">
+                {moveToToday.error.message}
+              </AppText>
+            </View>
+          ) : null}
+
+          <View style={styles.recommendationList}>
+            {recommendations.slice(0, 3).map((recommendation) => (
+              <View key={recommendation.task.id} style={styles.recommendationItem}>
+                <Pressable
+                  accessibilityLabel={`${recommendation.task.title} 상세 보기`}
+                  accessibilityRole="button"
+                  onPress={() => openTask(recommendation.task.id)}
+                  style={({ pressed }) => [
+                    styles.recommendationPreview,
+                    {
+                      backgroundColor: pressed
+                        ? theme.colors.primarySoft
+                        : theme.colors.surfaceMuted,
+                    },
+                  ]}
+                >
+                  <View style={styles.stalePreviewCopy}>
+                    <AppText numberOfLines={1} variant="label" weight="bold">
+                      {recommendation.task.title}
+                    </AppText>
+                    <AppText numberOfLines={2} tone="secondary" variant="caption">
+                      {recommendation.reason}
+                    </AppText>
+                  </View>
+                </Pressable>
+                <Button
+                  disabled={moveToToday.isPending}
+                  loading={
+                    moveToToday.isPending && moveToToday.variables === recommendation.task.id
+                  }
+                  variant="secondary"
+                  onPress={() =>
+                    moveToToday.mutate(recommendation.task.id, {
+                      onSuccess: () => showFeedback('추천 항목을 오늘 할 일로 추가했어요.'),
+                    })
+                  }
+                >
+                  Today 추가
+                </Button>
+              </View>
+            ))}
+          </View>
+
+          {recommendations.length > 3 ? (
+            <AppText align="center" tone="secondary" variant="caption">
+              외 {recommendations.length - 3}개 추천은 새로고침 후 이어서 확인할 수 있어요.
+            </AppText>
+          ) : null}
+        </Card>
+      ) : null}
+
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
@@ -611,7 +699,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 type SummaryItemProps = {
   label: string;
   value: number;
-  tone?: 'default' | 'success' | 'warning';
+  tone?: 'default' | 'primary' | 'success' | 'warning';
 };
 
 function SummaryItem({ label, value, tone = 'default' }: SummaryItemProps) {
@@ -696,6 +784,9 @@ const styles = StyleSheet.create({
   staleCard: {
     gap: spacing[3],
   },
+  recommendationCard: {
+    gap: spacing[3],
+  },
   countPill: {
     borderRadius: radii.full,
     paddingHorizontal: spacing[2],
@@ -720,6 +811,17 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
+  },
+  recommendationList: {
+    gap: spacing[2],
+  },
+  recommendationItem: {
+    gap: spacing[2],
+  },
+  recommendationPreview: {
+    borderRadius: radii.md,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[3],
   },
   stalePreviewBadges: {
     alignItems: 'flex-end',

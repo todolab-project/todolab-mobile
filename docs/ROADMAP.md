@@ -228,7 +228,7 @@ type ApiResponse<T> = {
 - [x] 지난 미완료 요약과 정리 화면
 - [x] 오늘/내일/날짜 재설정/기록함/완료/삭제 액션
 - [x] 이월 횟수와 미룬 이유 선택
-- [ ] Today 추천 목록과 Today 추가
+- [x] Today 추천 목록과 Today 추가
 - [ ] 캘린더 일정과 실행 TODO 섹션 분리
 - [ ] Today 순서 변경과 낙관적 UI
 - [ ] Today 과부하 안내 UI 초안

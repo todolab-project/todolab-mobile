@@ -80,6 +80,15 @@ describe('Task API', () => {
     });
   });
 
+  test('Today 추천 조회에 서울 기준 날짜를 전달한다', async () => {
+    await taskApi.getTodayRecommendations('2026-06-24');
+
+    expect(getMock).toHaveBeenCalledWith('/api/tasks/today/recommendations', {
+      query: { date: '2026-06-24' },
+      signal: undefined,
+    });
+  });
+
   test('완료 조회에 날짜를 전달한다', async () => {
     await taskApi.getDone('2026-06-24');
 

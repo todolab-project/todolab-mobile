@@ -11,6 +11,11 @@ export function useTodayOverview(date: LocalDateString) {
     queryFn: ({ signal }) => taskApi.getToday(date, signal),
     enabled: canFetch,
   });
+  const recommendationsQuery = useQuery({
+    queryKey: taskQueryKeys.todayRecommendations(date),
+    queryFn: ({ signal }) => taskApi.getTodayRecommendations(date, signal),
+    enabled: canFetch,
+  });
   const doneQuery = useQuery({
     queryKey: taskQueryKeys.done(date),
     queryFn: ({ signal }) => taskApi.getDone(date, signal),
@@ -26,10 +31,11 @@ export function useTodayOverview(date: LocalDateString) {
     queryFn: ({ signal }) => taskApi.getInbox(signal),
     enabled: canFetch,
   });
-  const queries = [todayQuery, doneQuery, staleQuery, inboxQuery];
+  const queries = [todayQuery, recommendationsQuery, doneQuery, staleQuery, inboxQuery];
 
   return {
     todayTasks: todayQuery.data ?? [],
+    recommendations: recommendationsQuery.data ?? [],
     doneTasks: doneQuery.data ?? [],
     staleTasks: staleQuery.data ?? [],
     inboxTasks: inboxQuery.data ?? [],

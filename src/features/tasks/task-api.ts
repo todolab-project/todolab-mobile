@@ -1,5 +1,11 @@
 import { apiClient } from '@/services/api';
-import type { DeferReason, LocalDateString, TaskResponse, TaskUpsertRequest } from '@/types';
+import type {
+  DeferReason,
+  LocalDateString,
+  TaskRecommendationResponse,
+  TaskResponse,
+  TaskUpsertRequest,
+} from '@/types';
 
 const TASKS_PATH = '/api/tasks';
 
@@ -22,6 +28,13 @@ export const taskApi = {
 
   getToday(date: LocalDateString, signal?: AbortSignal) {
     return apiClient.get<TaskResponse[]>(`${TASKS_PATH}/today`, {
+      query: { date },
+      signal,
+    });
+  },
+
+  getTodayRecommendations(date: LocalDateString, signal?: AbortSignal) {
+    return apiClient.get<TaskRecommendationResponse[]>(`${TASKS_PATH}/today/recommendations`, {
       query: { date },
       signal,
     });
