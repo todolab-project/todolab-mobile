@@ -9,6 +9,7 @@ import { formatDateLabel } from '@/utils';
 import { getDdayLabel } from './dday-label';
 import { DdayCreateForm } from './dday-create-form';
 import { DdayGoalTasks } from './dday-goal-tasks';
+import { DdayTodayTaskForm } from './dday-today-task-form';
 import { useDeleteDdayGoal } from './use-delete-dday-goal';
 import { useDdayGoals } from './use-dday-goals';
 
@@ -16,6 +17,7 @@ export function DdayOverview() {
   const theme = useAppTheme();
   const [isCreating, setIsCreating] = useState(false);
   const [confirmingDeleteGoalId, setConfirmingDeleteGoalId] = useState<number | null>(null);
+  const [creatingTaskGoalId, setCreatingTaskGoalId] = useState<number | null>(null);
   const [expandedGoalIds, setExpandedGoalIds] = useState<number[]>([]);
   const query = useDdayGoals();
   const goals = [...(query.data ?? [])].sort((left, right) =>
@@ -100,6 +102,7 @@ export function DdayOverview() {
               <DdayGoalCard
                 expanded={expandedGoalIds.includes(goal.id)}
                 goal={goal}
+                onCreateTodayTask={() => setCreatingTaskGoalId(goal.id)}
                 onRequestDelete={() => setConfirmingDeleteGoalId(goal.id)}
                 onToggleTasks={() =>
                   setExpandedGoalIds((current) =>
@@ -111,6 +114,19 @@ export function DdayOverview() {
               />
               {expandedGoalIds.includes(goal.id) ? (
                 <DdayGoalTasks goalId={goal.id} goalTitle={goal.title} />
+              ) : null}
+              {creatingTaskGoalId === goal.id ? (
+                <DdayTodayTaskForm
+                  goalId={goal.id}
+                  goalTitle={goal.title}
+                  onCancel={() => setCreatingTaskGoalId(null)}
+                  onCreated={() => {
+                    setCreatingTaskGoalId(null);
+                    setExpandedGoalIds((current) =>
+                      current.includes(goal.id) ? current : [...current, goal.id],
+                    );
+                  }}
+                />
               ) : null}
               {confirmingDeleteGoalId === goal.id ? (
                 <DdayDeleteConfirmation
@@ -130,11 +146,13 @@ export function DdayOverview() {
 function DdayGoalCard({
   goal,
   expanded,
+  onCreateTodayTask,
   onToggleTasks,
   onRequestDelete,
 }: {
   goal: DdayGoalResponse;
   expanded: boolean;
+  onCreateTodayTask: () => void;
   onToggleTasks: () => void;
   onRequestDelete: () => void;
 }) {
@@ -176,6 +194,14 @@ function DdayGoalCard({
         </View>
       </View>
       <View style={styles.goalActions}>
+        <Button
+          accessibilityLabel={`${goal.title} 목표의 Today 할 일 만들기`}
+          variant="secondary"
+          onPress={onCreateTodayTask}
+          style={styles.goalActionButton}
+        >
+          Today 할 일
+        </Button>
         <Button
           accessibilityLabel={`${goal.title} 연결된 할 일 ${expanded ? '접기' : '펼치기'}`}
           accessibilityState={{ expanded }}
@@ -298,10 +324,12 @@ const styles = StyleSheet.create({
   },
   goalActions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing[2],
   },
   goalActionButton: {
-    flex: 1,
+    flexGrow: 1,
+    minWidth: 96,
   },
   goalCopy: {
     flex: 1,

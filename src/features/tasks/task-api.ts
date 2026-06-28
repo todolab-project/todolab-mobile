@@ -98,6 +98,13 @@ export const taskApi = {
     return apiClient.delete<TaskResponse>(`${TASKS_PATH}/${taskId}/defer-reason`, { signal });
   },
 
+  connectDdayGoal(taskId: number, ddayGoalId: number, signal?: AbortSignal) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/dday-goal`, undefined, {
+      query: { ddayGoalId },
+      signal,
+    });
+  },
+
   reopenToday(taskId: number, date: LocalDateString, signal?: AbortSignal) {
     return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/done/cancel`, undefined, {
       query: { date },

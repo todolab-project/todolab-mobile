@@ -159,6 +159,15 @@ describe('Task API', () => {
     expect(deleteMock).toHaveBeenCalledWith('/api/tasks/42/defer-reason', { signal: undefined });
   });
 
+  test('Task를 D-Day 목표에 연결한다', async () => {
+    await taskApi.connectDdayGoal(42, 7);
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/dday-goal', undefined, {
+      query: { ddayGoalId: 7 },
+      signal: undefined,
+    });
+  });
+
   test('완료 Task를 지정한 날짜의 Today로 다시 연다', async () => {
     await taskApi.reopenToday(42, '2026-06-25');
 
