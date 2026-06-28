@@ -8,6 +8,7 @@ import { formatDateLabel } from '@/utils';
 
 import { getDdayLabel } from './dday-label';
 import { DdayCreateForm } from './dday-create-form';
+import { DdayGoalTasks } from './dday-goal-tasks';
 import { useDeleteDdayGoal } from './use-delete-dday-goal';
 import { useDdayGoals } from './use-dday-goals';
 
@@ -15,6 +16,7 @@ export function DdayOverview() {
   const theme = useAppTheme();
   const [isCreating, setIsCreating] = useState(false);
   const [confirmingDeleteGoalId, setConfirmingDeleteGoalId] = useState<number | null>(null);
+  const [expandedGoalIds, setExpandedGoalIds] = useState<number[]>([]);
   const query = useDdayGoals();
   const goals = [...(query.data ?? [])].sort((left, right) =>
     left.targetDate.localeCompare(right.targetDate),
@@ -96,9 +98,20 @@ export function DdayOverview() {
           {goals.map((goal) => (
             <View key={goal.id} style={styles.goalItem}>
               <DdayGoalCard
+                expanded={expandedGoalIds.includes(goal.id)}
                 goal={goal}
                 onRequestDelete={() => setConfirmingDeleteGoalId(goal.id)}
+                onToggleTasks={() =>
+                  setExpandedGoalIds((current) =>
+                    current.includes(goal.id)
+                      ? current.filter((goalId) => goalId !== goal.id)
+                      : [...current, goal.id],
+                  )
+                }
               />
+              {expandedGoalIds.includes(goal.id) ? (
+                <DdayGoalTasks goalId={goal.id} goalTitle={goal.title} />
+              ) : null}
               {confirmingDeleteGoalId === goal.id ? (
                 <DdayDeleteConfirmation
                   goal={goal}
@@ -116,9 +129,13 @@ export function DdayOverview() {
 
 function DdayGoalCard({
   goal,
+  expanded,
+  onToggleTasks,
   onRequestDelete,
 }: {
   goal: DdayGoalResponse;
+  expanded: boolean;
+  onToggleTasks: () => void;
   onRequestDelete: () => void;
 }) {
   const theme = useAppTheme();
@@ -158,13 +175,25 @@ function DdayGoalCard({
           </AppText>
         </View>
       </View>
-      <Button
-        accessibilityLabel={`${goal.title} D-Day 삭제`}
-        variant="ghost"
-        onPress={onRequestDelete}
-      >
-        삭제
-      </Button>
+      <View style={styles.goalActions}>
+        <Button
+          accessibilityLabel={`${goal.title} 연결된 할 일 ${expanded ? '접기' : '펼치기'}`}
+          accessibilityState={{ expanded }}
+          variant="secondary"
+          onPress={onToggleTasks}
+          style={styles.goalActionButton}
+        >
+          {expanded ? '할 일 접기' : '연결된 할 일'}
+        </Button>
+        <Button
+          accessibilityLabel={`${goal.title} D-Day 삭제`}
+          variant="ghost"
+          onPress={onRequestDelete}
+          style={styles.goalActionButton}
+        >
+          삭제
+        </Button>
+      </View>
     </Card>
   );
 }
@@ -266,6 +295,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[4],
+  },
+  goalActions: {
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  goalActionButton: {
+    flex: 1,
   },
   goalCopy: {
     flex: 1,

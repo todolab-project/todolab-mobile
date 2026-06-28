@@ -1,9 +1,11 @@
 export { ddayApi } from './dday-api';
 export { DdayCreateForm } from './dday-create-form';
+export { DdayGoalTasks } from './dday-goal-tasks';
 export { getDdayLabel } from './dday-label';
 export { DdayOverview } from './dday-overview';
 export { ddayQueryKeys } from './dday-query-keys';
 export { useDdayGoals } from './use-dday-goals';
+export { useDdayGoalTasks } from './use-dday-goal-tasks';
 export { useCreateDdayGoal } from './use-create-dday-goal';
 export { useDeleteDdayGoal } from './use-delete-dday-goal';
 export { validateDdayGoal } from './dday-validation';

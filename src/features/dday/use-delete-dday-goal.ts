@@ -14,6 +14,7 @@ export function useDeleteDdayGoal() {
       queryClient.setQueryData<DdayGoalResponse[]>(ddayQueryKeys.list(), (goals = []) =>
         goals.filter((goal) => goal.id !== goalId),
       );
+      queryClient.removeQueries({ queryKey: ddayQueryKeys.tasks(goalId) });
     },
   });
 }

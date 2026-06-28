@@ -43,4 +43,10 @@ describe('D-Day API', () => {
 
     expect(deleteMock).toHaveBeenCalledWith('/api/ddays/42', { signal: undefined });
   });
+
+  it('D-Day 목표에 연결된 Task 목록을 조회한다', async () => {
+    await ddayApi.getTasks(42);
+
+    expect(getMock).toHaveBeenCalledWith('/api/ddays/42/tasks', { signal: undefined });
+  });
 });
