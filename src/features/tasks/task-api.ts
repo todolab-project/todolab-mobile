@@ -4,6 +4,7 @@ import type {
   LocalDateString,
   TaskRecommendationResponse,
   TaskResponse,
+  TodayOrderDirection,
   TaskUpsertRequest,
 } from '@/types';
 
@@ -70,6 +71,18 @@ export const taskApi = {
 
   moveToInbox(taskId: number, signal?: AbortSignal) {
     return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/inbox`, undefined, {
+      signal,
+    });
+  },
+
+  reorderToday(
+    taskId: number,
+    date: LocalDateString,
+    direction: TodayOrderDirection,
+    signal?: AbortSignal,
+  ) {
+    return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/today-order`, undefined, {
+      query: { date, direction },
       signal,
     });
   },

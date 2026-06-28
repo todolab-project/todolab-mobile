@@ -230,7 +230,7 @@ type ApiResponse<T> = {
 - [x] 이월 횟수와 미룬 이유 선택
 - [x] Today 추천 목록과 Today 추가
 - [x] 캘린더 일정과 실행 TODO 섹션 분리
-- [ ] Today 순서 변경과 낙관적 UI
+- [x] Today 순서 변경과 낙관적 UI
 - [ ] Today 과부하 안내 UI 초안
 
 완료 기준:

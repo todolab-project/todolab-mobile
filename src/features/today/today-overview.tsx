@@ -11,6 +11,7 @@ import {
   useMoveTaskToInbox,
   useMoveTaskToToday,
   useReopenTask,
+  useReorderTodayTask,
   useSetDeferReason,
 } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
@@ -51,6 +52,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const moveToTomorrow = useMoveTaskToToday(tomorrow);
   const moveToInbox = useMoveTaskToInbox();
   const reopenTask = useReopenTask(date);
+  const reorderTodayTask = useReorderTodayTask(date);
   const deleteTask = useDeleteTask();
   const setDeferReason = useSetDeferReason();
   const clearDeferReason = useClearDeferReason();
@@ -562,10 +564,10 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </AppText>
         </View>
 
-        {completeTask.error ? (
+        {completeTask.error || reorderTodayTask.error ? (
           <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
             <AppText tone="danger" variant="label">
-              {completeTask.error.message}
+              {completeTask.error?.message ?? reorderTodayTask.error?.message}
             </AppText>
           </View>
         ) : null}
@@ -584,7 +586,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </Card>
         ) : (
           <View style={styles.taskList}>
-            {executionTasks.map((task) => (
+            {executionTasks.map((task, index) => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -595,6 +597,38 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
                   completeTask.mutate(task.id, {
                     onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
                   })
+                }
+                action={
+                  <View style={styles.reorderActions}>
+                    <Button
+                      accessibilityLabel={`${task.title}, 실행 순서 위로 이동`}
+                      disabled={reorderTodayTask.isPending || index === 0}
+                      variant="ghost"
+                      onPress={() =>
+                        reorderTodayTask.mutate(
+                          { taskId: task.id, direction: 'UP' },
+                          { onSuccess: () => showFeedback('실행 순서를 위로 옮겼어요.') },
+                        )
+                      }
+                      style={styles.reorderButton}
+                    >
+                      ↑ 위로
+                    </Button>
+                    <Button
+                      accessibilityLabel={`${task.title}, 실행 순서 아래로 이동`}
+                      disabled={reorderTodayTask.isPending || index === executionTasks.length - 1}
+                      variant="ghost"
+                      onPress={() =>
+                        reorderTodayTask.mutate(
+                          { taskId: task.id, direction: 'DOWN' },
+                          { onSuccess: () => showFeedback('실행 순서를 아래로 옮겼어요.') },
+                        )
+                      }
+                      style={styles.reorderButton}
+                    >
+                      ↓ 아래로
+                    </Button>
+                  </View>
                 }
               />
             ))}
@@ -1030,6 +1064,13 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[2],
   },
   moveButton: {
+    minWidth: 88,
+  },
+  reorderActions: {
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  reorderButton: {
     minWidth: 88,
   },
 });

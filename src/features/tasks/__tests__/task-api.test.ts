@@ -135,6 +135,15 @@ describe('Task API', () => {
     });
   });
 
+  test('Today Task 실행 순서를 한 칸 이동한다', async () => {
+    await taskApi.reorderToday(42, '2026-06-25', 'UP');
+
+    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/today-order', undefined, {
+      query: { date: '2026-06-25', direction: 'UP' },
+      signal: undefined,
+    });
+  });
+
   test('Task 미룬 이유를 저장한다', async () => {
     await taskApi.setDeferReason(42, 'TOO_BIG');
 
