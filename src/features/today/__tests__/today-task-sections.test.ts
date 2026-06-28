@@ -1,6 +1,6 @@
 import type { TaskResponse, TaskType } from '@/types';
 
-import { reorderTodayTasks, splitTodayTasks } from '../today-task-sections';
+import { getTodayLoadGuidance, reorderTodayTasks, splitTodayTasks } from '../today-task-sections';
 
 function createTask(id: number, type: TaskType): TaskResponse {
   return {
@@ -64,5 +64,20 @@ describe('reorderTodayTasks', () => {
 
     expect(reorderTodayTasks(tasks, first.id, 'UP')).toBe(tasks);
     expect(reorderTodayTasks(tasks, second.id, 'DOWN')).toBe(tasks);
+  });
+});
+
+describe('getTodayLoadGuidance', () => {
+  it('실행 항목이 권장 개수 이하면 안내하지 않는다', () => {
+    expect(getTodayLoadGuidance(5, 2)).toBeNull();
+  });
+
+  it('일정은 제외하고 초과한 실행 항목 개수를 안내한다', () => {
+    expect(getTodayLoadGuidance(7, 2)).toEqual({
+      excessCount: 2,
+      title: '오늘 실행할 일이 7개예요',
+      description:
+        '권장 개수보다 2개 많아요. 꼭 끝낼 일 5개만 먼저 남겨보세요. 시간 일정 2개는 이 개수에서 제외했어요.',
+    });
   });
 });

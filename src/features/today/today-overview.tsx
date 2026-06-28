@@ -19,7 +19,11 @@ import type { DeferReason, LocalDateString, TaskResponse } from '@/types';
 import { deferReasonLabels } from '@/types';
 import { formatTimeLabel, shiftLocalDate } from '@/utils';
 
-import { splitTodayTasks } from './today-task-sections';
+import {
+  getTodayLoadGuidance,
+  RECOMMENDED_TODAY_TASK_COUNT,
+  splitTodayTasks,
+} from './today-task-sections';
 import { useTodayOverview } from './use-today-overview';
 
 type TodayOverviewProps = {
@@ -59,6 +63,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [confirmingDeleteTaskId, setConfirmingDeleteTaskId] = useState<number | null>(null);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
+  const loadGuidance = getTodayLoadGuidance(executionTasks.length, scheduleTasks.length);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
@@ -152,6 +157,54 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="완료" value={doneTasks.length} tone="success" />
       </Card>
+
+      {loadGuidance ? (
+        <Card
+          accessibilityLabel={`오늘 계획 과부하 안내. ${loadGuidance.description}`}
+          style={[
+            styles.capacityCard,
+            {
+              backgroundColor: theme.colors.warningSoft,
+              borderColor: theme.colors.warning,
+            },
+          ]}
+        >
+          <View style={styles.capacityHeading}>
+            <View style={styles.capacityCopy}>
+              <AppText tone="warning" variant="bodyLarge" weight="bold">
+                {loadGuidance.title}
+              </AppText>
+              <AppText tone="secondary" variant="label">
+                {loadGuidance.description}
+              </AppText>
+            </View>
+            <View style={[styles.countPill, { backgroundColor: theme.colors.surface }]}>
+              <AppText tone="warning" variant="caption" weight="bold">
+                +{loadGuidance.excessCount}
+              </AppText>
+            </View>
+          </View>
+          <View style={styles.capacityMeter} accessibilityElementsHidden>
+            {executionTasks.slice(0, 10).map((task, index) => (
+              <View
+                key={task.id}
+                style={[
+                  styles.capacitySegment,
+                  {
+                    backgroundColor:
+                      index < RECOMMENDED_TODAY_TASK_COUNT
+                        ? theme.colors.primary
+                        : theme.colors.warning,
+                  },
+                ]}
+              />
+            ))}
+          </View>
+          <AppText tone="secondary" variant="caption">
+            파란색은 권장 범위, 주황색은 오늘 덜어내면 좋은 항목이에요.
+          </AppText>
+        </Card>
+      ) : null}
 
       {staleTasks.length > 0 ? (
         <Card style={styles.staleCard}>
@@ -905,6 +958,29 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  capacityCard: {
+    gap: spacing[3],
+  },
+  capacityHeading: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing[3],
+    justifyContent: 'space-between',
+  },
+  capacityCopy: {
+    flex: 1,
+    gap: spacing[1],
+  },
+  capacityMeter: {
+    flexDirection: 'row',
+    gap: spacing[1],
+  },
+  capacitySegment: {
+    borderRadius: radii.full,
+    flex: 1,
+    height: 6,
+    maxWidth: 44,
   },
   staleCard: {
     gap: spacing[3],

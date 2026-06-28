@@ -231,7 +231,7 @@ type ApiResponse<T> = {
 - [x] Today 추천 목록과 Today 추가
 - [x] 캘린더 일정과 실행 TODO 섹션 분리
 - [x] Today 순서 변경과 낙관적 UI
-- [ ] Today 과부하 안내 UI 초안
+- [x] Today 과부하 안내 UI 초안
 
 완료 기준:
 
