@@ -14,10 +14,11 @@ import {
   useSetDeferReason,
 } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { DeferReason, LocalDateString } from '@/types';
+import type { DeferReason, LocalDateString, TaskResponse } from '@/types';
 import { deferReasonLabels } from '@/types';
-import { shiftLocalDate } from '@/utils';
+import { formatTimeLabel, shiftLocalDate } from '@/utils';
 
+import { splitTodayTasks } from './today-task-sections';
 import { useTodayOverview } from './use-today-overview';
 
 type TodayOverviewProps = {
@@ -55,6 +56,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const clearDeferReason = useClearDeferReason();
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [confirmingDeleteTaskId, setConfirmingDeleteTaskId] = useState<number | null>(null);
+  const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
@@ -138,7 +140,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       ) : null}
 
       <Card style={styles.summaryCard}>
-        <SummaryItem label="오늘 할 일" value={todayTasks.length} />
+        <SummaryItem label="오늘 계획" value={todayTasks.length} />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
         <SummaryItem label="미완료" value={staleTasks.length} tone="warning" />
         <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
@@ -508,18 +510,55 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         </Card>
       ) : null}
 
+      <View style={styles.scheduleSection}>
+        <View style={styles.taskSectionHeading}>
+          <View style={styles.taskSectionCopy}>
+            <AppText variant="bodyLarge" weight="bold">
+              캘린더 일정
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              시간 약속을 먼저 훑고 실행할 일에 집중해요.
+            </AppText>
+          </View>
+          <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
+            <AppText tone="secondary" variant="caption" weight="bold">
+              {scheduleTasks.length}개
+            </AppText>
+          </View>
+        </View>
+
+        {scheduleTasks.length === 0 ? (
+          <Card variant="muted" style={styles.scheduleEmptyCard}>
+            <AppText tone="secondary" variant="label">
+              오늘 예정된 일정이 없어요.
+            </AppText>
+          </Card>
+        ) : (
+          <Card padded={false} style={styles.scheduleCard}>
+            {scheduleTasks.map((task, index) => (
+              <ScheduleItem
+                isLast={index === scheduleTasks.length - 1}
+                key={task.id}
+                task={task}
+                onOpen={() => openTask(task.id)}
+              />
+            ))}
+          </Card>
+        )}
+      </View>
+
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
             <AppText variant="bodyLarge" weight="bold">
-              오늘 할 일
+              오늘 실행할 일
             </AppText>
             <AppText tone="secondary" variant="label">
               실행할 순서대로 하나씩 완료해요.
             </AppText>
           </View>
           <AppText tone="primary" variant="label" weight="bold">
-            {todayTasks.length}개
+            {executionTasks.length}개
           </AppText>
         </View>
 
@@ -531,10 +570,10 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </View>
         ) : null}
 
-        {todayTasks.length === 0 ? (
+        {executionTasks.length === 0 ? (
           <Card>
             <EmptyState
-              title="오늘 할 일이 없어요"
+              title="오늘 실행할 일이 없어요"
               description="빠르게 기록하거나 아래 기록함에서 오늘 할 일을 골라보세요."
               action={
                 <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
@@ -545,7 +584,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </Card>
         ) : (
           <View style={styles.taskList}>
-            {todayTasks.map((task) => (
+            {executionTasks.map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -694,6 +733,58 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       </View>
     </View>
   );
+}
+
+type ScheduleItemProps = {
+  task: TaskResponse;
+  isLast: boolean;
+  onOpen: () => void;
+};
+
+function ScheduleItem({ task, isLast, onOpen }: ScheduleItemProps) {
+  const theme = useAppTheme();
+
+  return (
+    <Pressable
+      accessibilityLabel={`${task.title}, ${getScheduleTimeLabel(task)}, 상세 보기`}
+      accessibilityRole="button"
+      onPress={onOpen}
+      style={({ pressed }) => [
+        styles.scheduleItem,
+        !isLast && { borderBottomColor: theme.colors.border, borderBottomWidth: 1 },
+        { backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface },
+      ]}
+    >
+      <View style={[styles.scheduleTime, { backgroundColor: theme.colors.primarySoft }]}>
+        <AppText align="center" tone="primary" variant="caption" weight="bold">
+          {getScheduleTimeLabel(task)}
+        </AppText>
+      </View>
+      <View style={styles.scheduleCopy}>
+        <AppText numberOfLines={1} variant="label" weight="bold">
+          {task.title}
+        </AppText>
+        {task.description || task.category ? (
+          <AppText numberOfLines={1} tone="secondary" variant="caption">
+            {task.description ?? task.category}
+          </AppText>
+        ) : null}
+      </View>
+      <AppText tone="muted" variant="bodyLarge">
+        ›
+      </AppText>
+    </Pressable>
+  );
+}
+
+function getScheduleTimeLabel(task: TaskResponse) {
+  if (task.allDay || !task.startAt) {
+    return '종일';
+  }
+
+  const start = formatTimeLabel(task.startAt);
+
+  return task.endAt ? `${start}–${formatTimeLabel(task.endAt)}` : start;
 }
 
 type SummaryItemProps = {
@@ -887,6 +978,38 @@ const styles = StyleSheet.create({
   taskSection: {
     gap: spacing[3],
     paddingTop: spacing[2],
+  },
+  scheduleSection: {
+    gap: spacing[3],
+    paddingTop: spacing[2],
+  },
+  scheduleCard: {
+    overflow: 'hidden',
+  },
+  scheduleEmptyCard: {
+    alignItems: 'center',
+    paddingVertical: spacing[3],
+  },
+  scheduleItem: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[3],
+    minHeight: 64,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
+  },
+  scheduleTime: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingHorizontal: spacing[2],
+    width: 96,
+  },
+  scheduleCopy: {
+    flex: 1,
+    gap: spacing[1],
+    minWidth: 0,
   },
   taskSectionHeading: {
     alignItems: 'center',
