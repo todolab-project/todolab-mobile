@@ -3,7 +3,13 @@ import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, Screen } from '@/components/ui';
-import { TaskForm, useDeleteTask, useTaskDetail, useUpdateTask } from '@/features/tasks';
+import {
+  TaskDateQuickActions,
+  TaskForm,
+  useDeleteTask,
+  useTaskDetail,
+  useUpdateTask,
+} from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse, TaskStatus, TaskType, TaskUpsertRequest } from '@/types';
 import { formatDateLabel, formatTimeLabel } from '@/utils';
@@ -245,6 +251,8 @@ function TaskDetail({
           </View>
         </Card>
       ) : null}
+
+      <TaskDateQuickActions task={task} />
 
       <Card style={styles.section}>
         <AppText variant="bodyLarge" weight="bold">

@@ -27,6 +27,7 @@ export function Button({
   fullWidth = false,
   leading,
   disabled,
+  accessibilityState,
   style,
   ...props
 }: ButtonProps) {
@@ -64,7 +65,7 @@ export function Button({
     <Pressable
       {...props}
       accessibilityRole="button"
-      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      accessibilityState={{ ...accessibilityState, disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.base,
