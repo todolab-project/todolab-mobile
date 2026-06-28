@@ -105,6 +105,10 @@ export const taskApi = {
     });
   },
 
+  disconnectDdayGoal(taskId: number, signal?: AbortSignal) {
+    return apiClient.delete<TaskResponse>(`${TASKS_PATH}/${taskId}/dday-goal`, { signal });
+  },
+
   reopenToday(taskId: number, date: LocalDateString, signal?: AbortSignal) {
     return apiClient.patch<TaskResponse>(`${TASKS_PATH}/${taskId}/done/cancel`, undefined, {
       query: { date },

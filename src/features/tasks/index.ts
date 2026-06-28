@@ -14,4 +14,5 @@ export { useReopenTask } from './use-reopen-task';
 export { useReorderTodayTask } from './use-reorder-today-task';
 export { useSetDeferReason } from './use-set-defer-reason';
 export { useTaskDetail } from './use-task-detail';
+export { useTaskDdayGoal } from './use-task-dday-goal';
 export { useUpdateTask } from './use-update-task';

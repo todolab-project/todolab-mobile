@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, Screen } from '@/components/ui';
+import { useDdayGoals } from '@/features/dday';
 import {
   TaskDateQuickActions,
   TaskForm,
   useDeleteTask,
+  useTaskDdayGoal,
   useTaskDetail,
   useUpdateTask,
 } from '@/features/tasks';
@@ -22,6 +24,7 @@ export default function TaskDetailScreen() {
   const taskQuery = useTaskDetail(parsedTaskId);
   const deleteTask = useDeleteTask();
   const updateTask = useUpdateTask();
+  const taskDdayGoal = useTaskDdayGoal();
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
@@ -131,6 +134,7 @@ export default function TaskDetailScreen() {
           deleteErrorMessage={deleteTask.error?.message}
           isConfirmingDelete={isConfirmingDelete}
           isDeleting={deleteTask.isPending}
+          taskDdayGoal={taskDdayGoal}
           task={taskQuery.data}
           onCancelDelete={() => {
             deleteTask.reset();
@@ -150,6 +154,7 @@ function TaskDetail({
   deleteErrorMessage,
   isConfirmingDelete,
   isDeleting,
+  taskDdayGoal,
   onCancelDelete,
   onConfirmDelete,
   onEdit,
@@ -159,12 +164,14 @@ function TaskDetail({
   deleteErrorMessage?: string | null;
   isConfirmingDelete: boolean;
   isDeleting: boolean;
+  taskDdayGoal: ReturnType<typeof useTaskDdayGoal>;
   onCancelDelete: () => void;
   onConfirmDelete: () => void;
   onEdit: () => void;
   onRequestDelete: () => void;
 }) {
   const theme = useAppTheme();
+  const ddayGoals = useDdayGoals();
   const status = statusLabels[task.status];
   const scheduleLabel = getScheduleLabel(task);
 
@@ -278,6 +285,95 @@ function TaskDetail({
         <InfoRow label="D-Day" value={getDdayLabel(task)} />
         <InfoRow label="미룬 이유" value={task.deferReasonLabel ?? '없음'} />
         <InfoRow label="이월 횟수" value={`${task.carryOverCount}회`} />
+      </Card>
+
+      <Card style={styles.section}>
+        <View style={styles.stateCopy}>
+          <AppText variant="bodyLarge" weight="bold">
+            D-Day 목표
+          </AppText>
+          <AppText tone="secondary" variant="label">
+            이 할 일을 장기 목표와 연결해 진행 상황을 함께 모아보세요.
+          </AppText>
+        </View>
+
+        {ddayGoals.isPending ? (
+          <View accessibilityLabel="D-Day 목표를 불러오는 중" style={styles.inlineLoading}>
+            <ActivityIndicator color={theme.colors.primary} />
+            <AppText tone="secondary" variant="label">
+              목표를 불러오고 있어요.
+            </AppText>
+          </View>
+        ) : ddayGoals.error ? (
+          <View style={styles.stateCopy}>
+            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+              {ddayGoals.error.message}
+            </AppText>
+            <Button
+              disabled={taskDdayGoal.isPending}
+              variant="secondary"
+              onPress={() => void ddayGoals.refetch()}
+            >
+              다시 시도
+            </Button>
+          </View>
+        ) : ddayGoals.data?.length ? (
+          <View style={styles.goalActions}>
+            {ddayGoals.data.map((goal) => {
+              const isConnected = task.ddayGoalId === goal.id;
+
+              return (
+                <Button
+                  key={goal.id}
+                  accessibilityLabel={`${goal.title} D-Day 목표${isConnected ? ' 연결됨' : ' 연결하기'}`}
+                  disabled={taskDdayGoal.isPending || isConnected}
+                  variant={isConnected ? 'primary' : 'secondary'}
+                  onPress={() =>
+                    taskDdayGoal.mutate({
+                      taskId: task.id,
+                      ddayGoalId: goal.id,
+                    })
+                  }
+                >
+                  {isConnected ? `✓ ${goal.title}` : goal.title}
+                </Button>
+              );
+            })}
+            {task.ddayGoalId !== null ? (
+              <Button
+                disabled={taskDdayGoal.isPending}
+                loading={taskDdayGoal.isPending}
+                variant="ghost"
+                onPress={() =>
+                  taskDdayGoal.mutate({
+                    taskId: task.id,
+                    ddayGoalId: null,
+                  })
+                }
+              >
+                목표 연결 해제
+              </Button>
+            ) : null}
+            {taskDdayGoal.isPending ? (
+              <View accessibilityLiveRegion="polite" style={styles.inlineLoading}>
+                <ActivityIndicator color={theme.colors.primary} />
+                <AppText tone="secondary" variant="label">
+                  목표 연결을 변경하고 있어요.
+                </AppText>
+              </View>
+            ) : null}
+          </View>
+        ) : (
+          <AppText tone="muted" variant="label">
+            연결할 D-Day 목표가 없어요. D-Day 탭에서 먼저 목표를 만들어 주세요.
+          </AppText>
+        )}
+
+        {taskDdayGoal.error ? (
+          <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+            {taskDdayGoal.error.message}
+          </AppText>
+        ) : null}
       </Card>
 
       <Card variant="muted" style={styles.footerCard}>
@@ -406,6 +502,14 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   deleteActions: {
+    gap: spacing[2],
+  },
+  goalActions: {
+    gap: spacing[2],
+  },
+  inlineLoading: {
+    alignItems: 'center',
+    flexDirection: 'row',
     gap: spacing[2],
   },
   statusRow: {
