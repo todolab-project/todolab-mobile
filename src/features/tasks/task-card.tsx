@@ -28,6 +28,12 @@ export function TaskCard({
   const theme = useAppTheme();
   const isDone = task.status === 'DONE';
   const onToggle = isDone ? onReopen : onComplete;
+  const toggleDisabled = completionDisabled || !onToggle;
+  const toggleLabel = onToggle
+    ? isDone
+      ? `${task.title}, 다시 열기`
+      : `${task.title} 완료하기`
+    : `${task.title}, ${isDone ? '완료됨' : '미완료'}`;
   const timeLabel = isDone
     ? task.completedAt
       ? `완료 ${formatTimeLabel(task.completedAt)}`
@@ -47,10 +53,10 @@ export function TaskCard({
         />
 
         <Pressable
-          accessibilityLabel={isDone ? `${task.title}, 다시 열기` : `${task.title} 완료하기`}
+          accessibilityLabel={toggleLabel}
           accessibilityRole="checkbox"
-          accessibilityState={{ checked: isDone, busy: isCompleting, disabled: completionDisabled }}
-          disabled={completionDisabled || !onToggle}
+          accessibilityState={{ checked: isDone, busy: isCompleting, disabled: toggleDisabled }}
+          disabled={toggleDisabled}
           hitSlop={4}
           onPress={onToggle}
           style={({ pressed }) => [

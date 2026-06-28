@@ -6,6 +6,7 @@ import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
+import { CalendarDayTasks } from './calendar-day-tasks';
 import { getWeekDates } from './calendar-date';
 
 const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
@@ -142,24 +143,7 @@ export function WeekCalendar() {
         </View>
       </Card>
 
-      <Card style={styles.selectedDateCard}>
-        <View style={styles.selectedDateCopy}>
-          <AppText tone="primary" variant="caption" weight="bold">
-            선택한 날짜
-          </AppText>
-          <AppText variant="bodyLarge" weight="bold">
-            {formatDateLabel(selectedDate, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              weekday: 'long',
-            })}
-          </AppText>
-          <AppText tone="secondary" variant="label">
-            다음 단계에서 이 날짜의 예정된 일정과 완료 항목을 연결합니다.
-          </AppText>
-        </View>
-      </Card>
+      <CalendarDayTasks date={selectedDate} />
     </Screen>
   );
 }
@@ -245,11 +229,5 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     paddingHorizontal: spacing[1],
-  },
-  selectedDateCard: {
-    gap: spacing[4],
-  },
-  selectedDateCopy: {
-    gap: spacing[1],
   },
 });
