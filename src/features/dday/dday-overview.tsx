@@ -8,11 +8,13 @@ import { formatDateLabel } from '@/utils';
 
 import { getDdayLabel } from './dday-label';
 import { DdayCreateForm } from './dday-create-form';
+import { useDeleteDdayGoal } from './use-delete-dday-goal';
 import { useDdayGoals } from './use-dday-goals';
 
 export function DdayOverview() {
   const theme = useAppTheme();
   const [isCreating, setIsCreating] = useState(false);
+  const [confirmingDeleteGoalId, setConfirmingDeleteGoalId] = useState<number | null>(null);
   const query = useDdayGoals();
   const goals = [...(query.data ?? [])].sort((left, right) =>
     left.targetDate.localeCompare(right.targetDate),
@@ -92,7 +94,19 @@ export function DdayOverview() {
             </AppText>
           </View>
           {goals.map((goal) => (
-            <DdayGoalCard goal={goal} key={goal.id} />
+            <View key={goal.id} style={styles.goalItem}>
+              <DdayGoalCard
+                goal={goal}
+                onRequestDelete={() => setConfirmingDeleteGoalId(goal.id)}
+              />
+              {confirmingDeleteGoalId === goal.id ? (
+                <DdayDeleteConfirmation
+                  goal={goal}
+                  onCancel={() => setConfirmingDeleteGoalId(null)}
+                  onDeleted={() => setConfirmingDeleteGoalId(null)}
+                />
+              ) : null}
+            </View>
           ))}
         </View>
       )}
@@ -100,7 +114,13 @@ export function DdayOverview() {
   );
 }
 
-function DdayGoalCard({ goal }: { goal: DdayGoalResponse }) {
+function DdayGoalCard({
+  goal,
+  onRequestDelete,
+}: {
+  goal: DdayGoalResponse;
+  onRequestDelete: () => void;
+}) {
   const theme = useAppTheme();
   const dayLabel = getDdayLabel(goal.daysLeft);
   const isToday = goal.daysLeft === 0;
@@ -113,28 +133,89 @@ function DdayGoalCard({ goal }: { goal: DdayGoalResponse }) {
       : theme.colors.primarySoft;
 
   return (
+    <Card style={styles.goalCard}>
+      <View
+        accessible
+        accessibilityLabel={`${goal.title}, ${dayLabel}, 목표일 ${formatDateLabel(goal.targetDate)}`}
+        style={styles.goalContent}
+      >
+        <View style={styles.goalCopy}>
+          <AppText numberOfLines={2} variant="bodyLarge" weight="bold">
+            {goal.title}
+          </AppText>
+          <AppText tone="secondary" variant="label">
+            {formatDateLabel(goal.targetDate, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              weekday: 'short',
+            })}
+          </AppText>
+        </View>
+        <View style={[styles.dayBadge, { backgroundColor: badgeBackground }]}>
+          <AppText tone={tone} variant="bodyLarge" weight="heavy">
+            {dayLabel}
+          </AppText>
+        </View>
+      </View>
+      <Button
+        accessibilityLabel={`${goal.title} D-Day 삭제`}
+        variant="ghost"
+        onPress={onRequestDelete}
+      >
+        삭제
+      </Button>
+    </Card>
+  );
+}
+
+function DdayDeleteConfirmation({
+  goal,
+  onCancel,
+  onDeleted,
+}: {
+  goal: DdayGoalResponse;
+  onCancel: () => void;
+  onDeleted: () => void;
+}) {
+  const theme = useAppTheme();
+  const deleteGoal = useDeleteDdayGoal();
+
+  return (
     <Card
-      accessible
-      accessibilityLabel={`${goal.title}, ${dayLabel}, 목표일 ${formatDateLabel(goal.targetDate)}`}
-      style={styles.goalCard}
+      accessibilityLiveRegion="polite"
+      style={[
+        styles.deleteCard,
+        { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
+      ]}
     >
-      <View style={styles.goalCopy}>
-        <AppText numberOfLines={2} variant="bodyLarge" weight="bold">
-          {goal.title}
+      <View style={styles.errorCopy}>
+        <AppText tone="danger" variant="label" weight="bold">
+          “{goal.title}” 목표를 삭제할까요?
         </AppText>
-        <AppText tone="secondary" variant="label">
-          {formatDateLabel(goal.targetDate, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'short',
-          })}
+        <AppText tone="secondary" variant="caption">
+          목표 목록에서 사라지며 현재 앱에서는 되돌릴 수 없어요.
         </AppText>
       </View>
-      <View style={[styles.dayBadge, { backgroundColor: badgeBackground }]}>
-        <AppText tone={tone} variant="bodyLarge" weight="heavy">
-          {dayLabel}
+
+      {deleteGoal.error ? (
+        <AppText tone="danger" variant="caption">
+          {deleteGoal.error.message}
         </AppText>
+      ) : null}
+
+      <View style={styles.deleteActions}>
+        <Button disabled={deleteGoal.isPending} fullWidth variant="secondary" onPress={onCancel}>
+          취소
+        </Button>
+        <Button
+          fullWidth
+          loading={deleteGoal.isPending}
+          variant="danger"
+          onPress={() => deleteGoal.mutate(goal.id, { onSuccess: onDeleted })}
+        >
+          영구 삭제
+        </Button>
       </View>
     </Card>
   );
@@ -161,8 +242,17 @@ const styles = StyleSheet.create({
   errorCopy: {
     gap: spacing[1],
   },
+  deleteCard: {
+    gap: spacing[3],
+  },
+  deleteActions: {
+    gap: spacing[2],
+  },
   goalList: {
     gap: spacing[3],
+  },
+  goalItem: {
+    gap: spacing[2],
   },
   listHeading: {
     alignItems: 'center',
@@ -170,6 +260,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   goalCard: {
+    gap: spacing[3],
+  },
+  goalContent: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[4],

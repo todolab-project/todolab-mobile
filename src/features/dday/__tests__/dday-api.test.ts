@@ -4,6 +4,7 @@ import { ddayApi } from '../dday-api';
 
 jest.mock('@/services/api', () => ({
   apiClient: {
+    delete: jest.fn(),
     get: jest.fn(),
     post: jest.fn(),
   },
@@ -11,6 +12,7 @@ jest.mock('@/services/api', () => ({
 
 const getMock = apiClient.get as jest.Mock;
 const postMock = apiClient.post as jest.Mock;
+const deleteMock = apiClient.delete as jest.Mock;
 
 describe('D-Day API', () => {
   beforeEach(() => {
@@ -18,6 +20,8 @@ describe('D-Day API', () => {
     getMock.mockResolvedValue([]);
     postMock.mockReset();
     postMock.mockResolvedValue({ id: 1 });
+    deleteMock.mockReset();
+    deleteMock.mockResolvedValue(null);
   });
 
   it('D-Day 목표 목록을 조회한다', async () => {
@@ -32,5 +36,11 @@ describe('D-Day API', () => {
     await ddayApi.create(request);
 
     expect(postMock).toHaveBeenCalledWith('/api/ddays', request, { signal: undefined });
+  });
+
+  it('D-Day 목표를 삭제한다', async () => {
+    await ddayApi.delete(42);
+
+    expect(deleteMock).toHaveBeenCalledWith('/api/ddays/42', { signal: undefined });
   });
 });

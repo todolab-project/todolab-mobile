@@ -11,4 +11,8 @@ export const ddayApi = {
   create(request: DdayGoalRequest, signal?: AbortSignal) {
     return apiClient.post<DdayGoalResponse>(DDAYS_PATH, request, { signal });
   },
+
+  delete(goalId: number, signal?: AbortSignal) {
+    return apiClient.delete<unknown>(`${DDAYS_PATH}/${goalId}`, { signal });
+  },
 };
