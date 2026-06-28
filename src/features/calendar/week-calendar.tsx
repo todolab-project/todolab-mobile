@@ -7,29 +7,39 @@ import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
-import { getWeekDates } from './calendar-date';
+import { getMonthCalendarDates, getWeekDates, shiftMonth } from './calendar-date';
 
 const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
+type CalendarMode = 'week' | 'month';
 
 export function WeekCalendar() {
   const theme = useAppTheme();
   const today = toApiLocalDate();
+  const [mode, setMode] = useState<CalendarMode>('week');
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
-  const [weekAnchor, setWeekAnchor] = useState<LocalDateString>(today);
-  const weekDates = useMemo(() => getWeekDates(weekAnchor), [weekAnchor]);
+  const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
+  const monthDates = useMemo(() => getMonthCalendarDates(selectedDate), [selectedDate]);
+  const visibleDates = mode === 'week' ? weekDates : monthDates;
+  const showsToday =
+    mode === 'week' ? visibleDates.includes(today) : selectedDate.slice(0, 7) === today.slice(0, 7);
 
   const moveWeek = (days: number) => {
-    const nextAnchor = shiftLocalDate(weekAnchor, days);
     const nextSelectedDate = shiftLocalDate(selectedDate, days);
 
-    if (nextAnchor && nextSelectedDate) {
-      setWeekAnchor(nextAnchor);
+    if (nextSelectedDate) {
+      setSelectedDate(nextSelectedDate);
+    }
+  };
+
+  const moveMonth = (amount: number) => {
+    const nextSelectedDate = shiftMonth(selectedDate, amount);
+
+    if (nextSelectedDate) {
       setSelectedDate(nextSelectedDate);
     }
   };
 
   const moveToToday = () => {
-    setWeekAnchor(today);
     setSelectedDate(today);
   };
 
@@ -40,94 +50,80 @@ export function WeekCalendar() {
           CALENDAR
         </AppText>
         <AppText variant="title" weight="heavy">
-          주간 계획
+          {mode === 'week' ? '주간 계획' : '월간 계획'}
         </AppText>
-        <AppText tone="secondary">한 주를 넘겨보며 실행할 날짜를 골라보세요.</AppText>
+        <AppText tone="secondary">
+          {mode === 'week'
+            ? '한 주를 넘겨보며 실행할 날짜를 골라보세요.'
+            : '한 달의 흐름을 살펴보고 확인할 날짜를 골라보세요.'}
+        </AppText>
+      </View>
+
+      <View accessibilityRole="tablist" style={styles.modeSwitch}>
+        <Button
+          accessibilityRole="tab"
+          accessibilityState={{ selected: mode === 'week' }}
+          variant={mode === 'week' ? 'secondary' : 'ghost'}
+          onPress={() => setMode('week')}
+          style={styles.modeButton}
+        >
+          주간
+        </Button>
+        <Button
+          accessibilityRole="tab"
+          accessibilityState={{ selected: mode === 'month' }}
+          variant={mode === 'month' ? 'secondary' : 'ghost'}
+          onPress={() => setMode('month')}
+          style={styles.modeButton}
+        >
+          월간
+        </Button>
       </View>
 
       <Card padded={false} style={styles.calendarCard}>
         <View style={styles.calendarHeading}>
           <View style={styles.calendarHeadingCopy}>
             <AppText variant="bodyLarge" weight="bold">
-              {getWeekRangeLabel(weekDates)}
+              {mode === 'week'
+                ? getWeekRangeLabel(weekDates)
+                : formatDateLabel(selectedDate, { year: 'numeric', month: 'long' })}
             </AppText>
             <AppText tone="secondary" variant="caption">
-              월요일부터 일요일까지
+              {mode === 'week' ? '월요일부터 일요일까지' : '월요일 시작 · 날짜를 눌러 상세 보기'}
             </AppText>
           </View>
-          {weekDates.includes(today) ? (
+          {showsToday ? (
             <View style={[styles.todayBadge, { backgroundColor: theme.colors.primarySoft }]}>
               <AppText tone="primary" variant="caption" weight="bold">
-                이번 주
+                {mode === 'week' ? '이번 주' : '이번 달'}
               </AppText>
             </View>
           ) : null}
         </View>
 
-        <View style={styles.weekRow}>
-          {weekDates.map((date, index) => {
-            const selected = date === selectedDate;
-            const isToday = date === today;
-
-            return (
-              <Pressable
-                accessibilityLabel={`${formatDateLabel(date, {
-                  month: 'long',
-                  day: 'numeric',
-                  weekday: 'long',
-                })}${isToday ? ', 오늘' : ''}`}
-                accessibilityRole="button"
-                accessibilityState={{ selected }}
-                key={date}
-                onPress={() => setSelectedDate(date)}
-                style={({ pressed }) => [
-                  styles.dayButton,
-                  {
-                    backgroundColor: selected
-                      ? theme.colors.primary
-                      : pressed
-                        ? theme.colors.primarySoft
-                        : 'transparent',
-                  },
-                ]}
-              >
-                <AppText
-                  align="center"
-                  tone={selected ? 'default' : index >= 5 ? 'muted' : 'secondary'}
-                  variant="caption"
-                  weight="semibold"
-                  style={selected ? { color: theme.colors.textOnPrimary } : undefined}
-                >
-                  {weekdayLabels[index]}
-                </AppText>
-                <AppText
-                  align="center"
-                  variant="bodyLarge"
-                  weight={selected || isToday ? 'heavy' : 'semibold'}
-                  style={selected ? { color: theme.colors.textOnPrimary } : undefined}
-                >
-                  {Number(date.slice(-2))}
-                </AppText>
-                <View
-                  style={[
-                    styles.todayDot,
-                    {
-                      backgroundColor: isToday
-                        ? selected
-                          ? theme.colors.textOnPrimary
-                          : theme.colors.primary
-                        : 'transparent',
-                    },
-                  ]}
-                />
-              </Pressable>
-            );
-          })}
-        </View>
+        {mode === 'week' ? (
+          <WeekDateRow
+            dates={weekDates}
+            selectedDate={selectedDate}
+            today={today}
+            onSelect={setSelectedDate}
+          />
+        ) : (
+          <MonthDateGrid
+            dates={monthDates}
+            selectedDate={selectedDate}
+            today={today}
+            onSelect={setSelectedDate}
+          />
+        )}
 
         <View style={[styles.navigation, { borderTopColor: theme.colors.border }]}>
-          <Button variant="ghost" onPress={() => moveWeek(-7)} style={styles.navigationButton}>
-            ← 이전 주
+          <Button
+            variant="ghost"
+            onPress={() => (mode === 'week' ? moveWeek(-7) : moveMonth(-1))}
+            style={styles.navigationButton}
+          >
+            ← 이전 {mode === 'week' ? '주' : '달'}
           </Button>
           <Button
             disabled={selectedDate === today}
@@ -137,14 +133,164 @@ export function WeekCalendar() {
           >
             오늘
           </Button>
-          <Button variant="ghost" onPress={() => moveWeek(7)} style={styles.navigationButton}>
-            다음 주 →
+          <Button
+            variant="ghost"
+            onPress={() => (mode === 'week' ? moveWeek(7) : moveMonth(1))}
+            style={styles.navigationButton}
+          >
+            다음 {mode === 'week' ? '주' : '달'} →
           </Button>
         </View>
       </Card>
 
       <CalendarDayTasks date={selectedDate} />
     </Screen>
+  );
+}
+
+type DatePickerProps = {
+  dates: LocalDateString[];
+  selectedDate: LocalDateString;
+  today: LocalDateString;
+  onSelect: (date: LocalDateString) => void;
+};
+
+function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) {
+  const theme = useAppTheme();
+
+  return (
+    <View style={styles.weekRow}>
+      {dates.map((date, index) => (
+        <CalendarDateButton
+          date={date}
+          isCurrentMonth
+          isToday={date === today}
+          key={date}
+          selected={date === selectedDate}
+          weekdayLabel={weekdayLabels[index]}
+          onPress={() => onSelect(date)}
+          style={styles.weekDayButton}
+          theme={theme}
+        />
+      ))}
+    </View>
+  );
+}
+
+function MonthDateGrid({ dates, selectedDate, today, onSelect }: DatePickerProps) {
+  const theme = useAppTheme();
+  const selectedMonth = selectedDate.slice(0, 7);
+
+  return (
+    <View>
+      <View style={styles.monthWeekdays}>
+        {weekdayLabels.map((label, index) => (
+          <AppText
+            align="center"
+            key={label}
+            tone={index >= 5 ? 'muted' : 'secondary'}
+            variant="caption"
+            weight="semibold"
+            style={styles.monthWeekday}
+          >
+            {label}
+          </AppText>
+        ))}
+      </View>
+      <View style={styles.monthGrid}>
+        {dates.map((date) => (
+          <CalendarDateButton
+            date={date}
+            isCurrentMonth={date.startsWith(selectedMonth)}
+            isToday={date === today}
+            key={date}
+            selected={date === selectedDate}
+            onPress={() => onSelect(date)}
+            style={styles.monthDayButton}
+            theme={theme}
+          />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+type CalendarDateButtonProps = {
+  date: LocalDateString;
+  selected: boolean;
+  isToday: boolean;
+  isCurrentMonth: boolean;
+  weekdayLabel?: string;
+  onPress: () => void;
+  style: typeof styles.weekDayButton | typeof styles.monthDayButton;
+  theme: ReturnType<typeof useAppTheme>;
+};
+
+function CalendarDateButton({
+  date,
+  selected,
+  isToday,
+  isCurrentMonth,
+  weekdayLabel,
+  onPress,
+  style,
+  theme,
+}: CalendarDateButtonProps) {
+  return (
+    <Pressable
+      accessibilityLabel={`${formatDateLabel(date, {
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+      })}${isToday ? ', 오늘' : ''}`}
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.dayButton,
+        style,
+        {
+          backgroundColor: selected
+            ? theme.colors.primary
+            : pressed
+              ? theme.colors.primarySoft
+              : 'transparent',
+        },
+      ]}
+    >
+      {weekdayLabel ? (
+        <AppText
+          align="center"
+          tone={selected ? 'default' : 'secondary'}
+          variant="caption"
+          weight="semibold"
+          style={selected ? { color: theme.colors.textOnPrimary } : undefined}
+        >
+          {weekdayLabel}
+        </AppText>
+      ) : null}
+      <AppText
+        align="center"
+        tone={!selected && !isCurrentMonth ? 'muted' : 'default'}
+        variant={weekdayLabel ? 'bodyLarge' : 'label'}
+        weight={selected || isToday ? 'heavy' : 'semibold'}
+        style={selected ? { color: theme.colors.textOnPrimary } : undefined}
+      >
+        {Number(date.slice(-2))}
+      </AppText>
+      <View
+        style={[
+          styles.todayDot,
+          {
+            backgroundColor: isToday
+              ? selected
+                ? theme.colors.textOnPrimary
+                : theme.colors.primary
+              : 'transparent',
+          },
+        ]}
+      />
+    </Pressable>
   );
 }
 
@@ -179,6 +325,14 @@ const styles = StyleSheet.create({
   header: {
     gap: spacing[2],
   },
+  modeSwitch: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing[1],
+  },
+  modeButton: {
+    minWidth: 80,
+  },
   calendarCard: {
     overflow: 'hidden',
   },
@@ -207,12 +361,33 @@ const styles = StyleSheet.create({
   dayButton: {
     alignItems: 'center',
     borderRadius: radii.md,
-    flex: 1,
     gap: spacing[1],
     justifyContent: 'center',
-    minHeight: 76,
     minWidth: 0,
+  },
+  weekDayButton: {
+    flex: 1,
+    minHeight: 76,
     paddingVertical: spacing[2],
+  },
+  monthWeekdays: {
+    flexDirection: 'row',
+    paddingHorizontal: spacing[2],
+    paddingTop: spacing[4],
+  },
+  monthWeekday: {
+    width: '14.285714%',
+  },
+  monthGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[2],
+  },
+  monthDayButton: {
+    minHeight: 48,
+    paddingVertical: spacing[1],
+    width: '14.285714%',
   },
   todayDot: {
     borderRadius: radii.full,
