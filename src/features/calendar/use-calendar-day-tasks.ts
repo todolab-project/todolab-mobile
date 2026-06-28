@@ -1,18 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 
-import { taskApi, taskQueryKeys } from '@/features/tasks';
+import { taskApi } from '@/features/tasks';
 import type { LocalDateString } from '@/types';
+
+import { getCalendarDayQueryKeys } from './calendar-day-query';
 
 export function useCalendarDayTasks(date: LocalDateString) {
   const canFetch = Platform.OS !== 'web' || typeof window !== 'undefined';
+  const queryKeys = getCalendarDayQueryKeys(date);
   const scheduledQuery = useQuery({
-    queryKey: taskQueryKeys.today(date),
+    queryKey: queryKeys.scheduled,
     queryFn: ({ signal }) => taskApi.getToday(date, signal),
     enabled: canFetch,
   });
   const doneQuery = useQuery({
-    queryKey: taskQueryKeys.done(date),
+    queryKey: queryKeys.done,
     queryFn: ({ signal }) => taskApi.getDone(date, signal),
     enabled: canFetch,
   });
