@@ -49,6 +49,7 @@ export function TaskForm({
   const message = validationMessage ?? errorMessage;
   const titleLength = values.title.trim().length;
   const canSubmit = titleLength > 0 && !isSubmitting;
+  const canSetAllDay = Boolean(initialTask?.startAt);
 
   const selectedType = useMemo(
     () => taskTypes.find((type) => type.value === values.type) ?? taskTypes[0],
@@ -75,7 +76,7 @@ export function TaskForm({
       description: description || null,
       category: category || null,
       type: values.type,
-      allDay: values.allDay,
+      allDay: canSetAllDay && values.allDay,
       startAt: initialTask?.startAt ?? null,
       endAt: initialTask?.endAt ?? null,
     });
@@ -188,26 +189,28 @@ export function TaskForm({
           </AppText>
         </View>
 
-        <View style={styles.field}>
-          <View style={styles.switchRow}>
-            <View style={styles.switchCopy}>
-              <AppText variant="label" weight="bold">
-                종일 항목
-              </AppText>
-              <AppText tone="secondary" variant="caption">
-                시간 선택 없이 하루 단위로 관리해요.
-              </AppText>
+        {canSetAllDay ? (
+          <View style={styles.field}>
+            <View style={styles.switchRow}>
+              <View style={styles.switchCopy}>
+                <AppText variant="label" weight="bold">
+                  종일 항목
+                </AppText>
+                <AppText tone="secondary" variant="caption">
+                  시간 선택 없이 하루 단위로 관리해요.
+                </AppText>
+              </View>
+              <Switch
+                accessibilityLabel="종일 항목 여부"
+                disabled={isSubmitting}
+                onValueChange={(value) => updateField('allDay', value)}
+                thumbColor={values.allDay ? theme.colors.primary : theme.colors.surface}
+                trackColor={{ false: theme.colors.borderStrong, true: theme.colors.primarySoft }}
+                value={values.allDay}
+              />
             </View>
-            <Switch
-              accessibilityLabel="종일 항목 여부"
-              disabled={isSubmitting}
-              onValueChange={(value) => updateField('allDay', value)}
-              thumbColor={values.allDay ? theme.colors.primary : theme.colors.surface}
-              trackColor={{ false: theme.colors.borderStrong, true: theme.colors.primarySoft }}
-              value={values.allDay}
-            />
           </View>
-        </View>
+        ) : null}
 
         <View style={styles.field}>
           <View style={styles.labelRow}>
