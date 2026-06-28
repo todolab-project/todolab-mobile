@@ -31,7 +31,9 @@ export function useTodayOverview(date: LocalDateString) {
     queryFn: ({ signal }) => taskApi.getInbox(signal),
     enabled: canFetch,
   });
-  const queries = [todayQuery, recommendationsQuery, doneQuery, staleQuery, inboxQuery];
+  const coreQueries = [todayQuery, doneQuery, inboxQuery];
+  const supplementalQueries = [staleQuery, recommendationsQuery];
+  const queries = [...coreQueries, ...supplementalQueries];
 
   return {
     todayTasks: todayQuery.data ?? [],
@@ -39,9 +41,10 @@ export function useTodayOverview(date: LocalDateString) {
     doneTasks: doneQuery.data ?? [],
     staleTasks: staleQuery.data ?? [],
     inboxTasks: inboxQuery.data ?? [],
-    isPending: queries.some((query) => query.isPending),
+    isPending: coreQueries.some((query) => query.isPending),
     isRefreshing: queries.some((query) => query.isFetching),
-    error: queries.find((query) => query.error)?.error ?? null,
+    error: coreQueries.find((query) => query.error)?.error ?? null,
+    supplementalError: supplementalQueries.find((query) => query.error)?.error ?? null,
     refetch: async () => {
       await Promise.all(queries.map((query) => query.refetch()));
     },

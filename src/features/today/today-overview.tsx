@@ -48,6 +48,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
     isPending,
     isRefreshing,
     error,
+    supplementalError,
     refetch,
   } = overview;
   const completeTask = useCompleteTask(date);
@@ -144,6 +145,30 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             {feedback.message}
           </AppText>
         </View>
+      ) : null}
+
+      {supplementalError ? (
+        <Card
+          style={[
+            styles.supplementalErrorCard,
+            {
+              backgroundColor: theme.colors.warningSoft,
+              borderColor: theme.colors.warning,
+            },
+          ]}
+        >
+          <View style={styles.supplementalErrorCopy}>
+            <AppText tone="warning" variant="label" weight="bold">
+              일부 정보를 불러오지 못했어요
+            </AppText>
+            <AppText tone="secondary" variant="caption">
+              오늘 계획은 계속 사용할 수 있어요. {supplementalError.message}
+            </AppText>
+          </View>
+          <Button variant="ghost" onPress={() => void refetch()}>
+            다시 시도
+          </Button>
+        </Card>
       ) : null}
 
       <Card style={styles.summaryCard}>
@@ -1066,6 +1091,15 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   errorCopy: {
+    gap: spacing[1],
+  },
+  supplementalErrorCard: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[3],
+  },
+  supplementalErrorCopy: {
+    flex: 1,
     gap: spacing[1],
   },
   summaryCard: {
