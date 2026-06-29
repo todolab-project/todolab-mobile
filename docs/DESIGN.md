@@ -320,6 +320,7 @@ Don't:
 - mobile 화면에 desktop table이나 과밀한 calendar cell을 축소해 넣지 않는다.
 - 새로운 색상, radius, spacing 값을 화면 안에 임의로 추가하지 않는다.
 - 완료 경험을 confetti, streak, 점수 등으로 과도하게 게임화하지 않는다.
+- 완료 요약은 완료한 일 수와 기록이 있는 날 정도만 보여주며, 순위·최고 기록·실패 평가를 만들지 않는다.
 
 ## 15. Known Gaps
 

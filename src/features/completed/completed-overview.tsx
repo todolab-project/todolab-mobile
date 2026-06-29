@@ -8,6 +8,7 @@ import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
+import { getCompletedSummary } from './completed-summary';
 import { useCompletedWeek } from './use-completed-week';
 
 export function CompletedOverview() {
@@ -17,7 +18,7 @@ export function CompletedOverview() {
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
   const week = useCompletedWeek(selectedDate);
   const selectedDay = week.days.find((day) => day.date === selectedDate) ?? week.days[0];
-  const weekTotal = week.days.reduce((total, day) => total + day.tasks.length, 0);
+  const summary = getCompletedSummary(week.days);
   const moveWeek = (days: number) => {
     const nextDate = shiftLocalDate(selectedDate, days);
     if (nextDate) setSelectedDate(nextDate);
@@ -49,7 +50,7 @@ export function CompletedOverview() {
                 : '이번 주'}
             </AppText>
             <AppText tone="secondary" variant="caption" weight="semibold">
-              이번 주 완료 {weekTotal}개
+              날짜를 눌러 완료 기록 보기
             </AppText>
           </View>
           <Button
@@ -116,35 +117,69 @@ export function CompletedOverview() {
             다시 시도
           </Button>
         </Card>
-      ) : selectedDay?.tasks.length ? (
-        <View style={styles.log}>
-          <View style={styles.logHeading}>
-            <AppText variant="bodyLarge" weight="bold">
-              {formatDateLabel(selectedDay.date)}
-            </AppText>
-            <AppText tone="secondary" variant="label" weight="semibold">
-              {selectedDay.tasks.length}개 완료
-            </AppText>
-          </View>
-          <View style={styles.tasks}>
-            {selectedDay.tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onOpen={() =>
-                  router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(task.id) } })
-                }
-              />
-            ))}
-          </View>
-        </View>
       ) : (
-        <Card>
-          <EmptyState
-            title="이날 완료한 일이 없어요"
-            description="비어 있는 날도 괜찮아요. 다른 날짜를 눌러 지나온 기록을 확인해 보세요."
-          />
-        </Card>
+        <>
+          <Card variant="muted" style={styles.summaryCard}>
+            <View style={styles.titleBlock}>
+              <AppText variant="bodyLarge" weight="bold">
+                이번 주의 기록
+              </AppText>
+              <AppText tone="secondary">{summary.message}</AppText>
+            </View>
+            <View style={styles.summaryStats}>
+              <View style={styles.summaryStat}>
+                <AppText variant="title" weight="heavy">
+                  {summary.total}
+                </AppText>
+                <AppText tone="secondary" variant="caption" weight="semibold">
+                  완료한 일
+                </AppText>
+              </View>
+              <View style={styles.summaryStat}>
+                <AppText variant="title" weight="heavy">
+                  {summary.activeDays}
+                </AppText>
+                <AppText tone="secondary" variant="caption" weight="semibold">
+                  기록이 있는 날
+                </AppText>
+              </View>
+            </View>
+          </Card>
+
+          {selectedDay?.tasks.length ? (
+            <View style={styles.log}>
+              <View style={styles.logHeading}>
+                <AppText variant="bodyLarge" weight="bold">
+                  {formatDateLabel(selectedDay.date)}
+                </AppText>
+                <AppText tone="secondary" variant="label" weight="semibold">
+                  {selectedDay.tasks.length}개 완료
+                </AppText>
+              </View>
+              <View style={styles.tasks}>
+                {selectedDay.tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onOpen={() =>
+                      router.push({
+                        pathname: '/tasks/[taskId]',
+                        params: { taskId: String(task.id) },
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            </View>
+          ) : (
+            <Card>
+              <EmptyState
+                title="이날 완료한 일이 없어요"
+                description="비어 있는 날도 괜찮아요. 다른 날짜를 눌러 지나온 기록을 확인해 보세요."
+              />
+            </Card>
+          )}
+        </>
       )}
     </Screen>
   );
@@ -206,6 +241,17 @@ const styles = StyleSheet.create({
   },
   errorCard: {
     gap: spacing[4],
+  },
+  summaryCard: {
+    gap: spacing[4],
+  },
+  summaryStats: {
+    flexDirection: 'row',
+    gap: spacing[3],
+  },
+  summaryStat: {
+    flex: 1,
+    gap: spacing[1],
   },
   log: {
     gap: spacing[3],
