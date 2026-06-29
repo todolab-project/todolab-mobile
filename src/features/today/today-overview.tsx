@@ -65,6 +65,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const [confirmingDeleteTaskId, setConfirmingDeleteTaskId] = useState<number | null>(null);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const loadGuidance = getTodayLoadGuidance(executionTasks.length, scheduleTasks.length);
+  const plannedTaskCount = todayTasks.length + doneTasks.length;
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
@@ -250,16 +251,18 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         </Card>
       ) : null}
 
-      <Card style={styles.summaryCard}>
-        <SummaryItem label="오늘 계획" value={todayTasks.length} />
-        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
-        <SummaryItem label="미완료" value={staleTasks.length} tone="warning" />
-        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
-        <SummaryItem label="추천" value={recommendations.length} tone="primary" />
-        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
-        <SummaryItem label="기록함" value={inboxTasks.length} />
-        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
-        <SummaryItem label="완료" value={doneTasks.length} tone="success" />
+      <Card
+        accessible
+        accessibilityLabel={`오늘 진행 요약. 완료 ${doneTasks.length}개, 전체 ${plannedTaskCount}개, 지난 미완료 ${staleTasks.length}개, 추천 ${recommendations.length}개, 기록함 ${inboxTasks.length}개`}
+        variant="muted"
+        style={styles.progressSummaryCard}
+      >
+        <AppText variant="label" weight="bold">
+          완료 {doneTasks.length}/{plannedTaskCount}
+        </AppText>
+        <AppText numberOfLines={1} tone="secondary" variant="caption" style={styles.progressMeta}>
+          미완료 {staleTasks.length} · 추천 {recommendations.length} · 기록함 {inboxTasks.length}
+        </AppText>
       </Card>
 
       {loadGuidance ? (
@@ -891,25 +894,6 @@ function getScheduleTimeLabel(task: TaskResponse) {
   return task.endAt ? `${start}–${formatTimeLabel(task.endAt)}` : start;
 }
 
-type SummaryItemProps = {
-  label: string;
-  value: number;
-  tone?: 'default' | 'primary' | 'success' | 'warning';
-};
-
-function SummaryItem({ label, value, tone = 'default' }: SummaryItemProps) {
-  return (
-    <View accessible accessibilityLabel={`${label} ${value}개`} style={styles.summaryItem}>
-      <AppText tone={tone} variant="title" weight="heavy">
-        {value}
-      </AppText>
-      <AppText tone="secondary" variant="caption" weight="semibold">
-        {label}
-      </AppText>
-    </View>
-  );
-}
-
 function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOverCount: number }) {
   const plannedLabel = task.plannedDate ? `계획일 ${task.plannedDate}` : '계획일 없음';
 
@@ -1084,22 +1068,18 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
   },
-  summaryCard: {
+  progressSummaryCard: {
     alignItems: 'center',
     borderRadius: radii.lg,
     flexDirection: 'row',
-    paddingHorizontal: spacing[2],
-  },
-  summaryItem: {
-    alignItems: 'center',
-    flex: 1,
-    gap: spacing[1],
-    paddingHorizontal: spacing[1],
+    gap: spacing[2],
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },
-  divider: {
-    height: 40,
-    width: 1,
+  progressMeta: {
+    flex: 1,
+    minWidth: 0,
   },
   taskSection: {
     gap: spacing[3],
