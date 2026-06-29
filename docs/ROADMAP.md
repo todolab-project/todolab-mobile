@@ -499,6 +499,7 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 - 하단 탭은 Today, Calendar, D-Day, More 네 개를 유지한다.
 - 인증 UI는 백엔드 인증 계약이 정해진 뒤 구현한다.
 - 초기 개발은 현재 API 기능을 기준으로 하되 API URL과 mock을 교체할 수 있게 만든다.
+- 로컬 UI 개발은 `EXPO_PUBLIC_API_MODE=mock`으로 더미 데이터를 사용하고, 백엔드 연동 테스트는 `EXPO_PUBLIC_API_MODE=real`과 `EXPO_PUBLIC_API_URL`로 실제 서버를 사용한다.
 - 자연어 빠른 입력, 검색, 하위 작업, 주간 리포트는 핵심 모바일 흐름 이후에 진행한다.
 - 네이티브 알림은 MVP 데이터 흐름이 안정된 뒤 추가한다.
 

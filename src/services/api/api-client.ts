@@ -1,6 +1,7 @@
-import { requireApiUrl } from '@/config';
+import { env, requireApiUrl } from '@/config';
 
 import { ApiClientError } from './api-error';
+import { mockApiClient } from './mock-api-client';
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
@@ -184,7 +185,7 @@ export async function request<T>(path: string, options: ApiRequestOptions = {}) 
   }
 }
 
-export const apiClient = {
+const realApiClient = {
   get<T>(path: string, options?: Omit<ApiRequestOptions, 'body' | 'method'>) {
     return request<T>(path, { ...options, method: 'GET' });
   },
@@ -201,3 +202,5 @@ export const apiClient = {
     return request<T>(path, { ...options, method: 'DELETE' });
   },
 };
+
+export const apiClient = env.apiMode === 'mock' ? mockApiClient : realApiClient;
