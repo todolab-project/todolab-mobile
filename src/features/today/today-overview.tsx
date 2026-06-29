@@ -51,6 +51,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const reopenTask = useReopenTask(date);
   const reorderTodayTask = useReorderTodayTask(date);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+  const [isCompletedExpanded, setIsCompletedExpanded] = useState(false);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const loadGuidance = getTodayLoadGuidance(executionTasks.length, scheduleTasks.length);
   const plannedTaskCount = todayTasks.length + doneTasks.length;
@@ -493,16 +494,25 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             <AppText variant="bodyLarge" weight="bold">
               오늘 완료한 일
             </AppText>
-            <AppText tone="secondary" variant="label">
-              끝낸 일을 확인하며 하루의 흐름을 돌아봐요.
-            </AppText>
           </View>
-          <AppText tone="success" variant="label" weight="bold">
-            {doneTasks.length}개
-          </AppText>
+          <View style={styles.completedSectionActions}>
+            <AppText tone="success" variant="label" weight="bold">
+              {doneTasks.length}개
+            </AppText>
+            {doneTasks.length > 0 ? (
+              <Button
+                accessibilityLabel={`완료한 일 목록 ${isCompletedExpanded ? '접기' : '펼치기'}`}
+                variant="ghost"
+                onPress={() => setIsCompletedExpanded((current) => !current)}
+                style={styles.completedToggleButton}
+              >
+                {isCompletedExpanded ? '접기' : '펼치기'}
+              </Button>
+            ) : null}
+          </View>
         </View>
 
-        {reopenTask.error ? (
+        {isCompletedExpanded && reopenTask.error ? (
           <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
             <AppText tone="danger" variant="label">
               {reopenTask.error.message}
@@ -510,14 +520,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </View>
         ) : null}
 
-        {doneTasks.length === 0 ? (
-          <Card variant="muted">
-            <EmptyState
-              title="아직 완료한 일이 없어요"
-              description="작게 하나 끝내고 흐름을 만들어봐요."
-            />
-          </Card>
-        ) : (
+        {isCompletedExpanded && doneTasks.length > 0 ? (
           <View style={styles.taskList}>
             {doneTasks.map((task) => (
               <TaskCard
@@ -550,7 +553,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
               />
             ))}
           </View>
-        )}
+        ) : null}
       </View>
     </View>
   );
@@ -769,6 +772,14 @@ const styles = StyleSheet.create({
   taskSectionActions: {
     alignItems: 'flex-end',
     gap: spacing[1],
+  },
+  completedSectionActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  completedToggleButton: {
+    minWidth: 64,
   },
   refreshButton: {
     minWidth: 76,
