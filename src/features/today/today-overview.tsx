@@ -54,6 +54,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const loadGuidance = getTodayLoadGuidance(executionTasks.length, scheduleTasks.length);
   const plannedTaskCount = todayTasks.length + doneTasks.length;
+  const sortedScheduleTasks = [...scheduleTasks].sort(compareScheduleTasks);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
@@ -391,42 +392,36 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         </Card>
       ) : null}
 
-      <View style={styles.scheduleSection}>
-        <View style={styles.taskSectionHeading}>
-          <View style={styles.taskSectionCopy}>
-            <AppText variant="bodyLarge" weight="bold">
-              캘린더 일정
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              시간 약속을 먼저 훑고 실행할 일에 집중해요.
-            </AppText>
+      {sortedScheduleTasks.length > 0 ? (
+        <View style={styles.scheduleSection}>
+          <View style={styles.taskSectionHeading}>
+            <View style={styles.taskSectionCopy}>
+              <AppText variant="bodyLarge" weight="bold">
+                캘린더 일정
+              </AppText>
+              <AppText tone="secondary" variant="label">
+                시간순으로 약속만 짧게 확인해요.
+              </AppText>
+            </View>
+            <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
+              <AppText tone="secondary" variant="caption" weight="bold">
+                {sortedScheduleTasks.length}개
+              </AppText>
+            </View>
           </View>
-          <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
-            <AppText tone="secondary" variant="caption" weight="bold">
-              {scheduleTasks.length}개
-            </AppText>
-          </View>
-        </View>
 
-        {scheduleTasks.length === 0 ? (
-          <Card variant="muted" style={styles.scheduleEmptyCard}>
-            <AppText tone="secondary" variant="label">
-              오늘 예정된 일정이 없어요.
-            </AppText>
-          </Card>
-        ) : (
           <Card padded={false} style={styles.scheduleCard}>
-            {scheduleTasks.map((task, index) => (
+            {sortedScheduleTasks.map((task, index) => (
               <ScheduleItem
-                isLast={index === scheduleTasks.length - 1}
+                isLast={index === sortedScheduleTasks.length - 1}
                 key={task.id}
                 task={task}
                 onOpen={() => openTask(task.id)}
               />
             ))}
           </Card>
-        )}
-      </View>
+        </View>
+      ) : null}
 
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
@@ -613,6 +608,22 @@ function getScheduleTimeLabel(task: TaskResponse) {
   return task.endAt ? `${start}–${formatTimeLabel(task.endAt)}` : start;
 }
 
+function compareScheduleTasks(left: TaskResponse, right: TaskResponse) {
+  if (!left.startAt && !right.startAt) {
+    return left.id - right.id;
+  }
+
+  if (!left.startAt) {
+    return 1;
+  }
+
+  if (!right.startAt) {
+    return -1;
+  }
+
+  return left.startAt.localeCompare(right.startAt);
+}
+
 function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOverCount: number }) {
   const plannedLabel = task.plannedDate ? `계획일 ${task.plannedDate}` : '계획일 없음';
 
@@ -724,25 +735,21 @@ const styles = StyleSheet.create({
   scheduleCard: {
     overflow: 'hidden',
   },
-  scheduleEmptyCard: {
-    alignItems: 'center',
-    paddingVertical: spacing[3],
-  },
   scheduleItem: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing[3],
-    minHeight: 64,
+    gap: spacing[2],
+    minHeight: 52,
     paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
+    paddingVertical: spacing[1],
   },
   scheduleTime: {
     alignItems: 'center',
     borderRadius: radii.md,
     justifyContent: 'center',
-    minHeight: 40,
+    minHeight: 36,
     paddingHorizontal: spacing[2],
-    width: 96,
+    width: 72,
   },
   scheduleCopy: {
     flex: 1,
