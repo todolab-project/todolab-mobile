@@ -380,7 +380,7 @@ type ApiResponse<T> = {
 - [x] 빠른 기록 카드를 한 줄 composer 또는 하단 고정 추가 버튼으로 축소
 - [x] Today 실행 Task를 header 바로 다음의 최우선 content로 이동
 - [x] `오늘의 흐름` 중복 제목과 5분할 요약 카드 제거 또는 한 줄 진행 요약으로 축소
-- [ ] 지난 미완료와 추천을 badge가 있는 compact entry 또는 sheet 진입점으로 변경
+- [x] 지난 미완료와 추천을 badge가 있는 compact entry 또는 sheet 진입점으로 변경
 - [ ] 일정이 없으면 일정 section을 숨기고, 있으면 시간순 compact list로 표시
 - [ ] 완료 section은 기본 접힘 상태로 두고 완료 수와 펼치기 행동만 표시
 - [ ] Task card의 최소 높이, 내부 padding, accent와 metadata 밀도 재검토
@@ -505,6 +505,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 지난 미완료와 추천 compact entry 정리다. 지난 미완료와 추천이 실행 목록을 밀어내지 않도록 badge가 있는 compact entry 또는 sheet 진입점으로 축소한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 일정 section 표시 규칙 정리다. 일정이 없으면 section을 숨기고, 있으면 시간순 compact list로 표시해 실행 목록 이후 흐름을 가볍게 유지한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

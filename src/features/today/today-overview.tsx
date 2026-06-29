@@ -5,19 +5,14 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import {
   TaskCard,
-  useClearDeferReason,
   useCompleteTask,
-  useDeleteTask,
-  useMoveTaskToInbox,
   useMoveTaskToToday,
   useReopenTask,
   useReorderTodayTask,
-  useSetDeferReason,
 } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { DeferReason, LocalDateString, TaskResponse } from '@/types';
-import { deferReasonLabels } from '@/types';
-import { formatTimeLabel, shiftLocalDate } from '@/utils';
+import type { LocalDateString, TaskResponse } from '@/types';
+import { formatTimeLabel } from '@/utils';
 
 import {
   getTodayLoadGuidance,
@@ -53,16 +48,9 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   } = overview;
   const completeTask = useCompleteTask(date);
   const moveToToday = useMoveTaskToToday(date);
-  const tomorrow = shiftLocalDate(date, 1) ?? date;
-  const moveToTomorrow = useMoveTaskToToday(tomorrow);
-  const moveToInbox = useMoveTaskToInbox();
   const reopenTask = useReopenTask(date);
   const reorderTodayTask = useReorderTodayTask(date);
-  const deleteTask = useDeleteTask();
-  const setDeferReason = useSetDeferReason();
-  const clearDeferReason = useClearDeferReason();
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
-  const [confirmingDeleteTaskId, setConfirmingDeleteTaskId] = useState<number | null>(null);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const loadGuidance = getTodayLoadGuidance(executionTasks.length, scheduleTasks.length);
   const plannedTaskCount = todayTasks.length + doneTasks.length;
@@ -314,305 +302,39 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       ) : null}
 
       {staleTasks.length > 0 ? (
-        <Card style={styles.staleCard}>
-          <View style={styles.taskSectionHeading}>
-            <View style={styles.taskSectionCopy}>
-              <AppText variant="bodyLarge" weight="bold">
-                지난 미완료 정리
+        <Card style={styles.compactEntryCard}>
+          <View style={styles.compactEntryCopy}>
+            <View style={styles.compactEntryTitleRow}>
+              <AppText variant="label" weight="bold">
+                지난 미완료
               </AppText>
-              <AppText tone="secondary" variant="label">
-                자동으로 오늘에 쌓지 않고, 다시 할지 직접 판단해요.
-              </AppText>
-            </View>
-            <View style={[styles.countPill, { backgroundColor: theme.colors.warningSoft }]}>
-              <AppText tone="warning" variant="caption" weight="bold">
-                {staleTasks.length}개
-              </AppText>
-            </View>
-          </View>
-
-          {completeTask.error ||
-          clearDeferReason.error ||
-          deleteTask.error ||
-          moveToInbox.error ||
-          moveToToday.error ||
-          moveToTomorrow.error ||
-          setDeferReason.error ? (
-            <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-              <AppText tone="danger" variant="label">
-                {completeTask.error?.message ??
-                  clearDeferReason.error?.message ??
-                  deleteTask.error?.message ??
-                  moveToInbox.error?.message ??
-                  moveToToday.error?.message ??
-                  moveToTomorrow.error?.message ??
-                  setDeferReason.error?.message}
-              </AppText>
-            </View>
-          ) : null}
-
-          <View style={styles.stalePreviewList}>
-            {staleTasks.slice(0, 3).map((task) => (
-              <View key={task.id} style={styles.staleItem}>
-                <Pressable
-                  accessibilityLabel={`${task.title} 상세 보기`}
-                  accessibilityRole="button"
-                  onPress={() => openTask(task.id)}
-                  style={({ pressed }) => [
-                    styles.stalePreview,
-                    {
-                      backgroundColor: pressed
-                        ? theme.colors.warningSoft
-                        : theme.colors.surfaceMuted,
-                    },
-                  ]}
-                >
-                  <View style={styles.stalePreviewCopy}>
-                    <AppText numberOfLines={1} variant="label" weight="bold">
-                      {task.title}
-                    </AppText>
-                    <AppText tone="secondary" variant="caption">
-                      {getStaleTaskMeta(task)}
-                    </AppText>
-                  </View>
-                  <View style={styles.stalePreviewBadges}>
-                    {task.carryOverCount > 0 ? (
-                      <View
-                        style={[styles.countPill, { backgroundColor: theme.colors.warningSoft }]}
-                      >
-                        <AppText tone="warning" variant="caption" weight="bold">
-                          이월 {task.carryOverCount}회
-                        </AppText>
-                      </View>
-                    ) : null}
-                    <AppText tone="warning" variant="caption" weight="bold">
-                      판단 필요
-                    </AppText>
-                  </View>
-                </Pressable>
-
-                <View style={styles.deferBlock}>
-                  <View style={styles.deferHeading}>
-                    <AppText variant="caption" weight="bold">
-                      미룬 이유
-                    </AppText>
-                    <AppText tone={task.deferReason ? 'warning' : 'muted'} variant="caption">
-                      {task.deferReasonLabel ?? '아직 선택하지 않았어요'}
-                    </AppText>
-                  </View>
-                  <View style={styles.deferReasonGrid}>
-                    {deferReasonOptions.map((reason) => {
-                      const selected = task.deferReason === reason;
-
-                      return (
-                        <Button
-                          disabled={isDeferReasonPending({
-                            taskId: task.id,
-                            clearDeferReason,
-                            setDeferReason,
-                          })}
-                          key={reason}
-                          loading={
-                            setDeferReason.isPending &&
-                            setDeferReason.variables?.taskId === task.id &&
-                            setDeferReason.variables.reason === reason
-                          }
-                          variant={selected ? 'secondary' : 'ghost'}
-                          onPress={() =>
-                            setDeferReason.mutate(
-                              { taskId: task.id, reason },
-                              {
-                                onSuccess: () =>
-                                  showFeedback(
-                                    `미룬 이유를 '${deferReasonLabels[reason]}'로 저장했어요.`,
-                                  ),
-                              },
-                            )
-                          }
-                          style={styles.deferReasonButton}
-                        >
-                          {deferReasonLabels[reason]}
-                        </Button>
-                      );
-                    })}
-                    {task.deferReason ? (
-                      <Button
-                        disabled={isDeferReasonPending({
-                          taskId: task.id,
-                          clearDeferReason,
-                          setDeferReason,
-                        })}
-                        loading={
-                          clearDeferReason.isPending && clearDeferReason.variables === task.id
-                        }
-                        variant="ghost"
-                        onPress={() =>
-                          clearDeferReason.mutate(task.id, {
-                            onSuccess: () => showFeedback('미룬 이유를 지웠어요.'),
-                          })
-                        }
-                        style={styles.deferReasonButton}
-                      >
-                        이유 지우기
-                      </Button>
-                    ) : null}
-                  </View>
-                </View>
-
-                <View style={styles.staleActionGrid}>
-                  <Button
-                    disabled={isStaleActionPending({
-                      taskId: task.id,
-                      completeTask,
-                      deleteTask,
-                      moveToInbox,
-                      moveToToday,
-                      moveToTomorrow,
-                    })}
-                    loading={moveToToday.isPending && moveToToday.variables === task.id}
-                    variant="secondary"
-                    onPress={() =>
-                      moveToToday.mutate(task.id, {
-                        onSuccess: () => showFeedback('지난 미완료를 오늘 할 일로 옮겼어요.'),
-                      })
-                    }
-                    style={styles.staleActionButton}
-                  >
-                    오늘
-                  </Button>
-                  <Button
-                    disabled={isStaleActionPending({
-                      taskId: task.id,
-                      completeTask,
-                      deleteTask,
-                      moveToInbox,
-                      moveToToday,
-                      moveToTomorrow,
-                    })}
-                    loading={moveToTomorrow.isPending && moveToTomorrow.variables === task.id}
-                    variant="secondary"
-                    onPress={() =>
-                      moveToTomorrow.mutate(task.id, {
-                        onSuccess: () => showFeedback('지난 미완료를 내일 할 일로 옮겼어요.'),
-                      })
-                    }
-                    style={styles.staleActionButton}
-                  >
-                    내일
-                  </Button>
-                  <Button
-                    disabled={isStaleActionPending({
-                      taskId: task.id,
-                      completeTask,
-                      deleteTask,
-                      moveToInbox,
-                      moveToToday,
-                      moveToTomorrow,
-                    })}
-                    variant="ghost"
-                    onPress={() => openTask(task.id)}
-                    style={styles.staleActionButton}
-                  >
-                    날짜 변경
-                  </Button>
-                  <Button
-                    disabled={isStaleActionPending({
-                      taskId: task.id,
-                      completeTask,
-                      deleteTask,
-                      moveToInbox,
-                      moveToToday,
-                      moveToTomorrow,
-                    })}
-                    loading={moveToInbox.isPending && moveToInbox.variables === task.id}
-                    variant="ghost"
-                    onPress={() =>
-                      moveToInbox.mutate(task.id, {
-                        onSuccess: () => showFeedback('지난 미완료를 기록함으로 옮겼어요.'),
-                      })
-                    }
-                    style={styles.staleActionButton}
-                  >
-                    기록함
-                  </Button>
-                  <Button
-                    disabled={isStaleActionPending({
-                      taskId: task.id,
-                      completeTask,
-                      deleteTask,
-                      moveToInbox,
-                      moveToToday,
-                      moveToTomorrow,
-                    })}
-                    loading={completeTask.isPending && completeTask.variables === task.id}
-                    variant="ghost"
-                    onPress={() =>
-                      completeTask.mutate(task.id, {
-                        onSuccess: () => showFeedback('지난 미완료를 완료 처리했어요.'),
-                      })
-                    }
-                    style={styles.staleActionButton}
-                  >
-                    완료
-                  </Button>
-                  <Button
-                    disabled={deleteTask.isPending}
-                    loading={deleteTask.isPending && deleteTask.variables === task.id}
-                    variant={confirmingDeleteTaskId === task.id ? 'danger' : 'ghost'}
-                    onPress={() => {
-                      if (confirmingDeleteTaskId !== task.id) {
-                        setConfirmingDeleteTaskId(task.id);
-                        return;
-                      }
-
-                      deleteTask.mutate(task.id, {
-                        onSuccess: () => {
-                          setConfirmingDeleteTaskId(null);
-                          showFeedback('지난 미완료를 삭제했어요.');
-                        },
-                      });
-                    }}
-                    style={styles.staleActionButton}
-                  >
-                    {confirmingDeleteTaskId === task.id ? '삭제 확인' : '삭제'}
-                  </Button>
-                </View>
-
-                {confirmingDeleteTaskId === task.id ? (
-                  <AppText align="center" tone="danger" variant="caption">
-                    한 번 더 누르면 영구 삭제돼요.
-                  </AppText>
-                ) : null}
+              <View style={[styles.countPill, { backgroundColor: theme.colors.warningSoft }]}>
+                <AppText tone="warning" variant="caption" weight="bold">
+                  {staleTasks.length}개
+                </AppText>
               </View>
-            ))}
-          </View>
-
-          {staleTasks.length > 3 ? (
-            <AppText align="center" tone="secondary" variant="caption">
-              외 {staleTasks.length - 3}개는 상세 화면에서 이어서 판단할 수 있어요.
+            </View>
+            <AppText numberOfLines={1} tone="secondary" variant="caption">
+              {staleTasks[0].title} · {getStaleTaskMeta(staleTasks[0])}
             </AppText>
-          ) : null}
-        </Card>
-      ) : null}
-
-      {recommendations.length > 0 ? (
-        <Card style={styles.recommendationCard}>
-          <View style={styles.taskSectionHeading}>
-            <View style={styles.taskSectionCopy}>
-              <AppText variant="bodyLarge" weight="bold">
-                오늘의 추천
-              </AppText>
-              <AppText tone="secondary" variant="label">
-                오늘 해볼 만한 일을 가볍게 골라보세요.
-              </AppText>
-            </View>
-            <View style={[styles.countPill, { backgroundColor: theme.colors.primarySoft }]}>
-              <AppText tone="primary" variant="caption" weight="bold">
-                {recommendations.length}개
-              </AppText>
-            </View>
           </View>
-
+          <View style={styles.compactEntryActions}>
+            <Button variant="ghost" onPress={() => openTask(staleTasks[0].id)}>
+              보기
+            </Button>
+            <Button
+              loading={moveToToday.isPending && moveToToday.variables === staleTasks[0].id}
+              disabled={moveToToday.isPending}
+              variant="secondary"
+              onPress={() =>
+                moveToToday.mutate(staleTasks[0].id, {
+                  onSuccess: () => showFeedback('지난 미완료를 오늘 할 일로 옮겼어요.'),
+                })
+              }
+            >
+              오늘
+            </Button>
+          </View>
           {moveToToday.error ? (
             <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
               <AppText tone="danger" variant="label">
@@ -620,54 +342,51 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
               </AppText>
             </View>
           ) : null}
+        </Card>
+      ) : null}
 
-          <View style={styles.recommendationList}>
-            {recommendations.slice(0, 3).map((recommendation) => (
-              <View key={recommendation.task.id} style={styles.recommendationItem}>
-                <Pressable
-                  accessibilityLabel={`${recommendation.task.title} 상세 보기`}
-                  accessibilityRole="button"
-                  onPress={() => openTask(recommendation.task.id)}
-                  style={({ pressed }) => [
-                    styles.recommendationPreview,
-                    {
-                      backgroundColor: pressed
-                        ? theme.colors.primarySoft
-                        : theme.colors.surfaceMuted,
-                    },
-                  ]}
-                >
-                  <View style={styles.stalePreviewCopy}>
-                    <AppText numberOfLines={1} variant="label" weight="bold">
-                      {recommendation.task.title}
-                    </AppText>
-                    <AppText numberOfLines={2} tone="secondary" variant="caption">
-                      {recommendation.reason}
-                    </AppText>
-                  </View>
-                </Pressable>
-                <Button
-                  disabled={moveToToday.isPending}
-                  loading={
-                    moveToToday.isPending && moveToToday.variables === recommendation.task.id
-                  }
-                  variant="secondary"
-                  onPress={() =>
-                    moveToToday.mutate(recommendation.task.id, {
-                      onSuccess: () => showFeedback('추천 항목을 오늘 할 일로 추가했어요.'),
-                    })
-                  }
-                >
-                  Today 추가
-                </Button>
+      {recommendations.length > 0 ? (
+        <Card style={styles.compactEntryCard}>
+          <View style={styles.compactEntryCopy}>
+            <View style={styles.compactEntryTitleRow}>
+              <AppText variant="label" weight="bold">
+                오늘의 추천
+              </AppText>
+              <View style={[styles.countPill, { backgroundColor: theme.colors.primarySoft }]}>
+                <AppText tone="primary" variant="caption" weight="bold">
+                  {recommendations.length}개
+                </AppText>
               </View>
-            ))}
-          </View>
-
-          {recommendations.length > 3 ? (
-            <AppText align="center" tone="secondary" variant="caption">
-              외 {recommendations.length - 3}개 추천은 새로고침 후 이어서 확인할 수 있어요.
+            </View>
+            <AppText numberOfLines={1} tone="secondary" variant="caption">
+              {recommendations[0].task.title} · {recommendations[0].reason}
             </AppText>
+          </View>
+          <View style={styles.compactEntryActions}>
+            <Button variant="ghost" onPress={() => openTask(recommendations[0].task.id)}>
+              보기
+            </Button>
+            <Button
+              disabled={moveToToday.isPending}
+              loading={
+                moveToToday.isPending && moveToToday.variables === recommendations[0].task.id
+              }
+              variant="secondary"
+              onPress={() =>
+                moveToToday.mutate(recommendations[0].task.id, {
+                  onSuccess: () => showFeedback('추천 항목을 오늘 할 일로 추가했어요.'),
+                })
+              }
+            >
+              추가
+            </Button>
+          </View>
+          {moveToToday.error ? (
+            <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+              <AppText tone="danger" variant="label">
+                {moveToToday.error.message}
+              </AppText>
+            </View>
           ) : null}
         </Card>
       ) : null}
@@ -900,47 +619,6 @@ function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOver
   return plannedLabel;
 }
 
-const deferReasonOptions = Object.keys(deferReasonLabels) as DeferReason[];
-
-function isStaleActionPending({
-  taskId,
-  completeTask,
-  deleteTask,
-  moveToInbox,
-  moveToToday,
-  moveToTomorrow,
-}: {
-  taskId: number;
-  completeTask: ReturnType<typeof useCompleteTask>;
-  deleteTask: ReturnType<typeof useDeleteTask>;
-  moveToInbox: ReturnType<typeof useMoveTaskToInbox>;
-  moveToToday: ReturnType<typeof useMoveTaskToToday>;
-  moveToTomorrow: ReturnType<typeof useMoveTaskToToday>;
-}) {
-  return (
-    (completeTask.isPending && completeTask.variables === taskId) ||
-    (deleteTask.isPending && deleteTask.variables === taskId) ||
-    (moveToInbox.isPending && moveToInbox.variables === taskId) ||
-    (moveToToday.isPending && moveToToday.variables === taskId) ||
-    (moveToTomorrow.isPending && moveToTomorrow.variables === taskId)
-  );
-}
-
-function isDeferReasonPending({
-  taskId,
-  clearDeferReason,
-  setDeferReason,
-}: {
-  taskId: number;
-  clearDeferReason: ReturnType<typeof useClearDeferReason>;
-  setDeferReason: ReturnType<typeof useSetDeferReason>;
-}) {
-  return (
-    (clearDeferReason.isPending && clearDeferReason.variables === taskId) ||
-    (setDeferReason.isPending && setDeferReason.variables?.taskId === taskId)
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     gap: spacing[3],
@@ -973,78 +651,32 @@ const styles = StyleSheet.create({
     height: 6,
     maxWidth: 44,
   },
-  staleCard: {
-    gap: spacing[3],
-  },
-  recommendationCard: {
-    gap: spacing[3],
-  },
   countPill: {
     borderRadius: radii.full,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
   },
-  stalePreviewList: {
-    gap: spacing[2],
-  },
-  staleItem: {
-    gap: spacing[2],
-  },
-  stalePreview: {
+  compactEntryCard: {
     alignItems: 'center',
-    borderRadius: radii.md,
     flexDirection: 'row',
     gap: spacing[3],
     justifyContent: 'space-between',
-    paddingHorizontal: spacing[3],
+    paddingHorizontal: spacing[4],
     paddingVertical: spacing[3],
   },
-  stalePreviewCopy: {
+  compactEntryCopy: {
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
   },
-  recommendationList: {
-    gap: spacing[2],
-  },
-  recommendationItem: {
-    gap: spacing[2],
-  },
-  recommendationPreview: {
-    borderRadius: radii.md,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[3],
-  },
-  stalePreviewBadges: {
-    alignItems: 'flex-end',
-    gap: spacing[1],
-  },
-  deferBlock: {
-    gap: spacing[2],
-  },
-  deferHeading: {
+  compactEntryTitleRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[2],
-    justifyContent: 'space-between',
   },
-  deferReasonGrid: {
+  compactEntryActions: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: spacing[2],
-  },
-  deferReasonButton: {
-    flexGrow: 1,
-    minWidth: 112,
-  },
-  staleActionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing[2],
-  },
-  staleActionButton: {
-    flexGrow: 1,
-    minWidth: 88,
   },
   loadingCard: {
     alignItems: 'center',
