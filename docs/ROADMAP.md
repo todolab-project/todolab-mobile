@@ -370,9 +370,9 @@ type ApiResponse<T> = {
 - 날짜 없는 기록을 잃지 않고 주기적으로 정리할 수 있다.
 - 완료 기록을 날짜별로 확인할 수 있다.
 
-### Phase 6. UI/UX 안정화와 Today 집중 구조 개편
+### Phase 6. 전반적인 UI/UX 개편과 Today 집중 구조 정리
 
-목표: 주요 탭의 핵심 흐름이 연결된 뒤 정보 밀도와 시각 체계를 정리하고, 첫 화면에서 Today 실행 목록이 바로 보이게 한다.
+목표: 큰 카드와 과도한 설명을 반복하는 현재 화면을 조밀하고 정돈된 생산성 목록 구조로 개편한다. 단말 폭과 글꼴 배율이 달라도 같은 정보 우선순위를 유지하고, 첫 화면에서 핵심 데이터와 행동을 바로 찾게 한다.
 
 - [x] 320px Web, 375pt iPhone, 430dp Android에서 현재 화면의 first viewport 기준선 기록
 - [x] `TODAY` pill, 큰 인사, 날짜 카드를 compact top bar로 통합
@@ -383,12 +383,31 @@ type ApiResponse<T> = {
 - [x] 지난 미완료와 추천을 badge가 있는 compact entry 또는 sheet 진입점으로 변경
 - [x] 일정이 없으면 일정 section을 숨기고, 있으면 시간순 compact list로 표시
 - [x] 완료 section은 기본 접힘 상태로 두고 완료 수와 펼치기 행동만 표시
-- [ ] Task card의 최소 높이, 내부 padding, accent와 metadata 밀도 재검토
+- [ ] typography, spacing, radius, button, card token을 compact UI 기준으로 조정
+- [ ] 공통 `PageHeader`, `SectionHeader`, `IconButton`, compact action 패턴 구성
+- [ ] 영문 eyebrow와 반복 설명을 제거하고 페이지 제목 + 선택적 한 줄 설명으로 통일
+- [ ] Task card를 52–60px 기반 `CompactTaskRow`와 divider 목록으로 재설계
+- [ ] 완료 control의 보이는 크기는 20–24px, 독립 hit area는 44×44pt로 분리
+- [ ] Task의 큰 accent bar와 반복 badge를 제거하고 metadata를 한 줄 우선순위로 정리
+- [ ] Today의 위/아래 버튼을 제거하고 mobile long press, Web drag handle 재정렬 적용
+- [ ] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
+- [ ] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
 - [ ] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
-- [ ] Today 정보 계층을 Calendar, D-Day, More header에도 일관되게 적용
-- [ ] light/dark, 큰 글꼴, 키보드, VoiceOver/TalkBack, reduced motion 점검
-- [ ] Android, iOS, Web에서 실제 기기·브라우저 비교 smoke test
-- [ ] 확정된 규칙을 `DESIGN.md`와 theme/component token에 동기화
+- [ ] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
+- [ ] Calendar header, 주/월 전환, 날짜 navigation, 선택 날짜 Task 목록 compact 처리
+- [ ] D-Day header의 추가 행동과 목표·연결 Task·생성 form 밀도 정리
+- [ ] More의 104px destination card를 52–60px navigation row로 변경
+- [ ] Inbox header와 그룹을 정리하고 Today/내일 text button을 swipe·overflow action으로 변경
+- [ ] Completed의 주 navigation, 날짜 선택, 요약, 완료 목록 밀도 정리
+- [ ] Task 작성·상세의 제목·날짜·시간 우선순위와 점진적 form 구조 정리
+- [ ] 빈 상태·오류·로딩을 큰 card보다 compact inline state와 skeleton 중심으로 통일
+- [ ] 320–359 compact, 360–399 regular, 400–599 wide mobile 반응형 규칙 적용
+- [ ] 600–839 tablet과 840px 이상 Web에서 readable width와 확장 layout 검증
+- [ ] light/dark와 iOS Dynamic Type, Android font scale 1.0/1.3/1.5 점검
+- [ ] 키보드, VoiceOver/TalkBack, focus-visible, browser zoom 200%, reduced motion 점검
+- [ ] portrait/landscape, safe area, 키보드, 하단 탭과 고정 CTA 겹침 점검
+- [ ] Android, iOS, Web 실제 기기·브라우저 비교 smoke test
+- [ ] 확정된 규칙을 `DESIGN.md`와 theme/component token에 최종 동기화
 
 완료 기준:
 
@@ -398,6 +417,10 @@ type ApiResponse<T> = {
 - 지난 미완료, 추천, 완료는 필요할 때 펼칠 수 있지만 실행 목록을 밀어내지 않는다.
 - 같은 날짜, 제목, 진행 정보가 서로 다른 카드에서 반복되지 않는다.
 - Android, iOS, Web에서 정보 우선순위는 같고 플랫폼별 navigation 관습만 다르다.
+- 320px부터 599px까지 폭이 바뀌어도 수평 overflow나 잘린 핵심 행동이 없다.
+- 큰 글꼴에서는 보조 설명과 metadata가 먼저 줄고 Task 제목과 핵심 행동은 유지된다.
+- 한 줄 Task는 기본 52–60px 밀도를 목표로 하며 보이는 완료 control이 hit area 전체를 채우지 않는다.
+- 목록의 이동·날짜 변경 같은 보조 행동은 상시 text button 행으로 세로 공간을 차지하지 않는다.
 
 #### First viewport 기준선 기록 (2026-06-30)
 
@@ -414,6 +437,16 @@ type ApiResponse<T> = {
 | 320px Web     | 320px | 가장 좁은 Web 회귀 기준. padding과 긴 한글 제목이 콘텐츠를 밀어내는지 확인한다.        |
 | 375pt iPhone  | 375pt | Phase 6 완료 기준의 주 기준. 첫 viewport 안에 오늘 실행 Task가 최소 한 개 보여야 한다. |
 | 430dp Android | 430dp | 넓은 Android 기준. 정보 우선순위는 같고 한 줄 표시 여유만 늘어나야 한다.               |
+
+추가 반응형 검증 범위:
+
+| 구간                | 검증 내용                                                                                          |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| 320–359 compact     | 한글 제목, page description, action이 겹치지 않고 수평 버튼 묶음이 세로로 안전하게 전환되는지 확인 |
+| 360–399 regular     | 375pt iPhone을 주 기준으로 목록 밀도와 한 손 조작 확인                                             |
+| 400–599 wide mobile | 넓은 Android에서 control과 글자가 불필요하게 커지지 않는지 확인                                    |
+| 600–839 tablet      | readable width와 필요 시 2열/master-detail 전환 가능성 확인                                        |
+| 840px+ Web          | max width, hover, drag handle, focus-visible, keyboard navigation 확인                             |
 
 현재 화면별 first viewport 상태:
 
@@ -505,6 +538,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Task card 밀도 재검토다. 최소 높이와 내부 padding을 줄이고 accent와 metadata를 꼭 필요한 정보로 정리해 작은 화면에서도 실행 목록을 빠르게 훑을 수 있게 한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 공통 compact UI 기반과 Task row 개편이다. typography·spacing·button 기준을 먼저 조정하고 공통 page/section header를 만든 뒤, Task card를 52–60px 목록 행으로 바꾸면서 보이는 완료 control과 44pt hit area를 분리한다. 이어서 Today의 위/아래 버튼을 long press·drag handle 재정렬로 교체한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
