@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, Screen } from '@/components/ui';
-import { TaskCard } from '@/features/tasks';
+import { TaskCard, useMoveTaskToToday } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
+import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { groupInboxTasks } from './inbox-groups';
 import { useInboxTasks } from './use-inbox-tasks';
@@ -13,6 +15,25 @@ export function InboxOverview() {
   const theme = useAppTheme();
   const query = useInboxTasks();
   const groups = groupInboxTasks(query.data ?? []);
+  const today = toApiLocalDate();
+  const tomorrow = shiftLocalDate(today, 1) ?? today;
+  const moveToToday = useMoveTaskToToday(today);
+  const moveToTomorrow = useMoveTaskToToday(tomorrow);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const moveError = moveToToday.error ?? moveToTomorrow.error;
+  const isMoving = moveToToday.isPending || moveToTomorrow.isPending;
+
+  const moveTask = (taskId: number, target: 'today' | 'tomorrow') => {
+    setFeedback(null);
+    const mutation = target === 'today' ? moveToToday : moveToTomorrow;
+    const targetDate = target === 'today' ? today : tomorrow;
+
+    mutation.mutate(taskId, {
+      onSuccess: () => {
+        setFeedback(`${formatDateLabel(targetDate)} 할 일로 옮겼어요.`);
+      },
+    });
+  };
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -32,6 +53,21 @@ export function InboxOverview() {
           </AppText>
         </View>
       </View>
+
+      {moveError ? (
+        <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+          {moveError.message}
+        </AppText>
+      ) : feedback ? (
+        <View
+          accessibilityLiveRegion="polite"
+          style={[styles.feedback, { backgroundColor: theme.colors.successSoft }]}
+        >
+          <AppText tone="success" variant="caption" weight="semibold">
+            {feedback}
+          </AppText>
+        </View>
+      ) : null}
 
       {query.isPending ? (
         <Card accessibilityLabel="기록함을 불러오는 중" style={styles.stateCard}>
@@ -92,6 +128,28 @@ export function InboxOverview() {
                   <TaskCard
                     key={task.id}
                     task={task}
+                    action={
+                      <View style={styles.taskActions}>
+                        <Button
+                          disabled={isMoving}
+                          loading={moveToToday.isPending && moveToToday.variables === task.id}
+                          variant="secondary"
+                          onPress={() => moveTask(task.id, 'today')}
+                          style={styles.taskAction}
+                        >
+                          Today
+                        </Button>
+                        <Button
+                          disabled={isMoving}
+                          loading={moveToTomorrow.isPending && moveToTomorrow.variables === task.id}
+                          variant="ghost"
+                          onPress={() => moveTask(task.id, 'tomorrow')}
+                          style={styles.taskAction}
+                        >
+                          내일
+                        </Button>
+                      </View>
+                    }
                     onOpen={() => router.push(`/tasks/${task.id}`)}
                   />
                 ))}
@@ -147,5 +205,17 @@ const styles = StyleSheet.create({
   },
   tasks: {
     gap: spacing[2],
+  },
+  taskActions: {
+    flexDirection: 'row',
+    gap: spacing[2],
+    width: '100%',
+  },
+  taskAction: {
+    flex: 1,
+  },
+  feedback: {
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
 });

@@ -1,4 +1,4 @@
-import { taskApi } from '@/features/tasks';
+import { moveTaskToDate, taskApi } from '@/features/tasks';
 import type { LocalDateString, TaskResponse } from '@/types';
 
 export type CreateDdayTodayTaskVariables = {
@@ -22,21 +22,7 @@ export async function createDdayTodayTask({ goalId, title, date }: CreateDdayTod
     });
     await taskApi.connectDdayGoal(createdTask.id, goalId);
 
-    try {
-      return await taskApi.moveToToday(createdTask.id, date);
-    } catch (moveError) {
-      const persistedTask = await taskApi.get(createdTask.id).catch(() => null);
-      const moveWasApplied =
-        persistedTask?.status === 'TODAY' &&
-        persistedTask.plannedDate === date &&
-        persistedTask.ddayGoalId === goalId;
-
-      if (moveWasApplied) {
-        return persistedTask;
-      }
-
-      throw moveError;
-    }
+    return await moveTaskToDate(createdTask.id, date);
   } catch (error) {
     if (createdTask) {
       await taskApi.delete(createdTask.id).catch(() => undefined);

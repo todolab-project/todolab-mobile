@@ -2,6 +2,7 @@ export { taskApi } from './task-api';
 export { TaskCard } from './task-card';
 export { TaskDateQuickActions } from './task-date-quick-actions';
 export { TaskForm } from './task-form';
+export { moveTaskToDate } from './move-task-to-date';
 export { taskQueryKeys } from './task-query-keys';
 export { useClearDeferReason } from './use-clear-defer-reason';
 export { useChangeTaskDate } from './use-change-task-date';
