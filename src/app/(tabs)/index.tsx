@@ -28,8 +28,8 @@ export default function TodayScreen() {
       }}
     >
       <TodayHeader now={now} />
-      <QuickCapture />
       <TodayOverview date={today} overview={overview} />
+      <QuickCapture />
     </Screen>
   );
 }

@@ -375,10 +375,10 @@ type ApiResponse<T> = {
 목표: 주요 탭의 핵심 흐름이 연결된 뒤 정보 밀도와 시각 체계를 정리하고, 첫 화면에서 Today 실행 목록이 바로 보이게 한다.
 
 - [x] 320px Web, 375pt iPhone, 430dp Android에서 현재 화면의 first viewport 기준선 기록
-- [ ] `TODAY` pill, 큰 인사, 날짜 카드를 compact top bar로 통합
-- [ ] 날짜는 한 번만 표시하고 인사·설명은 빈 상태나 시간대별 보조 문구로 제한
+- [x] `TODAY` pill, 큰 인사, 날짜 카드를 compact top bar로 통합
+- [x] 날짜는 한 번만 표시하고 인사·설명은 빈 상태나 시간대별 보조 문구로 제한
 - [ ] 빠른 기록 카드를 한 줄 composer 또는 하단 고정 추가 버튼으로 축소
-- [ ] Today 실행 Task를 header 바로 다음의 최우선 content로 이동
+- [x] Today 실행 Task를 header 바로 다음의 최우선 content로 이동
 - [ ] `오늘의 흐름` 중복 제목과 5분할 요약 카드 제거 또는 한 줄 진행 요약으로 축소
 - [ ] 지난 미완료와 추천을 badge가 있는 compact entry 또는 sheet 진입점으로 변경
 - [ ] 일정이 없으면 일정 section을 숨기고, 있으면 시간순 compact list로 표시
@@ -504,6 +504,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Today 정보 순서 재정렬이다. `TODAY` pill, 큰 인사, 날짜 카드를 compact top bar로 통합하고, 오늘 실행 Task가 header 바로 다음에 오도록 Today 구조를 먼저 고정한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 빠른 기록 카드 축소다. 현재 빠른 기록은 실행 Task 뒤로 내려 first viewport 부담은 줄었지만, 아직 카드+보조 버튼 구조라 한 줄 composer 또는 하단 고정 추가 버튼으로 줄여야 한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

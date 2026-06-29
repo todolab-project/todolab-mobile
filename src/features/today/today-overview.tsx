@@ -111,23 +111,102 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.heading}>
-        <View style={styles.headingCopy}>
-          <AppText variant="bodyLarge" weight="bold">
-            오늘의 흐름
-          </AppText>
-          <AppText tone="secondary" variant="label">
-            해야 할 일과 기록을 한눈에 확인해요.
-          </AppText>
+      <View style={styles.taskSection}>
+        <View style={styles.taskSectionHeading}>
+          <View style={styles.taskSectionCopy}>
+            <AppText variant="bodyLarge" weight="bold">
+              오늘 실행할 일
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              실행할 순서대로 하나씩 완료해요.
+            </AppText>
+          </View>
+          <View style={styles.taskSectionActions}>
+            <AppText tone="primary" variant="label" weight="bold">
+              {executionTasks.length}개
+            </AppText>
+            <Button
+              accessibilityLabel="Today 정보 새로고침"
+              disabled={isRefreshing}
+              variant="ghost"
+              onPress={() => void refetch()}
+              style={styles.refreshButton}
+            >
+              새로고침
+            </Button>
+          </View>
         </View>
-        <Button
-          accessibilityLabel="Today 정보 새로고침"
-          disabled={isRefreshing}
-          variant="ghost"
-          onPress={() => void refetch()}
-        >
-          새로고침
-        </Button>
+
+        {completeTask.error || reorderTodayTask.error ? (
+          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+            <AppText tone="danger" variant="label">
+              {completeTask.error?.message ?? reorderTodayTask.error?.message}
+            </AppText>
+          </View>
+        ) : null}
+
+        {executionTasks.length === 0 ? (
+          <Card>
+            <EmptyState
+              title="오늘 실행할 일이 없어요"
+              description="빠르게 기록하거나 아래 기록함에서 오늘 할 일을 골라보세요."
+              action={
+                <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
+                  자세히 작성하기
+                </Button>
+              }
+            />
+          </Card>
+        ) : (
+          <View style={styles.taskList}>
+            {executionTasks.map((task, index) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onOpen={() => openTask(task.id)}
+                completionDisabled={completeTask.isPending}
+                isCompleting={completeTask.isPending && completeTask.variables === task.id}
+                onComplete={() =>
+                  completeTask.mutate(task.id, {
+                    onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
+                  })
+                }
+                action={
+                  <View style={styles.reorderActions}>
+                    <Button
+                      accessibilityLabel={`${task.title}, 실행 순서 위로 이동`}
+                      disabled={reorderTodayTask.isPending || index === 0}
+                      variant="ghost"
+                      onPress={() =>
+                        reorderTodayTask.mutate(
+                          { taskId: task.id, direction: 'UP' },
+                          { onSuccess: () => showFeedback('실행 순서를 위로 옮겼어요.') },
+                        )
+                      }
+                      style={styles.reorderButton}
+                    >
+                      ↑ 위로
+                    </Button>
+                    <Button
+                      accessibilityLabel={`${task.title}, 실행 순서 아래로 이동`}
+                      disabled={reorderTodayTask.isPending || index === executionTasks.length - 1}
+                      variant="ghost"
+                      onPress={() =>
+                        reorderTodayTask.mutate(
+                          { taskId: task.id, direction: 'DOWN' },
+                          { onSuccess: () => showFeedback('실행 순서를 아래로 옮겼어요.') },
+                        )
+                      }
+                      style={styles.reorderButton}
+                    >
+                      ↓ 아래로
+                    </Button>
+                  </View>
+                }
+              />
+            ))}
+          </View>
+        )}
       </View>
 
       {feedback ? (
@@ -631,93 +710,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
             <AppText variant="bodyLarge" weight="bold">
-              오늘 실행할 일
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              실행할 순서대로 하나씩 완료해요.
-            </AppText>
-          </View>
-          <AppText tone="primary" variant="label" weight="bold">
-            {executionTasks.length}개
-          </AppText>
-        </View>
-
-        {completeTask.error || reorderTodayTask.error ? (
-          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-            <AppText tone="danger" variant="label">
-              {completeTask.error?.message ?? reorderTodayTask.error?.message}
-            </AppText>
-          </View>
-        ) : null}
-
-        {executionTasks.length === 0 ? (
-          <Card>
-            <EmptyState
-              title="오늘 실행할 일이 없어요"
-              description="빠르게 기록하거나 아래 기록함에서 오늘 할 일을 골라보세요."
-              action={
-                <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
-                  자세히 작성하기
-                </Button>
-              }
-            />
-          </Card>
-        ) : (
-          <View style={styles.taskList}>
-            {executionTasks.map((task, index) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onOpen={() => openTask(task.id)}
-                completionDisabled={completeTask.isPending}
-                isCompleting={completeTask.isPending && completeTask.variables === task.id}
-                onComplete={() =>
-                  completeTask.mutate(task.id, {
-                    onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
-                  })
-                }
-                action={
-                  <View style={styles.reorderActions}>
-                    <Button
-                      accessibilityLabel={`${task.title}, 실행 순서 위로 이동`}
-                      disabled={reorderTodayTask.isPending || index === 0}
-                      variant="ghost"
-                      onPress={() =>
-                        reorderTodayTask.mutate(
-                          { taskId: task.id, direction: 'UP' },
-                          { onSuccess: () => showFeedback('실행 순서를 위로 옮겼어요.') },
-                        )
-                      }
-                      style={styles.reorderButton}
-                    >
-                      ↑ 위로
-                    </Button>
-                    <Button
-                      accessibilityLabel={`${task.title}, 실행 순서 아래로 이동`}
-                      disabled={reorderTodayTask.isPending || index === executionTasks.length - 1}
-                      variant="ghost"
-                      onPress={() =>
-                        reorderTodayTask.mutate(
-                          { taskId: task.id, direction: 'DOWN' },
-                          { onSuccess: () => showFeedback('실행 순서를 아래로 옮겼어요.') },
-                        )
-                      }
-                      style={styles.reorderButton}
-                    >
-                      ↓ 아래로
-                    </Button>
-                  </View>
-                }
-              />
-            ))}
-          </View>
-        )}
-      </View>
-
-      <View style={styles.taskSection}>
-        <View style={styles.taskSectionHeading}>
-          <View style={styles.taskSectionCopy}>
-            <AppText variant="bodyLarge" weight="bold">
               아직 고르지 않은 일
             </AppText>
             <AppText tone="secondary" variant="label">
@@ -969,16 +961,6 @@ const styles = StyleSheet.create({
   container: {
     gap: spacing[3],
   },
-  heading: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'space-between',
-  },
-  headingCopy: {
-    flex: 1,
-    gap: spacing[1],
-  },
   feedbackBanner: {
     borderRadius: radii.md,
     paddingHorizontal: spacing[3],
@@ -1164,6 +1146,13 @@ const styles = StyleSheet.create({
   taskSectionCopy: {
     flex: 1,
     gap: spacing[1],
+  },
+  taskSectionActions: {
+    alignItems: 'flex-end',
+    gap: spacing[1],
+  },
+  refreshButton: {
+    minWidth: 76,
   },
   taskList: {
     gap: spacing[3],
