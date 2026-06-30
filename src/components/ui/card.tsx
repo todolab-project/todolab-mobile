@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import type { ViewProps } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
-import { radii, spacing, useAppTheme } from '@/theme';
+import { radii, sizes, useAppTheme } from '@/theme';
 
 type CardVariant = 'default' | 'muted' | 'outlined';
 
@@ -43,6 +43,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   padded: {
-    padding: spacing[5],
+    padding: sizes.cardPadding,
   },
 });

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     minHeight: sizes.touchTarget,
   },
   large: {
-    minHeight: 52,
+    minHeight: 48,
   },
   content: {
     alignItems: 'center',

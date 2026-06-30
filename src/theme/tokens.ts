@@ -59,29 +59,29 @@ export const spacing = {
 
 export const radii = {
   none: 0,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
+  sm: 6,
+  md: 10,
+  lg: 12,
+  xl: 16,
   full: 999,
 } as const;
 
 export const typography = {
   size: {
     caption: 12,
-    label: 14,
-    body: 16,
-    bodyLarge: 18,
-    title: 24,
-    display: 34,
+    label: 13,
+    body: 15,
+    bodyLarge: 17,
+    title: 22,
+    display: 30,
   },
   lineHeight: {
     caption: 16,
-    label: 20,
-    body: 24,
-    bodyLarge: 26,
-    title: 32,
-    display: 44,
+    label: 18,
+    body: 22,
+    bodyLarge: 24,
+    title: 30,
+    display: 38,
   },
   weight: {
     regular: '400',
@@ -101,6 +101,8 @@ export const sizes = {
   touchTarget: 44,
   contentMaxWidth: 720,
   bottomTabHeight: 64,
+  screenPadding: 16,
+  cardPadding: 16,
 } as const;
 
 export const motion = {

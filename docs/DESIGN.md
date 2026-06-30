@@ -89,14 +89,14 @@ UI/UX 개편 방향:
 
 별도 브랜드 폰트가 확정되기 전까지 플랫폼 system font를 사용한다. 글꼴보다 명확한 크기와 굵기 위계를 우선하며, 사용자 글꼴 크기 설정을 막지 않는다.
 
-| Variant    | Target size | Target line height | Default use                            |
-| ---------- | ----------: | -----------------: | -------------------------------------- |
-| display    |     28–32px |            36–40px | 빈 상태 등 제한된 핵심 메시지          |
-| title      |     20–22px |            28–30px | compact page header 제목               |
-| body large |     16–17px |            22–24px | section 제목과 카드의 제한된 주요 정보 |
-| body       |     15–16px |            21–24px | Task 제목과 일반 본문                  |
-| label      |     13–14px |            18–20px | 버튼과 입력 보조 정보                  |
-| caption    |     11–12px |            15–16px | 메타데이터와 상태 정보                 |
+| Variant    | Size | Line height | Default use                            |
+| ---------- | ---: | ----------: | -------------------------------------- |
+| display    | 30px |        38px | 빈 상태 등 제한된 핵심 메시지          |
+| title      | 22px |        30px | compact page header 제목               |
+| body large | 17px |        24px | section 제목과 카드의 제한된 주요 정보 |
+| body       | 15px |        22px | Task 제목과 일반 본문                  |
+| label      | 13px |        18px | 버튼과 입력 보조 정보                  |
+| caption    | 12px |        16px | 메타데이터와 상태 정보                 |
 
 Weights:
 
@@ -125,9 +125,9 @@ Rules:
 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 64
 ```
 
-- 화면 좌우 padding: compact mobile 16px, regular mobile 20px, Web 20–24px
+- 화면 좌우 padding: mobile 기본 16px, Web 16–24px
 - 일반 section gap: 16–24px
-- 카드 기본 padding: 12–16px
+- 카드 기본 padding: 16px
 - 조밀한 form/card padding: 12~16px
 - 관련 항목 내부 gap: 4~12px
 
@@ -135,10 +135,10 @@ Rules:
 
 | Token | Value | Usage                     |
 | ----- | ----: | ------------------------- |
-| sm    |   8px | 작은 제어 요소            |
-| md    |  12px | 버튼, 입력, 날짜 버튼     |
-| lg    |  16px | 기본 카드                 |
-| xl    |  20px | 큰 container              |
+| sm    |   6px | 작은 제어 요소            |
+| md    |  10px | 버튼, 입력, 날짜 버튼     |
+| lg    |  12px | 기본 카드                 |
+| xl    |  16px | 큰 container              |
 | full  | 999px | pill, 원형 체크, 상태 dot |
 
 ### Depth
@@ -218,7 +218,7 @@ compact header
 - secondary: primary-soft fill, blue label, 보조 선택에 사용한다.
 - ghost: transparent fill, secondary label, 낮은 우선순위 행동에 사용한다.
 - danger: red fill, white label, 확인된 파괴적 행동에 사용한다.
-- 기본 radius는 12px이다.
+- 기본 radius는 10px이다.
 - 일반 텍스트 버튼의 최소 높이는 44px, 강조 CTA는 48–52px이다.
 - icon과 compact action은 보이는 크기를 작게 유지하되 전체 hit area는 최소 44×44pt로 제공한다.
 - loading 중에는 중복 입력을 막고 spinner와 busy 상태를 제공한다.
@@ -227,14 +227,14 @@ compact header
 
 ### Card
 
-- 기본 radius는 16px, border는 1px이다.
+- 기본 radius는 12px, border는 1px이다.
 - default는 surface, muted는 surface-muted, outlined는 transparent 배경을 사용한다.
 - 카드 전체가 눌리는 경우 pressed 상태를 명확히 제공한다.
 - 카드 중첩과 반복적인 그림자로 정보 구조를 만들지 않는다.
 
 ### Input
 
-- 기본 높이는 최소 44px, radius는 12px이다.
+- 기본 높이는 최소 44px, radius는 10px이다.
 - surface-muted 배경과 border를 사용한다.
 - 오류 상태에서는 danger border와 설명 문구를 함께 표시한다.
 - placeholder만으로 필수 의미를 전달하지 않는다.
