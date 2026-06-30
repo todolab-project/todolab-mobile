@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
 
 import { AppText, Button, Card } from '@/components/ui';
@@ -23,10 +23,10 @@ type TaskFormProps = {
   onSubmit: (request: TaskUpsertRequest) => void;
 };
 
-const taskTypes: { value: TaskType; label: string; description: string }[] = [
-  { value: 'TODO', label: '할 일', description: '실행할 작업' },
-  { value: 'SCHEDULE', label: '일정', description: '시간이 있는 약속' },
-  { value: 'IDEA', label: '아이디어', description: '나중에 다듬을 생각' },
+const taskTypes: { value: TaskType; label: string }[] = [
+  { value: 'TODO', label: '할 일' },
+  { value: 'SCHEDULE', label: '일정' },
+  { value: 'IDEA', label: '아이디어' },
 ];
 
 export function TaskForm({
@@ -46,15 +46,20 @@ export function TaskForm({
     allDay: initialTask?.allDay ?? false,
   }));
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState(
+    initialTask
+      ? Boolean(
+          initialTask.description ||
+          initialTask.category ||
+          initialTask.type !== 'TODO' ||
+          initialTask.allDay,
+        )
+      : false,
+  );
   const message = validationMessage ?? errorMessage;
   const titleLength = values.title.trim().length;
   const canSubmit = titleLength > 0 && !isSubmitting;
   const canSetAllDay = Boolean(initialTask?.startAt);
-
-  const selectedType = useMemo(
-    () => taskTypes.find((type) => type.value === values.type) ?? taskTypes[0],
-    [values.type],
-  );
 
   const updateField = <Key extends keyof TaskFormValues>(key: Key, value: TaskFormValues[Key]) => {
     setValues((current) => ({ ...current, [key]: value }));
@@ -118,37 +123,6 @@ export function TaskForm({
         </View>
 
         <View style={styles.field}>
-          <View style={styles.labelRow}>
-            <AppText variant="label" weight="bold">
-              설명
-            </AppText>
-            <AppText tone="muted" variant="caption">
-              선택
-            </AppText>
-          </View>
-          <TextInput
-            accessibilityLabel="Task 설명"
-            editable={!isSubmitting}
-            maxLength={taskLimits.description}
-            multiline
-            onChangeText={(value) => updateField('description', value)}
-            placeholder="필요한 맥락이나 다음 행동을 적어두세요."
-            placeholderTextColor={theme.colors.textMuted}
-            style={[
-              styles.input,
-              styles.textArea,
-              {
-                backgroundColor: theme.colors.surfaceMuted,
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-              },
-            ]}
-            textAlignVertical="top"
-            value={values.description}
-          />
-        </View>
-
-        <View style={styles.field}>
           <AppText variant="label" weight="bold">
             유형
           </AppText>
@@ -177,68 +151,105 @@ export function TaskForm({
                   <AppText tone={selected ? 'primary' : 'default'} variant="label" weight="bold">
                     {type.label}
                   </AppText>
-                  <AppText tone="secondary" variant="caption">
-                    {type.description}
-                  </AppText>
                 </Pressable>
               );
             })}
           </View>
-          <AppText tone="secondary" variant="caption">
-            지금은 {selectedType.label}로 저장해요.
-          </AppText>
         </View>
 
-        {canSetAllDay ? (
+        <Button
+          accessibilityState={{ expanded: isDetailsExpanded }}
+          size="compact"
+          variant="ghost"
+          onPress={() => setIsDetailsExpanded((current) => !current)}
+          style={styles.detailsToggle}
+        >
+          {isDetailsExpanded ? '추가 정보 접기' : '설명·카테고리 추가'}
+        </Button>
+
+        {isDetailsExpanded ? (
           <View style={styles.field}>
-            <View style={styles.switchRow}>
-              <View style={styles.switchCopy}>
-                <AppText variant="label" weight="bold">
-                  종일 항목
-                </AppText>
-                <AppText tone="secondary" variant="caption">
-                  시간 선택 없이 하루 단위로 관리해요.
-                </AppText>
-              </View>
-              <Switch
-                accessibilityLabel="종일 항목 여부"
-                disabled={isSubmitting}
-                onValueChange={(value) => updateField('allDay', value)}
-                thumbColor={values.allDay ? theme.colors.primary : theme.colors.surface}
-                trackColor={{ false: theme.colors.borderStrong, true: theme.colors.primarySoft }}
-                value={values.allDay}
-              />
+            <View style={styles.labelRow}>
+              <AppText variant="label" weight="bold">
+                설명
+              </AppText>
+              <AppText tone="muted" variant="caption">
+                선택
+              </AppText>
             </View>
+            <TextInput
+              accessibilityLabel="Task 설명"
+              editable={!isSubmitting}
+              maxLength={taskLimits.description}
+              multiline
+              onChangeText={(value) => updateField('description', value)}
+              placeholder="필요한 맥락이나 다음 행동"
+              placeholderTextColor={theme.colors.textMuted}
+              style={[
+                styles.input,
+                styles.textArea,
+                {
+                  backgroundColor: theme.colors.surfaceMuted,
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                },
+              ]}
+              textAlignVertical="top"
+              value={values.description}
+            />
           </View>
         ) : null}
 
-        <View style={styles.field}>
-          <View style={styles.labelRow}>
-            <AppText variant="label" weight="bold">
-              카테고리
-            </AppText>
-            <AppText tone="muted" variant="caption">
-              선택
-            </AppText>
+        {isDetailsExpanded && canSetAllDay ? (
+          <View style={styles.switchRow}>
+            <View style={styles.switchCopy}>
+              <AppText variant="label" weight="bold">
+                종일 항목
+              </AppText>
+              <AppText tone="secondary" variant="caption">
+                시간 선택 없이 하루 단위로 관리해요.
+              </AppText>
+            </View>
+            <Switch
+              accessibilityLabel="종일 항목 여부"
+              disabled={isSubmitting}
+              onValueChange={(value) => updateField('allDay', value)}
+              thumbColor={values.allDay ? theme.colors.primary : theme.colors.surface}
+              trackColor={{ false: theme.colors.borderStrong, true: theme.colors.primarySoft }}
+              value={values.allDay}
+            />
           </View>
-          <TextInput
-            accessibilityLabel="Task 카테고리"
-            editable={!isSubmitting}
-            maxLength={taskLimits.category}
-            onChangeText={(value) => updateField('category', value)}
-            placeholder="예: 업무, 집, 건강"
-            placeholderTextColor={theme.colors.textMuted}
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surfaceMuted,
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-              },
-            ]}
-            value={values.category}
-          />
-        </View>
+        ) : null}
+
+        {isDetailsExpanded ? (
+          <View style={styles.field}>
+            <View style={styles.labelRow}>
+              <AppText variant="label" weight="bold">
+                카테고리
+              </AppText>
+              <AppText tone="muted" variant="caption">
+                선택
+              </AppText>
+            </View>
+            <TextInput
+              accessibilityLabel="Task 카테고리"
+              editable={!isSubmitting}
+              maxLength={taskLimits.category}
+              onChangeText={(value) => updateField('category', value)}
+              placeholder="예: 업무, 집, 건강"
+              placeholderTextColor={theme.colors.textMuted}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.colors.surfaceMuted,
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                },
+              ]}
+              value={values.category}
+            />
+          </View>
+        ) : null}
 
         {message ? (
           <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
@@ -272,7 +283,7 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   formCard: {
-    gap: spacing[5],
+    gap: spacing[3],
   },
   field: {
     gap: spacing[2],
@@ -286,22 +297,26 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: radii.md,
     borderWidth: 1,
-    fontSize: 16,
-    minHeight: 48,
+    fontSize: 15,
+    minHeight: 44,
     paddingHorizontal: spacing[3],
-    paddingVertical: spacing[3],
+    paddingVertical: spacing[2],
   },
   textArea: {
-    minHeight: 112,
+    minHeight: 88,
   },
   typeGrid: {
+    flexDirection: 'row',
     gap: spacing[2],
   },
   typeOption: {
+    alignItems: 'center',
     borderRadius: radii.md,
     borderWidth: 1,
-    gap: spacing[1],
-    padding: spacing[3],
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: spacing[2],
   },
   switchRow: {
     alignItems: 'center',
@@ -312,6 +327,9 @@ const styles = StyleSheet.create({
   switchCopy: {
     flex: 1,
     gap: spacing[1],
+  },
+  detailsToggle: {
+    alignSelf: 'flex-start',
   },
   actions: {
     gap: spacing[2],

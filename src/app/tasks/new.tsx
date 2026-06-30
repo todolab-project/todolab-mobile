@@ -1,13 +1,15 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { SymbolView } from 'expo-symbols';
+import { StyleSheet } from 'react-native';
 
-import { AppText, Button, Screen } from '@/components/ui';
+import { IconButton, PageHeader, Screen } from '@/components/ui';
 import { TaskForm, useCreateInboxTask } from '@/features/tasks';
-import { spacing } from '@/theme';
+import { spacing, useAppTheme } from '@/theme';
 import type { TaskUpsertRequest } from '@/types';
 
 export default function NewTaskScreen() {
   const router = useRouter();
+  const theme = useAppTheme();
   const createTask = useCreateInboxTask();
 
   const handleSubmit = (request: TaskUpsertRequest) => {
@@ -20,23 +22,18 @@ export default function NewTaskScreen() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Button
-          accessibilityLabel="이전 화면으로 돌아가기"
-          variant="ghost"
-          onPress={() => router.back()}
-        >
-          ← 돌아가기
-        </Button>
-        <View style={styles.titleBlock}>
-          <AppText variant="title" weight="heavy">
-            새 할 일
-          </AppText>
-          <AppText tone="secondary" variant="label">
-            제목부터 적고, 필요한 맥락만 가볍게 더해요.
-          </AppText>
-        </View>
-      </View>
+      <PageHeader
+        title="새 할 일"
+        leading={
+          <IconButton accessibilityLabel="이전 화면으로 돌아가기" onPress={router.back}>
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
+              size={20}
+              tintColor={theme.colors.text}
+            />
+          </IconButton>
+        }
+      />
 
       <TaskForm
         errorMessage={createTask.error?.message}
@@ -53,12 +50,5 @@ const styles = StyleSheet.create({
   screen: {
     gap: spacing[5],
     paddingTop: spacing[3],
-  },
-  header: {
-    alignItems: 'flex-start',
-    gap: spacing[3],
-  },
-  titleBlock: {
-    gap: spacing[1],
   },
 });
