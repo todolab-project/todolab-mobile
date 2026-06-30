@@ -13,7 +13,7 @@ import { TaskCard } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
 
-const TASK_ROW_HEIGHT = 56;
+const TASK_ROW_HEIGHT = 68;
 
 type DraggableTodayTaskListProps = {
   tasks: TaskResponse[];

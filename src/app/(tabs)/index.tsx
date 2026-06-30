@@ -47,9 +47,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   screen: {
-    gap: spacing[8],
+    gap: spacing[5],
     paddingBottom: 88,
-    paddingTop: spacing[6],
+    paddingTop: spacing[4],
   },
   quickCaptureLayer: {
     bottom: 0,

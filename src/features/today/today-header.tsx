@@ -16,7 +16,6 @@ export function TodayHeader({ now = new Date() }: TodayHeaderProps) {
   return (
     <PageHeader
       title="오늘"
-      description="가장 중요한 일부터 하나씩 끝내보세요."
       action={
         <View style={styles.date}>
           <AppText variant="label" weight="bold">

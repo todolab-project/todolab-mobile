@@ -449,7 +449,7 @@ function compareScheduleTasks(left: TaskResponse, right: TaskResponse) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: spacing[3],
+    gap: spacing[4],
   },
   feedbackBanner: {
     borderRadius: radii.md,
@@ -484,12 +484,10 @@ const styles = StyleSheet.create({
     gap: spacing[1],
   },
   taskSection: {
-    gap: spacing[3],
-    paddingTop: spacing[2],
+    gap: spacing[2],
   },
   scheduleSection: {
-    gap: spacing[3],
-    paddingTop: spacing[2],
+    gap: spacing[2],
   },
   scheduleList: {
     gap: spacing[2],
@@ -502,7 +500,6 @@ const styles = StyleSheet.create({
   },
   taskSectionCopy: {
     flex: 1,
-    gap: spacing[1],
   },
   reviewSection: {
     gap: spacing[2],
@@ -547,7 +544,7 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   completedToggleButton: {
-    minWidth: 64,
+    minWidth: 56,
   },
   taskList: {
     gap: spacing[2],
