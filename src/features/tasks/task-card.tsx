@@ -13,6 +13,7 @@ type TaskCardProps = {
   onReopen?: () => void;
   isCompleting?: boolean;
   completionDisabled?: boolean;
+  showCompletionControl?: boolean;
   trailing?: ReactNode;
   action?: ReactNode;
 };
@@ -24,6 +25,7 @@ export function TaskCard({
   onReopen,
   isCompleting = false,
   completionDisabled = false,
+  showCompletionControl = true,
   trailing,
   action,
 }: TaskCardProps) {
@@ -58,41 +60,43 @@ export function TaskCard({
       ]}
     >
       <View style={styles.content}>
-        <Pressable
-          accessibilityLabel={toggleLabel}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: isDone, busy: isCompleting, disabled: toggleDisabled }}
-          disabled={toggleDisabled}
-          hitSlop={4}
-          onPress={onToggle}
-          style={({ pressed }) => [
-            styles.checkboxHitArea,
-            pressed && { backgroundColor: theme.colors.primarySoft },
-            { opacity: completionDisabled && !isCompleting ? 0.45 : 1 },
-          ]}
-        >
-          <View
-            style={[
-              styles.checkbox,
-              {
-                backgroundColor: isDone ? theme.colors.success : theme.colors.surface,
-                borderColor: isDone ? theme.colors.success : theme.colors.borderStrong,
-              },
+        {showCompletionControl ? (
+          <Pressable
+            accessibilityLabel={toggleLabel}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: isDone, busy: isCompleting, disabled: toggleDisabled }}
+            disabled={toggleDisabled}
+            hitSlop={4}
+            onPress={onToggle}
+            style={({ pressed }) => [
+              styles.checkboxHitArea,
+              pressed && { backgroundColor: theme.colors.primarySoft },
+              { opacity: completionDisabled && !isCompleting ? 0.45 : 1 },
             ]}
           >
-            {isCompleting ? (
-              <ActivityIndicator color={theme.colors.primary} size="small" />
-            ) : isDone ? (
-              <AppText
-                variant="caption"
-                style={{ color: theme.colors.textOnPrimary }}
-                weight="bold"
-              >
-                ✓
-              </AppText>
-            ) : null}
-          </View>
-        </Pressable>
+            <View
+              style={[
+                styles.checkbox,
+                {
+                  backgroundColor: isDone ? theme.colors.success : theme.colors.surface,
+                  borderColor: isDone ? theme.colors.success : theme.colors.borderStrong,
+                },
+              ]}
+            >
+              {isCompleting ? (
+                <ActivityIndicator color={theme.colors.primary} size="small" />
+              ) : isDone ? (
+                <AppText
+                  variant="caption"
+                  style={{ color: theme.colors.textOnPrimary }}
+                  weight="bold"
+                >
+                  ✓
+                </AppText>
+              ) : null}
+            </View>
+          </Pressable>
+        ) : null}
 
         <Pressable
           accessibilityLabel={`${task.title} 상세 보기`}

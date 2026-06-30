@@ -21,11 +21,13 @@ export function InboxOverview() {
   const moveToToday = useMoveTaskToToday(today);
   const moveToTomorrow = useMoveTaskToToday(tomorrow);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [menuTaskId, setMenuTaskId] = useState<number | null>(null);
   const moveError = moveToToday.error ?? moveToTomorrow.error;
   const isMoving = moveToToday.isPending || moveToTomorrow.isPending;
 
   const moveTask = (taskId: number, target: 'today' | 'tomorrow') => {
     setFeedback(null);
+    setMenuTaskId(null);
     const mutation = target === 'today' ? moveToToday : moveToTomorrow;
     const targetDate = target === 'today' ? today : tomorrow;
 
@@ -40,7 +42,6 @@ export function InboxOverview() {
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader
         title="기록함"
-        description="날짜를 정하지 않은 기록을 정리하세요."
         leading={
           <IconButton accessibilityLabel="More 화면으로 돌아가기" onPress={router.back}>
             <SymbolView
@@ -102,19 +103,10 @@ export function InboxOverview() {
         </Card>
       ) : (
         <View style={styles.groups}>
-          <View style={styles.summary}>
-            <AppText variant="bodyLarge" weight="bold">
-              모든 기록
-            </AppText>
-            <AppText tone="secondary" variant="label" weight="semibold">
-              {query.data?.length ?? 0}개 · {groups.length}개 그룹
-            </AppText>
-          </View>
-
           {groups.map((group) => (
             <View key={group.category} style={styles.group}>
               <View style={styles.groupHeader}>
-                <AppText variant="bodyLarge" weight="bold">
+                <AppText variant="label" weight="semibold">
                   {group.category}
                 </AppText>
                 <AppText tone="secondary" variant="caption" weight="semibold">
@@ -126,27 +118,47 @@ export function InboxOverview() {
                   <TaskCard
                     key={task.id}
                     task={task}
+                    showCompletionControl={false}
+                    trailing={
+                      <IconButton
+                        accessibilityLabel={`${task.title}, 이동 메뉴 ${
+                          menuTaskId === task.id ? '닫기' : '열기'
+                        }`}
+                        selected={menuTaskId === task.id}
+                        onPress={() =>
+                          setMenuTaskId((current) => (current === task.id ? null : task.id))
+                        }
+                      >
+                        <AppText tone="secondary" weight="bold">
+                          ⋯
+                        </AppText>
+                      </IconButton>
+                    }
                     action={
-                      <View style={styles.taskActions}>
-                        <Button
-                          disabled={isMoving}
-                          loading={moveToToday.isPending && moveToToday.variables === task.id}
-                          variant="secondary"
-                          onPress={() => moveTask(task.id, 'today')}
-                          style={styles.taskAction}
-                        >
-                          Today
-                        </Button>
-                        <Button
-                          disabled={isMoving}
-                          loading={moveToTomorrow.isPending && moveToTomorrow.variables === task.id}
-                          variant="ghost"
-                          onPress={() => moveTask(task.id, 'tomorrow')}
-                          style={styles.taskAction}
-                        >
-                          내일
-                        </Button>
-                      </View>
+                      menuTaskId === task.id ? (
+                        <View style={styles.taskActions}>
+                          <Button
+                            disabled={isMoving}
+                            loading={moveToToday.isPending && moveToToday.variables === task.id}
+                            size="compact"
+                            variant="secondary"
+                            onPress={() => moveTask(task.id, 'today')}
+                          >
+                            Today
+                          </Button>
+                          <Button
+                            disabled={isMoving}
+                            loading={
+                              moveToTomorrow.isPending && moveToTomorrow.variables === task.id
+                            }
+                            size="compact"
+                            variant="ghost"
+                            onPress={() => moveTask(task.id, 'tomorrow')}
+                          >
+                            내일
+                          </Button>
+                        </View>
+                      ) : null
                     }
                     onOpen={() => router.push(`/tasks/${task.id}`)}
                   />
@@ -163,7 +175,7 @@ export function InboxOverview() {
 const styles = StyleSheet.create({
   screen: {
     gap: spacing[5],
-    paddingTop: spacing[3],
+    paddingTop: spacing[4],
   },
   titleBlock: {
     gap: spacing[2],
@@ -179,17 +191,10 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   groups: {
-    gap: spacing[5],
-  },
-  summary: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing[2],
-    justifyContent: 'space-between',
+    gap: spacing[4],
   },
   group: {
-    gap: spacing[3],
+    gap: spacing[2],
   },
   groupHeader: {
     alignItems: 'center',
@@ -202,11 +207,7 @@ const styles = StyleSheet.create({
   },
   taskActions: {
     flexDirection: 'row',
-    gap: spacing[2],
-    width: '100%',
-  },
-  taskAction: {
-    flex: 1,
+    gap: spacing[1],
   },
   feedback: {
     paddingHorizontal: spacing[3],
