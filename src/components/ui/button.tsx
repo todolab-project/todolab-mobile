@@ -7,7 +7,7 @@ import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import { AppText } from './app-text';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-type ButtonSize = 'medium' | 'large';
+type ButtonSize = 'compact' | 'medium' | 'large';
 
 type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   children: ReactNode;
@@ -69,7 +69,7 @@ export function Button({
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.base,
-        size === 'large' ? styles.large : styles.medium,
+        size === 'large' ? styles.large : size === 'compact' ? styles.compact : styles.medium,
         {
           backgroundColor: pressed ? selected.pressedColor : selected.backgroundColor,
           borderColor: selected.borderColor,
@@ -103,6 +103,10 @@ const styles = StyleSheet.create({
   },
   medium: {
     minHeight: sizes.touchTarget,
+  },
+  compact: {
+    minHeight: sizes.touchTarget,
+    paddingHorizontal: spacing[2],
   },
   large: {
     minHeight: 48,

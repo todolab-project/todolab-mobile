@@ -2,4 +2,7 @@ export { AppText } from './app-text';
 export { Button } from './button';
 export { Card } from './card';
 export { EmptyState } from './empty-state';
+export { IconButton } from './icon-button';
+export { PageHeader } from './page-header';
 export { Screen } from './screen';
+export { SectionHeader } from './section-header';
