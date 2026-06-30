@@ -1,8 +1,8 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 
-import { AppText, Button, Card, EmptyState, PageHeader, Screen } from '@/components/ui';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { AppText, Button, Card, EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
+import { spacing, useAppTheme } from '@/theme';
 import type { DdayGoalResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
 
@@ -19,6 +19,7 @@ export function DdayOverview() {
   const [confirmingDeleteGoalId, setConfirmingDeleteGoalId] = useState<number | null>(null);
   const [creatingTaskGoalId, setCreatingTaskGoalId] = useState<number | null>(null);
   const [expandedGoalIds, setExpandedGoalIds] = useState<number[]>([]);
+  const [menuGoalId, setMenuGoalId] = useState<number | null>(null);
   const query = useDdayGoals();
   const goals = [...(query.data ?? [])].sort((left, right) =>
     left.targetDate.localeCompare(right.targetDate),
@@ -28,7 +29,6 @@ export function DdayOverview() {
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader
         title="D-Day"
-        description="중요한 목표까지 남은 날짜를 확인하세요."
         action={
           isCreating ? undefined : (
             <Button size="compact" onPress={() => setIsCreating(true)}>
@@ -100,8 +100,18 @@ export function DdayOverview() {
               <DdayGoalCard
                 expanded={expandedGoalIds.includes(goal.id)}
                 goal={goal}
-                onCreateTodayTask={() => setCreatingTaskGoalId(goal.id)}
-                onRequestDelete={() => setConfirmingDeleteGoalId(goal.id)}
+                menuOpen={menuGoalId === goal.id}
+                onCreateTodayTask={() => {
+                  setMenuGoalId(null);
+                  setCreatingTaskGoalId(goal.id);
+                }}
+                onRequestDelete={() => {
+                  setMenuGoalId(null);
+                  setConfirmingDeleteGoalId(goal.id);
+                }}
+                onToggleMenu={() =>
+                  setMenuGoalId((current) => (current === goal.id ? null : goal.id))
+                }
                 onToggleTasks={() =>
                   setExpandedGoalIds((current) =>
                     current.includes(goal.id)
@@ -144,13 +154,17 @@ export function DdayOverview() {
 function DdayGoalCard({
   goal,
   expanded,
+  menuOpen,
   onCreateTodayTask,
+  onToggleMenu,
   onToggleTasks,
   onRequestDelete,
 }: {
   goal: DdayGoalResponse;
   expanded: boolean;
+  menuOpen: boolean;
   onCreateTodayTask: () => void;
+  onToggleMenu: () => void;
   onToggleTasks: () => void;
   onRequestDelete: () => void;
 }) {
@@ -159,24 +173,19 @@ function DdayGoalCard({
   const isToday = goal.daysLeft === 0;
   const isPast = goal.daysLeft < 0;
   const tone = isToday ? 'warning' : isPast ? 'secondary' : 'primary';
-  const badgeBackground = isToday
-    ? theme.colors.warningSoft
-    : isPast
-      ? theme.colors.surfaceMuted
-      : theme.colors.primarySoft;
 
   return (
-    <Card style={styles.goalCard}>
+    <Card padded={false} style={styles.goalCard}>
       <View
         accessible
         accessibilityLabel={`${goal.title}, ${dayLabel}, 목표일 ${formatDateLabel(goal.targetDate)}`}
         style={styles.goalContent}
       >
         <View style={styles.goalCopy}>
-          <AppText numberOfLines={2} variant="bodyLarge" weight="bold">
+          <AppText numberOfLines={1} weight="semibold">
             {goal.title}
           </AppText>
-          <AppText tone="secondary" variant="label">
+          <AppText tone="secondary" variant="caption">
             {formatDateLabel(goal.targetDate, {
               year: 'numeric',
               month: 'long',
@@ -185,39 +194,52 @@ function DdayGoalCard({
             })}
           </AppText>
         </View>
-        <View style={[styles.dayBadge, { backgroundColor: badgeBackground }]}>
+        <View style={styles.goalTrailing}>
           <AppText tone={tone} variant="bodyLarge" weight="heavy">
             {dayLabel}
           </AppText>
+          <IconButton
+            accessibilityLabel={`${goal.title} 목표 메뉴 ${menuOpen ? '닫기' : '열기'}`}
+            selected={menuOpen}
+            onPress={onToggleMenu}
+          >
+            <AppText tone="secondary" weight="bold">
+              ⋯
+            </AppText>
+          </IconButton>
         </View>
       </View>
-      <View style={styles.goalActions}>
-        <Button
-          accessibilityLabel={`${goal.title} 목표의 Today 할 일 만들기`}
-          variant="secondary"
-          onPress={onCreateTodayTask}
-          style={styles.goalActionButton}
-        >
-          Today 할 일
-        </Button>
+      <View style={[styles.goalFooter, { borderTopColor: theme.colors.border }]}>
         <Button
           accessibilityLabel={`${goal.title} 연결된 할 일 ${expanded ? '접기' : '펼치기'}`}
           accessibilityState={{ expanded }}
-          variant="secondary"
-          onPress={onToggleTasks}
-          style={styles.goalActionButton}
-        >
-          {expanded ? '할 일 접기' : '연결된 할 일'}
-        </Button>
-        <Button
-          accessibilityLabel={`${goal.title} D-Day 삭제`}
+          size="compact"
           variant="ghost"
-          onPress={onRequestDelete}
-          style={styles.goalActionButton}
+          onPress={onToggleTasks}
         >
-          삭제
+          {expanded ? '연결된 할 일 접기' : '연결된 할 일 보기'}
         </Button>
       </View>
+      {menuOpen ? (
+        <View style={styles.goalMenu}>
+          <Button
+            accessibilityLabel={`${goal.title} 목표의 Today 할 일 만들기`}
+            size="compact"
+            variant="secondary"
+            onPress={onCreateTodayTask}
+          >
+            Today 할 일 추가
+          </Button>
+          <Button
+            accessibilityLabel={`${goal.title} D-Day 삭제`}
+            size="compact"
+            variant="ghost"
+            onPress={onRequestDelete}
+          >
+            삭제
+          </Button>
+        </View>
+      ) : null}
     </Card>
   );
 }
@@ -276,8 +298,8 @@ function DdayDeleteConfirmation({
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[6],
-    paddingTop: spacing[6],
+    gap: spacing[5],
+    paddingTop: spacing[4],
   },
   stateCard: {
     alignItems: 'center',
@@ -310,31 +332,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   goalCard: {
-    gap: spacing[3],
+    overflow: 'hidden',
   },
   goalContent: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing[4],
+    gap: spacing[3],
+    minHeight: 68,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
-  goalActions: {
+  goalTrailing: {
+    alignItems: 'center',
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: spacing[2],
   },
-  goalActionButton: {
-    flexGrow: 1,
-    minWidth: 96,
+  goalFooter: {
+    alignItems: 'flex-start',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: spacing[2],
+  },
+  goalMenu: {
+    borderTopWidth: 0,
+    flexDirection: 'row',
+    gap: spacing[2],
+    justifyContent: 'flex-end',
+    paddingBottom: spacing[2],
+    paddingHorizontal: spacing[2],
   },
   goalCopy: {
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
-  },
-  dayBadge: {
-    borderRadius: radii.full,
-    minWidth: 72,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
   },
 });
