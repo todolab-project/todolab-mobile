@@ -406,7 +406,7 @@ type ApiResponse<T> = {
 - [x] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
 - [x] Calendar 주/월 segmented control, icon navigation, 날짜 선택, compact Task·Schedule card 적용
 - [x] D-Day 숫자 중심 목표 card, overflow action, 접힌 연결 Task, 생성 sheet 검토
-- [ ] More의 104px destination card를 52–60px navigation row로 변경
+- [x] More의 104px destination card를 52–60px navigation row로 변경
 - [ ] Inbox category와 compact card를 정리하고 Today/내일 text button을 swipe·overflow action으로 변경
 - [ ] Completed 통계보다 완료 card를 우선하고 주 navigation·날짜 선택·요약 밀도 정리
 - [ ] Task 작성·상세의 제목·날짜·시간 우선순위와 점진적 form 구조 정리
@@ -550,6 +550,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 More navigation row 개편이다. 104px destination card와 개발 상태 badge를 제거하고 기록함·완료 기록·설정을 52–60px navigation row와 divider로 정리한다. D-Day는 숫자와 목표일을 중심으로 표시하고 Today 할 일 추가·삭제는 `⋯`에서만 노출하며 연결 Task는 기본 접힘을 유지한다. Today는 Task·일정·정리·완료의 네 영역과 우하단 FAB만 기본 노출한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 Inbox compact 개편이다. category heading과 Task card 간격을 정리하고 각 Task 아래 상시 노출되는 Today·내일 text button을 `⋯` overflow action으로 옮긴다. More는 기록함·완료 기록·설정을 60px navigation row와 divider로 표시한다. D-Day는 숫자와 목표일을 중심으로 표시하고 Today 할 일 추가·삭제는 `⋯`에서만 노출하며 연결 Task는 기본 접힘을 유지한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
