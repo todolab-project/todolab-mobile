@@ -170,6 +170,7 @@ type ApiResponse<T> = {
 - `POST /api/ddays/{id}/tasks`가 유효한 Task 요청에도 HTTP 500을 반환하는 문제 확인
 - D-Day 연결 Task의 Today 이동은 반영되지만 응답이 HTTP 500으로 끝나는 문제 확인
 - 검색·필터 구현 전 [`API_SEARCH_FILTER.md`](./API_SEARCH_FILTER.md)의 조회·페이지네이션 계약 확정
+- drag 재정렬 단일 mutation을 위한 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 전체 순서 저장 계약 구현
 
 현재 백엔드는 인증과 사용자 구분이 없으므로, 실제 다중 사용자 서비스 배포 전에 백엔드 저장소에서 별도 설계와 구현이 필요하다. 이 저장소에는 필요한 계약만 문서화하고 백엔드 코드는 추가하지 않는다.
 
@@ -391,7 +392,7 @@ type ApiResponse<T> = {
 - [x] Task의 큰 accent bar와 반복 badge를 제거하고 metadata를 한 줄 우선순위로 정리
 - [x] Today의 위/아래 버튼을 제거하고 mobile long press, Web drag handle 재정렬 적용
 - [x] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
-- [ ] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
+- [x] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
 - [ ] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
 - [ ] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
 - [ ] Calendar header, 주/월 전환, 날짜 navigation, 선택 날짜 Task 목록 compact 처리
@@ -538,6 +539,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 재정렬 API 요구 계약 문서화다. 현재 drag drop은 기존 `UP`/`DOWN` API를 이동 칸 수만큼 순차 호출하므로, 한 번의 mutation으로 저장할 수 있는 target index 또는 ordered IDs 계약을 정의한다. 그다음 scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer를 검증한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 빠른 추가 접근성 검증이다. scroll 중에도 빠르게 기록할 수 있도록 FAB와 sticky composer를 현재 한 줄 composer와 비교하고, 키보드·하단 탭·safe area·마지막 목록 항목과 겹치지 않는 방식을 적용한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
