@@ -54,10 +54,7 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
     <View style={styles.container}>
       <View style={styles.heading}>
         <View style={styles.headingCopy}>
-          <AppText tone="primary" variant="caption" weight="bold">
-            선택한 날짜
-          </AppText>
-          <AppText variant="bodyLarge" weight="bold">
+          <AppText variant="label" weight="bold">
             {dateLabel}
           </AppText>
         </View>
@@ -176,20 +173,6 @@ function CalendarTaskFilters({ activeFilters, counts, onToggle }: CalendarTaskFi
 
   return (
     <Card variant="muted" style={styles.filterCard}>
-      <View style={styles.filterHeading}>
-        <AppText variant="label" weight="bold">
-          범례와 필터
-        </AppText>
-        {activeFilters.length > 0 ? (
-          <AppText tone="primary" variant="caption" weight="semibold">
-            {activeFilters.length}개 선택
-          </AppText>
-        ) : (
-          <AppText tone="secondary" variant="caption">
-            전체 표시
-          </AppText>
-        )}
-      </View>
       <View style={styles.filterList}>
         {calendarTaskFilters.map((filter) => {
           const selected = activeFilters.includes(filter);
@@ -287,13 +270,7 @@ const styles = StyleSheet.create({
     gap: spacing[1],
   },
   filterCard: {
-    gap: spacing[3],
-    padding: spacing[3],
-  },
-  filterHeading: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: spacing[2],
   },
   filterList: {
     flexDirection: 'row',

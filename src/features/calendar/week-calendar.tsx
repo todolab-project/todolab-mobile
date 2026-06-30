@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
+import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, PageHeader, Screen } from '@/components/ui';
+import { AppText, Button, Card, IconButton, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -19,9 +20,6 @@ export function WeekCalendar() {
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
   const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
   const monthDates = useMemo(() => getMonthCalendarDates(selectedDate), [selectedDate]);
-  const visibleDates = mode === 'week' ? weekDates : monthDates;
-  const showsToday =
-    mode === 'week' ? visibleDates.includes(today) : selectedDate.slice(0, 7) === today.slice(0, 7);
 
   const moveWeek = (days: number) => {
     const nextSelectedDate = shiftLocalDate(selectedDate, days);
@@ -45,12 +43,16 @@ export function WeekCalendar() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <PageHeader title="캘린더" description="날짜별 할 일을 확인하고 계획하세요." />
+      <PageHeader title="캘린더" />
 
-      <View accessibilityRole="tablist" style={styles.modeSwitch}>
+      <View
+        accessibilityRole="tablist"
+        style={[styles.modeSwitch, { backgroundColor: theme.colors.surfaceMuted }]}
+      >
         <Button
           accessibilityRole="tab"
           accessibilityState={{ selected: mode === 'week' }}
+          size="compact"
           variant={mode === 'week' ? 'secondary' : 'ghost'}
           onPress={() => setMode('week')}
           style={styles.modeButton}
@@ -60,6 +62,7 @@ export function WeekCalendar() {
         <Button
           accessibilityRole="tab"
           accessibilityState={{ selected: mode === 'month' }}
+          size="compact"
           variant={mode === 'month' ? 'secondary' : 'ghost'}
           onPress={() => setMode('month')}
           style={styles.modeButton}
@@ -70,23 +73,33 @@ export function WeekCalendar() {
 
       <Card padded={false} style={styles.calendarCard}>
         <View style={styles.calendarHeading}>
+          <IconButton
+            accessibilityLabel={`이전 ${mode === 'week' ? '주' : '달'}`}
+            onPress={() => (mode === 'week' ? moveWeek(-7) : moveMonth(-1))}
+          >
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' }}
+              size={20}
+              tintColor={theme.colors.textSecondary}
+            />
+          </IconButton>
           <View style={styles.calendarHeadingCopy}>
-            <AppText variant="bodyLarge" weight="bold">
+            <AppText align="center" variant="label" weight="bold">
               {mode === 'week'
                 ? getWeekRangeLabel(weekDates)
                 : formatDateLabel(selectedDate, { year: 'numeric', month: 'long' })}
             </AppText>
-            <AppText tone="secondary" variant="caption">
-              {mode === 'week' ? '월요일부터 일요일까지' : '월요일 시작 · 날짜를 눌러 상세 보기'}
-            </AppText>
           </View>
-          {showsToday ? (
-            <View style={[styles.todayBadge, { backgroundColor: theme.colors.primarySoft }]}>
-              <AppText tone="primary" variant="caption" weight="bold">
-                {mode === 'week' ? '이번 주' : '이번 달'}
-              </AppText>
-            </View>
-          ) : null}
+          <IconButton
+            accessibilityLabel={`다음 ${mode === 'week' ? '주' : '달'}`}
+            onPress={() => (mode === 'week' ? moveWeek(7) : moveMonth(1))}
+          >
+            <SymbolView
+              name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+              size={20}
+              tintColor={theme.colors.textSecondary}
+            />
+          </IconButton>
         </View>
 
         {mode === 'week' ? (
@@ -105,30 +118,11 @@ export function WeekCalendar() {
           />
         )}
 
-        <View style={[styles.navigation, { borderTopColor: theme.colors.border }]}>
-          <Button
-            variant="ghost"
-            onPress={() => (mode === 'week' ? moveWeek(-7) : moveMonth(-1))}
-            style={styles.navigationButton}
-          >
-            ← 이전 {mode === 'week' ? '주' : '달'}
+        {selectedDate !== today ? (
+          <Button size="compact" variant="ghost" onPress={moveToToday} style={styles.todayButton}>
+            오늘로 이동
           </Button>
-          <Button
-            disabled={selectedDate === today}
-            variant="secondary"
-            onPress={moveToToday}
-            style={styles.navigationButton}
-          >
-            오늘
-          </Button>
-          <Button
-            variant="ghost"
-            onPress={() => (mode === 'week' ? moveWeek(7) : moveMonth(1))}
-            style={styles.navigationButton}
-          >
-            다음 {mode === 'week' ? '주' : '달'} →
-          </Button>
-        </View>
+        ) : null}
       </Card>
 
       <CalendarDayTasks date={selectedDate} />
@@ -291,15 +285,14 @@ function getWeekRangeLabel(weekDates: LocalDateString[]) {
   }
 
   const firstLabel = formatDateLabel(firstDate, {
-    year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
   });
   const lastLabel = formatDateLabel(
     lastDate,
     firstDate.slice(0, 4) === lastDate.slice(0, 4)
-      ? { month: 'long', day: 'numeric' }
-      : { year: 'numeric', month: 'long', day: 'numeric' },
+      ? { day: 'numeric' }
+      : { month: 'short', day: 'numeric' },
   );
 
   return `${firstLabel} – ${lastLabel}`;
@@ -307,16 +300,18 @@ function getWeekRangeLabel(weekDates: LocalDateString[]) {
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[6],
-    paddingTop: spacing[6],
+    gap: spacing[5],
+    paddingTop: spacing[4],
   },
   modeSwitch: {
     alignSelf: 'flex-start',
+    borderRadius: radii.md,
     flexDirection: 'row',
     gap: spacing[1],
+    padding: spacing[1],
   },
   modeButton: {
-    minWidth: 80,
+    minWidth: 64,
   },
   calendarCard: {
     overflow: 'hidden',
@@ -326,22 +321,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[3],
     justifyContent: 'space-between',
-    paddingHorizontal: spacing[4],
-    paddingTop: spacing[4],
+    paddingHorizontal: spacing[2],
+    paddingTop: spacing[2],
   },
   calendarHeadingCopy: {
     flex: 1,
-    gap: spacing[1],
-  },
-  todayBadge: {
-    borderRadius: radii.full,
-    paddingHorizontal: spacing[2],
-    paddingVertical: spacing[1],
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   weekRow: {
     flexDirection: 'row',
     paddingHorizontal: spacing[1],
-    paddingVertical: spacing[4],
+    paddingVertical: spacing[2],
   },
   dayButton: {
     alignItems: 'center',
@@ -352,7 +343,7 @@ const styles = StyleSheet.create({
   },
   weekDayButton: {
     flex: 1,
-    minHeight: 76,
+    minHeight: 64,
     paddingVertical: spacing[2],
   },
   monthWeekdays: {
@@ -379,15 +370,8 @@ const styles = StyleSheet.create({
     height: 4,
     width: 4,
   },
-  navigation: {
-    borderTopWidth: 1,
-    flexDirection: 'row',
-    gap: spacing[1],
-    padding: spacing[2],
-  },
-  navigationButton: {
-    flex: 1,
-    minWidth: 0,
-    paddingHorizontal: spacing[1],
+  todayButton: {
+    alignSelf: 'center',
+    marginBottom: spacing[1],
   },
 });

@@ -404,7 +404,7 @@ type ApiResponse<T> = {
 - [x] 새로고침 text button을 제거하고 pull-to-refresh만 유지
 - [x] 완료 목록은 count와 펼치기만 있는 한 줄 접힘 유지
 - [x] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
-- [ ] Calendar 주/월 segmented control, icon navigation, 날짜 선택, compact Task·Schedule card 적용
+- [x] Calendar 주/월 segmented control, icon navigation, 날짜 선택, compact Task·Schedule card 적용
 - [ ] D-Day 숫자 중심 목표 card, overflow action, 접힌 연결 Task, 생성 sheet 검토
 - [ ] More의 104px destination card를 52–60px navigation row로 변경
 - [ ] Inbox category와 compact card를 정리하고 Today/내일 text button을 swipe·overflow action으로 변경
@@ -550,6 +550,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Calendar compact 개편이다. 주/월 전환을 작은 segmented control로 정리하고 이전·오늘·다음 text button을 icon 중심 navigation으로 줄인 뒤, 선택 날짜에는 공통 Task·Schedule card를 유지하면서 반복 제목과 필터 card의 밀도를 낮춘다. Today는 Task·일정·정리·완료의 네 영역과 우하단 FAB만 기본 노출한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 D-Day compact 개편이다. D-Day 숫자와 목표명을 중심으로 카드 밀도를 낮추고 삭제·오늘 할 일 추가 같은 보조 행동은 overflow action으로 옮긴다. 연결 Task는 기본 접힘을 유지하고 생성 form은 작은 화면에서 중첩 card를 만들지 않도록 inline 밀도를 먼저 정리한 뒤 sheet 전환 필요성을 검증한다. Today는 Task·일정·정리·완료의 네 영역과 우하단 FAB만 기본 노출한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
