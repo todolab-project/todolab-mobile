@@ -394,12 +394,21 @@ type ApiResponse<T> = {
 - [x] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
 - [x] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
 - [x] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
+- [ ] divider Task row를 60–72px 개별 compact card와 8px gap으로 조정
+- [ ] 완료 control을 20×20px radius 5–6px rounded square로 변경하고 44×44pt hit area 유지
+- [ ] 일정을 56–68px 시간 중심 개별 `ScheduleCard`로 변경하고 완료 control과 drag 제외
+- [ ] Today 진행 요약 card 제거
+- [ ] Today 과부하 meter 제거하고 필요한 경우 한 줄 안내로 축소
+- [ ] 지난 미완료·추천·기록함을 `정리할 항목` 단일 navigation row로 통합
+- [ ] Today에서 기록함 Task 전체 목록 제거하고 Inbox 화면과 FAB로 역할 분리
+- [ ] 새로고침 text button을 제거하고 pull-to-refresh만 유지
+- [ ] 완료 목록은 count와 펼치기만 있는 한 줄 접힘 유지
 - [ ] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
-- [ ] Calendar header, 주/월 전환, 날짜 navigation, 선택 날짜 Task 목록 compact 처리
-- [ ] D-Day header의 추가 행동과 목표·연결 Task·생성 form 밀도 정리
+- [ ] Calendar 주/월 segmented control, icon navigation, 날짜 선택, compact Task·Schedule card 적용
+- [ ] D-Day 숫자 중심 목표 card, overflow action, 접힌 연결 Task, 생성 sheet 검토
 - [ ] More의 104px destination card를 52–60px navigation row로 변경
-- [ ] Inbox header와 그룹을 정리하고 Today/내일 text button을 swipe·overflow action으로 변경
-- [ ] Completed의 주 navigation, 날짜 선택, 요약, 완료 목록 밀도 정리
+- [ ] Inbox category와 compact card를 정리하고 Today/내일 text button을 swipe·overflow action으로 변경
+- [ ] Completed 통계보다 완료 card를 우선하고 주 navigation·날짜 선택·요약 밀도 정리
 - [ ] Task 작성·상세의 제목·날짜·시간 우선순위와 점진적 form 구조 정리
 - [ ] 빈 상태·오류·로딩을 큰 card보다 compact inline state와 skeleton 중심으로 통일
 - [ ] 320–359 compact, 360–399 regular, 400–599 wide mobile 반응형 규칙 적용
@@ -420,7 +429,9 @@ type ApiResponse<T> = {
 - Android, iOS, Web에서 정보 우선순위는 같고 플랫폼별 navigation 관습만 다르다.
 - 320px부터 599px까지 폭이 바뀌어도 수평 overflow나 잘린 핵심 행동이 없다.
 - 큰 글꼴에서는 보조 설명과 metadata가 먼저 줄고 Task 제목과 핵심 행동은 유지된다.
-- 한 줄 Task는 기본 52–60px 밀도를 목표로 하며 보이는 완료 control이 hit area 전체를 채우지 않는다.
+- 한 줄 Task card는 기본 60–72px 밀도를 목표로 하며 보이는 rounded-square 완료 control이 hit area 전체를 채우지 않는다.
+- 일정은 완료 control 없이 시간 중심 Schedule card로 Task와 즉시 구분된다.
+- Today 기본 화면에는 오늘 Task, 일정, 정리 진입점, 접힌 완료 외의 요약·전체 목록이 상시 노출되지 않는다.
 - 목록의 이동·날짜 변경 같은 보조 행동은 상시 text button 행으로 세로 공간을 차지하지 않는다.
 
 #### First viewport 기준선 기록 (2026-06-30)
@@ -539,6 +550,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Today 화면 밀도 마감이다. header와 section 간격, 일정, 지난 미완료·추천·기록함 진입점이 compact Task 목록보다 강하게 보이지 않는지 다시 정리한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 compact card 체계 적용이다. divider Task row를 60–72px 개별 card로 바꾸고 완료 control을 20×20px rounded square로 변경한 뒤, 일정은 완료 control 없는 시간 중심 `ScheduleCard`로 분리한다. 이어서 Today의 진행 요약과 과부하 meter, 기록함 전체 목록을 제거하고 지난 미완료·추천·기록함을 `정리할 항목` 한 줄로 통합한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
