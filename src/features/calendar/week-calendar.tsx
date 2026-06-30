@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, Screen } from '@/components/ui';
+import { AppText, Button, Card, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -45,19 +45,7 @@ export function WeekCalendar() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <AppText tone="primary" variant="caption" weight="bold">
-          CALENDAR
-        </AppText>
-        <AppText variant="title" weight="heavy">
-          {mode === 'week' ? '주간 계획' : '월간 계획'}
-        </AppText>
-        <AppText tone="secondary">
-          {mode === 'week'
-            ? '한 주를 넘겨보며 실행할 날짜를 골라보세요.'
-            : '한 달의 흐름을 살펴보고 확인할 날짜를 골라보세요.'}
-        </AppText>
-      </View>
+      <PageHeader title="캘린더" description="날짜별 할 일을 확인하고 계획하세요." />
 
       <View accessibilityRole="tablist" style={styles.modeSwitch}>
         <Button
@@ -321,9 +309,6 @@ const styles = StyleSheet.create({
   screen: {
     gap: spacing[6],
     paddingTop: spacing[6],
-  },
-  header: {
-    gap: spacing[2],
   },
   modeSwitch: {
     alignSelf: 'flex-start',

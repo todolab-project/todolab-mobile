@@ -4,7 +4,7 @@ import type { SymbolViewProps } from 'expo-symbols';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Card, Screen } from '@/components/ui';
+import { AppText, Card, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 
 type MoreItem = {
@@ -45,17 +45,7 @@ export function MoreOverview() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <AppText tone="primary" variant="caption" weight="bold">
-          MORE
-        </AppText>
-        <AppText variant="title" weight="heavy">
-          기록과 설정
-        </AppText>
-        <AppText tone="secondary">
-          오늘 밖에 둔 기록을 정리하고, 지나온 흐름을 확인해 보세요.
-        </AppText>
-      </View>
+      <PageHeader title="더 보기" description="기록과 앱 설정을 관리하세요." />
 
       <View accessibilityRole="list" style={styles.menu}>
         {moreItems.map((item) => (
@@ -105,9 +95,6 @@ const styles = StyleSheet.create({
   screen: {
     gap: spacing[5],
     paddingTop: spacing[5],
-  },
-  header: {
-    gap: spacing[2],
   },
   menu: {
     gap: spacing[3],

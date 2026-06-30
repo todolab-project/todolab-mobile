@@ -1,7 +1,7 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 
-import { AppText, Button, Card, EmptyState, Screen } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { DdayGoalResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
@@ -26,26 +26,24 @@ export function DdayOverview() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <AppText tone="primary" variant="caption" weight="bold">
-          D-DAY
-        </AppText>
-        <AppText variant="title" weight="heavy">
-          목표까지 한 걸음씩
-        </AppText>
-        <AppText tone="secondary">중요한 날짜와 오늘 남은 거리를 확인해 보세요.</AppText>
-      </View>
+      <PageHeader
+        title="D-Day"
+        description="중요한 목표까지 남은 날짜를 확인하세요."
+        action={
+          isCreating ? undefined : (
+            <Button size="compact" onPress={() => setIsCreating(true)}>
+              + 추가
+            </Button>
+          )
+        }
+      />
 
       {isCreating ? (
         <DdayCreateForm
           onCancel={() => setIsCreating(false)}
           onCreated={() => setIsCreating(false)}
         />
-      ) : (
-        <Button fullWidth onPress={() => setIsCreating(true)}>
-          새 D-Day 만들기
-        </Button>
-      )}
+      ) : null}
 
       {query.isPending ? (
         <Card accessibilityLabel="D-Day 목표를 불러오는 중" style={styles.stateCard}>
@@ -280,9 +278,6 @@ const styles = StyleSheet.create({
   screen: {
     gap: spacing[6],
     paddingTop: spacing[6],
-  },
-  header: {
-    gap: spacing[2],
   },
   stateCard: {
     alignItems: 'center',

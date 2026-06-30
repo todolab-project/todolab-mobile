@@ -385,7 +385,7 @@ type ApiResponse<T> = {
 - [x] 완료 section은 기본 접힘 상태로 두고 완료 수와 펼치기 행동만 표시
 - [x] typography, spacing, radius, button, card token을 compact UI 기준으로 조정
 - [x] 공통 `PageHeader`, `SectionHeader`, `IconButton`, compact action 패턴 구성
-- [ ] 영문 eyebrow와 반복 설명을 제거하고 페이지 제목 + 선택적 한 줄 설명으로 통일
+- [x] 영문 eyebrow와 반복 설명을 제거하고 페이지 제목 + 선택적 한 줄 설명으로 통일
 - [ ] Task card를 52–60px 기반 `CompactTaskRow`와 divider 목록으로 재설계
 - [ ] 완료 control의 보이는 크기는 20–24px, 독립 hit area는 44×44pt로 분리
 - [ ] Task의 큰 accent bar와 반복 badge를 제거하고 metadata를 한 줄 우선순위로 정리
@@ -538,6 +538,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 화면별 header 통일이다. 반복되는 영문 eyebrow와 긴 설명을 제거하고 공통 `PageHeader`와 `SectionHeader`로 Today, Calendar, D-Day, More, Inbox, Completed의 제목 계층을 정리한다. 그다음 Task card를 52–60px 목록 행으로 바꾸면서 보이는 완료 control과 44pt hit area를 분리하고, Today의 위/아래 버튼을 long press·drag handle 재정렬로 교체한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 `CompactTaskRow` 개편이다. Task card를 52–60px divider 목록 행으로 바꾸고, 보이는 완료 control을 20–24px로 줄이면서 독립된 44pt hit area는 유지한다. 큰 accent bar와 반복 badge를 제거해 metadata를 한 줄로 정리한 뒤 Today의 위/아래 버튼을 long press·drag handle 재정렬로 교체한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

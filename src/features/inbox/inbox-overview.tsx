@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, Screen } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
 import { TaskCard, useMoveTaskToToday } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -37,22 +38,19 @@ export function InboxOverview() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Button accessibilityLabel="More 화면으로 돌아가기" variant="ghost" onPress={router.back}>
-          ← 돌아가기
-        </Button>
-        <View style={styles.titleBlock}>
-          <AppText tone="primary" variant="caption" weight="bold">
-            INBOX
-          </AppText>
-          <AppText variant="title" weight="heavy">
-            기록함
-          </AppText>
-          <AppText tone="secondary">
-            아직 날짜를 정하지 않은 기록을 카테고리별로 살펴보세요.
-          </AppText>
-        </View>
-      </View>
+      <PageHeader
+        title="기록함"
+        description="날짜를 정하지 않은 기록을 정리하세요."
+        leading={
+          <IconButton accessibilityLabel="More 화면으로 돌아가기" onPress={router.back}>
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
+              size={20}
+              tintColor={theme.colors.text}
+            />
+          </IconButton>
+        }
+      />
 
       {moveError ? (
         <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
@@ -166,10 +164,6 @@ const styles = StyleSheet.create({
   screen: {
     gap: spacing[5],
     paddingTop: spacing[3],
-  },
-  header: {
-    alignItems: 'flex-start',
-    gap: spacing[3],
   },
   titleBlock: {
     gap: spacing[2],
