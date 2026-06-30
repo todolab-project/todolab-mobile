@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
-import { TaskCard } from '@/features/tasks';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { TaskCard, useReopenTask } from '@/features/tasks';
+import { spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
@@ -17,7 +17,9 @@ export function CompletedOverview() {
   const theme = useAppTheme();
   const today = toApiLocalDate();
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
+  const [menuTaskId, setMenuTaskId] = useState<number | null>(null);
   const week = useCompletedWeek(selectedDate);
+  const reopenTask = useReopenTask(selectedDate);
   const selectedDay = week.days.find((day) => day.date === selectedDate) ?? week.days[0];
   const summary = getCompletedSummary(week.days);
   const moveWeek = (days: number) => {
@@ -29,7 +31,6 @@ export function CompletedOverview() {
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader
         title="완료 기록"
-        description="끝낸 일을 날짜별로 확인하세요."
         leading={
           <IconButton accessibilityLabel="More 화면으로 돌아가기" onPress={router.back}>
             <SymbolView
@@ -41,51 +42,73 @@ export function CompletedOverview() {
         }
       />
 
-      <Card style={styles.weekCard}>
+      <Card padded={false} style={styles.weekCard}>
         <View style={styles.weekHeading}>
-          <View style={styles.titleBlock}>
-            <AppText variant="bodyLarge" weight="bold">
-              {week.days[0]
-                ? formatWeekRange(week.days[0].date, week.days.at(-1)?.date)
-                : '이번 주'}
-            </AppText>
-            <AppText tone="secondary" variant="caption" weight="semibold">
-              날짜를 눌러 완료 기록 보기
-            </AppText>
-          </View>
-          <Button
+          <IconButton accessibilityLabel="이전 주" onPress={() => moveWeek(-7)}>
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' }}
+              size={20}
+              tintColor={theme.colors.textSecondary}
+            />
+          </IconButton>
+          <AppText align="center" style={styles.weekLabel} variant="label" weight="bold">
+            {week.days[0] ? formatWeekRange(week.days[0].date, week.days.at(-1)?.date) : '이번 주'}
+          </AppText>
+          <IconButton accessibilityLabel="다음 주" onPress={() => moveWeek(7)}>
+            <SymbolView
+              name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+              size={20}
+              tintColor={theme.colors.textSecondary}
+            />
+          </IconButton>
+          <IconButton
+            accessibilityLabel="이번 주로 이동"
             disabled={selectedDate === today}
-            variant="ghost"
             onPress={() => setSelectedDate(today)}
           >
-            이번 주
-          </Button>
+            <SymbolView
+              name={{ ios: 'calendar', android: 'today', web: 'today' }}
+              size={18}
+              tintColor={theme.colors.textSecondary}
+            />
+          </IconButton>
         </View>
 
-        <View style={styles.weekNavigation}>
-          <Button variant="ghost" onPress={() => moveWeek(-7)} style={styles.weekMove}>
-            ← 이전 주
-          </Button>
-          <Button variant="ghost" onPress={() => moveWeek(7)} style={styles.weekMove}>
-            다음 주 →
-          </Button>
-        </View>
-
-        <View style={styles.dayList}>
+        <View style={[styles.dayList, { borderTopColor: theme.colors.border }]}>
           {week.days.map((day) => {
             const selected = day.date === selectedDate;
 
             return (
-              <Button
+              <Pressable
                 key={day.date}
                 accessibilityLabel={`${formatDateLabel(day.date)}, 완료 ${day.tasks.length}개`}
+                accessibilityRole="button"
                 accessibilityState={{ selected }}
-                variant={selected ? 'primary' : 'secondary'}
                 onPress={() => setSelectedDate(day.date)}
-                style={styles.dayButton}
+                style={[
+                  styles.dayButton,
+                  {
+                    backgroundColor: selected ? theme.colors.primarySoft : theme.colors.surface,
+                  },
+                ]}
               >
-                {formatDateLabel(day.date, { weekday: 'short' })} · {day.tasks.length}
-              </Button>
+                <AppText
+                  align="center"
+                  tone={selected ? 'primary' : 'secondary'}
+                  variant="caption"
+                  weight="semibold"
+                >
+                  {formatDateLabel(day.date, { weekday: 'short' })}
+                </AppText>
+                <AppText
+                  align="center"
+                  tone={selected ? 'primary' : 'default'}
+                  variant="label"
+                  weight="bold"
+                >
+                  {day.tasks.length}
+                </AppText>
+              </Pressable>
             );
           })}
         </View>
@@ -119,33 +142,6 @@ export function CompletedOverview() {
         </Card>
       ) : (
         <>
-          <Card variant="muted" style={styles.summaryCard}>
-            <View style={styles.titleBlock}>
-              <AppText variant="bodyLarge" weight="bold">
-                이번 주의 기록
-              </AppText>
-              <AppText tone="secondary">{summary.message}</AppText>
-            </View>
-            <View style={styles.summaryStats}>
-              <View style={styles.summaryStat}>
-                <AppText variant="title" weight="heavy">
-                  {summary.total}
-                </AppText>
-                <AppText tone="secondary" variant="caption" weight="semibold">
-                  완료한 일
-                </AppText>
-              </View>
-              <View style={styles.summaryStat}>
-                <AppText variant="title" weight="heavy">
-                  {summary.activeDays}
-                </AppText>
-                <AppText tone="secondary" variant="caption" weight="semibold">
-                  기록이 있는 날
-                </AppText>
-              </View>
-            </View>
-          </Card>
-
           {selectedDay?.tasks.length ? (
             <View style={styles.log}>
               <View style={styles.logHeading}>
@@ -161,6 +157,40 @@ export function CompletedOverview() {
                   <TaskCard
                     key={task.id}
                     task={task}
+                    completionDisabled={reopenTask.isPending}
+                    trailing={
+                      <IconButton
+                        accessibilityLabel={`${task.title}, 완료 항목 메뉴 ${
+                          menuTaskId === task.id ? '닫기' : '열기'
+                        }`}
+                        selected={menuTaskId === task.id}
+                        onPress={() =>
+                          setMenuTaskId((current) => (current === task.id ? null : task.id))
+                        }
+                      >
+                        <AppText tone="secondary" weight="bold">
+                          ⋯
+                        </AppText>
+                      </IconButton>
+                    }
+                    action={
+                      menuTaskId === task.id ? (
+                        <Button
+                          accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
+                          loading={reopenTask.isPending && reopenTask.variables === task.id}
+                          disabled={reopenTask.isPending}
+                          size="compact"
+                          variant="ghost"
+                          onPress={() =>
+                            reopenTask.mutate(task.id, {
+                              onSuccess: () => setMenuTaskId(null),
+                            })
+                          }
+                        >
+                          다시 열기
+                        </Button>
+                      ) : null
+                    }
                     onOpen={() =>
                       router.push({
                         pathname: '/tasks/[taskId]',
@@ -179,6 +209,21 @@ export function CompletedOverview() {
               />
             </Card>
           )}
+
+          {reopenTask.error ? (
+            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+              {reopenTask.error.message}
+            </AppText>
+          ) : null}
+
+          <Card variant="muted" style={styles.summaryCard}>
+            <AppText variant="label" weight="semibold">
+              이번 주 {summary.total}개 완료 · {summary.activeDays}일 기록
+            </AppText>
+            <AppText numberOfLines={1} tone="secondary" variant="caption">
+              {summary.message}
+            </AppText>
+          </Card>
         </>
       )}
     </Screen>
@@ -197,36 +242,33 @@ function formatWeekRange(start: LocalDateString, end?: LocalDateString) {
 const styles = StyleSheet.create({
   screen: {
     gap: spacing[5],
-    paddingTop: spacing[3],
+    paddingTop: spacing[4],
   },
   titleBlock: {
     gap: spacing[2],
   },
   weekCard: {
-    gap: spacing[3],
+    overflow: 'hidden',
   },
   weekHeading: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'space-between',
+    gap: spacing[1],
+    padding: spacing[2],
   },
-  weekNavigation: {
-    flexDirection: 'row',
-    gap: spacing[2],
-  },
-  weekMove: {
+  weekLabel: {
     flex: 1,
   },
   dayList: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing[2],
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   dayButton: {
-    borderRadius: radii.md,
-    flexGrow: 1,
-    minWidth: 82,
+    alignItems: 'center',
+    flex: 1,
+    gap: spacing[1],
+    justifyContent: 'center',
+    minHeight: 52,
   },
   stateCard: {
     alignItems: 'center',
@@ -239,14 +281,6 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   summaryCard: {
-    gap: spacing[4],
-  },
-  summaryStats: {
-    flexDirection: 'row',
-    gap: spacing[3],
-  },
-  summaryStat: {
-    flex: 1,
     gap: spacing[1],
   },
   log: {
