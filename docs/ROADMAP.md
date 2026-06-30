@@ -397,12 +397,12 @@ type ApiResponse<T> = {
 - [x] divider Task row를 60–72px 개별 compact card와 8px gap으로 조정
 - [x] 완료 control을 20×20px radius 5–6px rounded square로 변경하고 44×44pt hit area 유지
 - [x] 일정을 56–68px 시간 중심 개별 `ScheduleCard`로 변경하고 완료 control과 drag 제외
-- [ ] Today 진행 요약 card 제거
-- [ ] Today 과부하 meter 제거하고 필요한 경우 한 줄 안내로 축소
-- [ ] 지난 미완료·추천·기록함을 `정리할 항목` 단일 navigation row로 통합
-- [ ] Today에서 기록함 Task 전체 목록 제거하고 Inbox 화면과 FAB로 역할 분리
-- [ ] 새로고침 text button을 제거하고 pull-to-refresh만 유지
-- [ ] 완료 목록은 count와 펼치기만 있는 한 줄 접힘 유지
+- [x] Today 진행 요약 card 제거
+- [x] Today 과부하 meter 제거하고 필요한 경우 한 줄 안내로 축소
+- [x] 지난 미완료·추천·기록함을 `정리할 항목` 단일 navigation row로 통합
+- [x] Today에서 기록함 Task 전체 목록 제거하고 Inbox 화면과 FAB로 역할 분리
+- [x] 새로고침 text button을 제거하고 pull-to-refresh만 유지
+- [x] 완료 목록은 count와 펼치기만 있는 한 줄 접힘 유지
 - [ ] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
 - [ ] Calendar 주/월 segmented control, icon navigation, 날짜 선택, compact Task·Schedule card 적용
 - [ ] D-Day 숫자 중심 목표 card, overflow action, 접힌 연결 Task, 생성 sheet 검토
@@ -550,6 +550,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Today 정보 축소다. 진행 요약과 과부하 meter, 기록함 전체 목록을 제거하고 지난 미완료·추천·기록함을 `정리할 항목` 한 줄로 통합한다. Task는 rounded-square 완료 control이 있는 compact card, 일정은 완료 control 없는 시간 중심 `ScheduleCard`로 구분한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 Today 화면 밀도 마감이다. header와 section 간격, Task·일정·정리·완료의 네 영역이 320–430px 모바일에서 자연스럽게 이어지는지 확인하고 불필요한 설명과 여백을 정리한다. Task는 rounded-square 완료 control이 있는 compact card, 일정은 완료 control 없는 시간 중심 `ScheduleCard`로 구분한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

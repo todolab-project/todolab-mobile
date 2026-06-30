@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import {
@@ -14,11 +14,7 @@ import {
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
-import {
-  getTodayLoadGuidance,
-  RECOMMENDED_TODAY_TASK_COUNT,
-  splitTodayTasks,
-} from './today-task-sections';
+import { splitTodayTasks } from './today-task-sections';
 import { DraggableTodayTaskList } from './draggable-today-task-list';
 import { useTodayOverview } from './use-today-overview';
 
@@ -42,7 +38,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
     staleTasks,
     inboxTasks,
     isPending,
-    isRefreshing,
     error,
     supplementalError,
     refetch,
@@ -53,9 +48,9 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const reorderTodayTask = useReorderTodayTask(date);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [isCompletedExpanded, setIsCompletedExpanded] = useState(false);
+  const [isReviewExpanded, setIsReviewExpanded] = useState(false);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
-  const loadGuidance = getTodayLoadGuidance(executionTasks.length, scheduleTasks.length);
-  const plannedTaskCount = todayTasks.length + doneTasks.length;
+  const reviewItemCount = staleTasks.length + recommendations.length + inboxTasks.length;
   const sortedScheduleTasks = [...scheduleTasks].sort(compareScheduleTasks);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
@@ -117,26 +112,12 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
             <AppText variant="bodyLarge" weight="bold">
-              오늘 실행할 일
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              실행할 순서대로 하나씩 완료해요.
+              오늘 할 일
             </AppText>
           </View>
-          <View style={styles.taskSectionActions}>
-            <AppText tone="primary" variant="label" weight="bold">
-              {executionTasks.length}개
-            </AppText>
-            <Button
-              accessibilityLabel="Today 정보 새로고침"
-              disabled={isRefreshing}
-              variant="ghost"
-              onPress={() => void refetch()}
-              style={styles.refreshButton}
-            >
-              새로고침
-            </Button>
-          </View>
+          <AppText tone="primary" variant="label" weight="bold">
+            {executionTasks.length}개
+          </AppText>
         </View>
 
         {completeTask.error || reorderTodayTask.error ? (
@@ -224,167 +205,12 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         </Card>
       ) : null}
 
-      <Card
-        accessible
-        accessibilityLabel={`오늘 진행 요약. 완료 ${doneTasks.length}개, 전체 ${plannedTaskCount}개, 지난 미완료 ${staleTasks.length}개, 추천 ${recommendations.length}개, 기록함 ${inboxTasks.length}개`}
-        variant="muted"
-        style={styles.progressSummaryCard}
-      >
-        <AppText variant="label" weight="bold">
-          완료 {doneTasks.length}/{plannedTaskCount}
-        </AppText>
-        <AppText numberOfLines={1} tone="secondary" variant="caption" style={styles.progressMeta}>
-          미완료 {staleTasks.length} · 추천 {recommendations.length} · 기록함 {inboxTasks.length}
-        </AppText>
-      </Card>
-
-      {loadGuidance ? (
-        <Card
-          accessibilityLabel={`오늘 계획 과부하 안내. ${loadGuidance.description}`}
-          style={[
-            styles.capacityCard,
-            {
-              backgroundColor: theme.colors.warningSoft,
-              borderColor: theme.colors.warning,
-            },
-          ]}
-        >
-          <View style={styles.capacityHeading}>
-            <View style={styles.capacityCopy}>
-              <AppText tone="warning" variant="bodyLarge" weight="bold">
-                {loadGuidance.title}
-              </AppText>
-              <AppText tone="secondary" variant="label">
-                {loadGuidance.description}
-              </AppText>
-            </View>
-            <View style={[styles.countPill, { backgroundColor: theme.colors.surface }]}>
-              <AppText tone="warning" variant="caption" weight="bold">
-                +{loadGuidance.excessCount}
-              </AppText>
-            </View>
-          </View>
-          <View style={styles.capacityMeter} accessibilityElementsHidden>
-            {executionTasks.slice(0, 10).map((task, index) => (
-              <View
-                key={task.id}
-                style={[
-                  styles.capacitySegment,
-                  {
-                    backgroundColor:
-                      index < RECOMMENDED_TODAY_TASK_COUNT
-                        ? theme.colors.primary
-                        : theme.colors.warning,
-                  },
-                ]}
-              />
-            ))}
-          </View>
-          <AppText tone="secondary" variant="caption">
-            파란색은 권장 범위, 주황색은 오늘 덜어내면 좋은 항목이에요.
-          </AppText>
-        </Card>
-      ) : null}
-
-      {staleTasks.length > 0 ? (
-        <Card style={styles.compactEntryCard}>
-          <View style={styles.compactEntryCopy}>
-            <View style={styles.compactEntryTitleRow}>
-              <AppText variant="label" weight="bold">
-                지난 미완료
-              </AppText>
-              <View style={[styles.countPill, { backgroundColor: theme.colors.warningSoft }]}>
-                <AppText tone="warning" variant="caption" weight="bold">
-                  {staleTasks.length}개
-                </AppText>
-              </View>
-            </View>
-            <AppText numberOfLines={1} tone="secondary" variant="caption">
-              {staleTasks[0].title} · {getStaleTaskMeta(staleTasks[0])}
-            </AppText>
-          </View>
-          <View style={styles.compactEntryActions}>
-            <Button variant="ghost" onPress={() => openTask(staleTasks[0].id)}>
-              보기
-            </Button>
-            <Button
-              loading={moveToToday.isPending && moveToToday.variables === staleTasks[0].id}
-              disabled={moveToToday.isPending}
-              variant="secondary"
-              onPress={() =>
-                moveToToday.mutate(staleTasks[0].id, {
-                  onSuccess: () => showFeedback('지난 미완료를 오늘 할 일로 옮겼어요.'),
-                })
-              }
-            >
-              오늘
-            </Button>
-          </View>
-          {moveToToday.error ? (
-            <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-              <AppText tone="danger" variant="label">
-                {moveToToday.error.message}
-              </AppText>
-            </View>
-          ) : null}
-        </Card>
-      ) : null}
-
-      {recommendations.length > 0 ? (
-        <Card style={styles.compactEntryCard}>
-          <View style={styles.compactEntryCopy}>
-            <View style={styles.compactEntryTitleRow}>
-              <AppText variant="label" weight="bold">
-                오늘의 추천
-              </AppText>
-              <View style={[styles.countPill, { backgroundColor: theme.colors.primarySoft }]}>
-                <AppText tone="primary" variant="caption" weight="bold">
-                  {recommendations.length}개
-                </AppText>
-              </View>
-            </View>
-            <AppText numberOfLines={1} tone="secondary" variant="caption">
-              {recommendations[0].task.title} · {recommendations[0].reason}
-            </AppText>
-          </View>
-          <View style={styles.compactEntryActions}>
-            <Button variant="ghost" onPress={() => openTask(recommendations[0].task.id)}>
-              보기
-            </Button>
-            <Button
-              disabled={moveToToday.isPending}
-              loading={
-                moveToToday.isPending && moveToToday.variables === recommendations[0].task.id
-              }
-              variant="secondary"
-              onPress={() =>
-                moveToToday.mutate(recommendations[0].task.id, {
-                  onSuccess: () => showFeedback('추천 항목을 오늘 할 일로 추가했어요.'),
-                })
-              }
-            >
-              추가
-            </Button>
-          </View>
-          {moveToToday.error ? (
-            <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-              <AppText tone="danger" variant="label">
-                {moveToToday.error.message}
-              </AppText>
-            </View>
-          ) : null}
-        </Card>
-      ) : null}
-
       {sortedScheduleTasks.length > 0 ? (
         <View style={styles.scheduleSection}>
           <View style={styles.taskSectionHeading}>
             <View style={styles.taskSectionCopy}>
               <AppText variant="bodyLarge" weight="bold">
-                캘린더 일정
-              </AppText>
-              <AppText tone="secondary" variant="label">
-                시간순으로 약속만 짧게 확인해요.
+                일정
               </AppText>
             </View>
             <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
@@ -402,69 +228,88 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         </View>
       ) : null}
 
-      <View style={styles.taskSection}>
-        <View style={styles.taskSectionHeading}>
-          <View style={styles.taskSectionCopy}>
-            <AppText variant="bodyLarge" weight="bold">
-              아직 고르지 않은 일
+      {reviewItemCount > 0 ? (
+        <View style={styles.reviewSection}>
+          <Pressable
+            accessibilityLabel={`정리할 항목 ${reviewItemCount}개, ${
+              isReviewExpanded ? '접기' : '펼치기'
+            }`}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: isReviewExpanded }}
+            onPress={() => setIsReviewExpanded((current) => !current)}
+            style={({ pressed }) => [
+              styles.reviewRow,
+              {
+                backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
+                borderColor: theme.colors.border,
+              },
+            ]}
+          >
+            <View style={styles.reviewCopy}>
+              <AppText weight="semibold">정리할 항목</AppText>
+              <AppText numberOfLines={1} tone="secondary" variant="caption">
+                미완료 {staleTasks.length} · 추천 {recommendations.length} · 기록함{' '}
+                {inboxTasks.length}
+              </AppText>
+            </View>
+            <AppText tone="secondary" variant="label" weight="bold">
+              {reviewItemCount}개 {isReviewExpanded ? '⌃' : '›'}
             </AppText>
-            <AppText tone="secondary" variant="label">
-              기록함에서 오늘 실행할 일을 골라요.
-            </AppText>
-          </View>
-          <AppText tone="primary" variant="label" weight="bold">
-            {inboxTasks.length}개
-          </AppText>
+          </Pressable>
+
+          {isReviewExpanded ? (
+            <Card style={styles.reviewDetails}>
+              {staleTasks.length > 0 ? (
+                <ReviewItem
+                  actionLabel="오늘"
+                  disabled={moveToToday.isPending}
+                  label="지난 미완료"
+                  loading={moveToToday.isPending && moveToToday.variables === staleTasks[0].id}
+                  title={staleTasks[0].title}
+                  onAction={() =>
+                    moveToToday.mutate(staleTasks[0].id, {
+                      onSuccess: () => showFeedback('지난 미완료를 오늘 할 일로 옮겼어요.'),
+                    })
+                  }
+                  onOpen={() => openTask(staleTasks[0].id)}
+                />
+              ) : null}
+              {recommendations.length > 0 ? (
+                <ReviewItem
+                  actionLabel="추가"
+                  disabled={moveToToday.isPending}
+                  label="추천"
+                  loading={
+                    moveToToday.isPending && moveToToday.variables === recommendations[0].task.id
+                  }
+                  title={recommendations[0].task.title}
+                  onAction={() =>
+                    moveToToday.mutate(recommendations[0].task.id, {
+                      onSuccess: () => showFeedback('추천 항목을 오늘 할 일로 추가했어요.'),
+                    })
+                  }
+                  onOpen={() => openTask(recommendations[0].task.id)}
+                />
+              ) : null}
+              {inboxTasks.length > 0 ? (
+                <ReviewItem
+                  actionLabel="열기"
+                  label="기록함"
+                  title={`${inboxTasks.length}개의 기록을 정리해 보세요.`}
+                  onAction={() => router.push('/inbox')}
+                />
+              ) : null}
+              {moveToToday.error ? (
+                <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
+                  <AppText tone="danger" variant="label">
+                    {moveToToday.error.message}
+                  </AppText>
+                </View>
+              ) : null}
+            </Card>
+          ) : null}
         </View>
-
-        {moveToToday.error ? (
-          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-            <AppText tone="danger" variant="label">
-              {moveToToday.error.message}
-            </AppText>
-          </View>
-        ) : null}
-
-        {inboxTasks.length === 0 ? (
-          <Card variant="muted">
-            <EmptyState
-              title="기록함이 비어 있어요"
-              description="생각난 일을 바로 기록하거나 자세히 작성해 보세요."
-              action={
-                <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
-                  새 할 일 작성
-                </Button>
-              }
-            />
-          </Card>
-        ) : (
-          <View style={styles.taskList}>
-            {inboxTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onOpen={() => openTask(task.id)}
-                action={
-                  <Button
-                    accessibilityLabel={`${task.title}, 오늘 할 일로 이동`}
-                    loading={moveToToday.isPending && moveToToday.variables === task.id}
-                    disabled={moveToToday.isPending}
-                    variant="secondary"
-                    onPress={() =>
-                      moveToToday.mutate(task.id, {
-                        onSuccess: () => showFeedback('기록함에서 오늘 할 일로 옮겼어요.'),
-                      })
-                    }
-                    style={styles.moveButton}
-                  >
-                    오늘 하기
-                  </Button>
-                }
-              />
-            ))}
-          </View>
-        )}
-      </View>
+      ) : null}
 
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
@@ -537,6 +382,55 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   );
 }
 
+type ReviewItemProps = {
+  label: string;
+  title: string;
+  actionLabel: string;
+  disabled?: boolean;
+  loading?: boolean;
+  onAction: () => void;
+  onOpen?: () => void;
+};
+
+function ReviewItem({
+  label,
+  title,
+  actionLabel,
+  disabled,
+  loading,
+  onAction,
+  onOpen,
+}: ReviewItemProps) {
+  return (
+    <View style={styles.reviewItem}>
+      <View style={styles.reviewItemCopy}>
+        <AppText tone="secondary" variant="caption" weight="semibold">
+          {label}
+        </AppText>
+        <AppText numberOfLines={1} variant="label" weight="medium">
+          {title}
+        </AppText>
+      </View>
+      <View style={styles.reviewItemActions}>
+        {onOpen ? (
+          <Button size="compact" variant="ghost" onPress={onOpen}>
+            보기
+          </Button>
+        ) : null}
+        <Button
+          disabled={disabled}
+          loading={loading}
+          size="compact"
+          variant="secondary"
+          onPress={onAction}
+        >
+          {actionLabel}
+        </Button>
+      </View>
+    </View>
+  );
+}
+
 function compareScheduleTasks(left: TaskResponse, right: TaskResponse) {
   if (!left.startAt && !right.startAt) {
     return left.id - right.id;
@@ -553,12 +447,6 @@ function compareScheduleTasks(left: TaskResponse, right: TaskResponse) {
   return left.startAt.localeCompare(right.startAt);
 }
 
-function getStaleTaskMeta(task: { plannedDate: LocalDateString | null; carryOverCount: number }) {
-  const plannedLabel = task.plannedDate ? `계획일 ${task.plannedDate}` : '계획일 없음';
-
-  return plannedLabel;
-}
-
 const styles = StyleSheet.create({
   container: {
     gap: spacing[3],
@@ -568,55 +456,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },
-  capacityCard: {
-    gap: spacing[3],
-  },
-  capacityHeading: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'space-between',
-  },
-  capacityCopy: {
-    flex: 1,
-    gap: spacing[1],
-  },
-  capacityMeter: {
-    flexDirection: 'row',
-    gap: spacing[1],
-  },
-  capacitySegment: {
-    borderRadius: radii.full,
-    flex: 1,
-    height: 6,
-    maxWidth: 44,
-  },
   countPill: {
     borderRadius: radii.full,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
-  },
-  compactEntryCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[3],
-  },
-  compactEntryCopy: {
-    flex: 1,
-    gap: spacing[1],
-    minWidth: 0,
-  },
-  compactEntryTitleRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[2],
-  },
-  compactEntryActions: {
-    flexDirection: 'row',
-    gap: spacing[2],
   },
   loadingCard: {
     alignItems: 'center',
@@ -640,19 +483,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
   },
-  progressSummaryCard: {
-    alignItems: 'center',
-    borderRadius: radii.lg,
-    flexDirection: 'row',
-    gap: spacing[2],
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-  },
-  progressMeta: {
-    flex: 1,
-    minWidth: 0,
-  },
   taskSection: {
     gap: spacing[3],
     paddingTop: spacing[2],
@@ -674,8 +504,41 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
   },
-  taskSectionActions: {
-    alignItems: 'flex-end',
+  reviewSection: {
+    gap: spacing[2],
+  },
+  reviewRow: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing[3],
+    justifyContent: 'space-between',
+    minHeight: 60,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
+  },
+  reviewCopy: {
+    flex: 1,
+    gap: spacing[1],
+    minWidth: 0,
+  },
+  reviewDetails: {
+    gap: spacing[2],
+  },
+  reviewItem: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  reviewItemCopy: {
+    flex: 1,
+    gap: spacing[1],
+    minWidth: 0,
+  },
+  reviewItemActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
     gap: spacing[1],
   },
   completedSectionActions: {
@@ -685,9 +548,6 @@ const styles = StyleSheet.create({
   },
   completedToggleButton: {
     minWidth: 64,
-  },
-  refreshButton: {
-    minWidth: 76,
   },
   taskList: {
     gap: spacing[2],
