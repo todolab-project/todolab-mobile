@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import type { ReactNode } from 'react';
 
-import { AppText, Card } from '@/components/ui';
+import { AppText } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
 import { formatTimeLabel } from '@/utils';
@@ -41,17 +41,21 @@ export function TaskCard({
     : !task.allDay && task.startAt
       ? formatTimeLabel(task.startAt)
       : null;
+  const metadata = [
+    timeLabel,
+    task.allDay ? '종일' : null,
+    task.category,
+    task.ddayGoalTitle,
+  ].filter((value): value is string => Boolean(value));
 
   return (
-    <Card padded={false} style={styles.card}>
+    <View
+      style={[
+        styles.row,
+        { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.border },
+      ]}
+    >
       <View style={styles.content}>
-        <View
-          style={[
-            styles.accent,
-            { backgroundColor: isDone ? theme.colors.success : theme.colors.primary },
-          ]}
-        />
-
         <Pressable
           accessibilityLabel={toggleLabel}
           accessibilityRole="checkbox"
@@ -60,25 +64,32 @@ export function TaskCard({
           hitSlop={4}
           onPress={onToggle}
           style={({ pressed }) => [
-            styles.checkbox,
-            {
-              backgroundColor: isDone
-                ? theme.colors.success
-                : pressed
-                  ? theme.colors.primarySoft
-                  : theme.colors.surface,
-              borderColor: isDone ? theme.colors.success : theme.colors.borderStrong,
-              opacity: completionDisabled && !isCompleting ? 0.45 : 1,
-            },
+            styles.checkboxHitArea,
+            pressed && { backgroundColor: theme.colors.primarySoft },
+            { opacity: completionDisabled && !isCompleting ? 0.45 : 1 },
           ]}
         >
-          {isCompleting ? (
-            <ActivityIndicator color={theme.colors.primary} size="small" />
-          ) : isDone ? (
-            <AppText style={{ color: theme.colors.textOnPrimary }} weight="heavy">
-              ✓
-            </AppText>
-          ) : null}
+          <View
+            style={[
+              styles.checkbox,
+              {
+                backgroundColor: isDone ? theme.colors.success : theme.colors.surface,
+                borderColor: isDone ? theme.colors.success : theme.colors.borderStrong,
+              },
+            ]}
+          >
+            {isCompleting ? (
+              <ActivityIndicator color={theme.colors.primary} size="small" />
+            ) : isDone ? (
+              <AppText
+                variant="caption"
+                style={{ color: theme.colors.textOnPrimary }}
+                weight="bold"
+              >
+                ✓
+              </AppText>
+            ) : null}
+          </View>
         </Pressable>
 
         <Pressable
@@ -97,8 +108,7 @@ export function TaskCard({
             <AppText
               numberOfLines={2}
               tone={isDone ? 'secondary' : 'default'}
-              variant="bodyLarge"
-              weight="bold"
+              weight="medium"
               style={isDone ? styles.doneTitle : undefined}
             >
               {task.title}
@@ -110,72 +120,46 @@ export function TaskCard({
               </AppText>
             ) : null}
 
-            <View style={styles.metadata}>
-              {task.allDay ? <MetaBadge label="종일" /> : null}
-              {task.category ? <MetaBadge label={task.category} /> : null}
-              {task.ddayGoalTitle ? <MetaBadge label={task.ddayGoalTitle} tone="primary" /> : null}
-            </View>
+            {metadata.length > 0 ? (
+              <AppText numberOfLines={1} tone="secondary" variant="caption">
+                {metadata.join(' · ')}
+              </AppText>
+            ) : null}
           </View>
-
-          {timeLabel ? (
-            <AppText tone="secondary" variant="label" weight="bold">
-              {timeLabel}
-            </AppText>
-          ) : null}
         </Pressable>
       </View>
       {action ? <View style={styles.actionRow}>{action}</View> : null}
-    </Card>
-  );
-}
-
-type MetaBadgeProps = {
-  label: string;
-  tone?: 'neutral' | 'primary';
-};
-
-function MetaBadge({ label, tone = 'neutral' }: MetaBadgeProps) {
-  const theme = useAppTheme();
-  const isPrimary = tone === 'primary';
-
-  return (
-    <View
-      style={[
-        styles.badge,
-        { backgroundColor: isPrimary ? theme.colors.primarySoft : theme.colors.surfaceMuted },
-      ]}
-    >
-      <AppText tone={isPrimary ? 'primary' : 'secondary'} variant="caption" weight="semibold">
-        {label}
-      </AppText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    overflow: 'hidden',
+  row: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   content: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing[3],
-    minHeight: 76,
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[3],
+    gap: spacing[1],
+    minHeight: 56,
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
   },
-  accent: {
-    alignSelf: 'stretch',
+  checkboxHitArea: {
+    alignItems: 'center',
     borderRadius: radii.full,
-    width: 4,
+    height: sizes.touchTarget,
+    justifyContent: 'center',
+    width: sizes.touchTarget,
   },
   checkbox: {
     alignItems: 'center',
     borderRadius: radii.full,
     borderWidth: 1.5,
-    height: sizes.touchTarget,
+    height: 22,
     justifyContent: 'center',
-    width: sizes.touchTarget,
+    overflow: 'hidden',
+    width: 22,
   },
   copy: {
     flex: 1,
@@ -187,26 +171,14 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     flex: 1,
     flexDirection: 'row',
-    gap: spacing[2],
-    marginVertical: -spacing[1],
     minWidth: 0,
-    paddingHorizontal: spacing[2],
-    paddingVertical: spacing[1],
-  },
-  metadata: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing[1],
-  },
-  badge: {
-    borderRadius: radii.full,
-    paddingHorizontal: spacing[2],
-    paddingVertical: spacing[1],
+    paddingHorizontal: spacing[1],
+    paddingVertical: spacing[2],
   },
   actionRow: {
     alignItems: 'flex-end',
-    paddingBottom: spacing[3],
-    paddingHorizontal: spacing[4],
+    paddingBottom: spacing[2],
+    paddingHorizontal: spacing[2],
   },
   doneTitle: {
     textDecorationLine: 'line-through',

@@ -785,7 +785,7 @@ const styles = StyleSheet.create({
     minWidth: 76,
   },
   taskList: {
-    gap: spacing[3],
+    gap: 0,
   },
   inlineError: {
     borderRadius: radii.md,
