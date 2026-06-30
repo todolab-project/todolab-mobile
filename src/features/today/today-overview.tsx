@@ -19,6 +19,7 @@ import {
   RECOMMENDED_TODAY_TASK_COUNT,
   splitTodayTasks,
 } from './today-task-sections';
+import { DraggableTodayTaskList } from './draggable-today-task-list';
 import { useTodayOverview } from './use-today-overview';
 
 type TodayOverviewProps = {
@@ -61,6 +62,16 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   };
   const showFeedback = (message: string) => {
     setFeedback({ tone: 'success', message });
+  };
+  const moveTaskToIndex = async (taskId: number, fromIndex: number, toIndex: number) => {
+    const direction = toIndex < fromIndex ? 'UP' : 'DOWN';
+    const moveCount = Math.abs(toIndex - fromIndex);
+
+    for (let moveIndex = 0; moveIndex < moveCount; moveIndex += 1) {
+      await reorderTodayTask.mutateAsync({ taskId, direction });
+    }
+
+    showFeedback('실행 순서를 옮겼어요.');
   };
 
   if (isPending) {
@@ -149,54 +160,26 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             />
           </Card>
         ) : (
-          <View style={styles.taskList}>
-            {executionTasks.map((task, index) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onOpen={() => openTask(task.id)}
-                completionDisabled={completeTask.isPending}
-                isCompleting={completeTask.isPending && completeTask.variables === task.id}
-                onComplete={() =>
-                  completeTask.mutate(task.id, {
-                    onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
-                  })
-                }
-                action={
-                  <View style={styles.reorderActions}>
-                    <Button
-                      accessibilityLabel={`${task.title}, 실행 순서 위로 이동`}
-                      disabled={reorderTodayTask.isPending || index === 0}
-                      variant="ghost"
-                      onPress={() =>
-                        reorderTodayTask.mutate(
-                          { taskId: task.id, direction: 'UP' },
-                          { onSuccess: () => showFeedback('실행 순서를 위로 옮겼어요.') },
-                        )
-                      }
-                      style={styles.reorderButton}
-                    >
-                      ↑ 위로
-                    </Button>
-                    <Button
-                      accessibilityLabel={`${task.title}, 실행 순서 아래로 이동`}
-                      disabled={reorderTodayTask.isPending || index === executionTasks.length - 1}
-                      variant="ghost"
-                      onPress={() =>
-                        reorderTodayTask.mutate(
-                          { taskId: task.id, direction: 'DOWN' },
-                          { onSuccess: () => showFeedback('실행 순서를 아래로 옮겼어요.') },
-                        )
-                      }
-                      style={styles.reorderButton}
-                    >
-                      ↓ 아래로
-                    </Button>
-                  </View>
-                }
-              />
-            ))}
-          </View>
+          <DraggableTodayTaskList
+            tasks={executionTasks}
+            disabled={completeTask.isPending || reorderTodayTask.isPending}
+            completingTaskId={completeTask.isPending ? completeTask.variables : undefined}
+            onComplete={(taskId) =>
+              completeTask.mutate(taskId, {
+                onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
+              })
+            }
+            onMove={(taskId, fromIndex, toIndex) =>
+              void moveTaskToIndex(taskId, fromIndex, toIndex)
+            }
+            onMoveOneStep={(taskId, direction) =>
+              reorderTodayTask.mutate(
+                { taskId, direction },
+                { onSuccess: () => showFeedback('실행 순서를 옮겼어요.') },
+              )
+            }
+            onOpen={openTask}
+          />
         )}
       </View>
 
@@ -793,13 +776,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[2],
   },
   moveButton: {
-    minWidth: 88,
-  },
-  reorderActions: {
-    flexDirection: 'row',
-    gap: spacing[2],
-  },
-  reorderButton: {
     minWidth: 88,
   },
 });

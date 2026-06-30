@@ -1,13 +1,16 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AppProviders } from '@/providers';
 
 export default function RootLayout() {
   return (
-    <AppProviders>
-      <Stack screenOptions={{ headerShown: false }} />
-      <StatusBar style="auto" />
-    </AppProviders>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppProviders>
+        <Stack screenOptions={{ headerShown: false }} />
+        <StatusBar style="auto" />
+      </AppProviders>
+    </GestureHandlerRootView>
   );
 }

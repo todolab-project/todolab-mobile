@@ -389,8 +389,8 @@ type ApiResponse<T> = {
 - [x] Task card를 52–60px 기반 `CompactTaskRow`와 divider 목록으로 재설계
 - [x] 완료 control의 보이는 크기는 20–24px, 독립 hit area는 44×44pt로 분리
 - [x] Task의 큰 accent bar와 반복 badge를 제거하고 metadata를 한 줄 우선순위로 정리
-- [ ] Today의 위/아래 버튼을 제거하고 mobile long press, Web drag handle 재정렬 적용
-- [ ] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
+- [x] Today의 위/아래 버튼을 제거하고 mobile long press, Web drag handle 재정렬 적용
+- [x] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
 - [ ] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
 - [ ] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
 - [ ] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
@@ -538,6 +538,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Today 재정렬 UX 개편이다. 상시 노출된 위/아래 버튼을 제거하고 mobile long press와 Web drag handle로 실행 순서를 바꾼다. VoiceOver, TalkBack, keyboard 사용자를 위한 위/아래 이동은 overflow menu의 대체 행동으로 유지하고 target index 또는 ordered IDs 기반 API 요구 계약을 문서화한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 재정렬 API 요구 계약 문서화다. 현재 drag drop은 기존 `UP`/`DOWN` API를 이동 칸 수만큼 순차 호출하므로, 한 번의 mutation으로 저장할 수 있는 target index 또는 ordered IDs 계약을 정의한다. 그다음 scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer를 검증한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

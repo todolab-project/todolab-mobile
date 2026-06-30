@@ -13,6 +13,7 @@ type TaskCardProps = {
   onReopen?: () => void;
   isCompleting?: boolean;
   completionDisabled?: boolean;
+  trailing?: ReactNode;
   action?: ReactNode;
 };
 
@@ -23,6 +24,7 @@ export function TaskCard({
   onReopen,
   isCompleting = false,
   completionDisabled = false,
+  trailing,
   action,
 }: TaskCardProps) {
   const theme = useAppTheme();
@@ -127,6 +129,7 @@ export function TaskCard({
             ) : null}
           </View>
         </Pressable>
+        {trailing}
       </View>
       {action ? <View style={styles.actionRow}>{action}</View> : null}
     </View>
