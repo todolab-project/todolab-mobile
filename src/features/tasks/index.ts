@@ -1,4 +1,5 @@
 export { taskApi } from './task-api';
+export { ScheduleCard } from './schedule-card';
 export { TaskCard } from './task-card';
 export { TaskDateQuickActions } from './task-date-quick-actions';
 export { TaskForm } from './task-form';

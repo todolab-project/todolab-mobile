@@ -54,7 +54,7 @@ export function TaskCard({
     <View
       style={[
         styles.row,
-        { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.border },
+        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
       ]}
     >
       <View style={styles.content}>
@@ -138,31 +138,33 @@ export function TaskCard({
 
 const styles = StyleSheet.create({
   row: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    overflow: 'hidden',
   },
   content: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[1],
-    minHeight: 56,
-    paddingHorizontal: spacing[2],
-    paddingVertical: spacing[1],
+    minHeight: 60,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
   checkboxHitArea: {
     alignItems: 'center',
-    borderRadius: radii.full,
+    borderRadius: radii.sm,
     height: sizes.touchTarget,
     justifyContent: 'center',
     width: sizes.touchTarget,
   },
   checkbox: {
     alignItems: 'center',
-    borderRadius: radii.full,
+    borderRadius: 6,
     borderWidth: 1.5,
-    height: 22,
+    height: 20,
     justifyContent: 'center',
     overflow: 'hidden',
-    width: 22,
+    width: 20,
   },
   copy: {
     flex: 1,

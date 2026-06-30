@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
-import { TaskCard } from '@/features/tasks';
+import { ScheduleCard, TaskCard } from '@/features/tasks';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
@@ -248,9 +248,13 @@ function TaskSection({ title, tasks, onOpen }: TaskSectionProps) {
         </AppText>
       </View>
       <View style={styles.taskList}>
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onOpen={() => onOpen(task.id)} />
-        ))}
+        {tasks.map((task) =>
+          task.type === 'SCHEDULE' ? (
+            <ScheduleCard key={task.id} task={task} onOpen={() => onOpen(task.id)} />
+          ) : (
+            <TaskCard key={task.id} task={task} onOpen={() => onOpen(task.id)} />
+          ),
+        )}
       </View>
     </View>
   );
@@ -319,6 +323,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   taskList: {
-    gap: 0,
+    gap: spacing[2],
   },
 });

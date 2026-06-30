@@ -394,9 +394,9 @@ type ApiResponse<T> = {
 - [x] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
 - [x] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
 - [x] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
-- [ ] divider Task row를 60–72px 개별 compact card와 8px gap으로 조정
-- [ ] 완료 control을 20×20px radius 5–6px rounded square로 변경하고 44×44pt hit area 유지
-- [ ] 일정을 56–68px 시간 중심 개별 `ScheduleCard`로 변경하고 완료 control과 drag 제외
+- [x] divider Task row를 60–72px 개별 compact card와 8px gap으로 조정
+- [x] 완료 control을 20×20px radius 5–6px rounded square로 변경하고 44×44pt hit area 유지
+- [x] 일정을 56–68px 시간 중심 개별 `ScheduleCard`로 변경하고 완료 control과 drag 제외
 - [ ] Today 진행 요약 card 제거
 - [ ] Today 과부하 meter 제거하고 필요한 경우 한 줄 안내로 축소
 - [ ] 지난 미완료·추천·기록함을 `정리할 항목` 단일 navigation row로 통합
@@ -550,6 +550,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 compact card 체계 적용이다. divider Task row를 60–72px 개별 card로 바꾸고 완료 control을 20×20px rounded square로 변경한 뒤, 일정은 완료 control 없는 시간 중심 `ScheduleCard`로 분리한다. 이어서 Today의 진행 요약과 과부하 meter, 기록함 전체 목록을 제거하고 지난 미완료·추천·기록함을 `정리할 항목` 한 줄로 통합한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 Today 정보 축소다. 진행 요약과 과부하 meter, 기록함 전체 목록을 제거하고 지난 미완료·추천·기록함을 `정리할 항목` 한 줄로 통합한다. Task는 rounded-square 완료 control이 있는 compact card, 일정은 완료 control 없는 시간 중심 `ScheduleCard`로 구분한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

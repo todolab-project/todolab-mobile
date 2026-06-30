@@ -183,7 +183,7 @@ function clamp(value: number, minimum: number, maximum: number) {
 
 const styles = StyleSheet.create({
   list: {
-    gap: 0,
+    gap: spacing[2],
   },
   item: {
     borderRadius: radii.sm,

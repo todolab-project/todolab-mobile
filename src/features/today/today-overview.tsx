@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState } from '@/components/ui';
 import {
+  ScheduleCard,
   TaskCard,
   useCompleteTask,
   useMoveTaskToToday,
@@ -12,7 +13,6 @@ import {
 } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
-import { formatTimeLabel } from '@/utils';
 
 import {
   getTodayLoadGuidance,
@@ -394,16 +394,11 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             </View>
           </View>
 
-          <Card padded={false} style={styles.scheduleCard}>
-            {sortedScheduleTasks.map((task, index) => (
-              <ScheduleItem
-                isLast={index === sortedScheduleTasks.length - 1}
-                key={task.id}
-                task={task}
-                onOpen={() => openTask(task.id)}
-              />
+          <View style={styles.scheduleList}>
+            {sortedScheduleTasks.map((task) => (
+              <ScheduleCard key={task.id} task={task} onOpen={() => openTask(task.id)} />
             ))}
-          </Card>
+          </View>
         </View>
       ) : null}
 
@@ -542,58 +537,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   );
 }
 
-type ScheduleItemProps = {
-  task: TaskResponse;
-  isLast: boolean;
-  onOpen: () => void;
-};
-
-function ScheduleItem({ task, isLast, onOpen }: ScheduleItemProps) {
-  const theme = useAppTheme();
-
-  return (
-    <Pressable
-      accessibilityLabel={`${task.title}, ${getScheduleTimeLabel(task)}, 상세 보기`}
-      accessibilityRole="button"
-      onPress={onOpen}
-      style={({ pressed }) => [
-        styles.scheduleItem,
-        !isLast && { borderBottomColor: theme.colors.border, borderBottomWidth: 1 },
-        { backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface },
-      ]}
-    >
-      <View style={[styles.scheduleTime, { backgroundColor: theme.colors.primarySoft }]}>
-        <AppText align="center" tone="primary" variant="caption" weight="bold">
-          {getScheduleTimeLabel(task)}
-        </AppText>
-      </View>
-      <View style={styles.scheduleCopy}>
-        <AppText numberOfLines={1} variant="label" weight="bold">
-          {task.title}
-        </AppText>
-        {task.description || task.category ? (
-          <AppText numberOfLines={1} tone="secondary" variant="caption">
-            {task.description ?? task.category}
-          </AppText>
-        ) : null}
-      </View>
-      <AppText tone="muted" variant="bodyLarge">
-        ›
-      </AppText>
-    </Pressable>
-  );
-}
-
-function getScheduleTimeLabel(task: TaskResponse) {
-  if (task.allDay || !task.startAt) {
-    return '종일';
-  }
-
-  const start = formatTimeLabel(task.startAt);
-
-  return task.endAt ? `${start}–${formatTimeLabel(task.endAt)}` : start;
-}
-
 function compareScheduleTasks(left: TaskResponse, right: TaskResponse) {
   if (!left.startAt && !right.startAt) {
     return left.id - right.id;
@@ -718,29 +661,8 @@ const styles = StyleSheet.create({
     gap: spacing[3],
     paddingTop: spacing[2],
   },
-  scheduleCard: {
-    overflow: 'hidden',
-  },
-  scheduleItem: {
-    alignItems: 'center',
-    flexDirection: 'row',
+  scheduleList: {
     gap: spacing[2],
-    minHeight: 52,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[1],
-  },
-  scheduleTime: {
-    alignItems: 'center',
-    borderRadius: radii.md,
-    justifyContent: 'center',
-    minHeight: 36,
-    paddingHorizontal: spacing[2],
-    width: 72,
-  },
-  scheduleCopy: {
-    flex: 1,
-    gap: spacing[1],
-    minWidth: 0,
   },
   taskSectionHeading: {
     alignItems: 'center',
@@ -768,7 +690,7 @@ const styles = StyleSheet.create({
     minWidth: 76,
   },
   taskList: {
-    gap: 0,
+    gap: spacing[2],
   },
   inlineError: {
     borderRadius: radii.md,

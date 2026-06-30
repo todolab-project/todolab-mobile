@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[2],
   },
   taskList: {
-    gap: 0,
+    gap: spacing[2],
   },
   stateCard: {
     alignItems: 'center',

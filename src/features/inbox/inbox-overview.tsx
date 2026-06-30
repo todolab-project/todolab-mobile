@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   tasks: {
-    gap: 0,
+    gap: spacing[2],
   },
   taskActions: {
     flexDirection: 'row',
