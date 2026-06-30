@@ -410,7 +410,7 @@ type ApiResponse<T> = {
 - [x] Inbox category와 compact card를 정리하고 Today/내일 text button을 swipe·overflow action으로 변경
 - [x] Completed 통계보다 완료 card를 우선하고 주 navigation·날짜 선택·요약 밀도 정리
 - [x] Task 작성 form의 제목·유형 우선순위와 설명·카테고리 점진적 펼치기 적용
-- [ ] Task 상세의 날짜·시간 quick action 우선순위와 정보·D-Day·삭제 영역 compact 정리
+- [x] Task 상세의 날짜·시간 quick action 우선순위와 정보·D-Day·삭제 영역 compact 정리
 - [ ] 빈 상태·오류·로딩을 큰 card보다 compact inline state와 skeleton 중심으로 통일
 - [ ] 320–359 compact, 360–399 regular, 400–599 wide mobile 반응형 규칙 적용
 - [ ] 600–839 tablet과 840px 이상 Web에서 readable width와 확장 layout 검증
@@ -551,6 +551,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 Task 상세 compact 개편이다. 날짜·시간 quick action을 제목 다음에 두고 일정 정보와 분류 정보를 한 compact 영역으로 정리한다. D-Day 연결은 필요할 때 펼치고 삭제는 상세 하단의 분리된 위험 영역으로 옮긴다. 작성 form은 제목과 유형만 기본 노출하고 설명·카테고리는 사용자가 펼칠 때 표시한다. Completed는 완료 card 목록을 주간 요약보다 먼저 표시하고 다시 열기는 `⋯`에서만 제공한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 빈 상태·오류·로딩 compact 통일이다. 큰 card 안의 긴 설명과 넓은 padding을 줄이고 목록 화면은 skeleton 또는 짧은 inline state를 우선한다. 전체 화면 오류는 표시할 기존 데이터가 없을 때만 사용하고 retry 행동은 한 번만 제공한다. Task 상세는 날짜 quick action을 제목 다음에 두고 정보는 한 card, D-Day는 접힘, 삭제는 하단 위험 영역으로 정리한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

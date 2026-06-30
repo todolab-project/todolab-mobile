@@ -1,8 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, Screen } from '@/components/ui';
+import { AppText, Button, Card, IconButton, PageHeader, Screen } from '@/components/ui';
 import { useDdayGoals } from '@/features/dday';
 import {
   TaskDateQuickActions,
@@ -57,15 +58,18 @@ export default function TaskDetailScreen() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Button
-          accessibilityLabel="이전 화면으로 돌아가기"
-          variant="ghost"
-          onPress={() => router.back()}
-        >
-          ← 돌아가기
-        </Button>
-      </View>
+      <PageHeader
+        title={isEditing ? '할 일 수정' : '할 일 상세'}
+        leading={
+          <IconButton accessibilityLabel="이전 화면으로 돌아가기" onPress={router.back}>
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
+              size={20}
+              tintColor={theme.colors.text}
+            />
+          </IconButton>
+        }
+      />
 
       {parsedTaskId === null ? (
         <Card
@@ -109,14 +113,6 @@ export default function TaskDetailScreen() {
         </Card>
       ) : taskQuery.data && isEditing ? (
         <View style={styles.editing}>
-          <View style={styles.titleBlock}>
-            <AppText variant="title" weight="heavy">
-              할 일 수정
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              지금 필요한 정보만 고쳐도 괜찮아요.
-            </AppText>
-          </View>
           <TaskForm
             errorMessage={updateTask.error?.message}
             initialTask={taskQuery.data}
@@ -172,6 +168,7 @@ function TaskDetail({
 }) {
   const theme = useAppTheme();
   const ddayGoals = useDdayGoals();
+  const [isDdayExpanded, setIsDdayExpanded] = useState(false);
   const status = statusLabels[task.status];
   const scheduleLabel = getScheduleLabel(task);
 
@@ -216,14 +213,141 @@ function TaskDetail({
           )}
         </View>
 
-        <View style={styles.heroActions}>
-          <Button disabled={isDeleting} fullWidth variant="secondary" onPress={onEdit}>
-            수정하기
-          </Button>
-          <Button disabled={isDeleting} fullWidth variant="danger" onPress={onRequestDelete}>
-            삭제하기
-          </Button>
-        </View>
+        <Button disabled={isDeleting} size="compact" variant="secondary" onPress={onEdit}>
+          수정
+        </Button>
+      </Card>
+
+      <TaskDateQuickActions task={task} />
+
+      <Card style={styles.section}>
+        <AppText variant="label" weight="bold">
+          정보
+        </AppText>
+        <InfoRow label="일정" value={scheduleLabel} />
+        <InfoRow
+          label="계획일"
+          value={task.plannedDate ? formatDateLabel(task.plannedDate) : '없음'}
+        />
+        <InfoRow
+          label="목표일"
+          value={task.targetDate ? formatDateLabel(task.targetDate) : '없음'}
+        />
+        <InfoRow label="종일" value={task.allDay ? '예' : '아니오'} />
+        <InfoRow label="카테고리" value={task.category ?? '없음'} />
+        <InfoRow label="D-Day" value={getDdayLabel(task)} />
+        <InfoRow label="미룬 이유" value={task.deferReasonLabel ?? '없음'} />
+        <InfoRow label="이월 횟수" value={`${task.carryOverCount}회`} />
+      </Card>
+
+      <Button
+        accessibilityState={{ expanded: isDdayExpanded }}
+        size="compact"
+        variant="ghost"
+        onPress={() => setIsDdayExpanded((current) => !current)}
+        style={styles.ddayToggle}
+      >
+        {isDdayExpanded ? 'D-Day 목표 관리 접기' : `D-Day 목표 · ${getDdayLabel(task)}`}
+      </Button>
+
+      {isDdayExpanded ? (
+        <Card style={styles.section}>
+          <View style={styles.stateCopy}>
+            <AppText variant="bodyLarge" weight="bold">
+              D-Day 목표
+            </AppText>
+            <AppText tone="secondary" variant="label">
+              이 할 일을 장기 목표와 연결해 진행 상황을 함께 모아보세요.
+            </AppText>
+          </View>
+
+          {ddayGoals.isPending ? (
+            <View accessibilityLabel="D-Day 목표를 불러오는 중" style={styles.inlineLoading}>
+              <ActivityIndicator color={theme.colors.primary} />
+              <AppText tone="secondary" variant="label">
+                목표를 불러오고 있어요.
+              </AppText>
+            </View>
+          ) : ddayGoals.error ? (
+            <View style={styles.stateCopy}>
+              <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+                {ddayGoals.error.message}
+              </AppText>
+              <Button
+                disabled={taskDdayGoal.isPending}
+                variant="secondary"
+                onPress={() => void ddayGoals.refetch()}
+              >
+                다시 시도
+              </Button>
+            </View>
+          ) : ddayGoals.data?.length ? (
+            <View style={styles.goalActions}>
+              {ddayGoals.data.map((goal) => {
+                const isConnected = task.ddayGoalId === goal.id;
+
+                return (
+                  <Button
+                    key={goal.id}
+                    accessibilityLabel={`${goal.title} D-Day 목표${isConnected ? ' 연결됨' : ' 연결하기'}`}
+                    disabled={taskDdayGoal.isPending || isConnected}
+                    variant={isConnected ? 'primary' : 'secondary'}
+                    onPress={() =>
+                      taskDdayGoal.mutate({
+                        taskId: task.id,
+                        ddayGoalId: goal.id,
+                      })
+                    }
+                  >
+                    {isConnected ? `✓ ${goal.title}` : goal.title}
+                  </Button>
+                );
+              })}
+              {task.ddayGoalId !== null ? (
+                <Button
+                  disabled={taskDdayGoal.isPending}
+                  loading={taskDdayGoal.isPending}
+                  variant="ghost"
+                  onPress={() =>
+                    taskDdayGoal.mutate({
+                      taskId: task.id,
+                      ddayGoalId: null,
+                    })
+                  }
+                >
+                  목표 연결 해제
+                </Button>
+              ) : null}
+              {taskDdayGoal.isPending ? (
+                <View accessibilityLiveRegion="polite" style={styles.inlineLoading}>
+                  <ActivityIndicator color={theme.colors.primary} />
+                  <AppText tone="secondary" variant="label">
+                    목표 연결을 변경하고 있어요.
+                  </AppText>
+                </View>
+              ) : null}
+            </View>
+          ) : (
+            <AppText tone="muted" variant="label">
+              연결할 D-Day 목표가 없어요. D-Day 탭에서 먼저 목표를 만들어 주세요.
+            </AppText>
+          )}
+
+          {taskDdayGoal.error ? (
+            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+              {taskDdayGoal.error.message}
+            </AppText>
+          ) : null}
+        </Card>
+      ) : null}
+
+      <Card variant="muted" style={styles.footerCard}>
+        <InfoRow label="생성" value={getDateTimeLabel(task.createdAt)} />
+        <InfoRow label="수정" value={task.updatedAt ? getDateTimeLabel(task.updatedAt) : '없음'} />
+        <InfoRow
+          label="완료"
+          value={task.completedAt ? getDateTimeLabel(task.completedAt) : '없음'}
+        />
       </Card>
 
       {isConfirmingDelete ? (
@@ -234,11 +358,11 @@ function TaskDetail({
           ]}
         >
           <View style={styles.stateCopy}>
-            <AppText tone="danger" variant="bodyLarge" weight="bold">
+            <AppText tone="danger" variant="label" weight="bold">
               정말 삭제할까요?
             </AppText>
-            <AppText tone="secondary" variant="label">
-              삭제한 할 일은 현재 앱에서 되돌릴 수 없어요. 필요한 기록인지 한 번만 더 확인해 주세요.
+            <AppText tone="secondary" variant="caption">
+              삭제한 할 일은 현재 앱에서 되돌릴 수 없어요.
             </AppText>
           </View>
 
@@ -257,133 +381,11 @@ function TaskDetail({
             </Button>
           </View>
         </Card>
-      ) : null}
-
-      <TaskDateQuickActions task={task} />
-
-      <Card style={styles.section}>
-        <AppText variant="bodyLarge" weight="bold">
-          일정 정보
-        </AppText>
-        <InfoRow label="일정" value={scheduleLabel} />
-        <InfoRow
-          label="계획일"
-          value={task.plannedDate ? formatDateLabel(task.plannedDate) : '없음'}
-        />
-        <InfoRow
-          label="목표일"
-          value={task.targetDate ? formatDateLabel(task.targetDate) : '없음'}
-        />
-        <InfoRow label="종일" value={task.allDay ? '예' : '아니오'} />
-      </Card>
-
-      <Card style={styles.section}>
-        <AppText variant="bodyLarge" weight="bold">
-          분류와 연결
-        </AppText>
-        <InfoRow label="카테고리" value={task.category ?? '없음'} />
-        <InfoRow label="D-Day" value={getDdayLabel(task)} />
-        <InfoRow label="미룬 이유" value={task.deferReasonLabel ?? '없음'} />
-        <InfoRow label="이월 횟수" value={`${task.carryOverCount}회`} />
-      </Card>
-
-      <Card style={styles.section}>
-        <View style={styles.stateCopy}>
-          <AppText variant="bodyLarge" weight="bold">
-            D-Day 목표
-          </AppText>
-          <AppText tone="secondary" variant="label">
-            이 할 일을 장기 목표와 연결해 진행 상황을 함께 모아보세요.
-          </AppText>
-        </View>
-
-        {ddayGoals.isPending ? (
-          <View accessibilityLabel="D-Day 목표를 불러오는 중" style={styles.inlineLoading}>
-            <ActivityIndicator color={theme.colors.primary} />
-            <AppText tone="secondary" variant="label">
-              목표를 불러오고 있어요.
-            </AppText>
-          </View>
-        ) : ddayGoals.error ? (
-          <View style={styles.stateCopy}>
-            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-              {ddayGoals.error.message}
-            </AppText>
-            <Button
-              disabled={taskDdayGoal.isPending}
-              variant="secondary"
-              onPress={() => void ddayGoals.refetch()}
-            >
-              다시 시도
-            </Button>
-          </View>
-        ) : ddayGoals.data?.length ? (
-          <View style={styles.goalActions}>
-            {ddayGoals.data.map((goal) => {
-              const isConnected = task.ddayGoalId === goal.id;
-
-              return (
-                <Button
-                  key={goal.id}
-                  accessibilityLabel={`${goal.title} D-Day 목표${isConnected ? ' 연결됨' : ' 연결하기'}`}
-                  disabled={taskDdayGoal.isPending || isConnected}
-                  variant={isConnected ? 'primary' : 'secondary'}
-                  onPress={() =>
-                    taskDdayGoal.mutate({
-                      taskId: task.id,
-                      ddayGoalId: goal.id,
-                    })
-                  }
-                >
-                  {isConnected ? `✓ ${goal.title}` : goal.title}
-                </Button>
-              );
-            })}
-            {task.ddayGoalId !== null ? (
-              <Button
-                disabled={taskDdayGoal.isPending}
-                loading={taskDdayGoal.isPending}
-                variant="ghost"
-                onPress={() =>
-                  taskDdayGoal.mutate({
-                    taskId: task.id,
-                    ddayGoalId: null,
-                  })
-                }
-              >
-                목표 연결 해제
-              </Button>
-            ) : null}
-            {taskDdayGoal.isPending ? (
-              <View accessibilityLiveRegion="polite" style={styles.inlineLoading}>
-                <ActivityIndicator color={theme.colors.primary} />
-                <AppText tone="secondary" variant="label">
-                  목표 연결을 변경하고 있어요.
-                </AppText>
-              </View>
-            ) : null}
-          </View>
-        ) : (
-          <AppText tone="muted" variant="label">
-            연결할 D-Day 목표가 없어요. D-Day 탭에서 먼저 목표를 만들어 주세요.
-          </AppText>
-        )}
-
-        {taskDdayGoal.error ? (
-          <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-            {taskDdayGoal.error.message}
-          </AppText>
-        ) : null}
-      </Card>
-
-      <Card variant="muted" style={styles.footerCard}>
-        <InfoRow label="생성" value={getDateTimeLabel(task.createdAt)} />
-        <InfoRow label="수정" value={task.updatedAt ? getDateTimeLabel(task.updatedAt) : '없음'} />
-        <InfoRow
-          label="완료"
-          value={task.completedAt ? getDateTimeLabel(task.completedAt) : '없음'}
-        />
-      </Card>
+      ) : (
+        <Button disabled={isDeleting} variant="ghost" onPress={onRequestDelete}>
+          이 할 일 삭제
+        </Button>
+      )}
     </View>
   );
 }
@@ -468,10 +470,7 @@ const typeLabels: Record<TaskType, string> = {
 const styles = StyleSheet.create({
   screen: {
     gap: spacing[4],
-    paddingTop: spacing[3],
-  },
-  header: {
-    alignItems: 'flex-start',
+    paddingTop: spacing[4],
   },
   loadingCard: {
     alignItems: 'center',
@@ -493,10 +492,7 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   heroCard: {
-    gap: spacing[4],
-  },
-  heroActions: {
-    gap: spacing[2],
+    gap: spacing[3],
   },
   deleteCard: {
     gap: spacing[4],
@@ -527,7 +523,7 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   section: {
-    gap: spacing[3],
+    gap: spacing[2],
   },
   footerCard: {
     gap: spacing[2],
@@ -540,5 +536,8 @@ const styles = StyleSheet.create({
   },
   infoValue: {
     flex: 1,
+  },
+  ddayToggle: {
+    alignSelf: 'flex-start',
   },
 });
