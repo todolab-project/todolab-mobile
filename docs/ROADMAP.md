@@ -393,7 +393,7 @@ type ApiResponse<T> = {
 - [x] Today의 위/아래 버튼을 제거하고 mobile long press, Web drag handle 재정렬 적용
 - [x] 접근성·키보드 대체 행동으로 overflow menu의 위/아래 이동 유지
 - [x] target index 또는 ordered IDs 기반 재정렬 API 요구 계약 문서화
-- [ ] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
+- [x] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
 - [ ] Today header, section 간격, 일정, 보조 목록을 compact 정보 계층으로 마감
 - [ ] Calendar header, 주/월 전환, 날짜 navigation, 선택 날짜 Task 목록 compact 처리
 - [ ] D-Day header의 추가 행동과 목표·연결 Task·생성 form 밀도 정리
@@ -539,6 +539,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 빠른 추가 접근성 검증이다. scroll 중에도 빠르게 기록할 수 있도록 FAB와 sticky composer를 현재 한 줄 composer와 비교하고, 키보드·하단 탭·safe area·마지막 목록 항목과 겹치지 않는 방식을 적용한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 Today 화면 밀도 마감이다. header와 section 간격, 일정, 지난 미완료·추천·기록함 진입점이 compact Task 목록보다 강하게 보이지 않는지 다시 정리한다. 빠른 추가는 우하단 FAB를 누를 때 한 줄 composer로 확장하고 키보드가 열리면 함께 올라오는 방식으로 확정했다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
