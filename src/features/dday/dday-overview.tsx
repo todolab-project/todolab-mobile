@@ -176,12 +176,12 @@ function DdayGoalCard({
 
   return (
     <Card padded={false} style={styles.goalCard}>
-      <View
-        accessible
-        accessibilityLabel={`${goal.title}, ${dayLabel}, 목표일 ${formatDateLabel(goal.targetDate)}`}
-        style={styles.goalContent}
-      >
-        <View style={styles.goalCopy}>
+      <View style={styles.goalContent}>
+        <View
+          accessible
+          accessibilityLabel={`${goal.title}, ${dayLabel}, 목표일 ${formatDateLabel(goal.targetDate)}`}
+          style={styles.goalCopy}
+        >
           <AppText numberOfLines={2} weight="semibold">
             {goal.title}
           </AppText>

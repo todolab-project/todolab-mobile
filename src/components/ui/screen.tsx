@@ -29,6 +29,9 @@ export function Screen({
     return (
       <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }, style]}>
         <ScrollView
+          automaticallyAdjustKeyboardInsets
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
           {...scrollViewProps}
           contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
         >

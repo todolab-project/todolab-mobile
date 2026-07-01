@@ -13,7 +13,15 @@ type CardProps = PropsWithChildren<
   }
 >;
 
-export function Card({ children, variant = 'default', padded = true, style, ...props }: CardProps) {
+export function Card({
+  children,
+  variant = 'default',
+  padded = true,
+  accessible,
+  accessibilityLabel,
+  style,
+  ...props
+}: CardProps) {
   const theme = useAppTheme();
   const variants = {
     default: {
@@ -31,7 +39,12 @@ export function Card({ children, variant = 'default', padded = true, style, ...p
   };
 
   return (
-    <View {...props} style={[styles.base, variants[variant], padded && styles.padded, style]}>
+    <View
+      {...props}
+      accessible={accessible ?? Boolean(accessibilityLabel)}
+      accessibilityLabel={accessibilityLabel}
+      style={[styles.base, variants[variant], padded && styles.padded, style]}
+    >
       {children}
     </View>
   );

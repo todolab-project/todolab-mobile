@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  ReduceMotion,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -100,7 +101,11 @@ function DraggableTodayTask({
       runOnJS(finishDrag)(event.translationY);
     })
     .onFinalize(() => {
-      translationY.value = withSpring(0, { damping: 18, stiffness: 220 });
+      translationY.value = withSpring(0, {
+        damping: 18,
+        reduceMotion: ReduceMotion.System,
+        stiffness: 220,
+      });
       isDragging.value = false;
     });
 

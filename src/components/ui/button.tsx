@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { PressableProps, ViewStyle } from 'react-native';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
@@ -28,10 +28,13 @@ export function Button({
   leading,
   disabled,
   accessibilityState,
+  onBlur,
+  onFocus,
   style,
   ...props
 }: ButtonProps) {
   const theme = useAppTheme();
+  const [isFocused, setIsFocused] = useState(false);
   const isDisabled = disabled || loading;
   const variants = {
     primary: {
@@ -67,12 +70,21 @@ export function Button({
       accessibilityRole="button"
       accessibilityState={{ ...accessibilityState, disabled: isDisabled, busy: loading }}
       disabled={isDisabled}
+      onBlur={(event) => {
+        setIsFocused(false);
+        onBlur?.(event);
+      }}
+      onFocus={(event) => {
+        setIsFocused(true);
+        onFocus?.(event);
+      }}
       style={({ pressed }) => [
         styles.base,
         size === 'large' ? styles.large : size === 'compact' ? styles.compact : styles.medium,
         {
           backgroundColor: pressed ? selected.pressedColor : selected.backgroundColor,
-          borderColor: selected.borderColor,
+          borderColor: isFocused ? theme.colors.text : selected.borderColor,
+          borderWidth: isFocused ? 2 : 1,
           opacity: isDisabled ? 0.5 : 1,
           width: fullWidth ? '100%' : undefined,
         },

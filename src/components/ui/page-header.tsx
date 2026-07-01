@@ -17,7 +17,7 @@ export function PageHeader({ title, description, leading, action }: PageHeaderPr
     <View style={styles.container}>
       {leading}
       <View style={styles.copy}>
-        <AppText variant="title" weight="bold">
+        <AppText accessibilityRole="header" variant="title" weight="bold">
           {title}
         </AppText>
         {description ? (
