@@ -5,7 +5,7 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, PageHeader, Screen } from '@/components/ui';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
 
 type MoreItem = {
   title: string;
@@ -34,15 +34,21 @@ const moreItems: MoreItem[] = [
 export function MoreOverview() {
   const router = useRouter();
   const theme = useAppTheme();
+  const { isDesktop } = useMobileLayout();
 
   return (
-    <Screen scroll contentContainerStyle={styles.screen}>
+    <Screen
+      scroll
+      contentMaxWidth={isDesktop ? 960 : undefined}
+      contentContainerStyle={styles.screen}
+    >
       <PageHeader title="더 보기" />
 
       <View
         accessibilityRole="list"
         style={[
           styles.menu,
+          isDesktop && styles.desktopMenu,
           { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
         ]}
       >
@@ -54,10 +60,17 @@ export function MoreOverview() {
             onPress={() => router.push(item.href as Href)}
             style={({ pressed }) => [
               styles.row,
-              index < moreItems.length - 1 && {
-                borderBottomColor: theme.colors.border,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-              },
+              isDesktop && styles.desktopRow,
+              index < moreItems.length - 1 &&
+                (isDesktop
+                  ? {
+                      borderRightColor: theme.colors.border,
+                      borderRightWidth: StyleSheet.hairlineWidth,
+                    }
+                  : {
+                      borderBottomColor: theme.colors.border,
+                      borderBottomWidth: StyleSheet.hairlineWidth,
+                    }),
               pressed && { backgroundColor: theme.colors.surfaceMuted },
             ]}
           >
@@ -92,12 +105,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
   },
+  desktopMenu: {
+    flexDirection: 'row',
+  },
   row: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[3],
     minHeight: 60,
     paddingHorizontal: spacing[3],
+  },
+  desktopRow: {
+    flex: 1,
   },
   icon: {
     alignItems: 'center',

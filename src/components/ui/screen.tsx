@@ -7,6 +7,7 @@ import { sizes, spacing, useAppTheme, useMobileLayout } from '@/theme';
 
 type ScreenProps = PropsWithChildren<{
   scroll?: boolean;
+  contentMaxWidth?: number;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   scrollViewProps?: Omit<ScrollViewProps, 'contentContainerStyle'>;
@@ -15,13 +16,14 @@ type ScreenProps = PropsWithChildren<{
 export function Screen({
   children,
   scroll = false,
+  contentMaxWidth = sizes.contentMaxWidth,
   style,
   contentContainerStyle,
   scrollViewProps,
 }: ScreenProps) {
   const theme = useAppTheme();
   const { screenPadding } = useMobileLayout();
-  const responsiveContentStyle = { paddingHorizontal: screenPadding };
+  const responsiveContentStyle = { maxWidth: contentMaxWidth, paddingHorizontal: screenPadding };
 
   if (scroll) {
     return (
@@ -54,7 +56,6 @@ const styles = StyleSheet.create({
   },
   content: {
     alignSelf: 'center',
-    maxWidth: sizes.contentMaxWidth,
     width: '100%',
   },
   scrollContent: {
