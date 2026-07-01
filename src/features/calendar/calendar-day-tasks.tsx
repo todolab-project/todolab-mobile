@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[3],
     justifyContent: 'center',
-    minHeight: 96,
+    minHeight: 64,
   },
   errorCard: {
     gap: spacing[3],

@@ -411,7 +411,8 @@ type ApiResponse<T> = {
 - [x] Completed 통계보다 완료 card를 우선하고 주 navigation·날짜 선택·요약 밀도 정리
 - [x] Task 작성 form의 제목·유형 우선순위와 설명·카테고리 점진적 펼치기 적용
 - [x] Task 상세의 날짜·시간 quick action 우선순위와 정보·D-Day·삭제 영역 compact 정리
-- [ ] 빈 상태·오류·로딩을 큰 card보다 compact inline state와 skeleton 중심으로 통일
+- [x] 빈 상태·오류·로딩을 큰 card보다 compact inline state 중심으로 통일
+- [ ] 긴 목록과 초기 진입 화면에 skeleton row가 실제로 필요한 구간을 선별해 적용
 - [ ] 320–359 compact, 360–399 regular, 400–599 wide mobile 반응형 규칙 적용
 - [ ] 600–839 tablet과 840px 이상 Web에서 readable width와 확장 layout 검증
 - [ ] light/dark와 iOS Dynamic Type, Android font scale 1.0/1.3/1.5 점검
@@ -551,6 +552,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 빈 상태·오류·로딩 compact 통일이다. 큰 card 안의 긴 설명과 넓은 padding을 줄이고 목록 화면은 skeleton 또는 짧은 inline state를 우선한다. 전체 화면 오류는 표시할 기존 데이터가 없을 때만 사용하고 retry 행동은 한 번만 제공한다. Task 상세는 날짜 quick action을 제목 다음에 두고 정보는 한 card, D-Day는 접힘, 삭제는 하단 위험 영역으로 정리한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 모바일 반응형 규칙 적용이다. 320–359px에서는 긴 제목과 action이 겹치지 않게 세로 전환하고, 360–399px은 현재 목록 밀도의 기준으로 삼으며, 400–599px에서도 control과 글자가 불필요하게 커지지 않게 한다. 이후 긴 목록과 초기 진입 화면을 직접 비교해 skeleton row가 체감 대기 시간을 줄이는 구간에만 적용한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

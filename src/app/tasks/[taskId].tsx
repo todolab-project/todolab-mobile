@@ -78,7 +78,7 @@ export default function TaskDetailScreen() {
             { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
           ]}
         >
-          <AppText tone="danger" variant="bodyLarge" weight="bold">
+          <AppText tone="danger" variant="label" weight="bold">
             Task를 찾을 수 없어요
           </AppText>
           <AppText tone="secondary" variant="label">
@@ -100,7 +100,7 @@ export default function TaskDetailScreen() {
           ]}
         >
           <View style={styles.stateCopy}>
-            <AppText tone="danger" variant="bodyLarge" weight="bold">
+            <AppText tone="danger" variant="label" weight="bold">
               상세 정보를 불러오지 못했어요
             </AppText>
             <AppText tone="secondary" variant="label">
@@ -477,10 +477,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[3],
     justifyContent: 'center',
-    minHeight: 120,
+    minHeight: 64,
   },
   stateCard: {
-    gap: spacing[4],
+    gap: spacing[3],
   },
   stateCopy: {
     gap: spacing[1],

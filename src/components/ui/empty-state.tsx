@@ -17,7 +17,7 @@ export function EmptyState({ title, description, icon, action }: EmptyStateProps
     <View style={styles.container}>
       {icon}
       <View style={styles.copy}>
-        <AppText align="center" variant="bodyLarge" weight="bold">
+        <AppText align="center" variant="label" weight="bold">
           {title}
         </AppText>
         {description ? (
@@ -34,10 +34,10 @@ export function EmptyState({ title, description, icon, action }: EmptyStateProps
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    gap: spacing[4],
+    gap: spacing[3],
     justifyContent: 'center',
-    paddingHorizontal: spacing[6],
-    paddingVertical: spacing[10],
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[6],
   },
   copy: {
     alignItems: 'center',

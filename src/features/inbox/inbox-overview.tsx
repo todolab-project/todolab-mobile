@@ -83,7 +83,7 @@ export function InboxOverview() {
           ]}
         >
           <View style={styles.titleBlock}>
-            <AppText tone="danger" variant="bodyLarge" weight="bold">
+            <AppText tone="danger" variant="label" weight="bold">
               기록함을 불러오지 못했어요
             </AppText>
             <AppText tone="secondary" variant="label">
@@ -185,10 +185,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[3],
     justifyContent: 'center',
-    minHeight: 120,
+    minHeight: 64,
   },
   errorCard: {
-    gap: spacing[4],
+    gap: spacing[3],
   },
   groups: {
     gap: spacing[4],
