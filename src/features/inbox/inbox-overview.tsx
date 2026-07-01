@@ -1,9 +1,18 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
+import {
+  AppText,
+  Button,
+  Card,
+  EmptyState,
+  IconButton,
+  ListSkeleton,
+  PageHeader,
+  Screen,
+} from '@/components/ui';
 import { TaskCard, useMoveTaskToToday } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -69,12 +78,7 @@ export function InboxOverview() {
       ) : null}
 
       {query.isPending ? (
-        <Card accessibilityLabel="기록함을 불러오는 중" style={styles.stateCard}>
-          <ActivityIndicator color={theme.colors.primary} />
-          <AppText tone="secondary" variant="label">
-            기록을 불러오고 있어요.
-          </AppText>
-        </Card>
+        <ListSkeleton accessibilityLabel="기록함을 불러오는 중" count={4} />
       ) : query.error ? (
         <Card
           style={[
@@ -179,13 +183,6 @@ const styles = StyleSheet.create({
   },
   titleBlock: {
     gap: spacing[2],
-  },
-  stateCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'center',
-    minHeight: 64,
   },
   errorCard: {
     gap: spacing[3],

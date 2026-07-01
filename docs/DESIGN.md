@@ -366,6 +366,8 @@ Rules:
 - success feedback
 - offline 또는 timeout 안내
 
+여러 행이 나타나는 초기 목록 조회는 정적인 skeleton row를 사용하고, 단건·짧은 조회는 compact spinner를 유지한다. skeleton 자체에는 반복 animation을 사용하지 않는다.
+
 목록 데이터 갱신에 실패해도 기존 데이터를 가능한 한 유지한다. 전체 화면 오류는 화면을 구성할 데이터가 전혀 없을 때만 사용한다.
 
 ## 12. Accessibility

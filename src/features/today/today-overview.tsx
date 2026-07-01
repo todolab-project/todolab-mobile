@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, ListSkeleton } from '@/components/ui';
 import {
   ScheduleCard,
   TaskCard,
@@ -70,14 +70,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   };
 
   if (isPending) {
-    return (
-      <Card accessibilityLabel="Today 정보를 불러오는 중" style={styles.loadingCard}>
-        <ActivityIndicator color={theme.colors.primary} />
-        <AppText tone="secondary" variant="label">
-          오늘의 계획을 불러오고 있어요.
-        </AppText>
-      </Card>
-    );
+    return <ListSkeleton accessibilityLabel="Today 정보를 불러오는 중" />;
   }
 
   if (error) {
@@ -460,13 +453,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
-  },
-  loadingCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'center',
-    minHeight: 64,
   },
   errorCard: {
     gap: spacing[3],

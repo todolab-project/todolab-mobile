@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, ListSkeleton } from '@/components/ui';
 import { ScheduleCard, TaskCard } from '@/features/tasks';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
@@ -72,12 +72,7 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
       ) : null}
 
       {query.isPending ? (
-        <Card accessibilityLabel={`${dateLabel} Task를 불러오는 중`} style={styles.stateCard}>
-          <ActivityIndicator color={theme.colors.primary} />
-          <AppText tone="secondary" variant="label">
-            예정과 완료 항목을 불러오고 있어요.
-          </AppText>
-        </Card>
+        <ListSkeleton accessibilityLabel={`${dateLabel} Task를 불러오는 중`} count={2} />
       ) : query.error ? (
         <Card
           style={[
@@ -255,13 +250,6 @@ const styles = StyleSheet.create({
   headingCopy: {
     flex: 1,
     gap: spacing[1],
-  },
-  stateCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'center',
-    minHeight: 64,
   },
   errorCard: {
     gap: spacing[3],

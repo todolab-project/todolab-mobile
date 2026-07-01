@@ -1,9 +1,18 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
+import {
+  AppText,
+  Button,
+  Card,
+  EmptyState,
+  IconButton,
+  ListSkeleton,
+  PageHeader,
+  Screen,
+} from '@/components/ui';
 import { TaskCard, useReopenTask } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
@@ -115,12 +124,7 @@ export function CompletedOverview() {
       </Card>
 
       {week.isPending ? (
-        <Card accessibilityLabel="완료 기록을 불러오는 중" style={styles.stateCard}>
-          <ActivityIndicator color={theme.colors.primary} />
-          <AppText tone="secondary" variant="label">
-            완료 기록을 불러오고 있어요.
-          </AppText>
-        </Card>
+        <ListSkeleton accessibilityLabel="완료 기록을 불러오는 중" />
       ) : week.error ? (
         <Card
           style={[
@@ -269,13 +273,6 @@ const styles = StyleSheet.create({
     gap: spacing[1],
     justifyContent: 'center',
     minHeight: 52,
-  },
-  stateCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'center',
-    minHeight: 64,
   },
   errorCard: {
     gap: spacing[3],
