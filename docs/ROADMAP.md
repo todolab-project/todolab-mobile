@@ -415,7 +415,7 @@ type ApiResponse<T> = {
 - [ ] 긴 목록과 초기 진입 화면에 skeleton row가 실제로 필요한 구간을 선별해 적용
 - [x] 320–359 compact, 360–399 regular, 400–599 wide mobile 반응형 규칙 적용
 - [x] 600–839 tablet과 840px 이상 Web에서 readable width와 확장 layout 검증
-- [ ] light/dark와 iOS Dynamic Type, Android font scale 1.0/1.3/1.5 점검
+- [x] light/dark와 iOS Dynamic Type, Android font scale 1.0/1.3/1.5 점검
 - [ ] 키보드, VoiceOver/TalkBack, focus-visible, browser zoom 200%, reduced motion 점검
 - [ ] portrait/landscape, safe area, 키보드, 하단 탭과 고정 CTA 겹침 점검
 - [ ] Android, iOS, Web 실제 기기·브라우저 비교 smoke test
@@ -552,6 +552,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6의 색상 모드와 글꼴 확대 점검이다. light/dark 양쪽에서 카드 경계와 상태 색 대비를 확인하고, iOS Dynamic Type 및 Android font scale 1.0/1.3/1.5에서도 Task 제목과 핵심 행동이 유지되게 한다. 이후 긴 목록과 초기 진입 화면을 직접 비교해 skeleton row가 체감 대기 시간을 줄이는 구간에만 적용한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6의 접근성·입력 환경 점검이다. 키보드가 하단 CTA를 가리지 않는지 확인하고, VoiceOver/TalkBack 읽기 순서와 Web focus-visible, browser zoom 200%, reduced motion 대응을 공통 interactive component부터 정리한다. 이후 긴 목록과 초기 진입 화면을 직접 비교해 skeleton row가 체감 대기 시간을 줄이는 구간에만 적용한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

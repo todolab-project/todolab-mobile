@@ -182,7 +182,7 @@ function DdayGoalCard({
         style={styles.goalContent}
       >
         <View style={styles.goalCopy}>
-          <AppText numberOfLines={1} weight="semibold">
+          <AppText numberOfLines={2} weight="semibold">
             {goal.title}
           </AppText>
           <AppText tone="secondary" variant="caption">

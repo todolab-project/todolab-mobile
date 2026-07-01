@@ -84,7 +84,11 @@ export function Button({
       ) : (
         <View style={styles.content}>
           {leading}
-          <AppText variant="label" weight="bold" style={{ color: selected.textColor }}>
+          <AppText
+            variant="label"
+            weight="bold"
+            style={[styles.label, { color: selected.textColor }]}
+          >
             {children}
           </AppText>
         </View>
@@ -100,6 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     borderWidth: 1,
     paddingHorizontal: spacing[4],
+    paddingVertical: spacing[2],
   },
   medium: {
     minHeight: sizes.touchTarget,
@@ -116,5 +121,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[2],
     justifyContent: 'center',
+    minWidth: 0,
+  },
+  label: {
+    flexShrink: 1,
+    textAlign: 'center',
   },
 });

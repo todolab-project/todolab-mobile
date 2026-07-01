@@ -35,7 +35,7 @@ export function ScheduleCard({ task, onOpen }: ScheduleCardProps) {
         </AppText>
       </View>
       <View style={styles.copy}>
-        <AppText numberOfLines={1} weight="medium">
+        <AppText numberOfLines={2} weight="medium">
           {task.title}
         </AppText>
         {metadata ? (
