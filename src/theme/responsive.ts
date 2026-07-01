@@ -12,13 +12,20 @@ export function getViewportWidthClass(width: number): ViewportWidthClass {
   return 'desktop';
 }
 
+export function shouldUseDesktopLayout(width: number, height: number) {
+  return getViewportWidthClass(width) === 'desktop' && height >= 600;
+}
+
 export function useMobileLayout() {
-  const { width } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const widthClass = getViewportWidthClass(width);
+  const isShortViewport = height < 600;
 
   return {
     isCompact: widthClass === 'compact',
-    isDesktop: widthClass === 'desktop',
+    isDesktop: shouldUseDesktopLayout(width, height),
+    isLandscape: width > height,
+    isShortViewport,
     isTablet: widthClass === 'tablet',
     screenPadding: widthClass === 'compact' ? spacing[3] : spacing[4],
     width,

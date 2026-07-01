@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText, Button, Card, IconButton } from '@/components/ui';
 import { useCreateInboxTask } from '@/features/tasks';
@@ -8,7 +9,14 @@ import { taskLimits } from '@/types';
 
 export function QuickCapture() {
   const theme = useAppTheme();
+  const insets = useSafeAreaInsets();
   const { screenPadding } = useMobileLayout();
+  const containerInsets = {
+    paddingBottom: screenPadding,
+    paddingLeft: Math.max(screenPadding, insets.left),
+    paddingRight: Math.max(screenPadding, insets.right),
+    paddingTop: screenPadding,
+  };
   const inputRef = useRef<TextInput>(null);
   const createTask = useCreateInboxTask();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -65,7 +73,7 @@ export function QuickCapture() {
   };
 
   return (
-    <View style={[styles.container, { padding: screenPadding }]}>
+    <View style={[styles.container, containerInsets]}>
       {isExpanded ? (
         <Card style={styles.composerCard}>
           <View style={styles.composerRow}>

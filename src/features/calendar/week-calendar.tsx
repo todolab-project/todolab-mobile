@@ -139,7 +139,7 @@ type DatePickerProps = {
 
 function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) {
   const theme = useAppTheme();
-  const { isCompact } = useMobileLayout();
+  const { isCompact, isShortViewport } = useMobileLayout();
 
   return (
     <View style={styles.weekRow}>
@@ -152,7 +152,7 @@ function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) 
           selected={date === selectedDate}
           weekdayLabel={weekdayLabels[index]}
           onPress={() => onSelect(date)}
-          style={isCompact ? styles.compactWeekDayButton : styles.weekDayButton}
+          style={isCompact || isShortViewport ? styles.compactWeekDayButton : styles.weekDayButton}
           theme={theme}
         />
       ))}

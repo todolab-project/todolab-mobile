@@ -33,9 +33,18 @@ export function Screen({
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           {...scrollViewProps}
-          contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
+          contentContainerStyle={styles.scrollContent}
         >
-          <View style={[styles.content, responsiveContentStyle]}>{children}</View>
+          <View
+            style={[
+              styles.content,
+              styles.scrollContentInset,
+              responsiveContentStyle,
+              contentContainerStyle,
+            ]}
+          >
+            {children}
+          </View>
         </ScrollView>
       </SafeAreaView>
     );
@@ -63,6 +72,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+  },
+  scrollContentInset: {
     paddingBottom: spacing[8],
   },
 });
