@@ -3,11 +3,12 @@ import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 
 import { AppText, Button, Card, IconButton } from '@/components/ui';
 import { useCreateInboxTask } from '@/features/tasks';
-import { radii, sizes, spacing, useAppTheme } from '@/theme';
+import { radii, sizes, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import { taskLimits } from '@/types';
 
 export function QuickCapture() {
   const theme = useAppTheme();
+  const { screenPadding } = useMobileLayout();
   const inputRef = useRef<TextInput>(null);
   const createTask = useCreateInboxTask();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -64,7 +65,7 @@ export function QuickCapture() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { padding: screenPadding }]}>
       {isExpanded ? (
         <Card style={styles.composerCard}>
           <View style={styles.composerRow}>
@@ -123,7 +124,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     alignSelf: 'center',
     maxWidth: sizes.contentMaxWidth,
-    padding: spacing[4],
     width: '100%',
   },
   composerCard: {

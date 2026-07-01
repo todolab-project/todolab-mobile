@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card } from '@/components/ui';
-import { spacing, useAppTheme } from '@/theme';
+import { spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
@@ -14,6 +14,7 @@ type TaskDateQuickActionsProps = {
 
 export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
   const theme = useAppTheme();
+  const { isCompact } = useMobileLayout();
   const changeTaskDate = useChangeTaskDate();
   const [feedback, setFeedback] = useState<string | null>(null);
   const today = toApiLocalDate();
@@ -70,7 +71,7 @@ export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
               loading={loading}
               variant={selected ? 'secondary' : 'ghost'}
               onPress={() => changeDate(action.date)}
-              style={styles.actionButton}
+              style={isCompact ? styles.compactActionButton : styles.actionButton}
             >
               {action.label}
             </Button>
@@ -81,7 +82,7 @@ export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
           loading={changeTaskDate.isPending && changeTaskDate.variables?.targetDate === null}
           variant={task.status === 'INBOX' ? 'secondary' : 'ghost'}
           onPress={() => changeDate(null)}
-          style={styles.actionButton}
+          style={isCompact ? styles.compactActionButton : styles.actionButton}
         >
           기록함
         </Button>
@@ -120,6 +121,10 @@ const styles = StyleSheet.create({
   actionButton: {
     flexGrow: 1,
     minWidth: 88,
+  },
+  compactActionButton: {
+    flexGrow: 1,
+    minWidth: 72,
   },
   feedback: {
     paddingHorizontal: spacing[3],

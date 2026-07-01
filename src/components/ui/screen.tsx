@@ -3,7 +3,7 @@ import type { ScrollViewProps, StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { sizes, spacing, useAppTheme } from '@/theme';
+import { sizes, spacing, useAppTheme, useMobileLayout } from '@/theme';
 
 type ScreenProps = PropsWithChildren<{
   scroll?: boolean;
@@ -20,6 +20,8 @@ export function Screen({
   scrollViewProps,
 }: ScreenProps) {
   const theme = useAppTheme();
+  const { screenPadding } = useMobileLayout();
+  const responsiveContentStyle = { paddingHorizontal: screenPadding };
 
   if (scroll) {
     return (
@@ -28,7 +30,7 @@ export function Screen({
           {...scrollViewProps}
           contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
         >
-          <View style={styles.content}>{children}</View>
+          <View style={[styles.content, responsiveContentStyle]}>{children}</View>
         </ScrollView>
       </SafeAreaView>
     );
@@ -36,7 +38,9 @@ export function Screen({
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }, style]}>
-      <View style={[styles.content, styles.flex, contentContainerStyle]}>{children}</View>
+      <View style={[styles.content, styles.flex, responsiveContentStyle, contentContainerStyle]}>
+        {children}
+      </View>
     </SafeAreaView>
   );
 }
@@ -51,7 +55,6 @@ const styles = StyleSheet.create({
   content: {
     alignSelf: 'center',
     maxWidth: sizes.contentMaxWidth,
-    paddingHorizontal: sizes.screenPadding,
     width: '100%',
   },
   scrollContent: {

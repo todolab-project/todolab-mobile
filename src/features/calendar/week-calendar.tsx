@@ -3,7 +3,7 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, IconButton, PageHeader, Screen } from '@/components/ui';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
@@ -139,6 +139,7 @@ type DatePickerProps = {
 
 function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) {
   const theme = useAppTheme();
+  const { isCompact } = useMobileLayout();
 
   return (
     <View style={styles.weekRow}>
@@ -151,7 +152,7 @@ function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) 
           selected={date === selectedDate}
           weekdayLabel={weekdayLabels[index]}
           onPress={() => onSelect(date)}
-          style={styles.weekDayButton}
+          style={isCompact ? styles.compactWeekDayButton : styles.weekDayButton}
           theme={theme}
         />
       ))}
@@ -204,7 +205,10 @@ type CalendarDateButtonProps = {
   isCurrentMonth: boolean;
   weekdayLabel?: string;
   onPress: () => void;
-  style: typeof styles.weekDayButton | typeof styles.monthDayButton;
+  style:
+    | typeof styles.weekDayButton
+    | typeof styles.compactWeekDayButton
+    | typeof styles.monthDayButton;
   theme: ReturnType<typeof useAppTheme>;
 };
 
@@ -345,6 +349,11 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 64,
     paddingVertical: spacing[2],
+  },
+  compactWeekDayButton: {
+    flex: 1,
+    minHeight: 56,
+    paddingVertical: spacing[1],
   },
   monthWeekdays: {
     flexDirection: 'row',
