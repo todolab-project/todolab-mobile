@@ -261,7 +261,7 @@ compact header
 - 완료 control은 `20×20px` rounded square와 radius `5–6px`를 사용한다. 원형 checkbox를 기본으로 사용하지 않는다.
 - 보이는 완료 control과 별개로 독립된 hit area는 최소 44×44pt를 제공한다.
 - 미완료는 surface 배경과 border-strong, 완료는 primary 또는 success 배경과 흰 check glyph를 사용한다.
-- 제목은 기본적으로 15–16px medium, 최대 두 줄을 사용한다.
+- 제목은 기본적으로 14–16px medium, 최대 두 줄을 사용한다.
 - 설명은 목록에서 기본적으로 숨기거나 한 줄로 제한하고 상세 화면에서 전체 내용을 제공한다.
 - category, all-day, D-Day를 모두 pill로 나열하지 않는다. 현재 판단에 필요한 metadata만 11–13px 한 줄로 표시한다.
 - 시간, 날짜, D-Day처럼 행동 판단에 직접 필요한 정보가 장식 badge보다 우선한다.

@@ -420,8 +420,9 @@ type ApiResponse<T> = {
 - [x] light/dark와 iOS Dynamic Type, Android font scale 1.0/1.3/1.5 점검
 - [x] 키보드, VoiceOver/TalkBack, focus-visible, browser zoom 200%, reduced motion 점검
 - [x] portrait/landscape, safe area, 키보드, 하단 탭과 고정 CTA 겹침 공통 layout 대응
+- [x] Android, iOS, Web production bundle smoke test
 - [ ] Android, iOS, Web 실제 기기·브라우저 비교 smoke test
-- [ ] 확정된 규칙을 `DESIGN.md`와 theme/component token에 최종 동기화
+- [x] 확정된 규칙을 `DESIGN.md`와 theme/component token에 최종 동기화
 
 완료 기준:
 
@@ -554,6 +555,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Android, iOS, Web 실제 환경 비교 smoke test다. portrait/landscape, safe area, 키보드와 하단 고정 UI를 확인하고 플랫폼별 차이를 기록한 뒤 공통 규칙을 `DESIGN.md`와 theme/component token에 최종 동기화한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Android, iOS, Web 실제 환경 비교 smoke test다. 2026-07-02 기준 세 플랫폼 production bundle과 Web HTTP 응답은 통과했다. 현재 환경에는 Android `adb`, iOS `simctl`, 연결된 인앱 브라우저가 없어 실제 상호작용 검증은 보류한다. 환경이 준비되면 portrait/landscape, safe area, 키보드, 하단 고정 UI와 일정 완료 체크를 우선 확인한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
