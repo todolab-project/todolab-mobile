@@ -93,9 +93,9 @@ UI/UX 개편 방향:
 | Variant    | Size | Line height | Default use                            |
 | ---------- | ---: | ----------: | -------------------------------------- |
 | display    | 30px |        38px | 빈 상태 등 제한된 핵심 메시지          |
-| title      | 22px |        30px | compact page header 제목               |
-| body large | 17px |        24px | section 제목과 카드의 제한된 주요 정보 |
-| body       | 15px |        22px | Task 제목과 일반 본문                  |
+| title      | 20px |        28px | compact page header 제목               |
+| body large | 16px |        22px | section 제목과 카드의 제한된 주요 정보 |
+| body       | 14px |        20px | Task 제목과 일반 본문                  |
 | label      | 13px |        18px | 버튼과 입력 보조 정보                  |
 | caption    | 12px |        16px | 메타데이터와 상태 정보                 |
 
@@ -273,8 +273,8 @@ compact header
 
 ### Compact Schedule Card
 
-- 일정은 Task와 같은 작은 surface card를 사용하되 완료 control을 표시하지 않는다.
-- 시작 시간을 왼쪽의 고정된 열에 두고 제목과 장소·설명을 오른쪽에 배치한다.
+- 일정은 Task와 같은 작은 surface card를 사용하고 완료 가능한 항목에는 동일한 rounded-square 완료 control을 표시한다.
+- 완료 control, 시작 시간 고정 열, 제목과 장소·설명 순서로 배치해 시간과 완료 행동을 서로 다른 영역에 둔다.
 - 기본 높이는 56–68px, 카드 간 gap은 8px을 목표로 한다.
 - 종료 시간, 장소, 설명은 존재하는 핵심 정보만 한 줄로 표시한다.
 - 일정 유형 색은 시간, 작은 선 또는 icon 중 한 곳에만 사용한다.
@@ -309,7 +309,7 @@ compact header
 ### Component meaning
 
 - `TaskCard`: rounded-square 완료 control이 있는 실행 가능한 할 일이다.
-- `ScheduleCard`: 시간 중심이며 완료 control이 없는 일정이다.
+- `ScheduleCard`: 완료 control과 시간 고정 열이 분리된 일정이다.
 - `NavigationRow`: 다른 화면이나 정리 흐름으로 이동하는 메뉴다.
 - 같은 surface를 사용하더라도 control과 metadata 구조로 세 의미를 즉시 구분할 수 있어야 한다.
 

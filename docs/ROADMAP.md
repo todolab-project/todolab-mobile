@@ -396,7 +396,9 @@ type ApiResponse<T> = {
 - [x] scroll 중에도 빠른 추가에 접근할 수 있는 FAB 또는 sticky composer 검증
 - [x] divider Task row를 60–72px 개별 compact card와 8px gap으로 조정
 - [x] 완료 control을 20×20px radius 5–6px rounded square로 변경하고 44×44pt hit area 유지
-- [x] 일정을 56–68px 시간 중심 개별 `ScheduleCard`로 변경하고 완료 control과 drag 제외
+- [x] 일정을 56–68px 시간 중심 개별 `ScheduleCard`로 변경하고 drag 제외
+- [x] 시간이 있는 일정에도 20×20px 완료 control을 추가하고 시간 고정 열과 행동 영역 분리
+- [x] compact typography를 title 20px, body large 16px, body 14px로 최종 조정
 - [x] Today 진행 요약 card 제거
 - [x] Today 과부하 meter 제거하고 필요한 경우 한 줄 안내로 축소
 - [x] 지난 미완료·추천·기록함을 `정리할 항목` 단일 navigation row로 통합
@@ -432,7 +434,7 @@ type ApiResponse<T> = {
 - 320px부터 599px까지 폭이 바뀌어도 수평 overflow나 잘린 핵심 행동이 없다.
 - 큰 글꼴에서는 보조 설명과 metadata가 먼저 줄고 Task 제목과 핵심 행동은 유지된다.
 - 한 줄 Task card는 기본 60–72px 밀도를 목표로 하며 보이는 rounded-square 완료 control이 hit area 전체를 채우지 않는다.
-- 일정은 완료 control 없이 시간 중심 Schedule card로 Task와 즉시 구분된다.
+- 일정은 완료 control과 별도의 시간 고정 열을 가진 Schedule card로 Task와 구분된다.
 - Today 기본 화면에는 오늘 Task, 일정, 정리 진입점, 접힌 완료 외의 요약·전체 목록이 상시 노출되지 않는다.
 - 목록의 이동·날짜 변경 같은 보조 행동은 상시 text button 행으로 세로 공간을 차지하지 않는다.
 

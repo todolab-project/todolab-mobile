@@ -215,7 +215,18 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 
           <View style={styles.scheduleList}>
             {sortedScheduleTasks.map((task) => (
-              <ScheduleCard key={task.id} task={task} onOpen={() => openTask(task.id)} />
+              <ScheduleCard
+                completionDisabled={completeTask.isPending}
+                isCompleting={completeTask.isPending && completeTask.variables === task.id}
+                key={task.id}
+                task={task}
+                onComplete={() =>
+                  completeTask.mutate(task.id, {
+                    onSuccess: () => showFeedback('일정을 완료했어요.'),
+                  })
+                }
+                onOpen={() => openTask(task.id)}
+              />
             ))}
           </View>
         </View>

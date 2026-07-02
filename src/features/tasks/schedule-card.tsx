@@ -1,53 +1,81 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
 import { formatTimeLabel } from '@/utils';
 
 type ScheduleCardProps = {
   task: TaskResponse;
   onOpen?: () => void;
+  onComplete?: () => void;
+  completionDisabled?: boolean;
+  isCompleting?: boolean;
 };
 
-export function ScheduleCard({ task, onOpen }: ScheduleCardProps) {
+export function ScheduleCard({
+  task,
+  onOpen,
+  onComplete,
+  completionDisabled = false,
+  isCompleting = false,
+}: ScheduleCardProps) {
   const theme = useAppTheme();
   const timeLabel = getScheduleTimeLabel(task);
   const metadata = task.description ?? task.category;
 
   return (
-    <Pressable
-      accessibilityLabel={`${task.title}, ${timeLabel}, 상세 보기`}
-      accessibilityRole="button"
-      disabled={!onOpen}
-      onPress={onOpen}
-      style={({ pressed }) => [
+    <View
+      style={[
         styles.card,
-        {
-          backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-          borderColor: theme.colors.border,
-        },
+        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
       ]}
     >
-      <View style={styles.time}>
-        <AppText tone="primary" variant="caption" weight="bold">
-          {timeLabel}
-        </AppText>
-      </View>
-      <View style={styles.copy}>
-        <AppText numberOfLines={2} weight="medium">
-          {task.title}
-        </AppText>
-        {metadata ? (
-          <AppText numberOfLines={1} tone="secondary" variant="caption">
-            {metadata}
+      {onComplete ? (
+        <Pressable
+          accessibilityLabel={`${task.title} 일정 완료`}
+          accessibilityRole="checkbox"
+          accessibilityState={{ busy: isCompleting, checked: false, disabled: completionDisabled }}
+          disabled={completionDisabled}
+          hitSlop={2}
+          onPress={onComplete}
+          style={styles.completionHitArea}
+        >
+          <View style={[styles.checkbox, { borderColor: theme.colors.borderStrong }]}>
+            {isCompleting ? <ActivityIndicator color={theme.colors.primary} size="small" /> : null}
+          </View>
+        </Pressable>
+      ) : null}
+      <Pressable
+        accessibilityLabel={`${task.title}, ${timeLabel}, 상세 보기`}
+        accessibilityRole="button"
+        disabled={!onOpen}
+        onPress={onOpen}
+        style={({ pressed }) => [
+          styles.content,
+          pressed && { backgroundColor: theme.colors.surfaceMuted },
+        ]}
+      >
+        <View style={styles.time}>
+          <AppText tone="primary" variant="caption" weight="bold">
+            {timeLabel}
           </AppText>
-        ) : null}
-      </View>
-      <AppText tone="muted" variant="bodyLarge">
-        ›
-      </AppText>
-    </Pressable>
+        </View>
+        <View style={styles.copy}>
+          <AppText numberOfLines={2} weight="medium">
+            {task.title}
+          </AppText>
+          {metadata ? (
+            <AppText numberOfLines={1} tone="secondary" variant="caption">
+              {metadata}
+            </AppText>
+          ) : null}
+        </View>
+        <AppText tone="muted" variant="bodyLarge">
+          ›
+        </AppText>
+      </Pressable>
+    </View>
   );
 }
 
@@ -67,8 +95,30 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     borderWidth: 1,
     flexDirection: 'row',
-    gap: spacing[3],
     minHeight: 60,
+    overflow: 'hidden',
+  },
+  completionHitArea: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    width: sizes.touchTarget,
+  },
+  checkbox: {
+    alignItems: 'center',
+    borderRadius: radii.sm,
+    borderWidth: 1.5,
+    height: 20,
+    justifyContent: 'center',
+    width: 20,
+  },
+  content: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing[3],
+    minWidth: 0,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },

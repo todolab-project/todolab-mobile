@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: radii.md,
     borderWidth: 1,
-    fontSize: 15,
+    fontSize: 16,
     minHeight: 44,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],

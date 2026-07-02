@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, ListSkeleton } from '@/components/ui';
-import { ScheduleCard, TaskCard } from '@/features/tasks';
+import { ScheduleCard, TaskCard, useCompleteTask } from '@/features/tasks';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
@@ -23,6 +23,7 @@ type CalendarDayTasksProps = {
 export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
   const router = useRouter();
   const theme = useAppTheme();
+  const completeTask = useCompleteTask(date);
   const [activeFilters, setActiveFilters] = useState<CalendarTaskFilter[]>([]);
   const query = useCalendarDayTasks(date);
   const { scheduledTasks, doneTasks } = query;
@@ -71,6 +72,12 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
         />
       ) : null}
 
+      {completeTask.error ? (
+        <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
+          {completeTask.error.message}
+        </AppText>
+      ) : null}
+
       {query.isPending ? (
         <ListSkeleton accessibilityLabel={`${dateLabel} Task를 불러오는 중`} count={2} />
       ) : query.error ? (
@@ -115,8 +122,10 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
         <>
           {filteredScheduledTasks.length > 0 ? (
             <TaskSection
+              completingTaskId={completeTask.isPending ? completeTask.variables : undefined}
               title="예정"
               tasks={filteredScheduledTasks}
+              onComplete={(taskId) => completeTask.mutate(taskId)}
               onOpen={(taskId) => openTask(taskId)}
             />
           ) : null}
@@ -211,10 +220,12 @@ function CalendarTaskFilters({ activeFilters, counts, onToggle }: CalendarTaskFi
 type TaskSectionProps = {
   title: string;
   tasks: TaskResponse[];
+  completingTaskId?: number;
+  onComplete?: (taskId: number) => void;
   onOpen: (taskId: number) => void;
 };
 
-function TaskSection({ title, tasks, onOpen }: TaskSectionProps) {
+function TaskSection({ title, tasks, completingTaskId, onComplete, onOpen }: TaskSectionProps) {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeading}>
@@ -228,9 +239,23 @@ function TaskSection({ title, tasks, onOpen }: TaskSectionProps) {
       <View style={styles.taskList}>
         {tasks.map((task) =>
           task.type === 'SCHEDULE' ? (
-            <ScheduleCard key={task.id} task={task} onOpen={() => onOpen(task.id)} />
+            <ScheduleCard
+              completionDisabled={completingTaskId !== undefined}
+              isCompleting={completingTaskId === task.id}
+              key={task.id}
+              task={task}
+              onComplete={onComplete ? () => onComplete(task.id) : undefined}
+              onOpen={() => onOpen(task.id)}
+            />
           ) : (
-            <TaskCard key={task.id} task={task} onOpen={() => onOpen(task.id)} />
+            <TaskCard
+              completionDisabled={completingTaskId !== undefined}
+              isCompleting={completingTaskId === task.id}
+              key={task.id}
+              task={task}
+              onComplete={onComplete ? () => onComplete(task.id) : undefined}
+              onOpen={() => onOpen(task.id)}
+            />
           ),
         )}
       </View>

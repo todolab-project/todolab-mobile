@@ -70,17 +70,17 @@ export const typography = {
   size: {
     caption: 12,
     label: 13,
-    body: 15,
-    bodyLarge: 17,
-    title: 22,
+    body: 14,
+    bodyLarge: 16,
+    title: 20,
     display: 30,
   },
   lineHeight: {
     caption: 16,
     label: 18,
-    body: 22,
-    bodyLarge: 24,
-    title: 30,
+    body: 20,
+    bodyLarge: 22,
+    title: 28,
     display: 38,
   },
   weight: {
