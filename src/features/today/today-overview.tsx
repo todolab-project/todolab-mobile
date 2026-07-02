@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, ListSkeleton } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, FadeInView, ListSkeleton } from '@/components/ui';
 import {
   ScheduleCard,
   TaskCard,
@@ -11,7 +11,7 @@ import {
   useReopenTask,
   useReorderTodayTask,
 } from '@/features/tasks';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { motion, radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
 import { splitTodayTasks } from './today-task-sections';
@@ -159,8 +159,9 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       </View>
 
       {feedback ? (
-        <View
+        <FadeInView
           accessibilityLiveRegion="polite"
+          duration={motion.duration.normal}
           style={[
             styles.feedbackBanner,
             {
@@ -172,7 +173,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           <AppText tone={feedback.tone} variant="label" weight="bold">
             {feedback.message}
           </AppText>
-        </View>
+        </FadeInView>
       ) : null}
 
       {supplementalError ? (

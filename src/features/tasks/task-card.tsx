@@ -1,8 +1,8 @@
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { useState, type ReactNode } from 'react';
 
-import { AppText } from '@/components/ui';
-import { radii, sizes, spacing, useAppTheme } from '@/theme';
+import { AppText, FadeInView } from '@/components/ui';
+import { motion, radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
 import { formatTimeLabel } from '@/utils';
 
@@ -89,13 +89,15 @@ export function TaskCard({
               {isCompleting ? (
                 <ActivityIndicator color={theme.colors.primary} size="small" />
               ) : isDone ? (
-                <AppText
-                  variant="caption"
-                  style={{ color: theme.colors.textOnPrimary }}
-                  weight="bold"
-                >
-                  ✓
-                </AppText>
+                <FadeInView duration={onReopen ? motion.duration.fast : 0}>
+                  <AppText
+                    variant="caption"
+                    style={{ color: theme.colors.textOnPrimary }}
+                    weight="bold"
+                  >
+                    ✓
+                  </AppText>
+                </FadeInView>
               ) : null}
             </View>
           </Pressable>
