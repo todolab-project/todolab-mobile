@@ -42,6 +42,8 @@ UI/UX 개편 방향:
 - TickTick: 날짜 탐색과 할 일의 결합
 - MyTurn: 오늘 행동을 작게 시작하고 한 단계씩 완료하는 진행감
 
+공식 제품 자료에서 공통적으로 확인되는 장점은 “기능 수”보다 현재 필요한 항목만 보여 주는 집중 구조다. Todoist의 빠른 추가와 최소 목록, Things의 Today·Inbox·Logbook 역할 분리, TickTick의 날짜와 목록 연결을 우선 참고한다. 장식은 이 흐름을 설명하거나 행동 결과를 피드백할 때만 추가한다.
+
 핵심 사용자 흐름:
 
 ```text
@@ -57,7 +59,7 @@ UI/UX 개편 방향:
 
 ### Brand and neutrals
 
-기본 화면은 차가운 밝은 회색 배경, 흰색 surface, 선명한 blue accent로 구성한다. 파란색은 브랜드와 주요 행동에 집중해서 사용하고 장식적으로 남용하지 않는다.
+기본 화면은 차가운 밝은 회색 배경, 흰색 surface, 선명한 blue accent로 구성한다. 파란색은 브랜드와 주요 행동에 집중해서 사용하고 장식적으로 남용하지 않는다. 화면이 무채색 카드의 반복으로 보이지 않도록 semantic accent, icon background, 선택 surface 중 하나를 작은 면적으로 배치한다.
 
 | Role             | Light       | Dark                    | Usage                        |
 | ---------------- | ----------- | ----------------------- | ---------------------------- |
@@ -85,6 +87,18 @@ UI/UX 개편 방향:
 | danger  | `#DC2626` | `#FEF2F2`  | 오류, 삭제 등 파괴적 행동 |
 
 색상만으로 상태를 전달하지 않는다. 아이콘, 문구, 체크 상태 또는 선 장식을 함께 사용한다.
+
+### Accent color distribution
+
+화면이 회색과 흰색만 반복되어 밋밋해 보이지 않도록 semantic color를 작은 면적에 분산한다. 카드 전체를 상태색으로 채우거나 항목마다 임의의 색을 배정하지 않는다.
+
+- Task 기본 surface는 neutral을 유지하고 선택·주요 행동에 primary blue를 사용한다.
+- 일정은 시간 text, 작은 calendar icon 또는 2–3px accent 중 한 곳에만 primary blue를 사용한다.
+- 완료는 rounded-square check와 완료 metadata에 success green을 사용하고 카드 전체를 green surface로 만들지 않는다.
+- D-Day와 오늘 마감은 warning amber를 제한적으로 사용한다.
+- 오류와 삭제 이외에는 danger red를 장식색으로 사용하지 않는다.
+- Calendar의 선택 날짜는 primary-soft surface와 primary text, 오늘은 outline 또는 작은 dot로 서로 구분한다.
+- light/dark 모두 soft surface의 면적은 카드 전체의 약 10–20% 이내를 우선하며 text 대비 4.5:1을 유지한다.
 
 ## 5. Typography
 
@@ -154,7 +168,7 @@ Rules:
 - 화면은 safe area를 존중한다.
 - 모바일에서 한 손 조작과 세로 흐름을 우선한다.
 - 주요 CTA는 가능한 한 엄지 접근 영역에 둔다.
-- 콘텐츠 최대 너비는 기본 720px이며 중앙 정렬한다. 읽기 순서가 없는 허브·대시보드는 840px 이상에서만 화면별 확장 너비를 허용한다.
+- 콘텐츠 최대 너비는 기본 720px이며 중앙 정렬한다. 생산성 목록과 설정 허브는 폭이 넓어져도 읽기 순서를 유지한다.
 - 카드와 section을 무조건 중첩하지 않는다. 배경, 간격, divider 중 가장 단순한 구획 방법을 선택한다.
 - Today에서는 실행할 Task가 가장 강한 시각적 우선순위를 갖는다.
 - 캘린더 일정, 추천, 지난 미완료는 핵심 Task 목록을 압도하지 않아야 한다.
@@ -174,7 +188,7 @@ Rules:
 | tablet      | 600–839px/dp | readable width 유지, 필요할 때 master-detail 또는 2열 검토      |
 | Web         | 840px 이상   | 중앙 정렬, hover·focus·keyboard 행동 추가, 모바일 행 밀도 유지  |
 
-Today, Task, Calendar처럼 위에서 아래로 읽는 화면은 tablet·Web에서도 기본 720px 단일 열을 유지한다. `더 보기`처럼 항목 간 읽기 순서가 없는 허브만 840px 이상에서 최대 960px 다열 layout을 사용할 수 있다.
+Today, Task, Calendar, 더 보기는 tablet·Web에서도 기본 720px 단일 열을 유지한다. 더 보기의 목적지는 카드 grid가 아니라 icon, title, optional description, chevron으로 구성한 세로 navigation row로 표시한다.
 
 검증 기준:
 
@@ -252,6 +266,16 @@ compact header
 - FAB를 사용할 때 마지막 목록 항목과 겹치지 않도록 하단 inset을 확보한다.
 - 빠른 추가가 실행 Task보다 더 많은 영구적 세로 공간을 차지하지 않게 한다.
 
+### Visual character and delight
+
+- 화면마다 새로운 장식 문법을 만들지 않고 rounded-square, compact row, soft accent를 반복해 제품 인상을 만든다.
+- section 사이에는 16–20px, 같은 목록 항목 사이는 8px을 기본으로 해 “전부 같은 카드”처럼 보이지 않게 리듬을 만든다.
+- 주요 section에는 필요할 때만 16–20px symbol 또는 작은 tinted icon background를 한 개 사용한다.
+- 완료 시 check 변화, 짧은 success feedback, 선택적 haptic을 150–220ms 안에 제공하되 confetti나 큰 점수 animation은 사용하지 않는다.
+- 빈 상태 illustration은 화면 기능을 설명할 때만 사용하고 일상적으로 자주 비는 목록에는 짧은 문구와 CTA를 우선한다.
+- pressed, selected, focused 상태는 surface·outline·opacity 중 최소 두 가지 단서로 구분한다.
+- 매력은 색의 개수보다 정렬, 여백, 즉시 반응, 일관된 문구에서 만든다.
+
 ### Compact Task Card
 
 - Task의 기본 표현은 각 항목의 경계가 분명한 compact card다.
@@ -274,11 +298,32 @@ compact header
 ### Compact Schedule Card
 
 - 일정은 Task와 같은 작은 surface card를 사용하고 완료 가능한 항목에는 동일한 rounded-square 완료 control을 표시한다.
-- 완료 control, 시작 시간 고정 열, 제목과 장소·설명 순서로 배치해 시간과 완료 행동을 서로 다른 영역에 둔다.
+- 기본 구조는 `완료 control → 제목과 metadata → 상세 affordance`다.
+- 시작·종료 시간은 별도 고정 열로 제목을 오른쪽에 밀지 않고 제목 아래 metadata의 첫 항목으로 표시한다.
+- metadata 순서는 `시간 → 장소 또는 category → D-Day`로 제한하고 한 줄을 우선한다.
 - 기본 높이는 56–68px, 카드 간 gap은 8px을 목표로 한다.
 - 종료 시간, 장소, 설명은 존재하는 핵심 정보만 한 줄로 표시한다.
-- 일정 유형 색은 시간, 작은 선 또는 icon 중 한 곳에만 사용한다.
+- 일정 유형 색은 시간, 작은 선 또는 icon 중 한 곳에만 사용하고 시간 정렬을 위해 과도한 고정 너비를 만들지 않는다.
 - 시간순으로 정렬하고 Task drag 순서에는 포함하지 않는다.
+
+### Compact completed card
+
+- Today와 완료 기록의 완료 항목은 미완료 `TaskCard`와 같은 60–72px 골격, padding, 제목 시작선을 유지한다.
+- 완료 check, 취소선 제목, `완료 HH:mm · category` 한 줄만 기본 노출한다.
+- `다시 열기` text button을 별도 하단 행에 상시 표시하지 않는다.
+- 다시 열기는 완료 check 재선택 또는 overflow action으로 제공하며, 잘못 누르기 쉬운 화면에서는 확인 없는 전체 카드 action으로 사용하지 않는다.
+- 완료 항목이 펼쳐져도 카드 높이가 행동 하나 때문에 두 배 가까이 커지지 않아야 한다.
+
+### Calendar surface
+
+- Calendar는 page header, compact 주/월 switch, 날짜 navigation, 날짜 grid, 선택 날짜 목록의 다섯 계층만 유지한다.
+- 월 제목과 이전·다음 이동은 한 줄에 두고 중복된 기간 문구나 큰 설명을 추가하지 않는다.
+- 날짜 cell은 기본적으로 flat하게 두고 선택 날짜만 primary-soft surface, 오늘은 outline 또는 4px dot로 표시한다.
+- 주말은 secondary text로만 구분하고 빨강·파랑을 장식적으로 반복하지 않는다.
+- 일정·완료·미룸·D-Day 상태 dot은 한 cell에 최대 3개까지만 표시하며 초과 상태는 개수로 축약한다.
+- 선택 날짜와 아래 목록 사이의 gap을 줄여 어떤 날짜의 항목인지 즉시 연결되게 한다.
+- 320px에서도 7열이 잘리지 않아야 하며 각 날짜 cell의 세로 hit area는 최소 44pt를 유지한다.
+- 달력 전체에 강한 border, 각 날짜의 개별 border, 다중 shadow를 동시에 사용하지 않는다.
 
 ### Badge and Pill
 
@@ -300,7 +345,7 @@ compact header
 - 지난 미완료, 추천, 기록함은 `정리할 항목` 한 줄 진입점과 sheet 또는 별도 화면으로 합친다.
 - Calendar: compact header, 작은 주/월 segmented control, 날짜 선택, 선택 날짜 compact card 목록 순서를 유지한다.
 - D-Day: compact header의 추가 행동, D-Day 숫자 중심 목표 card, 필요할 때 펼치는 연결 Task 순서를 사용한다.
-- More: 큰 destination card 대신 52–60px navigation row와 divider를 사용한다.
+- More: 모든 폭에서 52–60px 세로 navigation row와 divider를 사용하고 desktop에서도 가로 tile로 전환하지 않는다.
 - Inbox: category section과 compact card를 사용하고 Today/내일 이동은 swipe 또는 overflow action으로 제공한다.
 - Completed: 통계보다 완료 card 목록을 우선하고 날짜 선택과 요약을 compact하게 둔다.
 - Task 작성·상세: 제목, 날짜, 시간처럼 자주 쓰는 필드를 먼저 두고 낮은 빈도의 설정은 점진적으로 펼친다.
@@ -309,7 +354,7 @@ compact header
 ### Component meaning
 
 - `TaskCard`: rounded-square 완료 control이 있는 실행 가능한 할 일이다.
-- `ScheduleCard`: 완료 control과 시간 고정 열이 분리된 일정이다.
+- `ScheduleCard`: 완료 control과 제목 아래 시간 metadata가 분리된 일정이다.
 - `NavigationRow`: 다른 화면이나 정리 흐름으로 이동하는 메뉴다.
 - 같은 surface를 사용하더라도 control과 metadata 구조로 세 의미를 즉시 구분할 수 있어야 한다.
 

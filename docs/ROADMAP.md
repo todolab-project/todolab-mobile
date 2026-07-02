@@ -424,6 +424,47 @@ type ApiResponse<T> = {
 - [ ] Android, iOS, Web 실제 기기·브라우저 비교 smoke test
 - [x] 확정된 규칙을 `DESIGN.md`와 theme/component token에 최종 동기화
 
+#### Phase 6 후속. 시각 완성도와 목록 일관성
+
+목표: compact 구조는 유지하면서 일정·완료·캘린더의 정렬과 색상 사용을 다듬어 더 직관적이고 완성도 있는 화면으로 만든다.
+
+1. More 세로 navigation 복원
+   - [ ] 840px 이상 Web에서도 More 목적지를 가로 tile로 전환하지 않고 세로 row 유지
+   - [ ] `icon → title/optional description → chevron` 정렬과 52–60px 높이 통일
+   - [ ] row 사이 divider와 pressed/focus surface를 유지하고 한 화면에서 주요 목적지를 모두 확인
+2. 일정 card 정렬
+   - [ ] `ScheduleCard`의 고정 시간 열을 제거하고 제목 아래 첫 metadata로 `시작–종료 시간` 이동
+   - [ ] 구조를 `rounded-square 완료 control → 제목/metadata → 상세 affordance`로 통일
+   - [ ] 종일 일정은 시간 자리에 `종일`, 시간이 있는 일정은 `14:00–14:30` 형식으로 표시
+   - [ ] 320px와 font scale 1.5에서 시간 때문에 제목 영역이 비정상적으로 좁아지지 않는지 검증
+3. 완료 목록 compact 통일
+   - [ ] Today의 완료 Task에서 상시 `다시 열기` 하단 행 제거
+   - [ ] 완료 check 재선택 또는 overflow action으로 다시 열기 제공
+   - [ ] Today와 완료 기록의 완료 card 높이·padding·제목 시작선을 미완료 `TaskCard`와 통일
+   - [ ] 완료 metadata를 `완료 HH:mm · category · D-Day` 한 줄 우선순위로 정리
+4. semantic accent 보강
+   - [ ] 일정 시간은 primary, 완료 check는 success, D-Day·오늘 마감은 warning으로 의미 기반 색상 분리
+   - [ ] section count, selected filter, feedback에 soft surface를 제한적으로 적용
+   - [ ] card 전체 색칠과 임의 category 무지개색은 사용하지 않고 light/dark 대비 테스트 유지
+   - [ ] neutral surface가 연속될 때 icon background, 2–3px accent, metadata 중 한 방식만 선택해 리듬 추가
+5. Calendar visual refresh
+   - [ ] 월 제목·이전·다음 navigation을 한 줄 compact header로 재구성
+   - [ ] 선택 날짜는 primary-soft fill, 오늘은 outline 또는 dot로 역할 분리
+   - [ ] 날짜 cell의 불필요한 border와 중첩 card 느낌을 줄이고 grid 여백 정리
+   - [ ] 선택 날짜와 아래 Task 목록의 gap을 줄여 소속 관계 강화
+   - [ ] 일정·완료·미룸·D-Day 상태 dot은 cell당 최대 3개, 초과 시 count로 축약
+   - [ ] 주간/월간 전환 시 정보 위치가 크게 점프하지 않고 320px에서 가로 overflow가 없는지 검증
+6. 제품 매력과 interaction polish
+   - [ ] section별 icon·accent 사용 위치를 한 곳으로 제한하고 동일 의미에 동일 색상 적용
+   - [ ] pressed·selected·focused 상태를 surface와 outline로 명확히 구분
+   - [ ] 완료 feedback은 150–220ms check 변화와 짧은 success message 중심으로 통일
+   - [ ] 빈 상태와 설명 문구를 다시 검토해 반복 문구·큰 illustration·불필요한 card 제거
+   - [ ] 주요 탭에서 추가 행동의 위치와 모양을 일관되게 유지
+7. 마감 검증
+   - [ ] Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교
+   - [ ] 제목 두 줄, 긴 시간 범위, category 없음, 완료 항목 10개 이상 상태 점검
+   - [ ] 완료·다시 열기·일정 상세의 touch target과 VoiceOver/TalkBack label 재검증
+
 완료 기준:
 
 - 375pt iPhone 기본 글꼴에서 첫 viewport 안에 오늘 실행 Task가 최소 한 개 보인다.
@@ -435,7 +476,7 @@ type ApiResponse<T> = {
 - 320px부터 599px까지 폭이 바뀌어도 수평 overflow나 잘린 핵심 행동이 없다.
 - 큰 글꼴에서는 보조 설명과 metadata가 먼저 줄고 Task 제목과 핵심 행동은 유지된다.
 - 한 줄 Task card는 기본 60–72px 밀도를 목표로 하며 보이는 rounded-square 완료 control이 hit area 전체를 채우지 않는다.
-- 일정은 완료 control과 별도의 시간 고정 열을 가진 Schedule card로 Task와 구분된다.
+- 일정은 완료 control과 제목 아래 시간 metadata를 가진 Schedule card로 Task와 구분된다.
 - Today 기본 화면에는 오늘 Task, 일정, 정리 진입점, 접힌 완료 외의 요약·전체 목록이 상시 노출되지 않는다.
 - 목록의 이동·날짜 변경 같은 보조 행동은 상시 text button 행으로 세로 공간을 차지하지 않는다.
 
@@ -555,6 +596,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Android, iOS, Web 실제 환경 비교 smoke test다. 2026-07-02 기준 세 플랫폼 production bundle과 Web HTTP 응답은 통과했다. 현재 환경에는 Android `adb`, iOS `simctl`, 연결된 인앱 브라우저가 없어 실제 상호작용 검증은 보류한다. 환경이 준비되면 portrait/landscape, safe area, 키보드, 하단 고정 UI와 일정 완료 체크를 우선 확인한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6 후속의 More 세로 navigation 복원이다. desktop 가로 tile 전환을 제거하고 모든 폭에서 같은 세로 row를 유지한 뒤 일정 card의 시간을 제목 아래 metadata로 이동한다. 이어서 완료 card compact 통일, semantic accent, Calendar visual refresh, interaction polish 순서로 진행한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
