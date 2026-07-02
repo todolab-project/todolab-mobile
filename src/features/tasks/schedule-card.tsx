@@ -22,7 +22,9 @@ export function ScheduleCard({
 }: ScheduleCardProps) {
   const theme = useAppTheme();
   const timeLabel = getScheduleTimeLabel(task);
-  const metadata = task.description ?? task.category;
+  const secondaryMetadata = [task.category, task.ddayGoalTitle]
+    .filter((value): value is string => Boolean(value))
+    .join(' · ');
 
   return (
     <View
@@ -56,20 +58,25 @@ export function ScheduleCard({
           pressed && { backgroundColor: theme.colors.surfaceMuted },
         ]}
       >
-        <View style={styles.time}>
-          <AppText tone="primary" variant="caption" weight="bold">
-            {timeLabel}
-          </AppText>
-        </View>
         <View style={styles.copy}>
           <AppText numberOfLines={2} weight="medium">
             {task.title}
           </AppText>
-          {metadata ? (
-            <AppText numberOfLines={1} tone="secondary" variant="caption">
-              {metadata}
+          <View style={styles.metadata}>
+            <AppText tone="primary" variant="caption" weight="bold">
+              {timeLabel}
             </AppText>
-          ) : null}
+            {secondaryMetadata ? (
+              <AppText
+                numberOfLines={1}
+                style={styles.secondaryMetadata}
+                tone="secondary"
+                variant="caption"
+              >
+                · {secondaryMetadata}
+              </AppText>
+            ) : null}
+          </View>
         </View>
         <AppText tone="muted" variant="bodyLarge">
           ›
@@ -122,12 +129,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },
-  time: {
-    minWidth: 68,
-  },
   copy: {
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
+  },
+  metadata: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[1],
+    minWidth: 0,
+  },
+  secondaryMetadata: {
+    flex: 1,
   },
 });
