@@ -361,22 +361,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
                     onSuccess: () => showFeedback('완료 항목을 오늘 할 일로 다시 열었어요.'),
                   })
                 }
-                action={
-                  <Button
-                    accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
-                    loading={reopenTask.isPending && reopenTask.variables === task.id}
-                    disabled={reopenTask.isPending}
-                    variant="ghost"
-                    onPress={() =>
-                      reopenTask.mutate(task.id, {
-                        onSuccess: () => showFeedback('완료 항목을 오늘 할 일로 다시 열었어요.'),
-                      })
-                    }
-                    style={styles.moveButton}
-                  >
-                    다시 열기
-                  </Button>
-                }
               />
             ))}
           </View>
@@ -550,8 +534,5 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
-  },
-  moveButton: {
-    minWidth: 88,
   },
 });

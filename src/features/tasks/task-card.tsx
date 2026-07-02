@@ -45,12 +45,11 @@ export function TaskCard({
     : !task.allDay && task.startAt
       ? formatTimeLabel(task.startAt)
       : null;
-  const metadata = [
-    timeLabel,
-    task.allDay ? '종일' : null,
-    task.category,
-    task.ddayGoalTitle,
-  ].filter((value): value is string => Boolean(value));
+  const metadata = (
+    isDone
+      ? [timeLabel, task.category, task.ddayGoalTitle]
+      : [timeLabel, task.allDay ? '종일' : null, task.category, task.ddayGoalTitle]
+  ).filter((value): value is string => Boolean(value));
 
   return (
     <View
@@ -120,7 +119,7 @@ export function TaskCard({
               {task.title}
             </AppText>
 
-            {task.description ? (
+            {!isDone && task.description ? (
               <AppText numberOfLines={1} tone="secondary" variant="label">
                 {task.description}
               </AppText>
