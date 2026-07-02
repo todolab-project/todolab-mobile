@@ -230,6 +230,8 @@ function CalendarDateButton({
   style,
   theme,
 }: CalendarDateButtonProps) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <Pressable
       accessibilityLabel={`${formatDateLabel(date, {
@@ -239,13 +241,16 @@ function CalendarDateButton({
       })}${isToday ? ', 오늘' : ''}`}
       accessibilityRole="button"
       accessibilityState={{ selected }}
+      onBlur={() => setIsFocused(false)}
+      onFocus={() => setIsFocused(true)}
       onPress={onPress}
       style={({ pressed }) => [
         styles.dayButton,
         style,
         {
-          backgroundColor: selected || pressed ? theme.colors.primarySoft : 'transparent',
-          borderColor: isToday && !selected ? theme.colors.primary : 'transparent',
+          backgroundColor:
+            selected || pressed || isFocused ? theme.colors.primarySoft : 'transparent',
+          borderColor: isFocused || (isToday && !selected) ? theme.colors.primary : 'transparent',
         },
       ]}
     >

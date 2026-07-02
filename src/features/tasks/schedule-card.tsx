@@ -1,4 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
 
 import { AppText } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
@@ -21,6 +22,7 @@ export function ScheduleCard({
   isCompleting = false,
 }: ScheduleCardProps) {
   const theme = useAppTheme();
+  const [focusedControl, setFocusedControl] = useState<'checkbox' | 'content' | null>(null);
   const timeLabel = getScheduleTimeLabel(task);
   const secondaryMetadata = [task.category, task.ddayGoalTitle]
     .filter((value): value is string => Boolean(value))
@@ -30,7 +32,10 @@ export function ScheduleCard({
     <View
       style={[
         styles.card,
-        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+        {
+          backgroundColor: theme.colors.surface,
+          borderColor: focusedControl ? theme.colors.primary : theme.colors.border,
+        },
       ]}
     >
       {onComplete ? (
@@ -40,8 +45,13 @@ export function ScheduleCard({
           accessibilityState={{ busy: isCompleting, checked: false, disabled: completionDisabled }}
           disabled={completionDisabled}
           hitSlop={2}
+          onBlur={() => setFocusedControl(null)}
+          onFocus={() => setFocusedControl('checkbox')}
           onPress={onComplete}
-          style={styles.completionHitArea}
+          style={({ pressed }) => [
+            styles.completionHitArea,
+            pressed && { backgroundColor: theme.colors.primarySoft },
+          ]}
         >
           <View style={[styles.checkbox, { borderColor: theme.colors.borderStrong }]}>
             {isCompleting ? <ActivityIndicator color={theme.colors.primary} size="small" /> : null}
@@ -52,6 +62,8 @@ export function ScheduleCard({
         accessibilityLabel={`${task.title}, ${timeLabel}, 상세 보기`}
         accessibilityRole="button"
         disabled={!onOpen}
+        onBlur={() => setFocusedControl(null)}
+        onFocus={() => setFocusedControl('content')}
         onPress={onOpen}
         style={({ pressed }) => [
           styles.content,

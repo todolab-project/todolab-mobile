@@ -455,8 +455,8 @@ type ApiResponse<T> = {
    - [ ] 일정·완료·미룸·D-Day 상태 dot은 cell당 최대 3개, 초과 시 count로 축약
    - [x] 주간/월간 전환 시 정보 위치가 크게 점프하지 않고 320px에서 가로 overflow가 없는지 검증
 6. 제품 매력과 interaction polish
-   - [ ] section별 icon·accent 사용 위치를 한 곳으로 제한하고 동일 의미에 동일 색상 적용
-   - [ ] pressed·selected·focused 상태를 surface와 outline로 명확히 구분
+   - [x] section별 icon·accent 사용 위치를 한 곳으로 제한하고 동일 의미에 동일 색상 적용
+   - [x] pressed·selected·focused 상태를 surface와 outline로 명확히 구분
    - [ ] 완료 feedback은 150–220ms check 변화와 짧은 success message 중심으로 통일
    - [ ] 빈 상태와 설명 문구를 다시 검토해 반복 문구·큰 illustration·불필요한 card 제거
    - [ ] 주요 탭에서 추가 행동의 위치와 모양을 일관되게 유지
@@ -596,6 +596,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속의 interaction polish다. section icon·accent 위치, pressed·selected·focused 상태, 완료 feedback, 빈 상태 문구와 주요 탭의 추가 행동을 일관된 문법으로 정리한다. Calendar 날짜 cell의 일정·완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다.
+다음 모바일 작업은 완료 feedback polish다. 완료 check 변화와 짧은 success message를 150–220ms 범위의 절제된 반응으로 통일하고 reduced motion 설정을 존중한다. 이후 빈 상태 문구와 주요 탭의 추가 행동을 정리한다. Calendar 날짜 cell의 일정·완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

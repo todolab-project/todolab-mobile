@@ -152,6 +152,7 @@ const calendarTaskFilters = Object.keys(calendarTaskFilterLabels) as CalendarTas
 
 function CalendarTaskFilters({ activeFilters, counts, onToggle }: CalendarTaskFiltersProps) {
   const theme = useAppTheme();
+  const [focusedFilter, setFocusedFilter] = useState<CalendarTaskFilter | null>(null);
   const appearances = {
     schedule: {
       color: theme.colors.primary,
@@ -188,12 +189,19 @@ function CalendarTaskFilters({ activeFilters, counts, onToggle }: CalendarTaskFi
               accessibilityRole="checkbox"
               accessibilityState={{ checked: selected }}
               key={filter}
+              onBlur={() => setFocusedFilter(null)}
+              onFocus={() => setFocusedFilter(filter)}
               onPress={() => onToggle(filter)}
               style={({ pressed }) => [
                 styles.filterChip,
                 {
                   backgroundColor: selected ? appearance.backgroundColor : theme.colors.surface,
-                  borderColor: selected ? appearance.color : theme.colors.border,
+                  borderColor:
+                    focusedFilter === filter
+                      ? theme.colors.primary
+                      : selected
+                        ? appearance.color
+                        : theme.colors.border,
                   opacity: pressed ? 0.7 : 1,
                 },
               ]}

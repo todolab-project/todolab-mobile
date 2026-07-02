@@ -26,6 +26,7 @@ export function CompletedOverview() {
   const theme = useAppTheme();
   const today = toApiLocalDate();
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
+  const [focusedDate, setFocusedDate] = useState<LocalDateString | null>(null);
   const [menuTaskId, setMenuTaskId] = useState<number | null>(null);
   const week = useCompletedWeek(selectedDate);
   const reopenTask = useReopenTask(selectedDate);
@@ -93,11 +94,17 @@ export function CompletedOverview() {
                 accessibilityLabel={`${formatDateLabel(day.date)}, 완료 ${day.tasks.length}개`}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
+                onBlur={() => setFocusedDate(null)}
+                onFocus={() => setFocusedDate(day.date)}
                 onPress={() => setSelectedDate(day.date)}
                 style={[
                   styles.dayButton,
                   {
-                    backgroundColor: selected ? theme.colors.primarySoft : theme.colors.surface,
+                    backgroundColor:
+                      selected || focusedDate === day.date
+                        ? theme.colors.primarySoft
+                        : theme.colors.surface,
+                    borderColor: focusedDate === day.date ? theme.colors.primary : 'transparent',
                   },
                 ]}
               >
@@ -269,6 +276,7 @@ const styles = StyleSheet.create({
   },
   dayButton: {
     alignItems: 'center',
+    borderWidth: 1,
     flex: 1,
     gap: spacing[1],
     justifyContent: 'center',

@@ -1,5 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { AppText } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
@@ -30,6 +30,7 @@ export function TaskCard({
   action,
 }: TaskCardProps) {
   const theme = useAppTheme();
+  const [focusedControl, setFocusedControl] = useState<'checkbox' | 'content' | null>(null);
   const isDone = task.status === 'DONE';
   const onToggle = isDone ? onReopen : onComplete;
   const toggleDisabled = completionDisabled || !onToggle;
@@ -53,7 +54,10 @@ export function TaskCard({
     <View
       style={[
         styles.row,
-        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+        {
+          backgroundColor: theme.colors.surface,
+          borderColor: focusedControl ? theme.colors.primary : theme.colors.border,
+        },
       ]}
     >
       <View style={styles.content}>
@@ -64,6 +68,8 @@ export function TaskCard({
             accessibilityState={{ checked: isDone, busy: isCompleting, disabled: toggleDisabled }}
             disabled={toggleDisabled}
             hitSlop={4}
+            onBlur={() => setFocusedControl(null)}
+            onFocus={() => setFocusedControl('checkbox')}
             onPress={onToggle}
             style={({ pressed }) => [
               styles.checkboxHitArea,
@@ -99,6 +105,8 @@ export function TaskCard({
           accessibilityLabel={`${task.title} 상세 보기`}
           accessibilityRole="button"
           disabled={!onOpen}
+          onBlur={() => setFocusedControl(null)}
+          onFocus={() => setFocusedControl('content')}
           onPress={onOpen}
           style={({ pressed }) => [
             styles.copyPressable,
