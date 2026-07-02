@@ -429,9 +429,9 @@ type ApiResponse<T> = {
 목표: compact 구조는 유지하면서 일정·완료·캘린더의 정렬과 색상 사용을 다듬어 더 직관적이고 완성도 있는 화면으로 만든다.
 
 1. More 세로 navigation 복원
-   - [ ] 840px 이상 Web에서도 More 목적지를 가로 tile로 전환하지 않고 세로 row 유지
-   - [ ] `icon → title/optional description → chevron` 정렬과 52–60px 높이 통일
-   - [ ] row 사이 divider와 pressed/focus surface를 유지하고 한 화면에서 주요 목적지를 모두 확인
+   - [x] 840px 이상 Web에서도 More 목적지를 가로 tile로 전환하지 않고 세로 row 유지
+   - [x] `icon → title/optional description → chevron` 정렬과 52–60px 높이 통일
+   - [x] row 사이 divider와 pressed/focus surface를 유지하고 한 화면에서 주요 목적지를 모두 확인
 2. 일정 card 정렬
    - [ ] `ScheduleCard`의 고정 시간 열을 제거하고 제목 아래 첫 metadata로 `시작–종료 시간` 이동
    - [ ] 구조를 `rounded-square 완료 control → 제목/metadata → 상세 affordance`로 통일
@@ -596,6 +596,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속의 More 세로 navigation 복원이다. desktop 가로 tile 전환을 제거하고 모든 폭에서 같은 세로 row를 유지한 뒤 일정 card의 시간을 제목 아래 metadata로 이동한다. 이어서 완료 card compact 통일, semantic accent, Calendar visual refresh, interaction polish 순서로 진행한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6 후속의 일정 card 정렬 개편이다. `ScheduleCard`의 고정 시간 열을 제거하고 제목 아래 첫 metadata로 시간을 이동해 모든 제목의 시작선을 맞춘다. 이어서 완료 card compact 통일, semantic accent, Calendar visual refresh, interaction polish 순서로 진행한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

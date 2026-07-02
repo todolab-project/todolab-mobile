@@ -2,13 +2,15 @@ import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
 import { SymbolView } from 'expo-symbols';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, PageHeader, Screen } from '@/components/ui';
-import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
+import { radii, spacing, useAppTheme } from '@/theme';
 
 type MoreItem = {
   title: string;
+  description: string;
   href: '/inbox' | '/completed' | '/settings';
   icon: SymbolViewProps['name'];
 };
@@ -16,16 +18,19 @@ type MoreItem = {
 const moreItems: MoreItem[] = [
   {
     title: '기록함',
+    description: '날짜를 정하지 않은 기록',
     href: '/inbox',
     icon: { ios: 'tray.full.fill', android: 'inbox', web: 'inbox' },
   },
   {
     title: '완료 기록',
+    description: '끝낸 일과 주간 흐름',
     href: '/completed',
     icon: { ios: 'checkmark.circle.fill', android: 'task_alt', web: 'task_alt' },
   },
   {
     title: '설정',
+    description: '앱 환경과 정보',
     href: '/settings',
     icon: { ios: 'gearshape.fill', android: 'settings', web: 'settings' },
   },
@@ -34,21 +39,16 @@ const moreItems: MoreItem[] = [
 export function MoreOverview() {
   const router = useRouter();
   const theme = useAppTheme();
-  const { isDesktop } = useMobileLayout();
+  const [focusedHref, setFocusedHref] = useState<MoreItem['href'] | null>(null);
 
   return (
-    <Screen
-      scroll
-      contentMaxWidth={isDesktop ? 960 : undefined}
-      contentContainerStyle={styles.screen}
-    >
+    <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader title="더 보기" />
 
       <View
         accessibilityRole="list"
         style={[
           styles.menu,
-          isDesktop && styles.desktopMenu,
           { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
         ]}
       >
@@ -57,21 +57,18 @@ export function MoreOverview() {
             key={item.href}
             accessibilityHint={`${item.title} 화면으로 이동합니다`}
             accessibilityRole="button"
+            onBlur={() => setFocusedHref(null)}
+            onFocus={() => setFocusedHref(item.href)}
             onPress={() => router.push(item.href as Href)}
             style={({ pressed }) => [
               styles.row,
-              isDesktop && styles.desktopRow,
-              index < moreItems.length - 1 &&
-                (isDesktop
-                  ? {
-                      borderRightColor: theme.colors.border,
-                      borderRightWidth: StyleSheet.hairlineWidth,
-                    }
-                  : {
-                      borderBottomColor: theme.colors.border,
-                      borderBottomWidth: StyleSheet.hairlineWidth,
-                    }),
-              pressed && { backgroundColor: theme.colors.surfaceMuted },
+              index < moreItems.length - 1 && {
+                borderBottomColor: theme.colors.border,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+              },
+              (pressed || focusedHref === item.href) && {
+                backgroundColor: theme.colors.primarySoft,
+              },
             ]}
           >
             <View style={[styles.icon, { backgroundColor: theme.colors.primarySoft }]}>
@@ -82,9 +79,12 @@ export function MoreOverview() {
                 type="hierarchical"
               />
             </View>
-            <AppText style={styles.title} weight="medium">
-              {item.title}
-            </AppText>
+            <View style={styles.copy}>
+              <AppText weight="medium">{item.title}</AppText>
+              <AppText tone="secondary" variant="caption">
+                {item.description}
+              </AppText>
+            </View>
             <AppText tone="muted" variant="bodyLarge">
               ›
             </AppText>
@@ -105,18 +105,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
   },
-  desktopMenu: {
-    flexDirection: 'row',
-  },
   row: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[3],
     minHeight: 60,
     paddingHorizontal: spacing[3],
-  },
-  desktopRow: {
-    flex: 1,
   },
   icon: {
     alignItems: 'center',
@@ -125,7 +119,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 32,
   },
-  title: {
+  copy: {
     flex: 1,
+    gap: spacing[1],
   },
 });
