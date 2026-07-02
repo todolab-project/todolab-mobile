@@ -104,6 +104,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
+            <View style={[styles.sectionMarker, { backgroundColor: theme.colors.primary }]} />
             <AppText variant="bodyLarge" weight="bold">
               오늘 할 일
             </AppText>
@@ -202,6 +203,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         <View style={styles.scheduleSection}>
           <View style={styles.taskSectionHeading}>
             <View style={styles.taskSectionCopy}>
+              <View style={[styles.sectionMarker, { backgroundColor: theme.colors.primary }]} />
               <AppText variant="bodyLarge" weight="bold">
                 일정
               </AppText>
@@ -318,6 +320,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
+            <View style={[styles.sectionMarker, { backgroundColor: theme.colors.success }]} />
             <AppText variant="bodyLarge" weight="bold">
               오늘 완료한 일
             </AppText>
@@ -480,7 +483,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   taskSectionCopy: {
+    alignItems: 'center',
     flex: 1,
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  sectionMarker: {
+    borderRadius: radii.full,
+    height: 8,
+    width: 8,
   },
   reviewSection: {
     gap: spacing[2],

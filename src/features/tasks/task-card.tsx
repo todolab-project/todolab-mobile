@@ -46,9 +46,7 @@ export function TaskCard({
       ? formatTimeLabel(task.startAt)
       : null;
   const metadata = (
-    isDone
-      ? [timeLabel, task.category, task.ddayGoalTitle]
-      : [timeLabel, task.allDay ? '종일' : null, task.category, task.ddayGoalTitle]
+    isDone ? [timeLabel, task.category] : [timeLabel, task.allDay ? '종일' : null, task.category]
   ).filter((value): value is string => Boolean(value));
 
   return (
@@ -125,9 +123,15 @@ export function TaskCard({
               </AppText>
             ) : null}
 
-            {metadata.length > 0 ? (
+            {metadata.length > 0 || task.ddayGoalTitle ? (
               <AppText numberOfLines={1} tone="secondary" variant="caption">
                 {metadata.join(' · ')}
+                {task.ddayGoalTitle ? (
+                  <AppText tone="warning" variant="caption" weight="semibold">
+                    {metadata.length > 0 ? ' · ' : ''}
+                    {task.ddayGoalTitle}
+                  </AppText>
+                ) : null}
               </AppText>
             ) : null}
           </View>
