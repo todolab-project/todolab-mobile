@@ -448,12 +448,12 @@ type ApiResponse<T> = {
    - [x] card 전체 색칠과 임의 category 무지개색은 사용하지 않고 light/dark 대비 테스트 유지
    - [x] neutral surface가 연속될 때 icon background, 2–3px accent, metadata 중 한 방식만 선택해 리듬 추가
 5. Calendar visual refresh
-   - [ ] 월 제목·이전·다음 navigation을 한 줄 compact header로 재구성
-   - [ ] 선택 날짜는 primary-soft fill, 오늘은 outline 또는 dot로 역할 분리
-   - [ ] 날짜 cell의 불필요한 border와 중첩 card 느낌을 줄이고 grid 여백 정리
-   - [ ] 선택 날짜와 아래 Task 목록의 gap을 줄여 소속 관계 강화
+   - [x] 월 제목·이전·다음 navigation을 한 줄 compact header로 재구성
+   - [x] 선택 날짜는 primary-soft fill, 오늘은 outline 또는 dot로 역할 분리
+   - [x] 날짜 cell의 불필요한 border와 중첩 card 느낌을 줄이고 grid 여백 정리
+   - [x] 선택 날짜와 아래 Task 목록의 gap을 줄여 소속 관계 강화
    - [ ] 일정·완료·미룸·D-Day 상태 dot은 cell당 최대 3개, 초과 시 count로 축약
-   - [ ] 주간/월간 전환 시 정보 위치가 크게 점프하지 않고 320px에서 가로 overflow가 없는지 검증
+   - [x] 주간/월간 전환 시 정보 위치가 크게 점프하지 않고 320px에서 가로 overflow가 없는지 검증
 6. 제품 매력과 interaction polish
    - [ ] section별 icon·accent 사용 위치를 한 곳으로 제한하고 동일 의미에 동일 색상 적용
    - [ ] pressed·selected·focused 상태를 surface와 outline로 명확히 구분
@@ -596,6 +596,6 @@ fix: 키보드가 저장 버튼을 가리는 문제 수정
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속의 Calendar visual refresh다. 월 제목과 이전·다음 navigation, 주·월 전환, 선택 날짜와 오늘 표시를 더 단순한 계층으로 정리하고 날짜 grid와 아래 Task 목록의 연결감을 높인다. 이후 interaction polish를 진행한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다. Phase 3의 주간/월간 날짜 셀 상태 점과 개수는 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다.
+다음 모바일 작업은 Phase 6 후속의 interaction polish다. section icon·accent 위치, pressed·selected·focused 상태, 완료 feedback, 빈 상태 문구와 주요 탭의 추가 행동을 일관된 문법으로 정리한다. Calendar 날짜 cell의 일정·완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

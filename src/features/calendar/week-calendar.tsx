@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, IconButton, PageHeader, Screen } from '@/components/ui';
+import { AppText, Button, IconButton, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -43,35 +43,38 @@ export function WeekCalendar() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <PageHeader title="캘린더" />
+      <PageHeader
+        title="캘린더"
+        action={
+          <View
+            accessibilityRole="tablist"
+            style={[styles.modeSwitch, { backgroundColor: theme.colors.surfaceMuted }]}
+          >
+            <Button
+              accessibilityRole="tab"
+              accessibilityState={{ selected: mode === 'week' }}
+              size="compact"
+              variant={mode === 'week' ? 'secondary' : 'ghost'}
+              onPress={() => setMode('week')}
+              style={styles.modeButton}
+            >
+              주
+            </Button>
+            <Button
+              accessibilityRole="tab"
+              accessibilityState={{ selected: mode === 'month' }}
+              size="compact"
+              variant={mode === 'month' ? 'secondary' : 'ghost'}
+              onPress={() => setMode('month')}
+              style={styles.modeButton}
+            >
+              월
+            </Button>
+          </View>
+        }
+      />
 
-      <View
-        accessibilityRole="tablist"
-        style={[styles.modeSwitch, { backgroundColor: theme.colors.surfaceMuted }]}
-      >
-        <Button
-          accessibilityRole="tab"
-          accessibilityState={{ selected: mode === 'week' }}
-          size="compact"
-          variant={mode === 'week' ? 'secondary' : 'ghost'}
-          onPress={() => setMode('week')}
-          style={styles.modeButton}
-        >
-          주간
-        </Button>
-        <Button
-          accessibilityRole="tab"
-          accessibilityState={{ selected: mode === 'month' }}
-          size="compact"
-          variant={mode === 'month' ? 'secondary' : 'ghost'}
-          onPress={() => setMode('month')}
-          style={styles.modeButton}
-        >
-          월간
-        </Button>
-      </View>
-
-      <Card padded={false} style={styles.calendarCard}>
+      <View style={[styles.calendarSurface, { backgroundColor: theme.colors.surface }]}>
         <View style={styles.calendarHeading}>
           <IconButton
             accessibilityLabel={`이전 ${mode === 'week' ? '주' : '달'}`}
@@ -100,6 +103,17 @@ export function WeekCalendar() {
               tintColor={theme.colors.textSecondary}
             />
           </IconButton>
+          <IconButton
+            accessibilityLabel="오늘로 이동"
+            disabled={selectedDate === today}
+            onPress={moveToToday}
+          >
+            <SymbolView
+              name={{ ios: 'calendar', android: 'today', web: 'today' }}
+              size={18}
+              tintColor={selectedDate === today ? theme.colors.textMuted : theme.colors.primary}
+            />
+          </IconButton>
         </View>
 
         {mode === 'week' ? (
@@ -117,13 +131,7 @@ export function WeekCalendar() {
             onSelect={setSelectedDate}
           />
         )}
-
-        {selectedDate !== today ? (
-          <Button size="compact" variant="ghost" onPress={moveToToday} style={styles.todayButton}>
-            오늘로 이동
-          </Button>
-        ) : null}
-      </Card>
+      </View>
 
       <CalendarDayTasks date={selectedDate} />
     </Screen>
@@ -236,31 +244,26 @@ function CalendarDateButton({
         styles.dayButton,
         style,
         {
-          backgroundColor: selected
-            ? theme.colors.primary
-            : pressed
-              ? theme.colors.primarySoft
-              : 'transparent',
+          backgroundColor: selected || pressed ? theme.colors.primarySoft : 'transparent',
+          borderColor: isToday && !selected ? theme.colors.primary : 'transparent',
         },
       ]}
     >
       {weekdayLabel ? (
         <AppText
           align="center"
-          tone={selected ? 'default' : 'secondary'}
+          tone={selected ? 'primary' : 'secondary'}
           variant="caption"
           weight="semibold"
-          style={selected ? { color: theme.colors.textOnPrimary } : undefined}
         >
           {weekdayLabel}
         </AppText>
       ) : null}
       <AppText
         align="center"
-        tone={!selected && !isCurrentMonth ? 'muted' : 'default'}
+        tone={selected ? 'primary' : !isCurrentMonth ? 'muted' : 'default'}
         variant={weekdayLabel ? 'bodyLarge' : 'label'}
         weight={selected || isToday ? 'heavy' : 'semibold'}
-        style={selected ? { color: theme.colors.textOnPrimary } : undefined}
       >
         {Number(date.slice(-2))}
       </AppText>
@@ -268,11 +271,7 @@ function CalendarDateButton({
         style={[
           styles.todayDot,
           {
-            backgroundColor: isToday
-              ? selected
-                ? theme.colors.textOnPrimary
-                : theme.colors.primary
-              : 'transparent',
+            backgroundColor: isToday ? theme.colors.primary : 'transparent',
           },
         ]}
       />
@@ -304,7 +303,7 @@ function getWeekRangeLabel(weekDates: LocalDateString[]) {
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[5],
+    gap: spacing[4],
     paddingTop: spacing[4],
   },
   modeSwitch: {
@@ -315,18 +314,18 @@ const styles = StyleSheet.create({
     padding: spacing[1],
   },
   modeButton: {
-    minWidth: 64,
+    minWidth: 44,
   },
-  calendarCard: {
+  calendarSurface: {
+    borderRadius: radii.lg,
     overflow: 'hidden',
   },
   calendarHeading: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing[3],
+    gap: spacing[1],
     justifyContent: 'space-between',
-    paddingHorizontal: spacing[2],
-    paddingTop: spacing[2],
+    padding: spacing[2],
   },
   calendarHeadingCopy: {
     flex: 1,
@@ -341,6 +340,7 @@ const styles = StyleSheet.create({
   dayButton: {
     alignItems: 'center',
     borderRadius: radii.md,
+    borderWidth: 1,
     gap: spacing[1],
     justifyContent: 'center',
     minWidth: 0,
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   monthWeekdays: {
     flexDirection: 'row',
     paddingHorizontal: spacing[2],
-    paddingTop: spacing[4],
+    paddingTop: spacing[2],
   },
   monthWeekday: {
     width: '14.285714%',
@@ -378,9 +378,5 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     height: 4,
     width: 4,
-  },
-  todayButton: {
-    alignSelf: 'center',
-    marginBottom: spacing[1],
   },
 });
