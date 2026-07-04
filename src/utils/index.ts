@@ -11,3 +11,4 @@ export {
   toApiLocalDate,
   toApiLocalDateTime,
 } from './date-time';
+export { doesScheduleOverlapDate } from './schedule-range';

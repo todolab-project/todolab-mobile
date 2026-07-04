@@ -12,7 +12,7 @@ import type {
   TodayOrderDirection,
 } from '@/types';
 import { deferReasonLabels } from '@/types';
-import { toApiLocalDate } from '@/utils';
+import { doesScheduleOverlapDate, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 type MockQueryValue = string | number | boolean | null | undefined;
 type MockQueryParams = Record<string, MockQueryValue>;
@@ -82,6 +82,17 @@ const tasks: TaskResponse[] = [
     plannedDate: today,
     startAt: `${today}T14:00:00`,
     endAt: `${today}T14:30:00`,
+    todayOrder: null,
+  }),
+  createTask({
+    id: 11,
+    type: 'SCHEDULE',
+    title: '여러 날에 걸친 일정 UX 점검',
+    category: '일정',
+    status: 'TODAY',
+    plannedDate: shiftLocalDate(today, -1) ?? today,
+    startAt: `${shiftLocalDate(today, -1) ?? today}T09:00:00`,
+    endAt: `${shiftLocalDate(today, 1) ?? today}T18:00:00`,
     todayOrder: null,
   }),
   createTask({
@@ -311,7 +322,11 @@ export const mockApiClient = {
       const date = getDate(options.query);
 
       return tasks
-        .filter((task) => task.status === 'TODAY' && task.plannedDate === date)
+        .filter(
+          (task) =>
+            task.status === 'TODAY' &&
+            (task.plannedDate === date || doesScheduleOverlapDate(task, date)),
+        )
         .sort(sortTodayTasks)
         .map(cloneTask) as T;
     }
