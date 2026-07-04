@@ -463,7 +463,7 @@ type ApiResponse<T> = {
 7. 마감 검증
    - [ ] Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교
    - [ ] 제목 두 줄, 긴 시간 범위, category 없음, 완료 항목 10개 이상 상태 점검
-   - [ ] 완료·다시 열기·일정 상세의 touch target과 VoiceOver/TalkBack label 재검증
+   - [x] 완료·다시 열기·일정 상세의 touch target과 VoiceOver/TalkBack label 재검증
 
 완료 기준:
 

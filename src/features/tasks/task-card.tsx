@@ -63,6 +63,9 @@ export function TaskCard({
       <View style={styles.content}>
         {showCompletionControl ? (
           <Pressable
+            accessibilityHint={
+              isDone ? '완료를 취소하고 오늘 할 일로 되돌립니다.' : '할 일을 완료합니다.'
+            }
             accessibilityLabel={toggleLabel}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: isDone, busy: isCompleting, disabled: toggleDisabled }}
@@ -104,8 +107,10 @@ export function TaskCard({
         ) : null}
 
         <Pressable
+          accessibilityHint={onOpen ? '할 일 상세 화면을 엽니다.' : undefined}
           accessibilityLabel={`${task.title} 상세 보기`}
           accessibilityRole="button"
+          accessibilityState={{ disabled: !onOpen }}
           disabled={!onOpen}
           onBlur={() => setFocusedControl(null)}
           onFocus={() => setFocusedControl('content')}

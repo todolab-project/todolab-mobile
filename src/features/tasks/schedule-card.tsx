@@ -40,6 +40,7 @@ export function ScheduleCard({
     >
       {onComplete ? (
         <Pressable
+          accessibilityHint="일정을 완료합니다."
           accessibilityLabel={`${task.title} 일정 완료`}
           accessibilityRole="checkbox"
           accessibilityState={{ busy: isCompleting, checked: false, disabled: completionDisabled }}
@@ -59,8 +60,10 @@ export function ScheduleCard({
         </Pressable>
       ) : null}
       <Pressable
+        accessibilityHint={onOpen ? '일정 상세 화면을 엽니다.' : undefined}
         accessibilityLabel={`${task.title}, ${timeLabel}, 상세 보기`}
         accessibilityRole="button"
+        accessibilityState={{ disabled: !onOpen }}
         disabled={!onOpen}
         onBlur={() => setFocusedControl(null)}
         onFocus={() => setFocusedControl('content')}
