@@ -4,6 +4,7 @@ import type {
   LocalDateString,
   TaskRecommendationResponse,
   TaskResponse,
+  TaskListQuery,
   TodayOrderDirection,
   TaskUpsertRequest,
 } from '@/types';
@@ -11,6 +12,10 @@ import type {
 const TASKS_PATH = '/api/tasks';
 
 export const taskApi = {
+  list(query: TaskListQuery, signal?: AbortSignal) {
+    return apiClient.get<TaskResponse[]>(TASKS_PATH, { query, signal });
+  },
+
   get(taskId: number, signal?: AbortSignal) {
     return apiClient.get<TaskResponse>(`${TASKS_PATH}/${taskId}`, { signal });
   },

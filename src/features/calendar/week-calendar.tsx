@@ -5,11 +5,13 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, IconButton, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
-import type { LocalDateString } from '@/types';
+import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
 import { getMonthCalendarDates, getWeekDates, shiftMonth } from './calendar-date';
+import { CalendarPeriodBars } from './calendar-period-bars';
+import { useCalendarRangeTasks } from './use-calendar-range-tasks';
 
 const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
 type CalendarMode = 'week' | 'month';
@@ -22,6 +24,10 @@ export function WeekCalendar() {
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
   const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
   const monthDates = useMemo(() => getMonthCalendarDates(selectedDate), [selectedDate]);
+  const rangeTasks = useCalendarRangeTasks(mode === 'week' ? 'WEEK' : 'MONTH', selectedDate);
+  const openTask = (taskId: number) => {
+    router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
+  };
 
   const moveWeek = (days: number) => {
     const nextSelectedDate = shiftLocalDate(selectedDate, days);
@@ -143,8 +149,13 @@ export function WeekCalendar() {
             selectedDate={selectedDate}
             today={today}
             onSelect={setSelectedDate}
+            tasks={rangeTasks.data ?? []}
+            onOpenTask={openTask}
           />
         )}
+        {mode === 'week' ? (
+          <CalendarPeriodBars dates={weekDates} tasks={rangeTasks.data ?? []} onOpen={openTask} />
+        ) : null}
       </View>
 
       <CalendarDayTasks date={selectedDate} />
@@ -157,6 +168,8 @@ type DatePickerProps = {
   selectedDate: LocalDateString;
   today: LocalDateString;
   onSelect: (date: LocalDateString) => void;
+  tasks?: TaskResponse[];
+  onOpenTask?: (taskId: number) => void;
 };
 
 function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) {
@@ -182,7 +195,14 @@ function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) 
   );
 }
 
-function MonthDateGrid({ dates, selectedDate, today, onSelect }: DatePickerProps) {
+function MonthDateGrid({
+  dates,
+  selectedDate,
+  today,
+  onSelect,
+  tasks = [],
+  onOpenTask = () => undefined,
+}: DatePickerProps) {
   const theme = useAppTheme();
   const selectedMonth = selectedDate.slice(0, 7);
 
@@ -202,20 +222,27 @@ function MonthDateGrid({ dates, selectedDate, today, onSelect }: DatePickerProps
           </AppText>
         ))}
       </View>
-      <View style={styles.monthGrid}>
-        {dates.map((date) => (
-          <CalendarDateButton
-            date={date}
-            isCurrentMonth={date.startsWith(selectedMonth)}
-            isToday={date === today}
-            key={date}
-            selected={date === selectedDate}
-            onPress={() => onSelect(date)}
-            style={styles.monthDayButton}
-            theme={theme}
-          />
-        ))}
-      </View>
+      {Array.from({ length: 6 }, (_, weekIndex) =>
+        dates.slice(weekIndex * 7, weekIndex * 7 + 7),
+      ).map((weekDates) => (
+        <View key={weekDates[0]}>
+          <View style={styles.monthGrid}>
+            {weekDates.map((date) => (
+              <CalendarDateButton
+                date={date}
+                isCurrentMonth={date.startsWith(selectedMonth)}
+                isToday={date === today}
+                key={date}
+                selected={date === selectedDate}
+                onPress={() => onSelect(date)}
+                style={styles.monthDayButton}
+                theme={theme}
+              />
+            ))}
+          </View>
+          <CalendarPeriodBars dates={weekDates} tasks={tasks} onOpen={onOpenTask} />
+        </View>
+      ))}
     </View>
   );
 }
@@ -389,9 +416,8 @@ const styles = StyleSheet.create({
   },
   monthGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     paddingHorizontal: spacing[2],
-    paddingVertical: spacing[2],
+    paddingTop: spacing[1],
   },
   monthDayButton: {
     minHeight: 48,

@@ -6,6 +6,7 @@ import type {
   DeferReason,
   LocalDateString,
   TaskRecommendationResponse,
+  TaskQueryType,
   TaskResponse,
   TaskStatus,
   TaskUpsertRequest,
@@ -255,6 +256,22 @@ function getNextTodayOrder(date: LocalDateString) {
   return Math.max(0, ...orders) + 1;
 }
 
+function getTaskRange(type: TaskQueryType, date: LocalDateString) {
+  if (type === 'DAY') return [date];
+
+  if (type === 'WEEK') {
+    const [year, month, day] = date.split('-').map(Number);
+    const weekday = new Date(Date.UTC(year, month - 1, day, 12)).getUTCDay();
+    const monday = shiftLocalDate(date, -((weekday + 6) % 7)) ?? date;
+    return Array.from({ length: 7 }, (_, index) => shiftLocalDate(monday, index) ?? monday);
+  }
+
+  const month = date.slice(0, 7);
+  return Array.from({ length: 31 }, (_, index) => `${month}-${String(index + 1).padStart(2, '0')}`)
+    .filter((value) => !Number.isNaN(new Date(`${value}T12:00:00Z`).getTime()))
+    .map((value) => value as LocalDateString);
+}
+
 function sortTodayTasks(left: TaskResponse, right: TaskResponse) {
   if (left.type === 'SCHEDULE' && right.type !== 'SCHEDULE') {
     return -1;
@@ -317,6 +334,20 @@ function disconnectGoal(task: TaskResponse) {
 export const mockApiClient = {
   async get<T>(path: string, options: MockApiOptions = {}) {
     requireNotAborted(options.signal);
+
+    if (path === '/api/tasks') {
+      const date = getDate(options.query);
+      const type = String(options.query?.type ?? 'DAY') as TaskQueryType;
+      const range = getTaskRange(type, date);
+
+      return tasks
+        .filter(
+          (task) =>
+            task.type === 'SCHEDULE' &&
+            range.some((rangeDate) => doesScheduleOverlapDate(task, rangeDate)),
+        )
+        .map(cloneTask) as T;
+    }
 
     if (path === '/api/tasks/today') {
       const date = getDate(options.query);
