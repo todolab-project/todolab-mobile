@@ -109,8 +109,8 @@ ToDoLab 적용:
 
 ```text
 compact top bar: Today · 날짜 · 보조 메뉴
-→ 오늘 실행 Task
 → 일정이 있을 때만 일정 요약
+→ 오늘 실행 Task
 → 미완료·추천 compact entry
 → 접힌 완료 목록
 → 하단 고정 추가 버튼 또는 필요할 때 펼치는 composer
@@ -118,9 +118,9 @@ compact top bar: Today · 날짜 · 보조 메뉴
 
 우선순위:
 
-1. 오늘 실행 Task와 완료
-2. 빠른 추가
-3. 시간 확정 일정
+1. 오늘의 시간 제약을 보여 주는 일정
+2. 오늘 실행 Task와 완료
+3. 하단 빠른 추가
 4. 지난 미완료 재판단
 5. 추천, 기록함, 완료 기록
 
@@ -243,7 +243,7 @@ type ApiResponse<T> = {
 - 주요 CTA는 화면 하단에 가깝게 배치한다.
 - 완료 체크는 카드 전체 탐색과 충돌하지 않게 분리한다.
 - 카드의 보조 액션은 스와이프보다 명시적 메뉴를 기본으로 하고, 스와이프는 보조 수단으로 검토한다.
-- Today 정렬은 긴 누르기 드래그를 우선 검토하되 접근 가능한 위/아래 이동도 제공한다.
+- Today 정렬은 긴 누르기 드래그를 우선하고 VoiceOver·TalkBack custom action과 Web keyboard 동선을 제공하되, 위/아래 버튼을 카드에 노출하지 않는다.
 - 키보드가 열린 상태에서도 저장 버튼과 입력 내용이 가려지지 않게 한다.
 - 긴 제목, 큰 글꼴, VoiceOver/TalkBack을 기본 검증 항목에 포함한다.
 
@@ -465,6 +465,39 @@ type ApiResponse<T> = {
    - [ ] 제목 두 줄, 긴 시간 범위, category 없음, 완료 항목 10개 이상 상태 점검
    - [x] 완료·다시 열기·일정 상세의 touch target과 VoiceOver/TalkBack label 재검증
 
+#### Phase 6 후속 2. 일정 중심 Today와 기간 캘린더
+
+목표: 사용자가 Today를 열자마자 오늘의 시간 제약과 실행할 일을 순서대로 이해하고, 여러 날에 걸친 일정을 Calendar에서 하나의 연속된 기간으로 인식하게 한다.
+
+1. Today 상단과 추가 동선
+   - [ ] Today header의 중복 `+`를 제거하고 하단 FAB를 유일한 빠른 기록 진입점으로 유지
+   - [ ] Today 정보 순서를 `header → 오늘과 겹치는 일정 → 오늘 할 일 → 정리할 항목 → 접힌 완료`로 변경
+   - [ ] 일정이 없을 때 빈 영역 없이 오늘 할 일이 header 바로 아래로 올라오는지 검증
+2. 실행 Task 재정렬
+   - [ ] Task card의 `⋯`와 펼쳐지는 위/아래 버튼 행 제거
+   - [ ] 모바일 long press drag와 Web drag handle만 기본 화면에 표시
+   - [ ] VoiceOver·TalkBack accessibility custom action과 Web keyboard 재정렬 대체 동선 제공
+3. 정리할 항목 재설계
+   - [ ] Today 안에서 지난 미완료·추천·기록함 카드를 직접 펼치는 구조 제거
+   - [ ] bottom sheet 또는 전용 정리 화면에서 `지난 미완료 / 추천 / 기록함`을 명확한 section으로 분리
+   - [ ] 각 항목의 기본 행동을 `오늘로 이동 / 오늘에 추가 / 기록함 열기`로 구체화하고 일괄 처리·빈 상태·오류 복구 설계
+   - [ ] sheet의 drag handle, 닫기, 뒤로 가기, focus trap, 키보드와 safe area 검증
+4. 여러 날 일정의 Today 표현
+   - [ ] `startAt < 내일 시작 && endAt >= 오늘 시작`인 겹침 기준으로 오늘 포함 일정 조회 계약 확인
+   - [ ] 여러 날 일정을 한 카드로 표시하고 `진행 중`, `오늘 시작`, `오늘 종료` 상태와 전체 날짜 범위 제공
+   - [ ] 종일·시간 지정·종료일 없음·자정 경계·timezone과 DST 경계 사례 정의
+   - [ ] 같은 일정이 날짜별 Task처럼 중복 표시되거나 Today 실행 순서 drag에 포함되지 않도록 분리
+5. Calendar 기간 bar
+   - [ ] 주간·월간 grid에 여러 날 일정의 시작일부터 종료일까지 이어지는 한 줄 bar 추가
+   - [ ] 주 경계 continuation, 월 바깥 날짜 clipping, 겹침 lane, 최대 노출 수와 `+N` 축약 규칙 적용
+   - [ ] bar 선택 시 일정 상세를 열고 선택 날짜 목록에도 동일 일정이 한 번만 나타나도록 연결
+   - [ ] 320px, font scale 1.5, light/dark에서 제목 생략·대비·touch target 검증
+6. 유사 사용성 점검
+   - [ ] 동일 목적의 추가 버튼, overflow, chevron이 한 화면에서 중복되지 않는지 전 화면 점검
+   - [ ] 눌렀을 때 펼침·이동·완료 중 무엇이 일어나는지 label과 affordance만으로 예측 가능한지 점검
+   - [ ] 일정과 Task가 같은 checkbox·card 문법을 쓰더라도 시간 약속과 실행 항목의 역할이 혼동되지 않는지 점검
+   - [ ] 첫 viewport에서 일정과 최소 한 개의 오늘 Task를 확인할 수 있고 정리 UI가 핵심 목록을 밀어내지 않는지 검증
+
 완료 기준:
 
 - 375pt iPhone 기본 글꼴에서 첫 viewport 안에 오늘 실행 Task가 최소 한 개 보인다.
@@ -477,7 +510,7 @@ type ApiResponse<T> = {
 - 큰 글꼴에서는 보조 설명과 metadata가 먼저 줄고 Task 제목과 핵심 행동은 유지된다.
 - 한 줄 Task card는 기본 60–72px 밀도를 목표로 하며 보이는 rounded-square 완료 control이 hit area 전체를 채우지 않는다.
 - 일정은 완료 control과 제목 아래 시간 metadata를 가진 Schedule card로 Task와 구분된다.
-- Today 기본 화면에는 오늘 Task, 일정, 정리 진입점, 접힌 완료 외의 요약·전체 목록이 상시 노출되지 않는다.
+- Today 기본 화면에는 일정, 오늘 Task, 정리 진입점, 접힌 완료 외의 요약·전체 목록이 상시 노출되지 않는다.
 - 목록의 이동·날짜 변경 같은 보조 행동은 상시 text button 행으로 세로 공간을 차지하지 않는다.
 
 #### First viewport 기준선 기록 (2026-06-30)
@@ -600,6 +633,6 @@ Today 작업 목록 표시
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속 마감 검증이다. Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교하고 긴 제목, 긴 시간 범위, category 없음, 완료 항목이 많은 상태를 점검한다. Calendar의 header `+`는 상세 작성 화면을 열며 현재 생성 API 특성상 새 Task는 기록함에 저장된다. 선택 날짜에 바로 추가하는 흐름은 atomic create-and-plan 계약이 마련된 뒤 연결한다. Calendar 날짜 cell의 일정·완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다.
+다음 모바일 작업은 Phase 6 후속 2의 Today 구조 정리다. 먼저 header의 중복 `+`와 Task card의 재정렬 `⋯`를 제거하고, 일정이 Today Task보다 먼저 보이도록 정보 순서를 바꾼다. 이어 `정리할 항목`을 inline 확장 대신 bottom sheet 또는 전용 화면으로 분리한다. 여러 날 일정과 Calendar 연속 bar는 Today·Calendar 범위 조회가 겹침 일정의 `startAt`, `endAt`을 안정적으로 반환하는지 계약을 먼저 확인한 뒤 구현한다. Calendar 날짜 cell의 완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬 mutation은 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 순서 저장 계약을 우선하고, 시각적 위/아래 버튼은 다시 노출하지 않는다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
