@@ -476,7 +476,7 @@ type ApiResponse<T> = {
 2. 실행 Task 재정렬
    - [x] Task card의 `⋯`와 펼쳐지는 위/아래 버튼 행 제거
    - [x] 모바일 long press drag와 Web drag handle만 기본 화면에 표시
-   - [ ] VoiceOver·TalkBack accessibility custom action과 Web keyboard 재정렬 대체 동선 제공
+   - [x] VoiceOver·TalkBack accessibility custom action과 Web keyboard 재정렬 대체 동선 제공
 3. 정리할 항목 재설계
    - [ ] Today 안에서 지난 미완료·추천·기록함 카드를 직접 펼치는 구조 제거
    - [ ] bottom sheet 또는 전용 정리 화면에서 `지난 미완료 / 추천 / 기록함`을 명확한 section으로 분리

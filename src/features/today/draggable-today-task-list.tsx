@@ -15,6 +15,11 @@ import type { TaskResponse } from '@/types';
 
 const TASK_ROW_HEIGHT = 68;
 
+type WebKeyDownEvent = {
+  nativeEvent: { key: string };
+  preventDefault: () => void;
+};
+
 type DraggableTodayTaskListProps = {
   tasks: TaskResponse[];
   disabled: boolean;
@@ -22,6 +27,7 @@ type DraggableTodayTaskListProps = {
   onComplete: (taskId: number) => void;
   onOpen: (taskId: number) => void;
   onMove: (taskId: number, fromIndex: number, toIndex: number) => void;
+  onMoveOneStep: (taskId: number, direction: 'UP' | 'DOWN') => void;
 };
 
 export function DraggableTodayTaskList({
@@ -31,6 +37,7 @@ export function DraggableTodayTaskList({
   onComplete,
   onOpen,
   onMove,
+  onMoveOneStep,
 }: DraggableTodayTaskListProps) {
   return (
     <View style={styles.list}>
@@ -45,6 +52,7 @@ export function DraggableTodayTaskList({
           onComplete={() => onComplete(task.id)}
           onOpen={() => onOpen(task.id)}
           onMove={(toIndex) => onMove(task.id, index, toIndex)}
+          onMoveOneStep={(direction) => onMoveOneStep(task.id, direction)}
         />
       ))}
     </View>
@@ -60,6 +68,7 @@ type DraggableTodayTaskProps = {
   onComplete: () => void;
   onOpen: () => void;
   onMove: (toIndex: number) => void;
+  onMoveOneStep: (direction: 'UP' | 'DOWN') => void;
 };
 
 function DraggableTodayTask({
@@ -71,6 +80,7 @@ function DraggableTodayTask({
   onComplete,
   onOpen,
   onMove,
+  onMoveOneStep,
 }: DraggableTodayTaskProps) {
   const theme = useAppTheme();
   const translationY = useSharedValue(0);
@@ -120,15 +130,49 @@ function DraggableTodayTask({
           isCompleting={isCompleting}
           onComplete={onComplete}
           trailing={
-            Platform.OS === 'web' && taskCount > 1 ? (
-              <AppText
-                accessibilityLabel={`${task.title}, 드래그해서 실행 순서 이동`}
-                tone="muted"
-                variant="bodyLarge"
-                style={styles.dragHandle}
+            taskCount > 1 ? (
+              <View
+                accessible
+                accessibilityActions={[
+                  ...(index > 0 ? [{ name: 'moveUp', label: '위로 이동' }] : []),
+                  ...(index < taskCount - 1 ? [{ name: 'moveDown', label: '아래로 이동' }] : []),
+                ]}
+                accessibilityHint="접근성 동작에서 위로 또는 아래로 이동할 수 있습니다."
+                accessibilityLabel={`${task.title}, 실행 순서 ${index + 1}번째`}
+                focusable={Platform.OS === 'web'}
+                {...(Platform.OS === 'web'
+                  ? {
+                      onKeyDown: (event: WebKeyDownEvent) => {
+                        if (event.nativeEvent.key === 'ArrowUp' && index > 0) {
+                          event.preventDefault();
+                          onMoveOneStep('UP');
+                        }
+                        if (event.nativeEvent.key === 'ArrowDown' && index < taskCount - 1) {
+                          event.preventDefault();
+                          onMoveOneStep('DOWN');
+                        }
+                      },
+                    }
+                  : {})}
+                onAccessibilityAction={(event) => {
+                  if (event.nativeEvent.actionName === 'moveUp' && index > 0) {
+                    onMoveOneStep('UP');
+                  }
+                  if (event.nativeEvent.actionName === 'moveDown' && index < taskCount - 1) {
+                    onMoveOneStep('DOWN');
+                  }
+                }}
+                style={
+                  Platform.OS === 'web' ? styles.webReorderControl : styles.nativeReorderControl
+                }
+                tabIndex={Platform.OS === 'web' ? 0 : undefined}
               >
-                ⠿
-              </AppText>
+                {Platform.OS === 'web' ? (
+                  <AppText tone="muted" variant="bodyLarge">
+                    ⠿
+                  </AppText>
+                ) : null}
+              </View>
             ) : null
           }
         />
@@ -148,8 +192,16 @@ const styles = StyleSheet.create({
   item: {
     borderRadius: radii.sm,
   },
-  dragHandle: {
-    paddingHorizontal: spacing[2],
-    paddingVertical: spacing[3],
+  nativeReorderControl: {
+    height: 1,
+    opacity: 0,
+    position: 'absolute',
+    width: 1,
+  },
+  webReorderControl: {
+    alignItems: 'center',
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
   },
 });
