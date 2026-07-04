@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   ReduceMotion,
@@ -9,7 +8,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
-import { AppText, Button, IconButton } from '@/components/ui';
+import { AppText } from '@/components/ui';
 import { TaskCard } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
@@ -23,7 +22,6 @@ type DraggableTodayTaskListProps = {
   onComplete: (taskId: number) => void;
   onOpen: (taskId: number) => void;
   onMove: (taskId: number, fromIndex: number, toIndex: number) => void;
-  onMoveOneStep: (taskId: number, direction: 'UP' | 'DOWN') => void;
 };
 
 export function DraggableTodayTaskList({
@@ -33,7 +31,6 @@ export function DraggableTodayTaskList({
   onComplete,
   onOpen,
   onMove,
-  onMoveOneStep,
 }: DraggableTodayTaskListProps) {
   return (
     <View style={styles.list}>
@@ -48,7 +45,6 @@ export function DraggableTodayTaskList({
           onComplete={() => onComplete(task.id)}
           onOpen={() => onOpen(task.id)}
           onMove={(toIndex) => onMove(task.id, index, toIndex)}
-          onMoveOneStep={(direction) => onMoveOneStep(task.id, direction)}
         />
       ))}
     </View>
@@ -64,7 +60,6 @@ type DraggableTodayTaskProps = {
   onComplete: () => void;
   onOpen: () => void;
   onMove: (toIndex: number) => void;
-  onMoveOneStep: (direction: 'UP' | 'DOWN') => void;
 };
 
 function DraggableTodayTask({
@@ -76,10 +71,8 @@ function DraggableTodayTask({
   onComplete,
   onOpen,
   onMove,
-  onMoveOneStep,
 }: DraggableTodayTaskProps) {
   const theme = useAppTheme();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const translationY = useSharedValue(0);
   const isDragging = useSharedValue(false);
 
@@ -89,7 +82,7 @@ function DraggableTodayTask({
   };
 
   const pan = Gesture.Pan()
-    .enabled(!disabled && !isMenuOpen && taskCount > 1)
+    .enabled(!disabled && taskCount > 1)
     .activateAfterLongPress(250)
     .onBegin(() => {
       isDragging.value = true;
@@ -127,53 +120,15 @@ function DraggableTodayTask({
           isCompleting={isCompleting}
           onComplete={onComplete}
           trailing={
-            <View style={styles.trailing}>
+            Platform.OS === 'web' && taskCount > 1 ? (
               <AppText
-                accessibilityLabel={`${task.title}, 길게 눌러 실행 순서 이동`}
+                accessibilityLabel={`${task.title}, 드래그해서 실행 순서 이동`}
                 tone="muted"
                 variant="bodyLarge"
+                style={styles.dragHandle}
               >
                 ⠿
               </AppText>
-              <IconButton
-                accessibilityLabel={`${task.title}, 순서 이동 메뉴 ${isMenuOpen ? '닫기' : '열기'}`}
-                selected={isMenuOpen}
-                onPress={() => setIsMenuOpen((current) => !current)}
-              >
-                <AppText tone="secondary" weight="bold">
-                  ⋯
-                </AppText>
-              </IconButton>
-            </View>
-          }
-          action={
-            isMenuOpen ? (
-              <View style={styles.menu}>
-                <Button
-                  accessibilityLabel={`${task.title}, 실행 순서 위로 이동`}
-                  disabled={disabled || index === 0}
-                  size="compact"
-                  variant="ghost"
-                  onPress={() => {
-                    setIsMenuOpen(false);
-                    onMoveOneStep('UP');
-                  }}
-                >
-                  ↑ 위로
-                </Button>
-                <Button
-                  accessibilityLabel={`${task.title}, 실행 순서 아래로 이동`}
-                  disabled={disabled || index === taskCount - 1}
-                  size="compact"
-                  variant="ghost"
-                  onPress={() => {
-                    setIsMenuOpen(false);
-                    onMoveOneStep('DOWN');
-                  }}
-                >
-                  ↓ 아래로
-                </Button>
-              </View>
             ) : null
           }
         />
@@ -193,13 +148,8 @@ const styles = StyleSheet.create({
   item: {
     borderRadius: radii.sm,
   },
-  trailing: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[1],
-  },
-  menu: {
-    flexDirection: 'row',
-    gap: spacing[1],
+  dragHandle: {
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[3],
   },
 });

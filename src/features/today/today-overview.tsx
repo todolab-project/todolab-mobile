@@ -180,12 +180,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             onMove={(taskId, fromIndex, toIndex) =>
               void moveTaskToIndex(taskId, fromIndex, toIndex)
             }
-            onMoveOneStep={(taskId, direction) =>
-              reorderTodayTask.mutate(
-                { taskId, direction },
-                { onSuccess: () => showFeedback('실행 순서를 옮겼어요.') },
-              )
-            }
             onOpen={openTask}
           />
         )}

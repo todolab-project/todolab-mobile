@@ -474,8 +474,8 @@ type ApiResponse<T> = {
    - [x] Today 정보 순서를 `header → 오늘과 겹치는 일정 → 오늘 할 일 → 정리할 항목 → 접힌 완료`로 변경
    - [x] 일정이 없을 때 빈 영역 없이 오늘 할 일이 header 바로 아래로 올라오는지 검증
 2. 실행 Task 재정렬
-   - [ ] Task card의 `⋯`와 펼쳐지는 위/아래 버튼 행 제거
-   - [ ] 모바일 long press drag와 Web drag handle만 기본 화면에 표시
+   - [x] Task card의 `⋯`와 펼쳐지는 위/아래 버튼 행 제거
+   - [x] 모바일 long press drag와 Web drag handle만 기본 화면에 표시
    - [ ] VoiceOver·TalkBack accessibility custom action과 Web keyboard 재정렬 대체 동선 제공
 3. 정리할 항목 재설계
    - [ ] Today 안에서 지난 미완료·추천·기록함 카드를 직접 펼치는 구조 제거
