@@ -1,6 +1,6 @@
 import type { TaskResponse } from '@/types';
 
-import { buildCalendarPeriodSegments } from '../calendar-period-bars';
+import { buildCalendarPeriodSegments, layoutCalendarPeriodSegments } from '../calendar-period-bars';
 
 const schedule: TaskResponse = {
   id: 1,
@@ -67,5 +67,49 @@ describe('buildCalendarPeriodSegments', () => {
         ],
       ),
     ).toEqual([]);
+  });
+});
+
+describe('layoutCalendarPeriodSegments', () => {
+  const dates = [
+    '2026-07-06',
+    '2026-07-07',
+    '2026-07-08',
+    '2026-07-09',
+    '2026-07-10',
+    '2026-07-11',
+    '2026-07-12',
+  ] as const;
+
+  it('겹치지 않는 기간은 같은 lane을 재사용한다', () => {
+    const later = {
+      ...schedule,
+      id: 2,
+      startAt: '2026-07-10T09:00:00',
+      endAt: '2026-07-11T18:00:00',
+    } satisfies TaskResponse;
+    const layout = layoutCalendarPeriodSegments([schedule, later], [...dates]);
+
+    expect(layout.segments.map(({ task, lane }) => [task.id, lane])).toEqual([
+      [1, 0],
+      [2, 0],
+    ]);
+    expect(layout.overflowCount).toBe(0);
+  });
+
+  it('두 lane을 넘는 겹침은 +N 대상으로 축약한다', () => {
+    const overlapping = [1, 2, 3].map(
+      (id) =>
+        ({
+          ...schedule,
+          id,
+          startAt: '2026-07-06T09:00:00',
+          endAt: '2026-07-08T18:00:00',
+        }) satisfies TaskResponse,
+    );
+    const layout = layoutCalendarPeriodSegments(overlapping, [...dates]);
+
+    expect(layout.segments.map(({ lane }) => lane)).toEqual([0, 1]);
+    expect(layout.overflowCount).toBe(1);
   });
 });

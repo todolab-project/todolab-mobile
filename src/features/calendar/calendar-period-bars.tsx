@@ -13,18 +13,18 @@ type CalendarPeriodBarsProps = {
 
 export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsProps) {
   const theme = useAppTheme();
-  const segments = buildCalendarPeriodSegments(tasks, dates).slice(0, 2);
+  const layout = layoutCalendarPeriodSegments(tasks, dates);
 
-  if (segments.length === 0) return null;
+  if (layout.segments.length === 0) return null;
 
   return (
-    <View style={styles.container}>
-      {segments.map((segment, lane) => (
+    <View style={[styles.container, layout.overflowCount > 0 && styles.containerWithOverflow]}>
+      {layout.segments.map((segment) => (
         <Pressable
           accessibilityLabel={`${segment.task.title}, 기간 일정 상세 보기`}
           accessibilityRole="button"
           hitSlop={6}
-          key={segment.task.id}
+          key={`${segment.task.id}-${segment.lane}`}
           onPress={() => onOpen(segment.task.id)}
           style={({ pressed }) => [
             styles.bar,
@@ -32,7 +32,7 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
               backgroundColor: theme.colors.primarySoft,
               left: `${(segment.startIndex / dates.length) * 100}%`,
               opacity: pressed ? 0.7 : 1,
-              top: lane * 24,
+              top: segment.lane * 24,
               width: `${((segment.endIndex - segment.startIndex + 1) / dates.length) * 100}%`,
             },
           ]}
@@ -44,8 +44,43 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
           </AppText>
         </Pressable>
       ))}
+      {layout.overflowCount > 0 ? (
+        <AppText
+          align="right"
+          accessibilityLabel={`기간 일정 ${layout.overflowCount}개 더 있음`}
+          tone="secondary"
+          variant="caption"
+          weight="semibold"
+          style={styles.overflow}
+        >
+          +{layout.overflowCount}
+        </AppText>
+      ) : null}
     </View>
   );
+}
+
+export function layoutCalendarPeriodSegments(
+  tasks: TaskResponse[],
+  dates: LocalDateString[],
+  maxLanes = 2,
+) {
+  const laneEndIndexes = Array.from({ length: maxLanes }, () => -1);
+  const segments = buildCalendarPeriodSegments(tasks, dates)
+    .sort((left, right) => left.startIndex - right.startIndex || right.endIndex - left.endIndex)
+    .flatMap((segment) => {
+      const lane = laneEndIndexes.findIndex((endIndex) => endIndex < segment.startIndex);
+
+      if (lane < 0) return [];
+
+      laneEndIndexes[lane] = segment.endIndex;
+      return [{ ...segment, lane }];
+    });
+
+  return {
+    segments,
+    overflowCount: buildCalendarPeriodSegments(tasks, dates).length - segments.length,
+  };
 }
 
 export function buildCalendarPeriodSegments(tasks: TaskResponse[], dates: LocalDateString[]) {
@@ -81,6 +116,9 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing[1],
     position: 'relative',
   },
+  containerWithOverflow: {
+    height: 68,
+  },
   bar: {
     borderRadius: radii.sm,
     height: 20,
@@ -88,5 +126,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingHorizontal: spacing[1],
     position: 'absolute',
+  },
+  overflow: {
+    bottom: 0,
+    position: 'absolute',
+    right: spacing[1],
   },
 });
