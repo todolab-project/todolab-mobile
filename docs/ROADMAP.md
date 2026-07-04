@@ -491,7 +491,7 @@ type ApiResponse<T> = {
 5. Calendar 기간 bar
    - [x] 주간·월간 grid에 여러 날 일정의 시작일부터 종료일까지 이어지는 한 줄 bar 추가
    - [x] 주 경계 continuation, 월 바깥 날짜 clipping, 겹침 lane, 최대 노출 수와 `+N` 축약 규칙 적용
-   - [ ] bar 선택 시 일정 상세를 열고 선택 날짜 목록에도 동일 일정이 한 번만 나타나도록 연결
+   - [x] bar 선택 시 일정 상세를 열고 선택 날짜 목록에도 동일 일정이 한 번만 나타나도록 연결
    - [ ] 320px, font scale 1.5, light/dark에서 제목 생략·대비·touch target 검증
 6. 유사 사용성 점검
    - [ ] 동일 목적의 추가 버튼, overflow, chevron이 한 화면에서 중복되지 않는지 전 화면 점검

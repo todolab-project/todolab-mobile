@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { taskApi } from '@/features/tasks';
 import type { LocalDateString } from '@/types';
 
-import { getCalendarDayQueryKeys } from './calendar-day-query';
+import { dedupeCalendarDayTasks, getCalendarDayQueryKeys } from './calendar-day-query';
 
 export function useCalendarDayTasks(date: LocalDateString) {
   const canFetch = Platform.OS !== 'web' || typeof window !== 'undefined';
@@ -22,8 +22,8 @@ export function useCalendarDayTasks(date: LocalDateString) {
   const queries = [scheduledQuery, doneQuery];
 
   return {
-    scheduledTasks: scheduledQuery.data ?? [],
-    doneTasks: doneQuery.data ?? [],
+    scheduledTasks: dedupeCalendarDayTasks(scheduledQuery.data ?? []),
+    doneTasks: dedupeCalendarDayTasks(doneQuery.data ?? []),
     isPending: queries.some((query) => query.isPending),
     isFetching: queries.some((query) => query.isFetching),
     error: queries.find((query) => query.error)?.error ?? null,

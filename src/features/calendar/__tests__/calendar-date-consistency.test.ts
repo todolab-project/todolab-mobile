@@ -1,7 +1,8 @@
 import { taskQueryKeys } from '@/features/tasks';
+import type { TaskResponse } from '@/types';
 import { shiftLocalDate, toApiLocalDate } from '@/utils';
 
-import { getCalendarDayQueryKeys } from '../calendar-day-query';
+import { dedupeCalendarDayTasks, getCalendarDayQueryKeys } from '../calendar-day-query';
 import { getMonthCalendarDates, getWeekDates } from '../calendar-date';
 
 describe('Today와 Calendar 날짜 일관성', () => {
@@ -26,5 +27,17 @@ describe('Today와 Calendar 날짜 일관성', () => {
     expect(calendarKeys.done).toEqual(taskQueryKeys.done(date));
     expect(tomorrow).not.toBeNull();
     expect(getCalendarDayQueryKeys(tomorrow!).scheduled).not.toEqual(calendarKeys.scheduled);
+  });
+});
+
+describe('Calendar 선택 날짜 일정 중복 방지', () => {
+  it('범위 일정이 같은 ID로 반복되어도 한 번만 유지한다', () => {
+    const task = {
+      id: 1,
+      type: 'SCHEDULE',
+      title: '기간 일정',
+    } as TaskResponse;
+
+    expect(dedupeCalendarDayTasks([task, { ...task }])).toEqual([task]);
   });
 });
