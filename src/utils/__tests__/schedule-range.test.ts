@@ -51,6 +51,24 @@ describe('doesScheduleOverlapDate', () => {
     expect(doesScheduleOverlapDate(schedule, '2026-07-05')).toBe(false);
   });
 
+  it('자정에 끝나는 일정은 종료 날짜를 점유하지 않는다', () => {
+    const schedule = createSchedule({ endAt: '2026-07-06T00:00:00' });
+
+    expect(doesScheduleOverlapDate(schedule, '2026-07-05')).toBe(true);
+    expect(doesScheduleOverlapDate(schedule, '2026-07-06')).toBe(false);
+  });
+
+  it('종일 여러 날 일정은 종료 자정 전날까지 포함된다', () => {
+    const schedule = createSchedule({
+      allDay: true,
+      startAt: '2026-07-04T00:00:00',
+      endAt: '2026-07-07T00:00:00',
+    });
+
+    expect(doesScheduleOverlapDate(schedule, '2026-07-06')).toBe(true);
+    expect(doesScheduleOverlapDate(schedule, '2026-07-07')).toBe(false);
+  });
+
   it('시간이 없는 일정은 plannedDate를 사용한다', () => {
     const schedule = createSchedule({ startAt: null, endAt: null, allDay: true });
 

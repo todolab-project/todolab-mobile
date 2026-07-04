@@ -1,5 +1,5 @@
 import type { LocalDateString, TaskResponse } from '@/types';
-import { formatDateLabel, formatTimeLabel } from '@/utils';
+import { formatDateLabel, formatTimeLabel, shiftLocalDate } from '@/utils';
 
 export type SchedulePresentation = {
   primaryLabel: string;
@@ -15,7 +15,13 @@ export function getSchedulePresentation(
   }
 
   const startDate = task.startAt.slice(0, 10) as LocalDateString;
-  const endDate = (task.endAt?.slice(0, 10) ?? startDate) as LocalDateString;
+  const rawEndDate = (task.endAt?.slice(0, 10) ?? startDate) as LocalDateString;
+  const endsAtMidnight = Boolean(
+    task.endAt &&
+    task.endAt > task.startAt &&
+    /^T00:00(?::00(?:\.0+)?)?$/.test(task.endAt.slice(10)),
+  );
+  const endDate = endsAtMidnight ? (shiftLocalDate(rawEndDate, -1) ?? rawEndDate) : rawEndDate;
   const isMultiDay = startDate !== endDate;
 
   if (!isMultiDay) {

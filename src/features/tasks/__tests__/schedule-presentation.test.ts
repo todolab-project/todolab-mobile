@@ -56,4 +56,36 @@ describe('getSchedulePresentation', () => {
       rangeLabel: null,
     });
   });
+
+  it('자정 종료는 사용자가 실제로 점유한 전날을 종료일로 표시한다', () => {
+    expect(
+      getSchedulePresentation(
+        {
+          ...schedule,
+          endAt: '2026-07-06T00:00:00',
+        },
+        '2026-07-05',
+      ),
+    ).toEqual({
+      primaryLabel: '오늘 종료',
+      rangeLabel: '7월 4일–7월 5일',
+    });
+  });
+
+  it('종일 여러 날 일정도 전체 점유 기간과 현재 상태를 표시한다', () => {
+    expect(
+      getSchedulePresentation(
+        {
+          ...schedule,
+          allDay: true,
+          startAt: '2026-07-04T00:00:00',
+          endAt: '2026-07-07T00:00:00',
+        },
+        '2026-07-05',
+      ),
+    ).toEqual({
+      primaryLabel: '진행 중',
+      rangeLabel: '7월 4일–7월 6일',
+    });
+  });
 });

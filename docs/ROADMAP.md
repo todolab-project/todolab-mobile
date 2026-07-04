@@ -483,10 +483,10 @@ type ApiResponse<T> = {
    - [x] 각 항목의 기본 행동을 `오늘로 이동 / 오늘에 추가 / 기록함 열기`로 구체화하고 빈 상태·오류 복구 설계
    - [ ] sheet의 drag handle, 닫기, 뒤로 가기, focus trap, 키보드와 safe area 검증
 4. 여러 날 일정의 Today 표현
-   - [x] `startAt < 내일 시작 && endAt >= 오늘 시작`인 겹침 기준과 mock 회귀 테스트를 [`API_SCHEDULE_RANGE.md`](./API_SCHEDULE_RANGE.md)에 문서화
+   - [x] `startAt < 내일 시작 && endAt > 오늘 시작`인 겹침 기준과 mock 회귀 테스트를 [`API_SCHEDULE_RANGE.md`](./API_SCHEDULE_RANGE.md)에 문서화
    - [ ] 백엔드 Today·Calendar 범위 조회가 같은 겹침 기준과 원본 일정 ID를 반환하는지 확인
    - [x] 여러 날 일정을 한 카드로 표시하고 `진행 중`, `오늘 시작`, `오늘 종료` 상태와 전체 날짜 범위 제공
-   - [ ] 종일·시간 지정·종료일 없음·자정 경계·timezone과 DST 경계 사례 정의
+   - [x] 종일·시간 지정·종료일 없음·자정 exclusive 종료·서울 timezone과 DST 비적용 경계 사례 정의
    - [ ] 같은 일정이 날짜별 Task처럼 중복 표시되거나 Today 실행 순서 drag에 포함되지 않도록 분리
 5. Calendar 기간 bar
    - [ ] 주간·월간 grid에 여러 날 일정의 시작일부터 종료일까지 이어지는 한 줄 bar 추가

@@ -21,5 +21,5 @@ export function doesScheduleOverlapDate(task: TaskResponse, date: LocalDateStrin
   const nextDayStart = `${nextDate}T00:00:00`;
   const endAt = task.endAt ?? task.startAt;
 
-  return task.startAt < nextDayStart && endAt >= dayStart;
+  return task.startAt < nextDayStart && endAt > dayStart;
 }
