@@ -42,6 +42,16 @@ describe('splitTodayTasks', () => {
       executionTasks: [todo, idea],
     });
   });
+
+  it('범위 조회에서 같은 일정 ID가 반복되어도 한 번만 표시한다', () => {
+    const schedule = createTask(1, 'SCHEDULE');
+    const duplicate = { ...schedule, title: '중복 응답' };
+
+    expect(splitTodayTasks([schedule, duplicate])).toEqual({
+      scheduleTasks: [schedule],
+      executionTasks: [],
+    });
+  });
 });
 
 describe('reorderTodayTasks', () => {
@@ -55,6 +65,14 @@ describe('reorderTodayTasks', () => {
       schedule,
       first,
     ]);
+  });
+
+  it('일정 ID로 재정렬을 요청해도 목록을 변경하지 않는다', () => {
+    const first = createTask(1, 'TODO');
+    const schedule = createTask(2, 'SCHEDULE');
+    const tasks = [first, schedule];
+
+    expect(reorderTodayTasks(tasks, schedule.id, 'UP')).toBe(tasks);
   });
 
   it('목록 경계를 벗어나는 이동은 기존 목록을 유지한다', () => {

@@ -487,7 +487,7 @@ type ApiResponse<T> = {
    - [ ] 백엔드 Today·Calendar 범위 조회가 같은 겹침 기준과 원본 일정 ID를 반환하는지 확인
    - [x] 여러 날 일정을 한 카드로 표시하고 `진행 중`, `오늘 시작`, `오늘 종료` 상태와 전체 날짜 범위 제공
    - [x] 종일·시간 지정·종료일 없음·자정 exclusive 종료·서울 timezone과 DST 비적용 경계 사례 정의
-   - [ ] 같은 일정이 날짜별 Task처럼 중복 표시되거나 Today 실행 순서 drag에 포함되지 않도록 분리
+   - [x] 같은 일정이 날짜별 Task처럼 중복 표시되거나 Today 실행 순서 drag에 포함되지 않도록 분리
 5. Calendar 기간 bar
    - [ ] 주간·월간 grid에 여러 날 일정의 시작일부터 종료일까지 이어지는 한 줄 bar 추가
    - [ ] 주 경계 continuation, 월 바깥 날짜 clipping, 겹침 lane, 최대 노출 수와 `+N` 축약 규칙 적용

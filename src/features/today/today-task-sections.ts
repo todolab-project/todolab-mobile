@@ -3,8 +3,17 @@ import type { TaskResponse, TodayOrderDirection } from '@/types';
 export const RECOMMENDED_TODAY_TASK_COUNT = 5;
 
 export function splitTodayTasks(tasks: TaskResponse[]) {
+  const scheduleIds = new Set<number>();
+
   return {
-    scheduleTasks: tasks.filter((task) => task.type === 'SCHEDULE'),
+    scheduleTasks: tasks.filter((task) => {
+      if (task.type !== 'SCHEDULE' || scheduleIds.has(task.id)) {
+        return false;
+      }
+
+      scheduleIds.add(task.id);
+      return true;
+    }),
     executionTasks: tasks.filter((task) => task.type !== 'SCHEDULE'),
   };
 }
