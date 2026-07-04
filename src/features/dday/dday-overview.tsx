@@ -1,3 +1,4 @@
+import { SymbolView } from 'expo-symbols';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 
@@ -31,9 +32,16 @@ export function DdayOverview() {
         title="D-Day"
         action={
           isCreating ? undefined : (
-            <Button size="compact" onPress={() => setIsCreating(true)}>
-              + 추가
-            </Button>
+            <IconButton
+              accessibilityLabel="새 D-Day 목표 만들기"
+              onPress={() => setIsCreating(true)}
+            >
+              <SymbolView
+                name={{ ios: 'plus', android: 'add', web: 'add' }}
+                size={20}
+                tintColor={theme.colors.primary}
+              />
+            </IconButton>
           )
         }
       />

@@ -459,7 +459,7 @@ type ApiResponse<T> = {
    - [x] pressed·selected·focused 상태를 surface와 outline로 명확히 구분
    - [x] 완료 feedback은 150–220ms check 변화와 짧은 success message 중심으로 통일
    - [x] 빈 상태와 설명 문구를 다시 검토해 반복 문구·큰 illustration·불필요한 card 제거
-   - [ ] 주요 탭에서 추가 행동의 위치와 모양을 일관되게 유지
+   - [x] 주요 탭에서 추가 행동의 위치와 모양을 일관되게 유지
 7. 마감 검증
    - [ ] Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교
    - [ ] 제목 두 줄, 긴 시간 범위, category 없음, 완료 항목 10개 이상 상태 점검
@@ -600,6 +600,6 @@ Today 작업 목록 표시
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 주요 탭의 추가 행동 통일이다. Today, Calendar, D-Day, More에서 새 항목을 시작하는 위치와 모양을 점검하고, 사용자가 어느 화면에서도 추가 동선을 예측할 수 있도록 공통 규칙을 적용한다. Calendar 날짜 cell의 일정·완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다.
+다음 모바일 작업은 Phase 6 후속 마감 검증이다. Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교하고 긴 제목, 긴 시간 범위, category 없음, 완료 항목이 많은 상태를 점검한다. Calendar의 header `+`는 상세 작성 화면을 열며 현재 생성 API 특성상 새 Task는 기록함에 저장된다. 선택 날짜에 바로 추가하는 흐름은 atomic create-and-plan 계약이 마련된 뒤 연결한다. Calendar 날짜 cell의 일정·완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬은 백엔드에 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 mutation 계약이 구현되기 전까지 기존 `UP`/`DOWN` API를 순차 호출한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
