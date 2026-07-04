@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
-import { doesScheduleOverlapDate } from '@/utils';
+import { doesScheduleOverlapDate, shiftLocalDate } from '@/utils';
 
 type CalendarPeriodBarsProps = {
   dates: LocalDateString[];
@@ -21,9 +21,10 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
     <View style={[styles.container, layout.overflowCount > 0 && styles.containerWithOverflow]}>
       {layout.segments.map((segment) => (
         <Pressable
+          accessibilityHint="일정 상세 화면을 엽니다."
           accessibilityLabel={`${segment.task.title}, 기간 일정 상세 보기`}
           accessibilityRole="button"
-          hitSlop={6}
+          hitSlop={12}
           key={`${segment.task.id}-${segment.lane}`}
           onPress={() => onOpen(segment.task.id)}
           style={({ pressed }) => [
@@ -87,6 +88,8 @@ export function buildCalendarPeriodSegments(tasks: TaskResponse[], dates: LocalD
   if (dates.length === 0) return [];
 
   return tasks.flatMap((task) => {
+    if (!isMultiDaySchedule(task)) return [];
+
     const occupiedIndexes = dates
       .map((date, index) => (doesScheduleOverlapDate(task, date) ? index : -1))
       .filter((index) => index >= 0);
@@ -108,6 +111,19 @@ export function buildCalendarPeriodSegments(tasks: TaskResponse[], dates: LocalD
       },
     ];
   });
+}
+
+function isMultiDaySchedule(task: TaskResponse) {
+  if (!task.startAt || !task.endAt) return false;
+
+  const startDate = task.startAt.slice(0, 10) as LocalDateString;
+  const rawEndDate = task.endAt.slice(0, 10) as LocalDateString;
+  const endsAtMidnight = /^T00:00(?::00(?:\.0+)?)?$/.test(task.endAt.slice(10));
+  const occupiedEndDate = endsAtMidnight
+    ? (shiftLocalDate(rawEndDate, -1) ?? rawEndDate)
+    : rawEndDate;
+
+  return occupiedEndDate > startDate;
 }
 
 const styles = StyleSheet.create({

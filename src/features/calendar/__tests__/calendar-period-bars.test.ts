@@ -68,6 +68,29 @@ describe('buildCalendarPeriodSegments', () => {
       ),
     ).toEqual([]);
   });
+
+  it('하루 일정은 기간 bar로 표시하지 않는다', () => {
+    const singleDay = {
+      ...schedule,
+      startAt: '2026-07-06T09:00:00',
+      endAt: '2026-07-06T18:00:00',
+    } satisfies TaskResponse;
+
+    expect(
+      buildCalendarPeriodSegments(
+        [singleDay],
+        [
+          '2026-07-06',
+          '2026-07-07',
+          '2026-07-08',
+          '2026-07-09',
+          '2026-07-10',
+          '2026-07-11',
+          '2026-07-12',
+        ],
+      ),
+    ).toEqual([]);
+  });
 });
 
 describe('layoutCalendarPeriodSegments', () => {
