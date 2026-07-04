@@ -54,12 +54,10 @@ export function DdayGoalTasks({ goalId, goalTitle }: DdayGoalTasksProps) {
 
   if (tasks.length === 0) {
     return (
-      <Card variant="muted">
-        <EmptyState
-          title="연결된 할 일이 없어요"
-          description="Task 상세에서 이 목표를 연결하면 이곳에 표시돼요."
-        />
-      </Card>
+      <EmptyState
+        title="연결된 할 일이 없어요"
+        description="할 일 상세에서 이 목표를 연결할 수 있어요."
+      />
     );
   }
 

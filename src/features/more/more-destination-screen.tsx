@@ -3,7 +3,7 @@ import type { SymbolViewProps } from 'expo-symbols';
 import { SymbolView } from 'expo-symbols';
 import { StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, Screen } from '@/components/ui';
+import { EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 
 type MoreDestinationScreenProps = {
@@ -18,30 +18,32 @@ export function MoreDestinationScreen({ title, description, icon }: MoreDestinat
 
   return (
     <Screen contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Button accessibilityLabel="More 화면으로 돌아가기" variant="ghost" onPress={router.back}>
-          ← 돌아가기
-        </Button>
-        <AppText variant="title" weight="heavy">
-          {title}
-        </AppText>
-      </View>
-      <Card>
-        <EmptyState
-          icon={
-            <View style={[styles.icon, { backgroundColor: theme.colors.primarySoft }]}>
-              <SymbolView
-                name={icon}
-                size={30}
-                tintColor={theme.colors.primary}
-                type="hierarchical"
-              />
-            </View>
-          }
-          title="차근차근 준비하고 있어요"
-          description={description}
-        />
-      </Card>
+      <PageHeader
+        title={title}
+        leading={
+          <IconButton accessibilityLabel="More 화면으로 돌아가기" onPress={router.back}>
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
+              size={20}
+              tintColor={theme.colors.text}
+            />
+          </IconButton>
+        }
+      />
+      <EmptyState
+        icon={
+          <View style={[styles.icon, { backgroundColor: theme.colors.primarySoft }]}>
+            <SymbolView
+              name={icon}
+              size={20}
+              tintColor={theme.colors.primary}
+              type="hierarchical"
+            />
+          </View>
+        }
+        title="설정은 준비 중이에요"
+        description={description}
+      />
     </Screen>
   );
 }
@@ -51,15 +53,11 @@ const styles = StyleSheet.create({
     gap: spacing[5],
     paddingTop: spacing[3],
   },
-  header: {
-    alignItems: 'flex-start',
-    gap: spacing[3],
-  },
   icon: {
     alignItems: 'center',
-    borderRadius: radii.full,
-    height: 64,
+    borderRadius: radii.md,
+    height: 40,
     justifyContent: 'center',
-    width: 64,
+    width: 40,
   },
 });

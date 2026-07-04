@@ -99,12 +99,10 @@ export function InboxOverview() {
           </Button>
         </Card>
       ) : groups.length === 0 ? (
-        <Card>
-          <EmptyState
-            title="기록함이 비어 있어요"
-            description="날짜 없이 빠르게 추가한 생각과 할 일이 이곳에 모입니다."
-          />
-        </Card>
+        <EmptyState
+          title="기록함이 비어 있어요"
+          description="빠르게 기록한 항목이 여기에 모여요."
+        />
       ) : (
         <View style={styles.groups}>
           {groups.map((group) => (

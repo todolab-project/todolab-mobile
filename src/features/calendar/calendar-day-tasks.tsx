@@ -100,24 +100,17 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
           </Button>
         </Card>
       ) : !hasTasks ? (
-        <Card>
-          <EmptyState
-            title="예정된 항목이 없어요"
-            description="다른 날짜를 선택하거나 새 Task의 날짜를 정해보세요."
-          />
-        </Card>
+        <EmptyState title="예정된 항목이 없어요" description="다른 날짜를 선택해 보세요." />
       ) : !hasFilteredTasks ? (
-        <Card>
-          <EmptyState
-            title="조건에 맞는 항목이 없어요"
-            description="다른 필터를 선택하거나 전체 항목을 다시 확인해 보세요."
-            action={
-              <Button variant="secondary" onPress={() => setActiveFilters([])}>
-                필터 초기화
-              </Button>
-            }
-          />
-        </Card>
+        <EmptyState
+          title="조건에 맞는 항목이 없어요"
+          description="필터를 초기화하면 전체 항목을 볼 수 있어요."
+          action={
+            <Button variant="secondary" onPress={() => setActiveFilters([])}>
+              필터 초기화
+            </Button>
+          }
+        />
       ) : (
         <>
           {filteredScheduledTasks.length > 0 ? (

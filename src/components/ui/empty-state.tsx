@@ -21,7 +21,7 @@ export function EmptyState({ title, description, icon, action }: EmptyStateProps
           {title}
         </AppText>
         {description ? (
-          <AppText align="center" tone="secondary">
+          <AppText align="center" tone="secondary" variant="caption">
             {description}
           </AppText>
         ) : null}
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     gap: spacing[3],
     justifyContent: 'center',
     paddingHorizontal: spacing[4],
-    paddingVertical: spacing[6],
+    paddingVertical: spacing[5],
   },
   copy: {
     alignItems: 'center',

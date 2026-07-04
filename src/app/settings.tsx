@@ -4,7 +4,7 @@ export default function SettingsScreen() {
   return (
     <MoreDestinationScreen
       title="설정"
-      description="앱 정보와 사용 환경 설정을 이곳에서 관리할 수 있게 됩니다."
+      description="앱 환경과 정보를 관리할 수 있도록 준비하고 있어요."
       icon={{ ios: 'gearshape.fill', android: 'settings', web: 'settings' }}
     />
   );

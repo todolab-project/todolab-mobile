@@ -213,12 +213,10 @@ export function CompletedOverview() {
               </View>
             </View>
           ) : (
-            <Card>
-              <EmptyState
-                title="이날 완료한 일이 없어요"
-                description="비어 있는 날도 괜찮아요. 다른 날짜를 눌러 지나온 기록을 확인해 보세요."
-              />
-            </Card>
+            <EmptyState
+              title="이날 완료한 일이 없어요"
+              description="다른 날짜를 선택해 완료 기록을 확인해 보세요."
+            />
           )}
 
           {reopenTask.error ? (

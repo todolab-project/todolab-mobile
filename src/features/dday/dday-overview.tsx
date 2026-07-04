@@ -72,19 +72,17 @@ export function DdayOverview() {
           </Button>
         </Card>
       ) : goals.length === 0 ? (
-        <Card>
-          <EmptyState
-            title="아직 D-Day가 없어요"
-            description="중요한 목표 날짜를 만들면 남은 날을 이곳에서 확인할 수 있어요."
-            action={
-              isCreating ? undefined : (
-                <Button variant="secondary" onPress={() => setIsCreating(true)}>
-                  첫 목표 만들기
-                </Button>
-              )
-            }
-          />
-        </Card>
+        <EmptyState
+          title="아직 D-Day가 없어요"
+          description="첫 목표를 만들면 남은 날을 확인할 수 있어요."
+          action={
+            isCreating ? undefined : (
+              <Button variant="secondary" onPress={() => setIsCreating(true)}>
+                첫 목표 만들기
+              </Button>
+            )
+          }
+        />
       ) : (
         <View style={styles.goalList}>
           <View style={styles.listHeading}>

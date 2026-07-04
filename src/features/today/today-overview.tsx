@@ -123,17 +123,15 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         ) : null}
 
         {executionTasks.length === 0 ? (
-          <Card>
-            <EmptyState
-              title="오늘 실행할 일이 없어요"
-              description="빠르게 기록하거나 아래 기록함에서 오늘 할 일을 골라보세요."
-              action={
-                <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
-                  자세히 작성하기
-                </Button>
-              }
-            />
-          </Card>
+          <EmptyState
+            title="오늘 할 일이 없어요"
+            description="빠르게 기록하거나 새 할 일을 추가해 보세요."
+            action={
+              <Button variant="secondary" onPress={() => router.push('/tasks/new')}>
+                새 할 일
+              </Button>
+            }
+          />
         ) : (
           <DraggableTodayTaskList
             tasks={executionTasks}
