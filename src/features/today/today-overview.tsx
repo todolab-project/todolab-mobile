@@ -7,7 +7,6 @@ import {
   ScheduleCard,
   TaskCard,
   useCompleteTask,
-  useMoveTaskToToday,
   useReopenTask,
   useReorderTodayTask,
 } from '@/features/tasks';
@@ -43,12 +42,10 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
     refetch,
   } = overview;
   const completeTask = useCompleteTask(date);
-  const moveToToday = useMoveTaskToToday(date);
   const reopenTask = useReopenTask(date);
   const reorderTodayTask = useReorderTodayTask(date);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [isCompletedExpanded, setIsCompletedExpanded] = useState(false);
-  const [isReviewExpanded, setIsReviewExpanded] = useState(false);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const reviewItemCount = staleTasks.length + recommendations.length + inboxTasks.length;
   const sortedScheduleTasks = [...scheduleTasks].sort(compareScheduleTasks);
@@ -236,12 +233,10 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       {reviewItemCount > 0 ? (
         <View style={styles.reviewSection}>
           <Pressable
-            accessibilityLabel={`정리할 항목 ${reviewItemCount}개, ${
-              isReviewExpanded ? '접기' : '펼치기'
-            }`}
+            accessibilityHint="지난 미완료, 추천, 기록함을 정리하는 화면을 엽니다."
+            accessibilityLabel={`정리할 항목 ${reviewItemCount}개`}
             accessibilityRole="button"
-            accessibilityState={{ expanded: isReviewExpanded }}
-            onPress={() => setIsReviewExpanded((current) => !current)}
+            onPress={() => router.push('/today/review')}
             style={({ pressed }) => [
               styles.reviewRow,
               {
@@ -258,61 +253,9 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
               </AppText>
             </View>
             <AppText tone="secondary" variant="label" weight="bold">
-              {reviewItemCount}개 {isReviewExpanded ? '⌃' : '›'}
+              {reviewItemCount}개 ›
             </AppText>
           </Pressable>
-
-          {isReviewExpanded ? (
-            <Card style={styles.reviewDetails}>
-              {staleTasks.length > 0 ? (
-                <ReviewItem
-                  actionLabel="오늘"
-                  disabled={moveToToday.isPending}
-                  label="지난 미완료"
-                  loading={moveToToday.isPending && moveToToday.variables === staleTasks[0].id}
-                  title={staleTasks[0].title}
-                  onAction={() =>
-                    moveToToday.mutate(staleTasks[0].id, {
-                      onSuccess: () => showFeedback('지난 미완료를 오늘 할 일로 옮겼어요.'),
-                    })
-                  }
-                  onOpen={() => openTask(staleTasks[0].id)}
-                />
-              ) : null}
-              {recommendations.length > 0 ? (
-                <ReviewItem
-                  actionLabel="추가"
-                  disabled={moveToToday.isPending}
-                  label="추천"
-                  loading={
-                    moveToToday.isPending && moveToToday.variables === recommendations[0].task.id
-                  }
-                  title={recommendations[0].task.title}
-                  onAction={() =>
-                    moveToToday.mutate(recommendations[0].task.id, {
-                      onSuccess: () => showFeedback('추천 항목을 오늘 할 일로 추가했어요.'),
-                    })
-                  }
-                  onOpen={() => openTask(recommendations[0].task.id)}
-                />
-              ) : null}
-              {inboxTasks.length > 0 ? (
-                <ReviewItem
-                  actionLabel="열기"
-                  label="기록함"
-                  title={`${inboxTasks.length}개의 기록을 정리해 보세요.`}
-                  onAction={() => router.push('/inbox')}
-                />
-              ) : null}
-              {moveToToday.error ? (
-                <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-                  <AppText tone="danger" variant="label">
-                    {moveToToday.error.message}
-                  </AppText>
-                </View>
-              ) : null}
-            </Card>
-          ) : null}
         </View>
       ) : null}
 
@@ -367,55 +310,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             ))}
           </View>
         ) : null}
-      </View>
-    </View>
-  );
-}
-
-type ReviewItemProps = {
-  label: string;
-  title: string;
-  actionLabel: string;
-  disabled?: boolean;
-  loading?: boolean;
-  onAction: () => void;
-  onOpen?: () => void;
-};
-
-function ReviewItem({
-  label,
-  title,
-  actionLabel,
-  disabled,
-  loading,
-  onAction,
-  onOpen,
-}: ReviewItemProps) {
-  return (
-    <View style={styles.reviewItem}>
-      <View style={styles.reviewItemCopy}>
-        <AppText tone="secondary" variant="caption" weight="semibold">
-          {label}
-        </AppText>
-        <AppText numberOfLines={1} variant="label" weight="medium">
-          {title}
-        </AppText>
-      </View>
-      <View style={styles.reviewItemActions}>
-        {onOpen ? (
-          <Button size="compact" variant="ghost" onPress={onOpen}>
-            보기
-          </Button>
-        ) : null}
-        <Button
-          disabled={disabled}
-          loading={loading}
-          size="compact"
-          variant="secondary"
-          onPress={onAction}
-        >
-          {actionLabel}
-        </Button>
       </View>
     </View>
   );
@@ -510,24 +404,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
-  },
-  reviewDetails: {
-    gap: spacing[2],
-  },
-  reviewItem: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[2],
-  },
-  reviewItemCopy: {
-    flex: 1,
-    gap: spacing[1],
-    minWidth: 0,
-  },
-  reviewItemActions: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[1],
   },
   completedSectionActions: {
     alignItems: 'center',

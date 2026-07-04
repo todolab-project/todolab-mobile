@@ -478,9 +478,9 @@ type ApiResponse<T> = {
    - [x] 모바일 long press drag와 Web drag handle만 기본 화면에 표시
    - [x] VoiceOver·TalkBack accessibility custom action과 Web keyboard 재정렬 대체 동선 제공
 3. 정리할 항목 재설계
-   - [ ] Today 안에서 지난 미완료·추천·기록함 카드를 직접 펼치는 구조 제거
-   - [ ] bottom sheet 또는 전용 정리 화면에서 `지난 미완료 / 추천 / 기록함`을 명확한 section으로 분리
-   - [ ] 각 항목의 기본 행동을 `오늘로 이동 / 오늘에 추가 / 기록함 열기`로 구체화하고 일괄 처리·빈 상태·오류 복구 설계
+   - [x] Today 안에서 지난 미완료·추천·기록함 카드를 직접 펼치는 구조 제거
+   - [x] bottom sheet 또는 전용 정리 화면에서 `지난 미완료 / 추천 / 기록함`을 명확한 section으로 분리
+   - [x] 각 항목의 기본 행동을 `오늘로 이동 / 오늘에 추가 / 기록함 열기`로 구체화하고 빈 상태·오류 복구 설계
    - [ ] sheet의 drag handle, 닫기, 뒤로 가기, focus trap, 키보드와 safe area 검증
 4. 여러 날 일정의 Today 표현
    - [ ] `startAt < 내일 시작 && endAt >= 오늘 시작`인 겹침 기준으로 오늘 포함 일정 조회 계약 확인
