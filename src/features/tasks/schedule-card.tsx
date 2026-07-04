@@ -3,8 +3,9 @@ import { useState } from 'react';
 
 import { AppText } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
-import type { TaskResponse } from '@/types';
-import { formatTimeLabel } from '@/utils';
+import type { LocalDateString, TaskResponse } from '@/types';
+
+import { getSchedulePresentation } from './schedule-presentation';
 
 type ScheduleCardProps = {
   task: TaskResponse;
@@ -12,6 +13,7 @@ type ScheduleCardProps = {
   onComplete?: () => void;
   completionDisabled?: boolean;
   isCompleting?: boolean;
+  referenceDate: LocalDateString;
 };
 
 export function ScheduleCard({
@@ -20,11 +22,12 @@ export function ScheduleCard({
   onComplete,
   completionDisabled = false,
   isCompleting = false,
+  referenceDate,
 }: ScheduleCardProps) {
   const theme = useAppTheme();
   const [focusedControl, setFocusedControl] = useState<'checkbox' | 'content' | null>(null);
-  const timeLabel = getScheduleTimeLabel(task);
-  const secondaryMetadata = [task.category, task.ddayGoalTitle]
+  const presentation = getSchedulePresentation(task, referenceDate);
+  const secondaryMetadata = [presentation.rangeLabel, task.category, task.ddayGoalTitle]
     .filter((value): value is string => Boolean(value))
     .join(' · ');
 
@@ -61,7 +64,9 @@ export function ScheduleCard({
       ) : null}
       <Pressable
         accessibilityHint={onOpen ? '일정 상세 화면을 엽니다.' : undefined}
-        accessibilityLabel={`${task.title}, ${timeLabel}, 상세 보기`}
+        accessibilityLabel={`${task.title}, ${presentation.primaryLabel}${
+          presentation.rangeLabel ? `, ${presentation.rangeLabel}` : ''
+        }, 상세 보기`}
         accessibilityRole="button"
         accessibilityState={{ disabled: !onOpen }}
         disabled={!onOpen}
@@ -79,7 +84,7 @@ export function ScheduleCard({
           </AppText>
           <View style={styles.metadata}>
             <AppText tone="primary" variant="caption" weight="bold">
-              {timeLabel}
+              {presentation.primaryLabel}
             </AppText>
             {secondaryMetadata ? (
               <AppText
@@ -99,16 +104,6 @@ export function ScheduleCard({
       </Pressable>
     </View>
   );
-}
-
-function getScheduleTimeLabel(task: TaskResponse) {
-  if (task.allDay || !task.startAt) {
-    return '종일';
-  }
-
-  const start = formatTimeLabel(task.startAt);
-
-  return task.endAt ? `${start}–${formatTimeLabel(task.endAt)}` : start;
 }
 
 const styles = StyleSheet.create({

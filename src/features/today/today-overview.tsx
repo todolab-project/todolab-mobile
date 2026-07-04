@@ -120,6 +120,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
                 completionDisabled={completeTask.isPending}
                 isCompleting={completeTask.isPending && completeTask.variables === task.id}
                 key={task.id}
+                referenceDate={date}
                 task={task}
                 onComplete={() =>
                   completeTask.mutate(task.id, {

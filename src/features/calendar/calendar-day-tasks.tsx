@@ -116,6 +116,7 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
           {filteredScheduledTasks.length > 0 ? (
             <TaskSection
               completingTaskId={completeTask.isPending ? completeTask.variables : undefined}
+              referenceDate={date}
               title="예정"
               tasks={filteredScheduledTasks}
               onComplete={(taskId) => completeTask.mutate(taskId)}
@@ -124,6 +125,7 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
           ) : null}
           {filteredDoneTasks.length > 0 ? (
             <TaskSection
+              referenceDate={date}
               title="완료"
               tasks={filteredDoneTasks}
               onOpen={(taskId) => openTask(taskId)}
@@ -219,6 +221,7 @@ function CalendarTaskFilters({ activeFilters, counts, onToggle }: CalendarTaskFi
 }
 
 type TaskSectionProps = {
+  referenceDate: LocalDateString;
   title: string;
   tasks: TaskResponse[];
   completingTaskId?: number;
@@ -226,7 +229,14 @@ type TaskSectionProps = {
   onOpen: (taskId: number) => void;
 };
 
-function TaskSection({ title, tasks, completingTaskId, onComplete, onOpen }: TaskSectionProps) {
+function TaskSection({
+  referenceDate,
+  title,
+  tasks,
+  completingTaskId,
+  onComplete,
+  onOpen,
+}: TaskSectionProps) {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeading}>
@@ -244,6 +254,7 @@ function TaskSection({ title, tasks, completingTaskId, onComplete, onOpen }: Tas
               completionDisabled={completingTaskId !== undefined}
               isCompleting={completingTaskId === task.id}
               key={task.id}
+              referenceDate={referenceDate}
               task={task}
               onComplete={onComplete ? () => onComplete(task.id) : undefined}
               onOpen={() => onOpen(task.id)}
