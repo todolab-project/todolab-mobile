@@ -101,6 +101,41 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 
   return (
     <View style={styles.container}>
+      {sortedScheduleTasks.length > 0 ? (
+        <View style={styles.scheduleSection}>
+          <View style={styles.taskSectionHeading}>
+            <View style={styles.taskSectionCopy}>
+              <View style={[styles.sectionMarker, { backgroundColor: theme.colors.primary }]} />
+              <AppText variant="bodyLarge" weight="bold">
+                일정
+              </AppText>
+            </View>
+            <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
+              <AppText tone="secondary" variant="caption" weight="bold">
+                {sortedScheduleTasks.length}개
+              </AppText>
+            </View>
+          </View>
+
+          <View style={styles.scheduleList}>
+            {sortedScheduleTasks.map((task) => (
+              <ScheduleCard
+                completionDisabled={completeTask.isPending}
+                isCompleting={completeTask.isPending && completeTask.variables === task.id}
+                key={task.id}
+                task={task}
+                onComplete={() =>
+                  completeTask.mutate(task.id, {
+                    onSuccess: () => showFeedback('일정을 완료했어요.'),
+                  })
+                }
+                onOpen={() => openTask(task.id)}
+              />
+            ))}
+          </View>
+        </View>
+      ) : null}
+
       <View style={styles.taskSection}>
         <View style={styles.taskSectionHeading}>
           <View style={styles.taskSectionCopy}>
@@ -196,41 +231,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             다시 시도
           </Button>
         </Card>
-      ) : null}
-
-      {sortedScheduleTasks.length > 0 ? (
-        <View style={styles.scheduleSection}>
-          <View style={styles.taskSectionHeading}>
-            <View style={styles.taskSectionCopy}>
-              <View style={[styles.sectionMarker, { backgroundColor: theme.colors.primary }]} />
-              <AppText variant="bodyLarge" weight="bold">
-                일정
-              </AppText>
-            </View>
-            <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
-              <AppText tone="secondary" variant="caption" weight="bold">
-                {sortedScheduleTasks.length}개
-              </AppText>
-            </View>
-          </View>
-
-          <View style={styles.scheduleList}>
-            {sortedScheduleTasks.map((task) => (
-              <ScheduleCard
-                completionDisabled={completeTask.isPending}
-                isCompleting={completeTask.isPending && completeTask.variables === task.id}
-                key={task.id}
-                task={task}
-                onComplete={() =>
-                  completeTask.mutate(task.id, {
-                    onSuccess: () => showFeedback('일정을 완료했어요.'),
-                  })
-                }
-                onOpen={() => openTask(task.id)}
-              />
-            ))}
-          </View>
-        </View>
       ) : null}
 
       {reviewItemCount > 0 ? (

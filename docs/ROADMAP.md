@@ -471,8 +471,8 @@ type ApiResponse<T> = {
 
 1. Today 상단과 추가 동선
    - [x] Today header의 중복 `+`를 제거하고 하단 FAB를 유일한 빠른 기록 진입점으로 유지
-   - [ ] Today 정보 순서를 `header → 오늘과 겹치는 일정 → 오늘 할 일 → 정리할 항목 → 접힌 완료`로 변경
-   - [ ] 일정이 없을 때 빈 영역 없이 오늘 할 일이 header 바로 아래로 올라오는지 검증
+   - [x] Today 정보 순서를 `header → 오늘과 겹치는 일정 → 오늘 할 일 → 정리할 항목 → 접힌 완료`로 변경
+   - [x] 일정이 없을 때 빈 영역 없이 오늘 할 일이 header 바로 아래로 올라오는지 검증
 2. 실행 Task 재정렬
    - [ ] Task card의 `⋯`와 펼쳐지는 위/아래 버튼 행 제거
    - [ ] 모바일 long press drag와 Web drag handle만 기본 화면에 표시
