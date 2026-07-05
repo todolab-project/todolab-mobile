@@ -9,6 +9,7 @@ import {
   Card,
   EmptyState,
   IconButton,
+  InlineNotice,
   ListSkeleton,
   PageHeader,
   Screen,
@@ -126,24 +127,16 @@ export function CompletedOverview() {
       {week.isPending ? (
         <ListSkeleton accessibilityLabel="완료 기록을 불러오는 중" />
       ) : week.error ? (
-        <Card
-          style={[
-            styles.errorCard,
-            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-          ]}
-        >
-          <View style={styles.titleBlock}>
-            <AppText tone="danger" variant="label" weight="bold">
-              완료 기록을 불러오지 못했어요
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              {week.error.message}
-            </AppText>
-          </View>
-          <Button variant="secondary" onPress={() => void week.refetch()}>
-            다시 시도
-          </Button>
-        </Card>
+        <InlineNotice
+          message={week.error.message}
+          title="완료 기록을 불러오지 못했어요"
+          tone="danger"
+          action={
+            <Button size="compact" variant="ghost" onPress={() => void week.refetch()}>
+              다시 시도
+            </Button>
+          }
+        />
       ) : (
         <>
           {selectedDay?.tasks.length ? (
@@ -193,9 +186,7 @@ export function CompletedOverview() {
           )}
 
           {reopenTask.error ? (
-            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-              {reopenTask.error.message}
-            </AppText>
+            <InlineNotice message={reopenTask.error.message} tone="danger" />
           ) : null}
 
           <View
@@ -237,9 +228,6 @@ const styles = StyleSheet.create({
   headerButton: {
     backgroundColor: 'transparent',
   },
-  titleBlock: {
-    gap: spacing[2],
-  },
   weekCard: {
     overflow: 'hidden',
   },
@@ -263,9 +251,6 @@ const styles = StyleSheet.create({
     gap: spacing[1],
     justifyContent: 'center',
     minHeight: 52,
-  },
-  errorCard: {
-    gap: spacing[3],
   },
   summaryRow: {
     borderRadius: radii.sm,
