@@ -12,9 +12,10 @@ import {
   ListSkeleton,
   PageHeader,
   Screen,
+  SectionHeader,
 } from '@/components/ui';
 import { TaskCard, useReopenTask } from '@/features/tasks';
-import { spacing, useAppTheme } from '@/theme';
+import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
@@ -27,7 +28,6 @@ export function CompletedOverview() {
   const today = toApiLocalDate();
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
   const [focusedDate, setFocusedDate] = useState<LocalDateString | null>(null);
-  const [menuTaskId, setMenuTaskId] = useState<number | null>(null);
   const week = useCompletedWeek(selectedDate);
   const reopenTask = useReopenTask(selectedDate);
   const selectedDay = week.days.find((day) => day.date === selectedDate) ?? week.days[0];
@@ -42,7 +42,11 @@ export function CompletedOverview() {
       <PageHeader
         title="완료 기록"
         leading={
-          <IconButton accessibilityLabel="프로필 화면으로 돌아가기" onPress={router.back}>
+          <IconButton
+            accessibilityLabel="프로필 화면으로 돌아가기"
+            onPress={router.back}
+            style={styles.headerButton}
+          >
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
               size={20}
@@ -52,7 +56,7 @@ export function CompletedOverview() {
         }
       />
 
-      <Card padded={false} variant="sheet" style={styles.weekCard}>
+      <Card padded={false} style={styles.weekCard}>
         <View style={styles.weekHeading}>
           <IconButton accessibilityLabel="이전 주" onPress={() => moveWeek(-7)}>
             <SymbolView
@@ -68,17 +72,6 @@ export function CompletedOverview() {
             <SymbolView
               name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
               size={20}
-              tintColor={theme.colors.textSecondary}
-            />
-          </IconButton>
-          <IconButton
-            accessibilityLabel="이번 주로 이동"
-            disabled={selectedDate === today}
-            onPress={() => setSelectedDate(today)}
-          >
-            <SymbolView
-              name={{ ios: 'calendar', android: 'today', web: 'today' }}
-              size={18}
               tintColor={theme.colors.textSecondary}
             />
           </IconButton>
@@ -155,14 +148,15 @@ export function CompletedOverview() {
         <>
           {selectedDay?.tasks.length ? (
             <View style={styles.log}>
-              <View style={styles.logHeading}>
-                <AppText variant="bodyLarge" weight="bold">
-                  {formatDateLabel(selectedDay.date)}
-                </AppText>
-                <AppText tone="secondary" variant="label" weight="semibold">
-                  {selectedDay.tasks.length}개 완료
-                </AppText>
-              </View>
+              <SectionHeader
+                markerColor={theme.colors.success}
+                title={formatDateLabel(selectedDay.date)}
+                action={
+                  <AppText tone="success" variant="label" weight="semibold">
+                    {selectedDay.tasks.length}개 완료
+                  </AppText>
+                }
+              />
               <View style={styles.tasks}>
                 {selectedDay.tasks.map((task) => (
                   <TaskCard
@@ -170,38 +164,16 @@ export function CompletedOverview() {
                     task={task}
                     completionDisabled={reopenTask.isPending}
                     trailing={
-                      <IconButton
-                        accessibilityHint="완료 항목을 다시 여는 행동을 표시합니다."
-                        accessibilityLabel={`${task.title}, 완료 항목 메뉴 ${
-                          menuTaskId === task.id ? '닫기' : '열기'
-                        }`}
-                        expanded={menuTaskId === task.id}
-                        onPress={() =>
-                          setMenuTaskId((current) => (current === task.id ? null : task.id))
-                        }
+                      <Button
+                        accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
+                        loading={reopenTask.isPending && reopenTask.variables === task.id}
+                        disabled={reopenTask.isPending}
+                        size="compact"
+                        variant="ghost"
+                        onPress={() => reopenTask.mutate(task.id)}
                       >
-                        <AppText tone="secondary" weight="bold">
-                          ⋯
-                        </AppText>
-                      </IconButton>
-                    }
-                    action={
-                      menuTaskId === task.id ? (
-                        <Button
-                          accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
-                          loading={reopenTask.isPending && reopenTask.variables === task.id}
-                          disabled={reopenTask.isPending}
-                          size="compact"
-                          variant="ghost"
-                          onPress={() =>
-                            reopenTask.mutate(task.id, {
-                              onSuccess: () => setMenuTaskId(null),
-                            })
-                          }
-                        >
-                          다시 열기
-                        </Button>
-                      ) : null
+                        다시 열기
+                      </Button>
                     }
                     onOpen={() =>
                       router.push({
@@ -226,14 +198,22 @@ export function CompletedOverview() {
             </AppText>
           ) : null}
 
-          <Card variant="muted" style={styles.summaryCard}>
+          <View
+            style={[
+              styles.summaryRow,
+              {
+                backgroundColor: theme.colors.highlightSage,
+                borderColor: theme.colors.border,
+              },
+            ]}
+          >
             <AppText variant="label" weight="semibold">
               이번 주 {summary.total}개 완료 · {summary.activeDays}일 기록
             </AppText>
             <AppText numberOfLines={1} tone="secondary" variant="caption">
               {summary.message}
             </AppText>
-          </Card>
+          </View>
         </>
       )}
     </Screen>
@@ -251,8 +231,11 @@ function formatWeekRange(start: LocalDateString, end?: LocalDateString) {
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[5],
+    gap: spacing[4],
     paddingTop: spacing[4],
+  },
+  headerButton: {
+    backgroundColor: 'transparent',
   },
   titleBlock: {
     gap: spacing[2],
@@ -284,18 +267,15 @@ const styles = StyleSheet.create({
   errorCard: {
     gap: spacing[3],
   },
-  summaryCard: {
+  summaryRow: {
+    borderRadius: radii.sm,
+    borderWidth: StyleSheet.hairlineWidth,
     gap: spacing[1],
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
   log: {
     gap: spacing[3],
-  },
-  logHeading: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing[2],
-    justifyContent: 'space-between',
   },
   tasks: {
     gap: spacing[1],
