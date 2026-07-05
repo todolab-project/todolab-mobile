@@ -388,6 +388,15 @@ compact header
 ### Today weekly strip
 
 - Today 상단은 `월 제목 → 요일 7개 → 날짜 7개 → 상태 점/기간 bar` 순서의 compact weekly strip을 사용한다.
+- Today 주간 strip은 낮은 outline surface 안에서 7등분 세로 rule을 사용해 작은 달력처럼 읽히게 한다.
+- 일정·오늘 할 일·완료 section marker는 각각 amber·powder blue·sage 의미색을 사용한다.
+- `오늘`, `달력`, `프로필`의 최상단에는 같은 `PageHeader` title 계층을 사용한다.
+- light theme의 section marker는 진한 semantic 원색이 아니라 amber·powder blue·sage highlighter token을 직접 사용한다.
+- pastel section marker는 밝은 paper 위에서도 구분되도록 같은 의미의 semantic outline을 1px 사용한다.
+- Today 주간 strip은 하루 일정 제목 label이 있으므로 별도의 일정 존재 dot을 중복 표시하지 않는다.
+- Calendar의 date dot은 일정 개수가 아니라 “오늘”을 표시할 때만 사용한다.
+- Profile 목적지는 좌우 inset이 있는 독립 rounded row와 목적별 accent icon을 사용한다.
+- 빠른 기록 입력은 “할 일을 입력하세요”처럼 직접적인 문구와 12px 이상의 좌우 inset을 사용한다.
 - 우측 상단에 `언젠가`, 통계, filter 같은 별도 목적지 버튼을 두지 않는다.
 - 오늘은 ink fill 또는 outline, 사용자가 선택한 날짜는 muted highlighter fill로 구분한다.
 - 일정이 있는 날짜는 최대 1–3개의 작은 점으로 표시하고 여러 날 일정은 날짜 아래 한 줄 bar로 잇는다.

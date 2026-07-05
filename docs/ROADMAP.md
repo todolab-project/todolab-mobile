@@ -560,6 +560,15 @@ type ApiResponse<T> = {
    - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
    - [x] 통합 검색의 관련 날짜·결과 schema·정렬·cursor 요구사항을 문서화
 8. UI/UX 회귀 점검
+   - [x] Today 주간 strip에 outline surface와 날짜별 저대비 세로 rule 적용
+   - [x] 일정·오늘 할 일·완료 section marker를 amber·blue·sage로 구분
+   - [x] Profile 목적지를 독립 rounded row와 의미 기반 accent icon으로 변경
+   - [x] 빠른 기록 placeholder·input inset·focus outline·저장 피드백 문구 정리
+   - [x] Today·Calendar·Profile에 동일한 `PageHeader` title 계층 적용
+   - [x] Today section marker를 semantic 원색 대신 pastel highlighter token으로 변경
+   - [x] Today 주간 strip의 일정 label과 중복되는 일정 존재 dot 제거
+   - [x] Calendar의 today dot은 일정 표시가 아닌 현재 날짜 표시로 역할을 제한
+   - [x] warm paper background를 밝게 조정하고 pastel marker에 얇은 semantic outline 추가
    - [ ] 320px·375pt·430dp에서 calendar cell, event bar, `+N` clipping 비교
    - [ ] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
    - [ ] light/dark와 font scale 1.5에서 hairline 대비와 텍스트 생략 상태 확인
