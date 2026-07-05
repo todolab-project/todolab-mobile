@@ -13,7 +13,7 @@ import {
 import { motion, radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
-import { splitTodayTasks } from './today-task-sections';
+import { getTodaySchedulePreview, splitTodayTasks } from './today-task-sections';
 import { DraggableTodayTaskList } from './draggable-today-task-list';
 import { useTodayOverview } from './use-today-overview';
 
@@ -49,6 +49,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const reviewItemCount = staleTasks.length + recommendations.length + inboxTasks.length;
   const sortedScheduleTasks = [...scheduleTasks].sort(compareScheduleTasks);
+  const schedulePreview = getTodaySchedulePreview(sortedScheduleTasks);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
@@ -107,15 +108,26 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
                 일정
               </AppText>
             </View>
-            <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
-              <AppText tone="secondary" variant="caption" weight="bold">
-                {sortedScheduleTasks.length}개
-              </AppText>
-            </View>
+            {schedulePreview.length < sortedScheduleTasks.length ? (
+              <Button
+                accessibilityLabel={`전체 일정 ${sortedScheduleTasks.length}개 캘린더에서 보기`}
+                size="compact"
+                variant="ghost"
+                onPress={() => router.push('/calendar')}
+              >
+                전체 {sortedScheduleTasks.length}개
+              </Button>
+            ) : (
+              <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
+                <AppText tone="secondary" variant="caption" weight="bold">
+                  {sortedScheduleTasks.length}개
+                </AppText>
+              </View>
+            )}
           </View>
 
           <View style={styles.scheduleList}>
-            {sortedScheduleTasks.map((task) => (
+            {schedulePreview.map((task) => (
               <ScheduleCard
                 completionDisabled={completeTask.isPending}
                 isCompleting={completeTask.isPending && completeTask.variables === task.id}

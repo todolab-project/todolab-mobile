@@ -1,6 +1,11 @@
 import type { TaskResponse, TaskType } from '@/types';
 
-import { getTodayLoadGuidance, reorderTodayTasks, splitTodayTasks } from '../today-task-sections';
+import {
+  getTodayLoadGuidance,
+  getTodaySchedulePreview,
+  reorderTodayTasks,
+  splitTodayTasks,
+} from '../today-task-sections';
 
 function createTask(id: number, type: TaskType): TaskResponse {
   return {
@@ -82,6 +87,14 @@ describe('reorderTodayTasks', () => {
 
     expect(reorderTodayTasks(tasks, first.id, 'UP')).toBe(tasks);
     expect(reorderTodayTasks(tasks, second.id, 'DOWN')).toBe(tasks);
+  });
+});
+
+describe('getTodaySchedulePreview', () => {
+  it('일정이 많아도 첫 두 개만 Today 상단에 표시한다', () => {
+    const schedules = [1, 2, 3].map((id) => createTask(id, 'SCHEDULE'));
+
+    expect(getTodaySchedulePreview(schedules)).toEqual(schedules.slice(0, 2));
   });
 });
 

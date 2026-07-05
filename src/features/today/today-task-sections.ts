@@ -1,6 +1,7 @@
 import type { TaskResponse, TodayOrderDirection } from '@/types';
 
 export const RECOMMENDED_TODAY_TASK_COUNT = 5;
+export const TODAY_SCHEDULE_PREVIEW_COUNT = 2;
 
 export function splitTodayTasks(tasks: TaskResponse[]) {
   const scheduleIds = new Set<number>();
@@ -16,6 +17,10 @@ export function splitTodayTasks(tasks: TaskResponse[]) {
     }),
     executionTasks: tasks.filter((task) => task.type !== 'SCHEDULE'),
   };
+}
+
+export function getTodaySchedulePreview(tasks: TaskResponse[]) {
+  return tasks.slice(0, TODAY_SCHEDULE_PREVIEW_COUNT);
 }
 
 export function reorderTodayTasks(
