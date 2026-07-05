@@ -148,8 +148,18 @@ function MonthDateGrid({
               />
             ))}
           </View>
-          <CalendarSingleDayLabels dates={weekDates} tasks={tasks} onOpen={onOpenTask} />
-          <CalendarPeriodBars dates={weekDates} tasks={tasks} onOpen={onOpenTask} />
+          <CalendarSingleDayLabels
+            dates={weekDates}
+            tasks={tasks}
+            onOpen={onOpenTask}
+            onSelectDate={onSelect}
+          />
+          <CalendarPeriodBars
+            dates={weekDates}
+            tasks={tasks}
+            onOpen={onOpenTask}
+            onSelectDate={onSelect}
+          />
         </View>
       ))}
     </View>

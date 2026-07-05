@@ -523,7 +523,7 @@ type ApiResponse<T> = {
    - [x] Calendar의 주/월 toggle을 제거하고 월간 planner 전용 화면으로 단순화
    - [x] 6주 grid에 하루 일정 label과 여러 날 일정 연속 bar 배치
    - [x] 선택 날짜는 ink outline, 오늘은 highlighter dot, 기간 일정은 muted bar로 구분
-   - [ ] 일정이 많은 날짜는 최대 2개 lane과 `+N`으로 축약하고 아래 상세 목록 연결
+   - [x] 일정이 많은 날짜는 최대 2개 lane과 `+N`으로 축약하고 아래 상세 목록 연결
 5. navigation 재구성
    - [x] 하단 탭을 `오늘 / 달력 / 기록함 / 프로필`로 변경
    - [x] `D-Day` 독립 탭을 제거하고 프로필 목표 관리로 이동

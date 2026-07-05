@@ -9,9 +9,15 @@ type CalendarPeriodBarsProps = {
   dates: LocalDateString[];
   tasks: TaskResponse[];
   onOpen: (taskId: number) => void;
+  onSelectDate?: (date: LocalDateString) => void;
 };
 
-export function CalendarSingleDayLabels({ dates, tasks, onOpen }: CalendarPeriodBarsProps) {
+export function CalendarSingleDayLabels({
+  dates,
+  tasks,
+  onOpen,
+  onSelectDate,
+}: CalendarPeriodBarsProps) {
   const theme = useAppTheme();
   const labels = buildCalendarSingleDayLabels(tasks, dates);
 
@@ -46,14 +52,17 @@ export function CalendarSingleDayLabels({ dates, tasks, onOpen }: CalendarPeriod
               </Pressable>
             ) : null}
             {items.length > 1 ? (
-              <AppText
+              <Pressable
                 accessibilityLabel={`${formatOverflowDate(date)} 하루 일정 ${items.length - 1}개 더 있음`}
-                tone="muted"
-                variant="caption"
-                weight="semibold"
+                accessibilityHint="이 날짜의 전체 일정 목록을 엽니다."
+                accessibilityRole="button"
+                hitSlop={6}
+                onPress={() => onSelectDate?.(date)}
               >
-                +{items.length - 1}
-              </AppText>
+                <AppText tone="muted" variant="caption" weight="semibold">
+                  +{items.length - 1}
+                </AppText>
+              </Pressable>
             ) : null}
           </View>
         );
@@ -62,9 +71,15 @@ export function CalendarSingleDayLabels({ dates, tasks, onOpen }: CalendarPeriod
   );
 }
 
-export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsProps) {
+export function CalendarPeriodBars({
+  dates,
+  tasks,
+  onOpen,
+  onSelectDate,
+}: CalendarPeriodBarsProps) {
   const theme = useAppTheme();
   const layout = layoutCalendarPeriodSegments(tasks, dates);
+  const overflowDate = dates[layout.overflowSegments[0]?.startIndex ?? 0];
 
   if (layout.segments.length === 0) return null;
 
@@ -97,16 +112,20 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
         </Pressable>
       ))}
       {layout.overflowCount > 0 ? (
-        <AppText
-          align="right"
+        <Pressable
           accessibilityLabel={`기간 일정 ${layout.overflowCount}개 더 있음`}
-          tone="secondary"
-          variant="caption"
-          weight="semibold"
+          accessibilityHint="해당 날짜의 전체 일정 목록을 엽니다."
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={() => {
+            if (overflowDate) onSelectDate?.(overflowDate);
+          }}
           style={styles.overflow}
         >
-          +{layout.overflowCount}
-        </AppText>
+          <AppText align="right" tone="secondary" variant="caption" weight="semibold">
+            +{layout.overflowCount}
+          </AppText>
+        </Pressable>
       ) : null}
     </View>
   );
@@ -132,20 +151,28 @@ export function layoutCalendarPeriodSegments(
   maxLanes = 2,
 ) {
   const laneEndIndexes = Array.from({ length: maxLanes }, () => -1);
-  const segments = buildCalendarPeriodSegments(tasks, dates)
-    .sort((left, right) => left.startIndex - right.startIndex || right.endIndex - left.endIndex)
-    .flatMap((segment) => {
-      const lane = laneEndIndexes.findIndex((endIndex) => endIndex < segment.startIndex);
+  const segments = [];
+  const overflowSegments = [];
+  const periodSegments = buildCalendarPeriodSegments(tasks, dates).sort(
+    (left, right) => left.startIndex - right.startIndex || right.endIndex - left.endIndex,
+  );
 
-      if (lane < 0) return [];
+  for (const segment of periodSegments) {
+    const lane = laneEndIndexes.findIndex((endIndex) => endIndex < segment.startIndex);
 
-      laneEndIndexes[lane] = segment.endIndex;
-      return [{ ...segment, lane }];
-    });
+    if (lane < 0) {
+      overflowSegments.push(segment);
+      continue;
+    }
+
+    laneEndIndexes[lane] = segment.endIndex;
+    segments.push({ ...segment, lane });
+  }
 
   return {
     segments,
-    overflowCount: buildCalendarPeriodSegments(tasks, dates).length - segments.length,
+    overflowCount: overflowSegments.length,
+    overflowSegments,
   };
 }
 

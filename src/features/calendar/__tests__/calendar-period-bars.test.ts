@@ -185,5 +185,6 @@ describe('layoutCalendarPeriodSegments', () => {
 
     expect(layout.segments.map(({ lane }) => lane)).toEqual([0, 1]);
     expect(layout.overflowCount).toBe(1);
+    expect(layout.overflowSegments.map(({ task }) => task.id)).toEqual([3]);
   });
 });
