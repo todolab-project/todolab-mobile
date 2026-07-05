@@ -2,7 +2,15 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, FadeInView, ListSkeleton } from '@/components/ui';
+import {
+  AppText,
+  Button,
+  Card,
+  EmptyState,
+  FadeInView,
+  ListSkeleton,
+  SectionHeader,
+} from '@/components/ui';
 import { ScheduleCard, TaskCard, useCompleteTask, useReopenTask } from '@/features/tasks';
 import { motion, radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
@@ -83,30 +91,26 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
     <View style={styles.container}>
       {sortedScheduleTasks.length > 0 ? (
         <View style={styles.scheduleSection}>
-          <View style={styles.taskSectionHeading}>
-            <View style={styles.taskSectionCopy}>
-              <View style={[styles.sectionMarker, { backgroundColor: theme.colors.primary }]} />
-              <AppText variant="bodyLarge" weight="bold">
-                일정
-              </AppText>
-            </View>
-            {schedulePreview.length < sortedScheduleTasks.length ? (
-              <Button
-                accessibilityLabel={`전체 일정 ${sortedScheduleTasks.length}개 캘린더에서 보기`}
-                size="compact"
-                variant="ghost"
-                onPress={() => router.push('/calendar')}
-              >
-                전체 {sortedScheduleTasks.length}개
-              </Button>
-            ) : (
-              <View style={[styles.countPill, { backgroundColor: theme.colors.surfaceMuted }]}>
+          <SectionHeader
+            markerColor={theme.colors.primary}
+            title="일정"
+            action={
+              schedulePreview.length < sortedScheduleTasks.length ? (
+                <Button
+                  accessibilityLabel={`전체 일정 ${sortedScheduleTasks.length}개 캘린더에서 보기`}
+                  size="compact"
+                  variant="ghost"
+                  onPress={() => router.push('/calendar')}
+                >
+                  전체 {sortedScheduleTasks.length}개
+                </Button>
+              ) : (
                 <AppText tone="secondary" variant="caption" weight="bold">
                   {sortedScheduleTasks.length}개
                 </AppText>
-              </View>
-            )}
-          </View>
+              )
+            }
+          />
 
           <View style={styles.scheduleList}>
             {schedulePreview.map((task) => (
@@ -129,17 +133,15 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       ) : null}
 
       <View style={styles.taskSection}>
-        <View style={styles.taskSectionHeading}>
-          <View style={styles.taskSectionCopy}>
-            <View style={[styles.sectionMarker, { backgroundColor: theme.colors.primary }]} />
-            <AppText variant="bodyLarge" weight="bold">
-              오늘 할 일
+        <SectionHeader
+          markerColor={theme.colors.primary}
+          title="오늘 할 일"
+          action={
+            <AppText tone="primary" variant="label" weight="bold">
+              {executionTasks.length}개
             </AppText>
-          </View>
-          <AppText tone="primary" variant="label" weight="bold">
-            {executionTasks.length}개
-          </AppText>
-        </View>
+          }
+        />
 
         {completeTask.error ? (
           <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
@@ -241,29 +243,27 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       ) : null}
 
       <View style={styles.taskSection}>
-        <View style={styles.taskSectionHeading}>
-          <View style={styles.taskSectionCopy}>
-            <View style={[styles.sectionMarker, { backgroundColor: theme.colors.success }]} />
-            <AppText variant="bodyLarge" weight="bold">
-              오늘 완료한 일
-            </AppText>
-          </View>
-          <View style={styles.completedSectionActions}>
-            <AppText tone="success" variant="label" weight="bold">
-              {doneTasks.length}개
-            </AppText>
-            {doneTasks.length > 0 ? (
-              <Button
-                accessibilityLabel={`완료한 일 목록 ${isCompletedExpanded ? '접기' : '펼치기'}`}
-                variant="ghost"
-                onPress={() => setIsCompletedExpanded((current) => !current)}
-                style={styles.completedToggleButton}
-              >
-                {isCompletedExpanded ? '접기' : '펼치기'}
-              </Button>
-            ) : null}
-          </View>
-        </View>
+        <SectionHeader
+          markerColor={theme.colors.success}
+          title="오늘 완료한 일"
+          action={
+            <View style={styles.completedSectionActions}>
+              <AppText tone="success" variant="label" weight="bold">
+                {doneTasks.length}개
+              </AppText>
+              {doneTasks.length > 0 ? (
+                <Button
+                  accessibilityLabel={`완료한 일 목록 ${isCompletedExpanded ? '접기' : '펼치기'}`}
+                  variant="ghost"
+                  onPress={() => setIsCompletedExpanded((current) => !current)}
+                  style={styles.completedToggleButton}
+                >
+                  {isCompletedExpanded ? '접기' : '펼치기'}
+                </Button>
+              ) : null}
+            </View>
+          }
+        />
 
         {isCompletedExpanded && reopenTask.error ? (
           <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
@@ -321,11 +321,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },
-  countPill: {
-    borderRadius: radii.full,
-    paddingHorizontal: spacing[2],
-    paddingVertical: spacing[1],
-  },
   errorCard: {
     gap: spacing[3],
   },
@@ -349,23 +344,6 @@ const styles = StyleSheet.create({
   },
   scheduleList: {
     gap: spacing[1],
-  },
-  taskSectionHeading: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'space-between',
-  },
-  taskSectionCopy: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    gap: spacing[2],
-  },
-  sectionMarker: {
-    borderRadius: radii.full,
-    height: 8,
-    width: 8,
   },
   reviewSection: {
     gap: spacing[2],

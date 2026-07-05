@@ -511,7 +511,7 @@ type ApiResponse<T> = {
 2. component language
    - [x] 기본 목록을 반복 card보다 flat row와 얇은 rule 중심으로 변경
    - [x] radius, pill, border 사용 위치를 입력·선택·떠 있는 surface로 제한
-   - [ ] PageHeader, section label, date column, checkbox, metadata의 planner 문법 통일
+   - [x] PageHeader, section label, date column, checkbox, metadata의 planner 문법 통일
 3. Today weekly planner
    - [x] Today 상단에 높이 100–140px의 compact 7일 strip 추가
    - [x] 상단은 월·요일·날짜·상태 점만 유지하고 우측 `언젠가`·통계·filter action은 추가하지 않음
