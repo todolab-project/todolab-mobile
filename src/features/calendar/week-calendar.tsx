@@ -3,41 +3,30 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, IconButton, PageHeader, Screen } from '@/components/ui';
-import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
+import { AppText, IconButton, PageHeader, Screen } from '@/components/ui';
+import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
-import { formatDateLabel, isLocalDateString, shiftLocalDate, toApiLocalDate } from '@/utils';
+import { formatDateLabel, isLocalDateString, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
-import { getMonthCalendarDates, getWeekDates, shiftMonth } from './calendar-date';
+import { getMonthCalendarDates, shiftMonth } from './calendar-date';
 import { CalendarPeriodBars } from './calendar-period-bars';
 import { useCalendarRangeTasks } from './use-calendar-range-tasks';
 
 const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
-type CalendarMode = 'week' | 'month';
 
 export function WeekCalendar() {
   const router = useRouter();
   const params = useLocalSearchParams<{ date?: string }>();
   const theme = useAppTheme();
   const today = toApiLocalDate();
-  const [mode, setMode] = useState<CalendarMode>('week');
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(
     params.date && isLocalDateString(params.date) ? params.date : today,
   );
-  const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
   const monthDates = useMemo(() => getMonthCalendarDates(selectedDate), [selectedDate]);
-  const rangeTasks = useCalendarRangeTasks(mode === 'week' ? 'WEEK' : 'MONTH', selectedDate);
+  const rangeTasks = useCalendarRangeTasks('MONTH', selectedDate);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
-  };
-
-  const moveWeek = (days: number) => {
-    const nextSelectedDate = shiftLocalDate(selectedDate, days);
-
-    if (nextSelectedDate) {
-      setSelectedDate(nextSelectedDate);
-    }
   };
 
   const moveMonth = (amount: number) => {
@@ -54,43 +43,11 @@ export function WeekCalendar() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <PageHeader
-        title="캘린더"
-        action={
-          <View
-            accessibilityRole="tablist"
-            style={[styles.modeSwitch, { backgroundColor: theme.colors.surfaceMuted }]}
-          >
-            <Button
-              accessibilityRole="tab"
-              accessibilityState={{ selected: mode === 'week' }}
-              size="compact"
-              variant={mode === 'week' ? 'secondary' : 'ghost'}
-              onPress={() => setMode('week')}
-              style={styles.modeButton}
-            >
-              주
-            </Button>
-            <Button
-              accessibilityRole="tab"
-              accessibilityState={{ selected: mode === 'month' }}
-              size="compact"
-              variant={mode === 'month' ? 'secondary' : 'ghost'}
-              onPress={() => setMode('month')}
-              style={styles.modeButton}
-            >
-              월
-            </Button>
-          </View>
-        }
-      />
+      <PageHeader title="달력" />
 
       <View style={[styles.calendarSurface, { backgroundColor: theme.colors.surface }]}>
         <View style={styles.calendarHeading}>
-          <IconButton
-            accessibilityLabel={`이전 ${mode === 'week' ? '주' : '달'}`}
-            onPress={() => (mode === 'week' ? moveWeek(-7) : moveMonth(-1))}
-          >
+          <IconButton accessibilityLabel="이전 달" onPress={() => moveMonth(-1)}>
             <SymbolView
               name={{ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' }}
               size={20}
@@ -99,15 +56,10 @@ export function WeekCalendar() {
           </IconButton>
           <View style={styles.calendarHeadingCopy}>
             <AppText align="center" variant="label" weight="bold">
-              {mode === 'week'
-                ? getWeekRangeLabel(weekDates)
-                : formatDateLabel(selectedDate, { year: 'numeric', month: 'long' })}
+              {formatDateLabel(selectedDate, { year: 'numeric', month: 'long' })}
             </AppText>
           </View>
-          <IconButton
-            accessibilityLabel={`다음 ${mode === 'week' ? '주' : '달'}`}
-            onPress={() => (mode === 'week' ? moveWeek(7) : moveMonth(1))}
-          >
+          <IconButton accessibilityLabel="다음 달" onPress={() => moveMonth(1)}>
             <SymbolView
               name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
               size={20}
@@ -127,26 +79,14 @@ export function WeekCalendar() {
           </IconButton>
         </View>
 
-        {mode === 'week' ? (
-          <WeekDateRow
-            dates={weekDates}
-            selectedDate={selectedDate}
-            today={today}
-            onSelect={setSelectedDate}
-          />
-        ) : (
-          <MonthDateGrid
-            dates={monthDates}
-            selectedDate={selectedDate}
-            today={today}
-            onSelect={setSelectedDate}
-            tasks={rangeTasks.data ?? []}
-            onOpenTask={openTask}
-          />
-        )}
-        {mode === 'week' ? (
-          <CalendarPeriodBars dates={weekDates} tasks={rangeTasks.data ?? []} onOpen={openTask} />
-        ) : null}
+        <MonthDateGrid
+          dates={monthDates}
+          selectedDate={selectedDate}
+          today={today}
+          onSelect={setSelectedDate}
+          tasks={rangeTasks.data ?? []}
+          onOpenTask={openTask}
+        />
       </View>
 
       <CalendarDayTasks date={selectedDate} />
@@ -162,29 +102,6 @@ type DatePickerProps = {
   tasks?: TaskResponse[];
   onOpenTask?: (taskId: number) => void;
 };
-
-function WeekDateRow({ dates, selectedDate, today, onSelect }: DatePickerProps) {
-  const theme = useAppTheme();
-  const { isCompact, isShortViewport } = useMobileLayout();
-
-  return (
-    <View style={styles.weekRow}>
-      {dates.map((date, index) => (
-        <CalendarDateButton
-          date={date}
-          isCurrentMonth
-          isToday={date === today}
-          key={date}
-          selected={date === selectedDate}
-          weekdayLabel={weekdayLabels[index]}
-          onPress={() => onSelect(date)}
-          style={isCompact || isShortViewport ? styles.compactWeekDayButton : styles.weekDayButton}
-          theme={theme}
-        />
-      ))}
-    </View>
-  );
-}
 
 function MonthDateGrid({
   dates,
@@ -245,10 +162,7 @@ type CalendarDateButtonProps = {
   isCurrentMonth: boolean;
   weekdayLabel?: string;
   onPress: () => void;
-  style:
-    | typeof styles.weekDayButton
-    | typeof styles.compactWeekDayButton
-    | typeof styles.monthDayButton;
+  style: typeof styles.monthDayButton;
   theme: ReturnType<typeof useAppTheme>;
 };
 
@@ -316,42 +230,10 @@ function CalendarDateButton({
   );
 }
 
-function getWeekRangeLabel(weekDates: LocalDateString[]) {
-  const firstDate = weekDates[0];
-  const lastDate = weekDates.at(-1);
-
-  if (!firstDate || !lastDate) {
-    return '날짜를 확인해 주세요';
-  }
-
-  const firstLabel = formatDateLabel(firstDate, {
-    month: 'short',
-    day: 'numeric',
-  });
-  const lastLabel = formatDateLabel(
-    lastDate,
-    firstDate.slice(0, 4) === lastDate.slice(0, 4)
-      ? { day: 'numeric' }
-      : { month: 'short', day: 'numeric' },
-  );
-
-  return `${firstLabel} – ${lastLabel}`;
-}
-
 const styles = StyleSheet.create({
   screen: {
     gap: spacing[4],
     paddingTop: spacing[4],
-  },
-  modeSwitch: {
-    alignSelf: 'flex-start',
-    borderRadius: radii.md,
-    flexDirection: 'row',
-    gap: spacing[1],
-    padding: spacing[1],
-  },
-  modeButton: {
-    minWidth: 44,
   },
   calendarSurface: {
     borderRadius: radii.lg,
@@ -369,11 +251,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  weekRow: {
-    flexDirection: 'row',
-    paddingHorizontal: spacing[1],
-    paddingVertical: spacing[2],
-  },
   dayButton: {
     alignItems: 'center',
     borderRadius: radii.md,
@@ -381,16 +258,6 @@ const styles = StyleSheet.create({
     gap: spacing[1],
     justifyContent: 'center',
     minWidth: 0,
-  },
-  weekDayButton: {
-    flex: 1,
-    minHeight: 64,
-    paddingVertical: spacing[2],
-  },
-  compactWeekDayButton: {
-    flex: 1,
-    minHeight: 56,
-    paddingVertical: spacing[1],
   },
   monthWeekdays: {
     flexDirection: 'row',

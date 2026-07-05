@@ -520,7 +520,7 @@ type ApiResponse<T> = {
    - [ ] 주간 strip 아래 정보 순서를 `선택 날짜 일정 → 오늘 Task → 정리 → 완료`로 유지
    - [ ] 주간 정보가 첫 실행 Task를 viewport 밖으로 밀어내지 않도록 preview 수 제한
 4. Calendar monthly planner
-   - [ ] Calendar의 주/월 toggle을 제거하고 월간 planner 전용 화면으로 단순화
+   - [x] Calendar의 주/월 toggle을 제거하고 월간 planner 전용 화면으로 단순화
    - [ ] 6주 grid에 하루 일정 label과 여러 날 일정 연속 bar 배치
    - [ ] 선택 날짜는 ink outline, 오늘은 highlighter dot, 기간 일정은 muted bar로 구분
    - [ ] 일정이 많은 날짜는 최대 2개 lane과 `+N`으로 축약하고 아래 상세 목록 연결
