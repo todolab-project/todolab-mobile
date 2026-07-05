@@ -506,7 +506,7 @@ type ApiResponse<T> = {
 목표: 데모 dashboard처럼 보이는 반복 카드 UI를 걷어내고, 매일 펼쳐 쓰는 차분한 paper planner라는 하나의 시각 언어로 Today와 Calendar를 다시 구성한다.
 
 1. theme foundation
-   - [ ] warm paper background, sheet surface, ink text, notebook rule, muted highlighter token 적용
+   - [x] warm paper background, sheet surface, ink text, notebook rule, muted highlighter token 적용
    - [ ] primary blue 의존도를 낮추고 sage·amber·powder blue를 의미 기반 accent로 제한
    - [ ] light/dark 대비 테스트와 기존 semantic success·warning·danger 재조정
 2. component language

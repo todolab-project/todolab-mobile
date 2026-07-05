@@ -33,4 +33,15 @@ describe.each([
       4.5,
     );
   });
+
+  it('기본 ink text가 paper background에서 4.5:1 이상이다', () => {
+    expect(contrastRatio(theme.colors.text, theme.colors.background)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('rule과 highlighter token이 theme에 정의되어 있다', () => {
+    expect(theme.colors.rule).toBeTruthy();
+    expect(theme.colors.highlightSage).toBeTruthy();
+    expect(theme.colors.highlightAmber).toBeTruthy();
+    expect(theme.colors.highlightBlue).toBeTruthy();
+  });
 });

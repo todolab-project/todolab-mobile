@@ -1,4 +1,27 @@
 export const palette = {
+  paper: {
+    50: '#FFFDF8',
+    100: '#F5F1E8',
+    200: '#F0ECE3',
+    300: '#DED8CC',
+    400: '#C8C0B2',
+  },
+  ink: {
+    500: '#747067',
+    600: '#6F6B62',
+    900: '#282722',
+  },
+  powder: {
+    100: '#E8EEF1',
+    500: '#9CB4C5',
+    600: '#526879',
+    700: '#405666',
+  },
+  highlighter: {
+    sage: '#DDE7D5',
+    amber: '#F4E2AE',
+    blue: '#DDE8EF',
+  },
   blue: {
     50: '#EFF6FF',
     100: '#DBEAFE',

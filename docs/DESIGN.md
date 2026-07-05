@@ -88,7 +88,7 @@ UI/UX 개편 방향:
 | border strong    | `#C8C0B2`   | `#55594E`                | 입력·선택 컨트롤의 강한 경계 |
 | text             | `#282722`   | `#F2EFE7`                | ink 제목과 본문              |
 | text secondary   | `#6F6B62`   | `#BBB6AA`                | 설명과 메타데이터            |
-| text muted       | `#9A958A`   | `#817D74`                | placeholder, 비활성 정보     |
+| text muted       | `#747067`   | `#9A958A`                | placeholder, 비활성 정보     |
 | text on primary  | `#FFFFFF`   | `#FFFFFF`                | primary surface 위 텍스트    |
 | overlay          | translucent | translucent              | modal backdrop               |
 
