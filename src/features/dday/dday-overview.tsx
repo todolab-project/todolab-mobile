@@ -9,6 +9,7 @@ import {
   Card,
   EmptyState,
   IconButton,
+  InlineNotice,
   PageHeader,
   Screen,
   SectionHeader,
@@ -86,24 +87,16 @@ export function DdayOverview() {
           </AppText>
         </View>
       ) : query.error ? (
-        <Card
-          style={[
-            styles.errorCard,
-            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-          ]}
-        >
-          <View style={styles.errorCopy}>
-            <AppText tone="danger" variant="label" weight="bold">
-              D-Day를 불러오지 못했어요
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              {query.error.message}
-            </AppText>
-          </View>
-          <Button variant="secondary" onPress={() => void query.refetch()}>
-            다시 시도
-          </Button>
-        </Card>
+        <InlineNotice
+          message={query.error.message}
+          title="목표를 불러오지 못했어요"
+          tone="danger"
+          action={
+            <Button size="compact" variant="ghost" onPress={() => void query.refetch()}>
+              다시 시도
+            </Button>
+          }
+        />
       ) : goals.length === 0 ? (
         <EmptyState
           title="아직 D-Day가 없어요"
@@ -332,9 +325,6 @@ const styles = StyleSheet.create({
     gap: spacing[3],
     justifyContent: 'center',
     minHeight: 64,
-  },
-  errorCard: {
-    gap: spacing[3],
   },
   errorCopy: {
     gap: spacing[1],

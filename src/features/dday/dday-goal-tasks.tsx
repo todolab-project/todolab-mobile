@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, SectionHeader } from '@/components/ui';
+import { AppText, Button, EmptyState, InlineNotice, SectionHeader } from '@/components/ui';
 import { TaskCard } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 
@@ -20,35 +20,27 @@ export function DdayGoalTasks({ goalId, goalTitle }: DdayGoalTasksProps) {
 
   if (query.isPending) {
     return (
-      <Card accessibilityLabel={`${goalTitle} 연결 Task를 불러오는 중`} style={styles.stateCard}>
+      <View accessibilityLabel={`${goalTitle} 연결 Task를 불러오는 중`} style={styles.stateRow}>
         <ActivityIndicator color={theme.colors.primary} size="small" />
         <AppText tone="secondary" variant="caption">
           연결된 할 일을 불러오고 있어요.
         </AppText>
-      </Card>
+      </View>
     );
   }
 
   if (query.error) {
     return (
-      <Card
-        style={[
-          styles.errorCard,
-          { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-        ]}
-      >
-        <View style={styles.errorCopy}>
-          <AppText tone="danger" variant="label" weight="bold">
-            연결된 할 일을 불러오지 못했어요
-          </AppText>
-          <AppText tone="secondary" variant="caption">
-            {query.error.message}
-          </AppText>
-        </View>
-        <Button variant="secondary" onPress={() => void query.refetch()}>
-          다시 시도
-        </Button>
-      </Card>
+      <InlineNotice
+        message={query.error.message}
+        title="연결된 할 일을 불러오지 못했어요"
+        tone="danger"
+        action={
+          <Button size="compact" variant="ghost" onPress={() => void query.refetch()}>
+            다시 시도
+          </Button>
+        }
+      />
     );
   }
 
@@ -86,17 +78,11 @@ const styles = StyleSheet.create({
   taskList: {
     gap: spacing[1],
   },
-  stateCard: {
+  stateRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[2],
     justifyContent: 'center',
     minHeight: 72,
-  },
-  errorCard: {
-    gap: spacing[3],
-  },
-  errorCopy: {
-    gap: spacing[1],
   },
 });

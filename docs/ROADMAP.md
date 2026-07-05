@@ -538,6 +538,7 @@ type ApiResponse<T> = {
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [x] Today의 전체·부분·mutation 오류와 성공 피드백을 공통 compact `InlineNotice`로 변경
    - [x] 정리할 항목의 조회·이동 오류와 성공 피드백을 `InlineNotice`로 변경
+   - [x] 목표 목록과 연결 Task의 loading·error 상태를 compact row·`InlineNotice`로 변경
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
 7. 달력 밀도와 navigation 후속
    - [x] 월간 6주 row 높이를 고정하고 주 사이에 얇은 paper rule을 표시
