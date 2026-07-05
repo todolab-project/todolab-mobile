@@ -516,15 +516,15 @@ type ApiResponse<T> = {
    - [x] Today 상단에 높이 100–140px의 compact 7일 strip 추가
    - [x] 상단은 월·요일·날짜·상태 점만 유지하고 우측 `언젠가`·통계·filter action은 추가하지 않음
    - [x] 오늘 날짜, 하루 일정 점, 여러 날 일정 bar를 한 주 안에서 표시
-   - [ ] 주간 strip 아래 정보 순서를 `선택 날짜 일정 → 오늘 Task → 정리 → 완료`로 유지
-   - [ ] 주간 정보가 첫 실행 Task를 viewport 밖으로 밀어내지 않도록 preview 수 제한
+   - [x] 주간 strip 아래 정보 순서를 `선택 날짜 일정 → 오늘 Task → 정리 → 완료`로 유지
+   - [x] 주간 정보가 첫 실행 Task를 viewport 밖으로 밀어내지 않도록 preview 수 제한
 4. Calendar monthly planner
    - [x] Calendar의 주/월 toggle을 제거하고 월간 planner 전용 화면으로 단순화
    - [x] 6주 grid에 하루 일정 label과 여러 날 일정 연속 bar 배치
    - [x] 선택 날짜는 ink outline, 오늘은 highlighter dot, 기간 일정은 muted bar로 구분
    - [x] 일정이 많은 날짜는 최대 2개 lane과 `+N`으로 축약하고 아래 상세 목록 연결
 5. navigation 재구성
-   - [x] 하단 탭을 `오늘 / 달력 / 기록함 / 프로필`로 변경
+   - [x] 하단 탭을 `오늘 / 달력 / 프로필`로 단순화
    - [x] `D-Day` 독립 탭을 제거하고 프로필 목표 관리로 이동
    - [x] `더보기`를 프로필로 대체하고 완료 기록·설정 navigation 구성
    - [x] 루틴·통계·피드는 별도 탭으로 만들지 않고 실제 제품 기능이 생길 때만 재검토
