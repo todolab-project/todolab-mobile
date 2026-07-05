@@ -4,7 +4,7 @@ import { TaskCard } from '@/features/tasks';
 import { spacing } from '@/theme';
 import type { TaskResponse } from '@/types';
 
-type DraggableTodayTaskListProps = {
+type TodayTaskListProps = {
   tasks: TaskResponse[];
   disabled: boolean;
   completingTaskId?: number;
@@ -12,13 +12,13 @@ type DraggableTodayTaskListProps = {
   onOpen: (taskId: number) => void;
 };
 
-export function DraggableTodayTaskList({
+export function TodayTaskList({
   tasks,
   disabled,
   completingTaskId,
   onComplete,
   onOpen,
-}: DraggableTodayTaskListProps) {
+}: TodayTaskListProps) {
   return (
     <View style={styles.list}>
       {tasks.map((task) => (

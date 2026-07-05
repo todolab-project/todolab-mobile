@@ -1,4 +1,4 @@
-import type { TaskResponse, TodayOrderDirection } from '@/types';
+import type { TaskResponse } from '@/types';
 
 export const RECOMMENDED_TODAY_TASK_COUNT = 5;
 export const TODAY_SCHEDULE_PREVIEW_COUNT = 2;
@@ -21,37 +21,6 @@ export function splitTodayTasks(tasks: TaskResponse[]) {
 
 export function getTodaySchedulePreview(tasks: TaskResponse[]) {
   return tasks.slice(0, TODAY_SCHEDULE_PREVIEW_COUNT);
-}
-
-export function reorderTodayTasks(
-  tasks: TaskResponse[],
-  taskId: number,
-  direction: TodayOrderDirection,
-) {
-  const executableIndexes = tasks
-    .map((task, index) => (task.type === 'SCHEDULE' ? null : index))
-    .filter((index): index is number => index !== null);
-  const currentExecutableIndex = executableIndexes.findIndex(
-    (taskIndex) => tasks[taskIndex]?.id === taskId,
-  );
-  const nextExecutableIndex =
-    direction === 'UP' ? currentExecutableIndex - 1 : currentExecutableIndex + 1;
-
-  if (
-    currentExecutableIndex < 0 ||
-    nextExecutableIndex < 0 ||
-    nextExecutableIndex >= executableIndexes.length
-  ) {
-    return tasks;
-  }
-
-  const currentIndex = executableIndexes[currentExecutableIndex];
-  const nextIndex = executableIndexes[nextExecutableIndex];
-  const reordered = [...tasks];
-
-  [reordered[currentIndex], reordered[nextIndex]] = [reordered[nextIndex], reordered[currentIndex]];
-
-  return reordered;
 }
 
 export function getTodayLoadGuidance(executionTaskCount: number, scheduleTaskCount: number) {

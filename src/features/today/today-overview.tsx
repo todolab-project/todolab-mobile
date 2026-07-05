@@ -8,7 +8,7 @@ import { motion, radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
 import { getTodaySchedulePreview, splitTodayTasks } from './today-task-sections';
-import { DraggableTodayTaskList } from './draggable-today-task-list';
+import { TodayTaskList } from './today-task-list';
 import { useTodayOverview } from './use-today-overview';
 
 type TodayOverviewProps = {
@@ -155,7 +155,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             description="하단의 추가 버튼으로 오늘 할 일을 기록해 보세요."
           />
         ) : (
-          <DraggableTodayTaskList
+          <TodayTaskList
             tasks={executionTasks}
             disabled={completeTask.isPending}
             completingTaskId={completeTask.isPending ? completeTask.variables : undefined}

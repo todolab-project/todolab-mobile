@@ -13,7 +13,6 @@ export { useDeleteTask } from './use-delete-task';
 export { useMoveTaskToInbox } from './use-move-task-to-inbox';
 export { useMoveTaskToToday } from './use-move-task-to-today';
 export { useReopenTask } from './use-reopen-task';
-export { useReorderTodayTask } from './use-reorder-today-task';
 export { useSetDeferReason } from './use-set-defer-reason';
 export { useTaskDetail } from './use-task-detail';
 export { useTaskDdayGoal } from './use-task-dday-goal';

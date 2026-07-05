@@ -542,6 +542,7 @@ type ApiResponse<T> = {
    - [x] Task·일정 row에 작은 간격과 낮은 radius outline을 적용하고 임의 색상은 배제
    - [x] Task row 내부 배경을 radius에 clip해 밝은 꼭짓점 artifact 제거
    - [x] Today 실행 순서 drag handle과 reorder interaction 제거
+   - [x] Today 재정렬 전용 UI hook·helper·명칭을 제거하고 일반 실행 목록으로 정리
    - [x] Calendar의 보조 `오늘로 이동` 버튼을 제거하고 이전·다음 달 navigation만 유지
    - [x] 날짜 grid·하루 일정·기간 bar의 좌우 inset을 통일해 일 경계 밖 overflow 방지
    - [x] 정리할 항목의 큰 채움 action을 compact ghost action으로 낮추고 back button surface 제거

@@ -3,7 +3,6 @@ import type { TaskResponse, TaskType } from '@/types';
 import {
   getTodayLoadGuidance,
   getTodaySchedulePreview,
-  reorderTodayTasks,
   splitTodayTasks,
 } from '../today-task-sections';
 
@@ -56,37 +55,6 @@ describe('splitTodayTasks', () => {
       scheduleTasks: [schedule],
       executionTasks: [],
     });
-  });
-});
-
-describe('reorderTodayTasks', () => {
-  it('일정을 건드리지 않고 실행 항목을 위로 한 칸 이동한다', () => {
-    const first = createTask(1, 'TODO');
-    const schedule = createTask(2, 'SCHEDULE');
-    const second = createTask(3, 'IDEA');
-
-    expect(reorderTodayTasks([first, schedule, second], second.id, 'UP')).toEqual([
-      second,
-      schedule,
-      first,
-    ]);
-  });
-
-  it('일정 ID로 재정렬을 요청해도 목록을 변경하지 않는다', () => {
-    const first = createTask(1, 'TODO');
-    const schedule = createTask(2, 'SCHEDULE');
-    const tasks = [first, schedule];
-
-    expect(reorderTodayTasks(tasks, schedule.id, 'UP')).toBe(tasks);
-  });
-
-  it('목록 경계를 벗어나는 이동은 기존 목록을 유지한다', () => {
-    const first = createTask(1, 'TODO');
-    const second = createTask(2, 'TODO');
-    const tasks = [first, second];
-
-    expect(reorderTodayTasks(tasks, first.id, 'UP')).toBe(tasks);
-    expect(reorderTodayTasks(tasks, second.id, 'DOWN')).toBe(tasks);
   });
 });
 
