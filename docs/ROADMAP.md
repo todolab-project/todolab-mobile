@@ -534,6 +534,26 @@ type ApiResponse<T> = {
    - [ ] D-Day, Inbox, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
+7. 달력 밀도와 navigation 후속
+   - [x] 월간 6주 row 높이를 고정하고 주 사이에 얇은 paper rule을 표시
+   - [x] 일 단위 열 경계에 저대비 hairline을 추가해 날짜 칸 구분
+   - [x] 시간이 있는 하루 일정도 시작 시간과 제목을 월간 grid에 표시
+   - [x] Today 주간 strip에도 하루 시간 일정 label을 표시해 점만으로 숨기지 않음
+   - [x] 기록함을 하단 탭에서 제거하고 `오늘 / 달력 / 프로필` 3탭으로 단순화
+   - [x] Task·일정 row에 작은 간격과 낮은 radius outline을 적용하고 임의 색상은 배제
+   - [x] Task row 내부 배경을 radius에 clip해 밝은 꼭짓점 artifact 제거
+   - [x] Today 실행 순서 drag handle과 reorder interaction 제거
+   - [x] Calendar의 보조 `오늘로 이동` 버튼을 제거하고 이전·다음 달 navigation만 유지
+   - [x] 날짜 grid·하루 일정·기간 bar의 좌우 inset을 통일해 일 경계 밖 overflow 방지
+   - [x] 정리할 항목의 큰 채움 action을 compact ghost action으로 낮추고 back button surface 제거
+   - [ ] 정리할 항목 화면을 Today와 같은 compact section·rule list 문법으로 전면 정리
+   - [ ] 과거 Task·일정·완료 기록을 날짜와 키워드로 찾는 통합 검색을 프로필에서 제공
+   - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
+8. UI/UX 회귀 점검
+   - [ ] 320px·375pt·430dp에서 calendar cell, event bar, `+N` clipping 비교
+   - [ ] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
+   - [ ] light/dark와 font scale 1.5에서 hairline 대비와 텍스트 생략 상태 확인
+   - [ ] touch target, keyboard focus, screen reader label이 시각 단순화 후에도 유지되는지 검증
 
 #### Phase 6 후속 4. 반복 Task와 일정
 
