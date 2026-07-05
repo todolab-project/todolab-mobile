@@ -356,10 +356,23 @@ compact header
 
 ### Navigation
 
-- 하단 탭은 Today, Calendar, D-Day, More 네 개를 유지한다.
+- 하단 탭은 `오늘`, `달력`, `기록함`, `프로필` 네 개만 유지한다.
+- `D-Day`는 독립 탭에서 제거하고 Today의 목표 진입점과 프로필의 목표 관리 section으로 이동한다.
+- `더보기` 탭은 제거하고 완료 기록, 설정, 알림, 테마, 개인정보를 프로필 안의 세로 navigation으로 제공한다.
+- 루틴, 통계, 피드는 제품의 독립된 핵심 영역이 되기 전까지 탭으로 추가하지 않는다.
+- 빠른 추가는 탭이 아니라 Today의 하단 FAB로 유지한다.
 - active tab은 primary, inactive tab은 text-muted를 사용한다.
 - iOS는 SF Symbols, Android와 Web은 대응하는 Material 계열 symbol을 사용한다.
 - 아이콘 의미와 접근성 label은 플랫폼 간 동일해야 한다.
+
+### Today weekly strip
+
+- Today 상단은 `월 제목 → 요일 7개 → 날짜 7개 → 상태 점/기간 bar` 순서의 compact weekly strip을 사용한다.
+- 우측 상단에 `언젠가`, 통계, filter 같은 별도 목적지 버튼을 두지 않는다.
+- 오늘은 ink fill 또는 outline, 사용자가 선택한 날짜는 muted highlighter fill로 구분한다.
+- 일정이 있는 날짜는 최대 1–3개의 작은 점으로 표시하고 여러 날 일정은 날짜 아래 한 줄 bar로 잇는다.
+- strip 전체 높이는 100–140px 안에서 유지하고 첫 Today Task를 화면 밖으로 밀어내지 않는다.
+- 주간 strip에서 날짜를 선택하면 아래 일정 preview만 바뀌며, Today 실행 Task의 기준 날짜를 몰래 바꾸지 않는다.
 
 ### Screen patterns
 
@@ -399,7 +412,7 @@ Avoid:
 - 같은 화면에서 서로 다른 용어로 동일한 개념 표현
 - 완료를 강요하거나 과도하게 게임화하는 표현
 
-`Today`, `Calendar`, `D-Day`, `More`는 탭 이름으로 사용하고, 한국어 접근성 label을 함께 제공한다. 기능 용어는 화면 전체에서 일관되게 사용한다.
+탭 이름은 `오늘`, `달력`, `기록함`, `프로필`로 한국어 통일한다. 기능 용어는 화면 전체에서 일관되게 사용한다.
 
 ## 10. Interaction and Motion
 

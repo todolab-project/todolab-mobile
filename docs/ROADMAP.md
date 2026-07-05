@@ -176,7 +176,7 @@ type ApiResponse<T> = {
 
 ## 5. 모바일 정보 구조
 
-하단 탭은 백엔드 UI의 구조를 이어받아 네 개로 구성한다.
+하단 탭은 모바일의 실제 사용 빈도를 기준으로 `오늘`, `달력`, `기록함`, `프로필` 네 개로 구성한다.
 
 ### Today
 
@@ -515,6 +515,7 @@ type ApiResponse<T> = {
    - [ ] PageHeader, section label, date column, checkbox, metadata의 planner 문법 통일
 3. Today weekly planner
    - [ ] Today 상단에 높이 100–140px의 compact 7일 strip 추가
+   - [ ] 상단은 월·요일·날짜·상태 점만 유지하고 우측 `언젠가`·통계·filter action은 추가하지 않음
    - [ ] 오늘·선택 날짜, 하루 일정 점, 여러 날 일정 bar를 한 주 안에서 표시
    - [ ] 주간 strip 아래 정보 순서를 `선택 날짜 일정 → 오늘 Task → 정리 → 완료`로 유지
    - [ ] 주간 정보가 첫 실행 Task를 viewport 밖으로 밀어내지 않도록 preview 수 제한
@@ -523,7 +524,13 @@ type ApiResponse<T> = {
    - [ ] 6주 grid에 하루 일정 label과 여러 날 일정 연속 bar 배치
    - [ ] 선택 날짜는 ink outline, 오늘은 highlighter dot, 기간 일정은 muted bar로 구분
    - [ ] 일정이 많은 날짜는 최대 2개 lane과 `+N`으로 축약하고 아래 상세 목록 연결
-5. 화면 확장
+5. navigation 재구성
+   - [ ] 하단 탭을 `오늘 / 달력 / 기록함 / 프로필`로 변경
+   - [ ] `D-Day` 독립 탭을 제거하고 Today 목표 진입점과 프로필 목표 관리로 이동
+   - [ ] `더보기`를 프로필로 대체하고 완료 기록·설정·알림·테마·개인정보 navigation 구성
+   - [ ] 루틴·통계·피드는 별도 탭으로 만들지 않고 실제 제품 기능이 생길 때만 재검토
+   - [ ] 빠른 추가는 Today FAB로 유지하고 tab bar에 action button을 넣지 않음
+6. 화면 확장
    - [ ] D-Day, Inbox, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
@@ -666,7 +673,7 @@ Today 작업 목록 표시
 ## 10. 초기 결정 기록
 
 - 첫 진입 화면은 Today로 한다.
-- 하단 탭은 Today, Calendar, D-Day, More 네 개를 유지한다.
+- 하단 탭은 `오늘`, `달력`, `기록함`, `프로필` 네 개로 개편한다.
 - 인증 UI는 백엔드 인증 계약이 정해진 뒤 구현한다.
 - 초기 개발은 현재 API 기능을 기준으로 하되 API URL과 mock을 교체할 수 있게 만든다.
 - 로컬 UI 개발은 `EXPO_PUBLIC_API_MODE=mock`으로 더미 데이터를 사용하고, 백엔드 연동 테스트는 `EXPO_PUBLIC_API_MODE=real`과 `EXPO_PUBLIC_API_URL`로 실제 서버를 사용한다.
@@ -675,6 +682,6 @@ Today 작업 목록 표시
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속 3의 `Quiet Paper Planner` theme foundation이다. warm paper·sheet·ink·rule·muted highlighter token을 먼저 적용한 뒤 공통 row와 header를 바꾸고, Today에는 compact 주간 strip, Calendar에는 월간 planner 전용 grid를 연결한다. 반복 Task와 일정은 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 mock과 form UI를 실제 저장 기능처럼 노출하지 않는다. Calendar 상태 dot과 실제 기기 비교는 각각 범위 조회 계약과 테스트 환경이 준비되는 즉시 병행한다.
+다음 모바일 작업은 Phase 6 후속 3의 공통 planner header와 date column 정리다. 이어 Today에 compact 주간 strip을 추가하고 Calendar는 월간 planner 전용으로 단순화한다. 하단 navigation은 `오늘 / 달력 / 기록함 / 프로필`로 재구성하며 D-Day와 기존 More 목적지는 Today와 프로필로 이동한다. 반복 Task와 일정은 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 mock과 form UI를 실제 저장 기능처럼 노출하지 않는다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
