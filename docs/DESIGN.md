@@ -202,7 +202,7 @@ Rules:
 | tablet      | 600–839px/dp | readable width 유지, 필요할 때 master-detail 또는 2열 검토      |
 | Web         | 840px 이상   | 중앙 정렬, hover·focus·keyboard 행동 추가, 모바일 행 밀도 유지  |
 
-Today, Task, Calendar, 더 보기는 tablet·Web에서도 기본 720px 단일 열을 유지한다. 더 보기의 목적지는 카드 grid가 아니라 icon, title, optional description, chevron으로 구성한 세로 navigation row로 표시한다.
+Today, Task, Calendar, 프로필은 tablet·Web에서도 기본 720px 단일 열을 유지한다. 프로필의 목적지는 카드 grid가 아니라 icon, title, optional description, chevron으로 구성한 세로 navigation row로 표시한다.
 
 검증 기준:
 
@@ -336,7 +336,7 @@ compact header
 
 ### Calendar surface
 
-- Calendar는 page header, compact 주/월 switch, 날짜 navigation, 날짜 grid, 선택 날짜 목록의 다섯 계층만 유지한다.
+- Calendar는 page header, 월 navigation, 6주 날짜 grid, 선택 날짜 목록의 네 계층만 유지한다.
 - 월 제목과 이전·다음 이동은 한 줄에 두고 중복된 기간 문구나 큰 설명을 추가하지 않는다.
 - 날짜 cell은 기본적으로 flat하게 두고 선택 날짜만 primary-soft surface, 오늘은 outline 또는 4px dot로 표시한다.
 - 주말은 secondary text로만 구분하고 빨강·파랑을 장식적으로 반복하지 않는다.
@@ -381,7 +381,7 @@ compact header
 - 지난 미완료, 추천, 기록함은 `정리할 항목` 한 줄 진입점과 sheet 또는 별도 화면으로 합친다.
 - Calendar: compact header, 작은 주/월 segmented control, 날짜 선택, 선택 날짜 compact card 목록 순서를 유지한다.
 - D-Day: compact header의 추가 행동, D-Day 숫자 중심 목표 card, 필요할 때 펼치는 연결 Task 순서를 사용한다.
-- More: 모든 폭에서 52–60px 세로 navigation row와 divider를 사용하고 desktop에서도 가로 tile로 전환하지 않는다.
+- Profile: 모든 폭에서 52–60px 세로 navigation row와 divider를 사용하고 desktop에서도 가로 tile로 전환하지 않는다.
 - Inbox: category section과 compact card를 사용하고 Today/내일 이동은 swipe 또는 overflow action으로 제공한다.
 - Completed: 통계보다 완료 card 목록을 우선하고 날짜 선택과 요약을 compact하게 둔다.
 - Task 작성·상세: 제목, 날짜, 시간처럼 자주 쓰는 필드를 먼저 두고 낮은 빈도의 설정은 점진적으로 펼친다.

@@ -528,8 +528,8 @@ type ApiResponse<T> = {
    - [x] 하단 탭을 `오늘 / 달력 / 기록함 / 프로필`로 변경
    - [x] `D-Day` 독립 탭을 제거하고 프로필 목표 관리로 이동
    - [x] `더보기`를 프로필로 대체하고 완료 기록·설정 navigation 구성
-   - [ ] 루틴·통계·피드는 별도 탭으로 만들지 않고 실제 제품 기능이 생길 때만 재검토
-   - [ ] 빠른 추가는 Today FAB로 유지하고 tab bar에 action button을 넣지 않음
+   - [x] 루틴·통계·피드는 별도 탭으로 만들지 않고 실제 제품 기능이 생길 때만 재검토
+   - [x] 빠른 추가는 Today FAB로 유지하고 tab bar에 action button을 넣지 않음
 6. 화면 확장
    - [ ] D-Day, Inbox, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
