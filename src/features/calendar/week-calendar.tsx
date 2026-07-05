@@ -10,7 +10,7 @@ import { formatDateLabel, isLocalDateString, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
 import { getMonthCalendarDates, shiftMonth } from './calendar-date';
-import { CalendarPeriodBars } from './calendar-period-bars';
+import { CalendarPeriodBars, CalendarSingleDayLabels } from './calendar-period-bars';
 import { useCalendarRangeTasks } from './use-calendar-range-tasks';
 
 const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
@@ -148,6 +148,7 @@ function MonthDateGrid({
               />
             ))}
           </View>
+          <CalendarSingleDayLabels dates={weekDates} tasks={tasks} onOpen={onOpenTask} />
           <CalendarPeriodBars dates={weekDates} tasks={tasks} onOpen={onOpenTask} />
         </View>
       ))}

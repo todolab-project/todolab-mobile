@@ -11,6 +11,57 @@ type CalendarPeriodBarsProps = {
   onOpen: (taskId: number) => void;
 };
 
+export function CalendarSingleDayLabels({ dates, tasks, onOpen }: CalendarPeriodBarsProps) {
+  const theme = useAppTheme();
+  const labels = buildCalendarSingleDayLabels(tasks, dates);
+
+  if (labels.every((items) => items.length === 0)) return null;
+
+  return (
+    <View style={styles.singleDayRow}>
+      {labels.map((items, index) => {
+        const task = items[0];
+        const date = dates[index];
+
+        return (
+          <View key={date} style={styles.singleDayCell}>
+            {task ? (
+              <Pressable
+                accessibilityHint="일정 상세 화면을 엽니다."
+                accessibilityLabel={`${task.title}, 하루 일정 상세 보기`}
+                accessibilityRole="button"
+                hitSlop={6}
+                onPress={() => onOpen(task.id)}
+                style={({ pressed }) => [
+                  styles.singleDayLabel,
+                  {
+                    backgroundColor: theme.colors.highlightAmber,
+                    opacity: pressed ? 0.7 : 1,
+                  },
+                ]}
+              >
+                <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
+                  {task.title}
+                </AppText>
+              </Pressable>
+            ) : null}
+            {items.length > 1 ? (
+              <AppText
+                accessibilityLabel={`${formatOverflowDate(date)} 하루 일정 ${items.length - 1}개 더 있음`}
+                tone="muted"
+                variant="caption"
+                weight="semibold"
+              >
+                +{items.length - 1}
+              </AppText>
+            ) : null}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
 export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsProps) {
   const theme = useAppTheme();
   const layout = layoutCalendarPeriodSegments(tasks, dates);
@@ -58,6 +109,20 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
         </AppText>
       ) : null}
     </View>
+  );
+}
+
+export function buildCalendarSingleDayLabels(
+  tasks: TaskResponse[],
+  dates: LocalDateString[],
+): TaskResponse[][] {
+  return dates.map((date) =>
+    tasks.filter(
+      (task) =>
+        task.type === 'SCHEDULE' &&
+        !isMultiDaySchedule(task) &&
+        doesScheduleOverlapDate(task, date),
+    ),
   );
 }
 
@@ -113,7 +178,7 @@ export function buildCalendarPeriodSegments(tasks: TaskResponse[], dates: LocalD
   });
 }
 
-function isMultiDaySchedule(task: TaskResponse) {
+export function isMultiDaySchedule(task: TaskResponse) {
   if (!task.startAt || !task.endAt) return false;
 
   const startDate = task.startAt.slice(0, 10) as LocalDateString;
@@ -126,7 +191,28 @@ function isMultiDaySchedule(task: TaskResponse) {
   return occupiedEndDate > startDate;
 }
 
+function formatOverflowDate(date: LocalDateString) {
+  return `${Number(date.slice(5, 7))}월 ${Number(date.slice(8, 10))}일`;
+}
+
 const styles = StyleSheet.create({
+  singleDayRow: {
+    flexDirection: 'row',
+    minHeight: 24,
+    paddingHorizontal: spacing[2],
+  },
+  singleDayCell: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    minWidth: 0,
+    width: '14.285714%',
+  },
+  singleDayLabel: {
+    borderRadius: radii.sm,
+    flex: 1,
+    minWidth: 0,
+    paddingHorizontal: 3,
+  },
   container: {
     height: 48,
     marginHorizontal: spacing[1],

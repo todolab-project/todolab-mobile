@@ -1,6 +1,10 @@
 import type { TaskResponse } from '@/types';
 
-import { buildCalendarPeriodSegments, layoutCalendarPeriodSegments } from '../calendar-period-bars';
+import {
+  buildCalendarPeriodSegments,
+  buildCalendarSingleDayLabels,
+  layoutCalendarPeriodSegments,
+} from '../calendar-period-bars';
 
 const schedule: TaskResponse = {
   id: 1,
@@ -90,6 +94,53 @@ describe('buildCalendarPeriodSegments', () => {
         ],
       ),
     ).toEqual([]);
+  });
+});
+
+describe('buildCalendarSingleDayLabels', () => {
+  const dates = [
+    '2026-07-06',
+    '2026-07-07',
+    '2026-07-08',
+    '2026-07-09',
+    '2026-07-10',
+    '2026-07-11',
+    '2026-07-12',
+  ] as const;
+
+  it('하루 일정만 해당 날짜 label에 배치한다', () => {
+    const singleDay = {
+      ...schedule,
+      id: 2,
+      title: '주간 회의',
+      startAt: '2026-07-09T09:00:00',
+      endAt: '2026-07-09T10:00:00',
+    } satisfies TaskResponse;
+    const labels = buildCalendarSingleDayLabels([schedule, singleDay], [...dates]);
+
+    expect(labels.map((items) => items.map((task) => task.id))).toEqual([
+      [],
+      [],
+      [],
+      [2],
+      [],
+      [],
+      [],
+    ]);
+  });
+
+  it('실행 Task는 달력 일정 label에서 제외한다', () => {
+    const task = {
+      ...schedule,
+      id: 3,
+      type: 'TODO',
+      startAt: '2026-07-09T09:00:00',
+      endAt: '2026-07-09T10:00:00',
+    } satisfies TaskResponse;
+
+    expect(buildCalendarSingleDayLabels([task], [...dates]).every((items) => !items.length)).toBe(
+      true,
+    );
   });
 });
 
