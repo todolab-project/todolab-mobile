@@ -3,7 +3,16 @@ import { SymbolView } from 'expo-symbols';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 
-import { AppText, Button, Card, EmptyState, IconButton, PageHeader, Screen } from '@/components/ui';
+import {
+  AppText,
+  Button,
+  Card,
+  EmptyState,
+  IconButton,
+  PageHeader,
+  Screen,
+  SectionHeader,
+} from '@/components/ui';
 import { spacing, useAppTheme } from '@/theme';
 import type { DdayGoalResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
@@ -31,9 +40,13 @@ export function DdayOverview() {
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader
-        title="D-Day"
+        title="목표"
         leading={
-          <IconButton accessibilityLabel="프로필 화면으로 돌아가기" onPress={router.back}>
+          <IconButton
+            accessibilityLabel="프로필 화면으로 돌아가기"
+            onPress={router.back}
+            style={styles.headerButton}
+          >
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
               size={20}
@@ -46,6 +59,7 @@ export function DdayOverview() {
             <IconButton
               accessibilityLabel="새 D-Day 목표 만들기"
               onPress={() => setIsCreating(true)}
+              style={styles.headerButton}
             >
               <SymbolView
                 name={{ ios: 'plus', android: 'add', web: 'add' }}
@@ -65,12 +79,12 @@ export function DdayOverview() {
       ) : null}
 
       {query.isPending ? (
-        <Card accessibilityLabel="D-Day 목표를 불러오는 중" style={styles.stateCard}>
+        <View accessibilityLabel="D-Day 목표를 불러오는 중" style={styles.stateRow}>
           <ActivityIndicator color={theme.colors.primary} />
           <AppText tone="secondary" variant="label">
             목표를 불러오고 있어요.
           </AppText>
-        </Card>
+        </View>
       ) : query.error ? (
         <Card
           style={[
@@ -97,14 +111,11 @@ export function DdayOverview() {
         />
       ) : (
         <View style={styles.goalList}>
-          <View style={styles.listHeading}>
-            <AppText variant="bodyLarge" weight="bold">
-              나의 D-Day
-            </AppText>
-            <AppText tone="secondary" variant="label" weight="semibold">
-              {goals.length}개
-            </AppText>
-          </View>
+          <SectionHeader
+            count={goals.length}
+            markerColor={theme.colors.highlightSage}
+            title="나의 목표"
+          />
           {goals.map((goal) => (
             <View key={goal.id} style={styles.goalItem}>
               <DdayGoalCard
@@ -185,7 +196,7 @@ function DdayGoalCard({
   const tone = isToday ? 'warning' : isPast ? 'secondary' : 'primary';
 
   return (
-    <Card padded={false} variant="sheet" style={styles.goalCard}>
+    <Card padded={false} style={styles.goalCard}>
       <View style={styles.goalContent}>
         <View
           accessible
@@ -236,7 +247,7 @@ function DdayGoalCard({
           <Button
             accessibilityLabel={`${goal.title} 목표의 Today 할 일 만들기`}
             size="compact"
-            variant="secondary"
+            variant="ghost"
             onPress={onCreateTodayTask}
           >
             Today 할 일 추가
@@ -309,10 +320,13 @@ function DdayDeleteConfirmation({
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[5],
+    gap: spacing[4],
     paddingTop: spacing[4],
   },
-  stateCard: {
+  headerButton: {
+    backgroundColor: 'transparent',
+  },
+  stateRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[3],
@@ -332,15 +346,10 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   goalList: {
-    gap: spacing[3],
+    gap: spacing[2],
   },
   goalItem: {
     gap: spacing[2],
-  },
-  listHeading: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   goalCard: {
     overflow: 'hidden',

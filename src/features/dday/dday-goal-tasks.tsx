@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, SectionHeader } from '@/components/ui';
 import { TaskCard } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 
@@ -63,14 +63,7 @@ export function DdayGoalTasks({ goalId, goalTitle }: DdayGoalTasksProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.heading}>
-        <AppText variant="label" weight="bold">
-          연결된 할 일
-        </AppText>
-        <AppText tone="secondary" variant="caption" weight="semibold">
-          {tasks.length}개
-        </AppText>
-      </View>
+      <SectionHeader count={tasks.length} title="연결된 할 일" />
       <View style={styles.taskList}>
         {tasks.map((task) => (
           <TaskCard
@@ -89,12 +82,6 @@ export function DdayGoalTasks({ goalId, goalTitle }: DdayGoalTasksProps) {
 const styles = StyleSheet.create({
   container: {
     gap: spacing[2],
-  },
-  heading: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing[2],
   },
   taskList: {
     gap: spacing[1],

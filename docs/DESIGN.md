@@ -375,6 +375,7 @@ compact header
 - 정리할 항목의 즉시 action은 큰 채움 버튼보다 compact ghost action을 사용한다.
 - 정리할 항목의 미완료·추천·기록은 같은 Task row를 사용하고 `+ 오늘` 텍스트 action으로 한 화면에서 처리한다.
 - planner section은 공통 `SectionHeader`의 8px 의미 marker, 굵은 제목, 우측 count·action 문법을 사용한다.
+- 목표 화면은 개별 목표를 낮은 outline row로 표시하고 생성·메뉴 action은 ghost 수준으로 유지한다.
 - 과거 기록 검색은 프로필의 보조 목적지로 두고 날짜·키워드·상태를 함께 탐색할 수 있게 한다.
 - active tab은 primary, inactive tab은 text-muted를 사용한다.
 - iOS는 SF Symbols, Android와 Web은 대응하는 Material 계열 symbol을 사용한다.

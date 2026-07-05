@@ -531,6 +531,7 @@ type ApiResponse<T> = {
    - [x] 빠른 추가는 Today FAB로 유지하고 tab bar에 action button을 넣지 않음
 6. 화면 확장
    - [ ] D-Day, Inbox, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
+   - [x] D-Day 목표 목록과 연결 Task를 공통 planner section·compact outlined row로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
 7. 달력 밀도와 navigation 후속
