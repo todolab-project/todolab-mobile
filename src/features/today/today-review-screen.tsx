@@ -8,9 +8,9 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import {
   AppText,
   Button,
-  Card,
   EmptyState,
   IconButton,
+  InlineNotice,
   ListSkeleton,
   PageHeader,
   Screen,
@@ -61,36 +61,24 @@ export function TodayReviewScreen() {
       />
 
       {moveToToday.error ? (
-        <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-          {moveToToday.error.message}
-        </AppText>
+        <InlineNotice message={moveToToday.error.message} tone="danger" />
       ) : feedback ? (
-        <View
-          accessibilityLiveRegion="polite"
-          style={[styles.feedback, { backgroundColor: theme.colors.successSoft }]}
-        >
-          <AppText tone="success" variant="caption" weight="semibold">
-            {feedback}
-          </AppText>
-        </View>
+        <InlineNotice message={feedback} tone="success" />
       ) : null}
 
       {overview.isPending ? (
         <ListSkeleton accessibilityLabel="정리할 항목을 불러오는 중" count={4} />
       ) : overview.error ? (
-        <Card
-          style={[
-            styles.errorCard,
-            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-          ]}
-        >
-          <AppText tone="danger" variant="label" weight="bold">
-            정리할 항목을 불러오지 못했어요
-          </AppText>
-          <Button variant="secondary" onPress={() => void overview.refetch()}>
-            다시 시도
-          </Button>
-        </Card>
+        <InlineNotice
+          message={overview.error.message}
+          title="정리할 항목을 불러오지 못했어요"
+          tone="danger"
+          action={
+            <Button size="compact" variant="ghost" onPress={() => void overview.refetch()}>
+              다시 시도
+            </Button>
+          }
+        />
       ) : reviewCount === 0 ? (
         <EmptyState title="정리가 끝났어요" description="지금 다시 판단할 항목이 없습니다." />
       ) : (
@@ -233,16 +221,8 @@ const styles = StyleSheet.create({
     gap: spacing[4],
     paddingTop: spacing[4],
   },
-  feedback: {
-    borderRadius: radii.md,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-  },
   backButton: {
     backgroundColor: 'transparent',
-  },
-  errorCard: {
-    gap: spacing[3],
   },
   sections: {
     gap: spacing[4],
