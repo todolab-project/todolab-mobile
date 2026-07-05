@@ -89,7 +89,7 @@ export function TaskForm({
 
   return (
     <View style={styles.container}>
-      <Card style={styles.formCard}>
+      <Card variant="sheet" style={styles.formCard}>
         <View style={styles.field}>
           <View style={styles.labelRow}>
             <AppText variant="label" weight="bold">
@@ -113,7 +113,7 @@ export function TaskForm({
             style={[
               styles.input,
               {
-                backgroundColor: theme.colors.surfaceMuted,
+                backgroundColor: theme.colors.surface,
                 borderColor: validationMessage ? theme.colors.danger : theme.colors.border,
                 color: theme.colors.text,
               },
@@ -141,9 +141,7 @@ export function TaskForm({
                   style={[
                     styles.typeOption,
                     {
-                      backgroundColor: selected
-                        ? theme.colors.primarySoft
-                        : theme.colors.surfaceMuted,
+                      backgroundColor: selected ? theme.colors.highlightBlue : 'transparent',
                       borderColor: selected ? theme.colors.primary : theme.colors.border,
                     },
                   ]}
@@ -189,7 +187,7 @@ export function TaskForm({
                 styles.input,
                 styles.textArea,
                 {
-                  backgroundColor: theme.colors.surfaceMuted,
+                  backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
                   color: theme.colors.text,
                 },
@@ -241,7 +239,7 @@ export function TaskForm({
               style={[
                 styles.input,
                 {
-                  backgroundColor: theme.colors.surfaceMuted,
+                  backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
                   color: theme.colors.text,
                 },
@@ -260,7 +258,7 @@ export function TaskForm({
 
       <View style={styles.actions}>
         {onCancel ? (
-          <Button disabled={isSubmitting} fullWidth variant="secondary" onPress={onCancel}>
+          <Button disabled={isSubmitting} fullWidth variant="ghost" onPress={onCancel}>
             취소
           </Button>
         ) : null}
@@ -283,7 +281,9 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   formCard: {
-    gap: spacing[3],
+    gap: spacing[4],
+    paddingHorizontal: spacing[1],
+    paddingVertical: spacing[2],
   },
   field: {
     gap: spacing[2],

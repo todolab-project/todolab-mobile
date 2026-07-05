@@ -25,7 +25,11 @@ export default function NewTaskScreen() {
       <PageHeader
         title="새 할 일"
         leading={
-          <IconButton accessibilityLabel="이전 화면으로 돌아가기" onPress={router.back}>
+          <IconButton
+            accessibilityLabel="이전 화면으로 돌아가기"
+            onPress={router.back}
+            style={styles.headerButton}
+          >
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
               size={20}
@@ -48,7 +52,10 @@ export default function NewTaskScreen() {
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[5],
-    paddingTop: spacing[3],
+    gap: spacing[4],
+    paddingTop: spacing[4],
+  },
+  headerButton: {
+    backgroundColor: 'transparent',
   },
 });
