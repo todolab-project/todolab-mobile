@@ -54,42 +54,30 @@ export function WeekCalendar() {
       <PageHeader
         title="캘린더"
         action={
-          <View style={styles.headerActions}>
-            <View
-              accessibilityRole="tablist"
-              style={[styles.modeSwitch, { backgroundColor: theme.colors.surfaceMuted }]}
+          <View
+            accessibilityRole="tablist"
+            style={[styles.modeSwitch, { backgroundColor: theme.colors.surfaceMuted }]}
+          >
+            <Button
+              accessibilityRole="tab"
+              accessibilityState={{ selected: mode === 'week' }}
+              size="compact"
+              variant={mode === 'week' ? 'secondary' : 'ghost'}
+              onPress={() => setMode('week')}
+              style={styles.modeButton}
             >
-              <Button
-                accessibilityRole="tab"
-                accessibilityState={{ selected: mode === 'week' }}
-                size="compact"
-                variant={mode === 'week' ? 'secondary' : 'ghost'}
-                onPress={() => setMode('week')}
-                style={styles.modeButton}
-              >
-                주
-              </Button>
-              <Button
-                accessibilityRole="tab"
-                accessibilityState={{ selected: mode === 'month' }}
-                size="compact"
-                variant={mode === 'month' ? 'secondary' : 'ghost'}
-                onPress={() => setMode('month')}
-                style={styles.modeButton}
-              >
-                월
-              </Button>
-            </View>
-            <IconButton
-              accessibilityLabel="새 할 일 작성"
-              onPress={() => router.push('/tasks/new')}
+              주
+            </Button>
+            <Button
+              accessibilityRole="tab"
+              accessibilityState={{ selected: mode === 'month' }}
+              size="compact"
+              variant={mode === 'month' ? 'secondary' : 'ghost'}
+              onPress={() => setMode('month')}
+              style={styles.modeButton}
             >
-              <SymbolView
-                name={{ ios: 'plus', android: 'add', web: 'add' }}
-                size={20}
-                tintColor={theme.colors.primary}
-              />
-            </IconButton>
+              월
+            </Button>
           </View>
         }
       />
@@ -358,11 +346,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[1],
     padding: spacing[1],
-  },
-  headerActions: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[1],
   },
   modeButton: {
     minWidth: 44,

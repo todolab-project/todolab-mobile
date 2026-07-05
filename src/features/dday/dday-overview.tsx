@@ -82,14 +82,7 @@ export function DdayOverview() {
       ) : goals.length === 0 ? (
         <EmptyState
           title="아직 D-Day가 없어요"
-          description="첫 목표를 만들면 남은 날을 확인할 수 있어요."
-          action={
-            isCreating ? undefined : (
-              <Button variant="secondary" onPress={() => setIsCreating(true)}>
-                첫 목표 만들기
-              </Button>
-            )
-          }
+          description="상단의 추가 버튼으로 첫 목표를 만들어 보세요."
         />
       ) : (
         <View style={styles.goalList}>
