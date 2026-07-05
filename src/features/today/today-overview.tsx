@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   scheduleList: {
-    gap: spacing[2],
+    gap: spacing[0],
   },
   taskSectionHeading: {
     alignItems: 'center',
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     minWidth: 56,
   },
   taskList: {
-    gap: spacing[2],
+    gap: spacing[0],
   },
   inlineError: {
     borderRadius: radii.md,

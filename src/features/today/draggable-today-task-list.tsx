@@ -187,10 +187,10 @@ function clamp(value: number, minimum: number, maximum: number) {
 
 const styles = StyleSheet.create({
   list: {
-    gap: spacing[2],
+    gap: spacing[0],
   },
   item: {
-    borderRadius: radii.sm,
+    borderRadius: radii.none,
   },
   nativeReorderControl: {
     height: 1,

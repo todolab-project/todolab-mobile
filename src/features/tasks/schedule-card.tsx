@@ -38,6 +38,9 @@ export function ScheduleCard({
         {
           backgroundColor: theme.colors.surface,
           borderColor: focusedControl ? theme.colors.primary : theme.colors.border,
+          borderBottomWidth: focusedControl ? 0 : StyleSheet.hairlineWidth,
+          borderRadius: focusedControl ? radii.md : radii.none,
+          borderWidth: focusedControl ? 1 : 0,
         },
       ]}
     >
@@ -109,11 +112,8 @@ export function ScheduleCard({
 const styles = StyleSheet.create({
   card: {
     alignItems: 'center',
-    borderRadius: radii.md,
-    borderWidth: 1,
     flexDirection: 'row',
     minHeight: 60,
-    overflow: 'hidden',
   },
   completionHitArea: {
     alignItems: 'center',

@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     gap: spacing[3],
   },
   list: {
-    gap: spacing[2],
+    gap: spacing[0],
   },
   inboxRow: {
     alignItems: 'center',

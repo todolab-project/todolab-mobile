@@ -298,6 +298,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   tasks: {
-    gap: spacing[2],
+    gap: spacing[0],
   },
 });
