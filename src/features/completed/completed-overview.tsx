@@ -52,7 +52,7 @@ export function CompletedOverview() {
         }
       />
 
-      <Card padded={false} style={styles.weekCard}>
+      <Card padded={false} variant="sheet" style={styles.weekCard}>
         <View style={styles.weekHeading}>
           <IconButton accessibilityLabel="이전 주" onPress={() => moveWeek(-7)}>
             <SymbolView

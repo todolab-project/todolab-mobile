@@ -174,7 +174,7 @@ function DdayGoalCard({
   const tone = isToday ? 'warning' : isPast ? 'secondary' : 'primary';
 
   return (
-    <Card padded={false} style={styles.goalCard}>
+    <Card padded={false} variant="sheet" style={styles.goalCard}>
       <View style={styles.goalContent}>
         <View
           accessible

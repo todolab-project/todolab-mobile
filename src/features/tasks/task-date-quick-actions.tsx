@@ -47,7 +47,7 @@ export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
   };
 
   return (
-    <Card style={styles.card}>
+    <Card variant="sheet" style={styles.card}>
       <View style={styles.heading}>
         <AppText variant="bodyLarge" weight="bold">
           날짜 빠른 변경

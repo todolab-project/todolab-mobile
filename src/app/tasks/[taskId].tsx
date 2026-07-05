@@ -174,7 +174,7 @@ function TaskDetail({
 
   return (
     <View style={styles.detail}>
-      <Card style={styles.heroCard}>
+      <Card variant="sheet" style={styles.heroCard}>
         <View style={styles.statusRow}>
           <View
             style={[
@@ -220,7 +220,7 @@ function TaskDetail({
 
       <TaskDateQuickActions task={task} />
 
-      <Card style={styles.section}>
+      <Card variant="sheet" style={styles.section}>
         <AppText variant="label" weight="bold">
           정보
         </AppText>
@@ -251,7 +251,7 @@ function TaskDetail({
       </Button>
 
       {isDdayExpanded ? (
-        <Card style={styles.section}>
+        <Card variant="sheet" style={styles.section}>
           <View style={styles.stateCopy}>
             <AppText variant="bodyLarge" weight="bold">
               D-Day 목표

@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { radii, sizes, useAppTheme } from '@/theme';
 
-type CardVariant = 'default' | 'muted' | 'outlined';
+type CardVariant = 'default' | 'muted' | 'outlined' | 'sheet';
 
 type CardProps = PropsWithChildren<
   ViewProps & {
@@ -35,6 +35,14 @@ export function Card({
     outlined: {
       backgroundColor: 'transparent',
       borderColor: theme.colors.border,
+    },
+    sheet: {
+      backgroundColor: theme.colors.surface,
+      borderBottomColor: theme.colors.rule,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderColor: 'transparent',
+      borderRadius: radii.none,
+      borderWidth: 0,
     },
   };
 

@@ -511,7 +511,7 @@ type ApiResponse<T> = {
    - [x] light/dark 대비 테스트와 기존 semantic success·warning·danger 재조정
 2. component language
    - [x] 기본 목록을 반복 card보다 flat row와 얇은 rule 중심으로 변경
-   - [ ] radius, pill, border 사용 위치를 입력·선택·떠 있는 surface로 제한
+   - [x] radius, pill, border 사용 위치를 입력·선택·떠 있는 surface로 제한
    - [ ] PageHeader, section label, date column, checkbox, metadata의 planner 문법 통일
 3. Today weekly planner
    - [ ] Today 상단에 높이 100–140px의 compact 7일 strip 추가
