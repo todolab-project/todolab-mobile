@@ -81,7 +81,8 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       {sortedScheduleTasks.length > 0 ? (
         <View style={styles.scheduleSection}>
           <SectionHeader
-            markerColor={theme.colors.primary}
+            markerColor={theme.colors.highlightAmber}
+            markerBorderColor={theme.colors.warning}
             title="일정"
             action={
               schedulePreview.length < sortedScheduleTasks.length ? (
@@ -123,7 +124,8 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 
       <View style={styles.taskSection}>
         <SectionHeader
-          markerColor={theme.colors.primary}
+          markerColor={theme.colors.highlightBlue}
+          markerBorderColor={theme.colors.primary}
           title="오늘 할 일"
           action={
             <AppText tone="primary" variant="label" weight="bold">
@@ -206,7 +208,8 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 
       <View style={styles.taskSection}>
         <SectionHeader
-          markerColor={theme.colors.success}
+          markerColor={theme.colors.highlightSage}
+          markerBorderColor={theme.colors.success}
           title="오늘 완료한 일"
           action={
             <View style={styles.completedSectionActions}>

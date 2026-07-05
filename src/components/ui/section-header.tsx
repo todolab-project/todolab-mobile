@@ -12,6 +12,7 @@ type SectionHeaderProps = {
   count?: number;
   action?: ReactNode;
   markerColor?: ColorValue;
+  markerBorderColor?: ColorValue;
 };
 
 export function SectionHeader({
@@ -20,10 +21,21 @@ export function SectionHeader({
   count,
   action,
   markerColor,
+  markerBorderColor,
 }: SectionHeaderProps) {
   return (
     <View style={styles.container}>
-      {markerColor ? <View style={[styles.marker, { backgroundColor: markerColor }]} /> : null}
+      {markerColor ? (
+        <View
+          style={[
+            styles.marker,
+            {
+              backgroundColor: markerColor,
+              borderColor: markerBorderColor ?? 'transparent',
+            },
+          ]}
+        />
+      ) : null}
       <View style={styles.copy}>
         <AppText variant="bodyLarge" weight="bold">
           {title}
@@ -60,8 +72,9 @@ const styles = StyleSheet.create({
   },
   marker: {
     borderRadius: radii.full,
-    height: 8,
-    width: 8,
+    borderWidth: 1,
+    height: 10,
+    width: 10,
   },
   trailing: {
     alignItems: 'center',

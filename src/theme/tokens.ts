@@ -1,8 +1,8 @@
 export const palette = {
   paper: {
     50: '#FFFDF8',
-    100: '#F5F1E8',
-    200: '#F0ECE3',
+    100: '#FAF7F0',
+    200: '#F3EFE7',
     300: '#DED8CC',
     400: '#C8C0B2',
   },
