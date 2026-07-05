@@ -362,6 +362,7 @@ compact header
 - 루틴, 통계, 피드는 제품의 독립된 핵심 영역이 되기 전까지 탭으로 추가하지 않는다.
 - 빠른 추가는 탭이 아니라 Today의 하단 FAB로 유지한다.
 - 기록함 데이터는 Today의 `정리할 항목`에서 처리하되 독립 탭으로 노출하지 않는다.
+- 독립 Inbox 화면은 유지하지 않고 날짜 없는 기록의 조회·정리는 Today 흐름에 포함한다.
 - 월간 달력은 여섯 주의 높이를 동일하게 유지하고 주 경계에 얇은 paper rule을 사용한다.
 - 날짜 열 경계에도 같은 rule을 더 낮은 대비로 사용해 일 단위 칸을 구분한다.
 - 시간이 있는 하루 일정은 `HH:mm 제목`의 한 줄 label로 표시한다.
@@ -376,6 +377,7 @@ compact header
 - 정리할 항목의 미완료·추천·기록은 같은 Task row를 사용하고 `+ 오늘` 텍스트 action으로 한 화면에서 처리한다.
 - planner section은 공통 `SectionHeader`의 8px 의미 marker, 굵은 제목, 우측 count·action 문법을 사용한다.
 - 목표 화면은 개별 목표를 낮은 outline row로 표시하고 생성·메뉴 action은 ghost 수준으로 유지한다.
+- 완료 기록은 주 이동과 날짜 선택을 한 compact surface로 묶고 `다시 열기`를 overflow 메뉴 없이 직접 제공한다.
 - 과거 기록 검색은 프로필의 보조 목적지로 두고 날짜·키워드·상태를 함께 탐색할 수 있게 한다.
 - active tab은 primary, inactive tab은 text-muted를 사용한다.
 - iOS는 SF Symbols, Android와 Web은 대응하는 Material 계열 symbol을 사용한다.

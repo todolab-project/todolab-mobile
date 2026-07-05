@@ -530,8 +530,9 @@ type ApiResponse<T> = {
    - [x] 루틴·통계·피드는 별도 탭으로 만들지 않고 실제 제품 기능이 생길 때만 재검토
    - [x] 빠른 추가는 Today FAB로 유지하고 tab bar에 action button을 넣지 않음
 6. 화면 확장
-   - [ ] D-Day, Inbox, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
+   - [ ] D-Day, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
    - [x] D-Day 목표 목록과 연결 Task를 공통 planner section·compact outlined row로 변경
+   - [x] Completed의 주 선택·완료 목록·요약을 compact planner row로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
 7. 달력 밀도와 navigation 후속
@@ -540,6 +541,7 @@ type ApiResponse<T> = {
    - [x] 시간이 있는 하루 일정도 시작 시간과 제목을 월간 grid에 표시
    - [x] Today 주간 strip에도 하루 시간 일정 label을 표시해 점만으로 숨기지 않음
    - [x] 기록함을 하단 탭에서 제거하고 `오늘 / 달력 / 프로필` 3탭으로 단순화
+   - [x] 숨겨진 Inbox route·전용 화면·과거 More navigation 잔여 코드 제거
    - [x] Task·일정 row에 작은 간격과 낮은 radius outline을 적용하고 임의 색상은 배제
    - [x] Task row 내부 배경을 radius에 clip해 밝은 꼭짓점 artifact 제거
    - [x] Today 실행 순서 drag handle과 reorder interaction 제거

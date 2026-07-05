@@ -52,12 +52,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="inbox"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
         name="profile"
         options={{
           title: '프로필',
