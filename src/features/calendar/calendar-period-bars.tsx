@@ -81,7 +81,7 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
           style={({ pressed }) => [
             styles.bar,
             {
-              backgroundColor: theme.colors.highlightBlue,
+              backgroundColor: theme.colors.highlightSage,
               left: `${(segment.startIndex / dates.length) * 100}%`,
               opacity: pressed ? 0.7 : 1,
               top: segment.lane * 24,
@@ -89,7 +89,7 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
             },
           ]}
         >
-          <AppText numberOfLines={1} tone="primary" variant="caption" weight="semibold">
+          <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
             {segment.continuesBefore ? '‹ ' : ''}
             {segment.task.title}
             {segment.continuesAfter ? ' ›' : ''}

@@ -195,9 +195,12 @@ function CalendarDateButton({
         styles.dayButton,
         style,
         {
-          backgroundColor:
-            selected || pressed || isFocused ? theme.colors.highlightBlue : 'transparent',
-          borderColor: isFocused || (isToday && !selected) ? theme.colors.primary : 'transparent',
+          backgroundColor: pressed || isFocused ? theme.colors.highlightBlue : 'transparent',
+          borderColor: isFocused
+            ? theme.colors.primary
+            : selected
+              ? theme.colors.text
+              : 'transparent',
         },
       ]}
     >
@@ -223,7 +226,8 @@ function CalendarDateButton({
         style={[
           styles.todayDot,
           {
-            backgroundColor: isToday ? theme.colors.primary : 'transparent',
+            backgroundColor: isToday ? theme.colors.highlightAmber : 'transparent',
+            borderColor: isToday ? theme.colors.warning : 'transparent',
           },
         ]}
       />
@@ -280,7 +284,8 @@ const styles = StyleSheet.create({
   },
   todayDot: {
     borderRadius: radii.full,
-    height: 4,
-    width: 4,
+    borderWidth: 1,
+    height: 6,
+    width: 6,
   },
 });
