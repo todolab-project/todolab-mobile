@@ -54,15 +54,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="inbox"
         options={{
-          title: '기록함',
-          tabBarAccessibilityLabel: '기록함',
-          tabBarIcon: ({ color, size }) => (
-            <TabBarIcon
-              color={color}
-              size={size}
-              name={{ ios: 'tray.full.fill', android: 'inbox', web: 'inbox' }}
-            />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
