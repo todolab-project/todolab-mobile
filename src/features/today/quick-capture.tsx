@@ -77,7 +77,11 @@ export function QuickCapture() {
       {isExpanded ? (
         <Card style={styles.composerCard}>
           <View style={styles.composerRow}>
-            <IconButton accessibilityLabel="빠른 기록 닫기" onPress={closeComposer}>
+            <IconButton
+              accessibilityLabel="빠른 기록 닫기"
+              onPress={closeComposer}
+              style={styles.closeButton}
+            >
               <AppText tone="secondary" variant="bodyLarge">
                 ×
               </AppText>
@@ -90,10 +94,17 @@ export function QuickCapture() {
               maxLength={taskLimits.title}
               onChangeText={handleChange}
               onSubmitEditing={handleSubmit}
-              placeholder="생각난 할 일 기록"
+              placeholder="할 일을 입력하세요"
               placeholderTextColor={theme.colors.textMuted}
               returnKeyType="done"
-              style={[styles.input, { color: theme.colors.text }]}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.colors.surfaceMuted,
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                },
+              ]}
               value={title}
             />
             <Button
@@ -112,7 +123,7 @@ export function QuickCapture() {
             </AppText>
           ) : didSave ? (
             <AppText accessibilityLiveRegion="polite" tone="success" variant="caption">
-              기록함에 추가했어요.
+              정리할 항목에 추가했어요.
             </AppText>
           ) : null}
         </Card>
@@ -146,11 +157,18 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   input: {
+    borderRadius: radii.md,
+    borderWidth: StyleSheet.hairlineWidth,
     flex: 1,
     fontSize: 16,
     minHeight: 44,
     minWidth: 0,
-    padding: 0,
+    outlineWidth: 0,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
+  },
+  closeButton: {
+    backgroundColor: 'transparent',
   },
   submitButton: {
     borderRadius: radii.full,
