@@ -8,6 +8,7 @@ import { AppText, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 
 type ProfileItem = {
+  accent: 'amber' | 'sage' | 'blue';
   title: string;
   description: string;
   href: '/dday' | '/completed' | '/settings';
@@ -16,18 +17,21 @@ type ProfileItem = {
 
 const profileItems: ProfileItem[] = [
   {
+    accent: 'amber',
     title: '목표',
     description: 'D-Day와 연결된 실행 항목',
     href: '/dday',
     icon: { ios: 'flag.fill', android: 'flag', web: 'flag' },
   },
   {
+    accent: 'sage',
     title: '완료 기록',
     description: '끝낸 일과 주간 흐름',
     href: '/completed',
     icon: { ios: 'checkmark.circle.fill', android: 'task_alt', web: 'task_alt' },
   },
   {
+    accent: 'blue',
     title: '설정',
     description: '테마, 알림, 개인 설정',
     href: '/settings',
@@ -60,35 +64,52 @@ export function ProfileOverview() {
       </View>
 
       <View accessibilityRole="list" style={styles.menu}>
-        {profileItems.map((item, index) => (
-          <Pressable
-            key={item.href}
-            accessibilityHint={`${item.title} 화면으로 이동합니다.`}
-            accessibilityRole="button"
-            onPress={() => router.push(item.href as Href)}
-            style={({ pressed }) => [
-              styles.row,
-              {
-                backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-                borderBottomColor: theme.colors.rule,
-                borderBottomWidth: index < profileItems.length - 1 ? StyleSheet.hairlineWidth : 0,
-              },
-            ]}
-          >
-            <View style={[styles.icon, { backgroundColor: theme.colors.highlightBlue }]}>
-              <SymbolView name={item.icon} size={18} tintColor={theme.colors.primary} />
-            </View>
-            <View style={styles.copy}>
-              <AppText weight="medium">{item.title}</AppText>
-              <AppText tone="secondary" variant="caption">
-                {item.description}
+        {profileItems.map((item) => {
+          const accents = {
+            amber: {
+              backgroundColor: theme.colors.highlightAmber,
+              color: theme.colors.warning,
+            },
+            sage: {
+              backgroundColor: theme.colors.highlightSage,
+              color: theme.colors.success,
+            },
+            blue: {
+              backgroundColor: theme.colors.highlightBlue,
+              color: theme.colors.primary,
+            },
+          };
+          const accent = accents[item.accent];
+
+          return (
+            <Pressable
+              key={item.href}
+              accessibilityHint={`${item.title} 화면으로 이동합니다.`}
+              accessibilityRole="button"
+              onPress={() => router.push(item.href as Href)}
+              style={({ pressed }) => [
+                styles.row,
+                {
+                  backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
+                  borderColor: theme.colors.border,
+                },
+              ]}
+            >
+              <View style={[styles.icon, { backgroundColor: accent.backgroundColor }]}>
+                <SymbolView name={item.icon} size={18} tintColor={accent.color} />
+              </View>
+              <View style={styles.copy}>
+                <AppText weight="medium">{item.title}</AppText>
+                <AppText tone="secondary" variant="caption">
+                  {item.description}
+                </AppText>
+              </View>
+              <AppText tone="muted" variant="bodyLarge">
+                ›
               </AppText>
-            </View>
-            <AppText tone="muted" variant="bodyLarge">
-              ›
-            </AppText>
-          </Pressable>
-        ))}
+            </Pressable>
+          );
+        })}
       </View>
     </Screen>
   );
@@ -118,13 +139,17 @@ const styles = StyleSheet.create({
   },
   menu: {
     backgroundColor: 'transparent',
+    gap: spacing[1],
+    paddingHorizontal: spacing[1],
   },
   row: {
     alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[3],
     minHeight: 64,
-    paddingHorizontal: spacing[1],
+    paddingHorizontal: spacing[3],
   },
   icon: {
     alignItems: 'center',
