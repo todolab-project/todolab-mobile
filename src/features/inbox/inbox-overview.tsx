@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -49,18 +48,7 @@ export function InboxOverview() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <PageHeader
-        title="기록함"
-        leading={
-          <IconButton accessibilityLabel="More 화면으로 돌아가기" onPress={router.back}>
-            <SymbolView
-              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
-              size={20}
-              tintColor={theme.colors.text}
-            />
-          </IconButton>
-        }
-      />
+      <PageHeader title="기록함" />
 
       {moveError ? (
         <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">

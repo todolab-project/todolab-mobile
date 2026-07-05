@@ -26,13 +26,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
+          title: '오늘',
           tabBarAccessibilityLabel: '오늘',
           tabBarIcon: ({ color, size }) => (
             <TabBarIcon
               color={color}
               size={size}
-              name={{ ios: 'checkmark.circle.fill', android: 'task_alt', web: 'task_alt' }}
+              name={{ ios: 'sun.max.fill', android: 'today', web: 'today' }}
             />
           ),
         }}
@@ -40,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calendar"
         options={{
-          title: 'Calendar',
+          title: '달력',
           tabBarAccessibilityLabel: '캘린더',
           tabBarIcon: ({ color, size }) => (
             <TabBarIcon
@@ -52,29 +52,29 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="dday"
+        name="inbox"
         options={{
-          title: 'D-Day',
-          tabBarAccessibilityLabel: '디데이',
+          title: '기록함',
+          tabBarAccessibilityLabel: '기록함',
           tabBarIcon: ({ color, size }) => (
             <TabBarIcon
               color={color}
               size={size}
-              name={{ ios: 'flag.fill', android: 'flag', web: 'flag' }}
+              name={{ ios: 'tray.full.fill', android: 'inbox', web: 'inbox' }}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="more"
+        name="profile"
         options={{
-          title: 'More',
-          tabBarAccessibilityLabel: '더 보기',
+          title: '프로필',
+          tabBarAccessibilityLabel: '프로필',
           tabBarIcon: ({ color, size }) => (
             <TabBarIcon
               color={color}
               size={size}
-              name={{ ios: 'ellipsis', android: 'more_horiz', web: 'more_horiz' }}
+              name={{ ios: 'person.crop.circle.fill', android: 'person', web: 'person' }}
             />
           ),
         }}

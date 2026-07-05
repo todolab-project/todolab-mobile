@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
@@ -15,6 +16,7 @@ import { useDeleteDdayGoal } from './use-delete-dday-goal';
 import { useDdayGoals } from './use-dday-goals';
 
 export function DdayOverview() {
+  const router = useRouter();
   const theme = useAppTheme();
   const [isCreating, setIsCreating] = useState(false);
   const [confirmingDeleteGoalId, setConfirmingDeleteGoalId] = useState<number | null>(null);
@@ -30,6 +32,15 @@ export function DdayOverview() {
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader
         title="D-Day"
+        leading={
+          <IconButton accessibilityLabel="프로필 화면으로 돌아가기" onPress={router.back}>
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
+              size={20}
+              tintColor={theme.colors.text}
+            />
+          </IconButton>
+        }
         action={
           isCreating ? undefined : (
             <IconButton

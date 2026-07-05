@@ -42,7 +42,7 @@ export function CompletedOverview() {
       <PageHeader
         title="완료 기록"
         leading={
-          <IconButton accessibilityLabel="More 화면으로 돌아가기" onPress={router.back}>
+          <IconButton accessibilityLabel="프로필 화면으로 돌아가기" onPress={router.back}>
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
               size={20}
