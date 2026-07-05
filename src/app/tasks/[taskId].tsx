@@ -3,7 +3,15 @@ import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, IconButton, PageHeader, Screen } from '@/components/ui';
+import {
+  AppText,
+  Button,
+  Card,
+  IconButton,
+  PageHeader,
+  Screen,
+  SectionHeader,
+} from '@/components/ui';
 import { useDdayGoals } from '@/features/dday';
 import {
   TaskDateQuickActions,
@@ -61,7 +69,11 @@ export default function TaskDetailScreen() {
       <PageHeader
         title={isEditing ? '할 일 수정' : '할 일 상세'}
         leading={
-          <IconButton accessibilityLabel="이전 화면으로 돌아가기" onPress={router.back}>
+          <IconButton
+            accessibilityLabel="이전 화면으로 돌아가기"
+            onPress={router.back}
+            style={styles.headerButton}
+          >
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
               size={20}
@@ -86,12 +98,12 @@ export default function TaskDetailScreen() {
           </AppText>
         </Card>
       ) : taskQuery.isPending ? (
-        <Card accessibilityLabel="Task 상세를 불러오는 중" style={styles.loadingCard}>
+        <View accessibilityLabel="Task 상세를 불러오는 중" style={styles.loadingRow}>
           <ActivityIndicator color={theme.colors.primary} />
           <AppText tone="secondary" variant="label">
             할 일 정보를 불러오고 있어요.
           </AppText>
-        </Card>
+        </View>
       ) : taskQuery.error ? (
         <Card
           style={[
@@ -174,7 +186,7 @@ function TaskDetail({
 
   return (
     <View style={styles.detail}>
-      <Card variant="sheet" style={styles.heroCard}>
+      <Card variant="outlined" style={styles.heroCard}>
         <View style={styles.statusRow}>
           <View
             style={[
@@ -213,17 +225,15 @@ function TaskDetail({
           )}
         </View>
 
-        <Button disabled={isDeleting} size="compact" variant="secondary" onPress={onEdit}>
+        <Button disabled={isDeleting} size="compact" variant="ghost" onPress={onEdit}>
           수정
         </Button>
       </Card>
 
       <TaskDateQuickActions task={task} />
 
-      <Card variant="sheet" style={styles.section}>
-        <AppText variant="label" weight="bold">
-          정보
-        </AppText>
+      <Card variant="outlined" style={styles.section}>
+        <SectionHeader markerColor={theme.colors.highlightBlue} title="정보" />
         <InfoRow label="일정" value={scheduleLabel} />
         <InfoRow
           label="계획일"
@@ -251,7 +261,7 @@ function TaskDetail({
       </Button>
 
       {isDdayExpanded ? (
-        <Card variant="sheet" style={styles.section}>
+        <Card variant="outlined" style={styles.section}>
           <View style={styles.stateCopy}>
             <AppText variant="bodyLarge" weight="bold">
               D-Day 목표
@@ -341,7 +351,7 @@ function TaskDetail({
         </Card>
       ) : null}
 
-      <Card variant="muted" style={styles.footerCard}>
+      <Card variant="outlined" style={styles.footerCard}>
         <InfoRow label="생성" value={getDateTimeLabel(task.createdAt)} />
         <InfoRow label="수정" value={task.updatedAt ? getDateTimeLabel(task.updatedAt) : '없음'} />
         <InfoRow
@@ -373,7 +383,7 @@ function TaskDetail({
           ) : null}
 
           <View style={styles.deleteActions}>
-            <Button disabled={isDeleting} fullWidth variant="secondary" onPress={onCancelDelete}>
+            <Button disabled={isDeleting} fullWidth variant="ghost" onPress={onCancelDelete}>
               취소
             </Button>
             <Button fullWidth loading={isDeleting} variant="danger" onPress={onConfirmDelete}>
@@ -391,8 +401,10 @@ function TaskDetail({
 }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
+  const theme = useAppTheme();
+
   return (
-    <View style={styles.infoRow}>
+    <View style={[styles.infoRow, { borderBottomColor: theme.colors.rule }]}>
       <AppText tone="secondary" variant="label" weight="semibold">
         {label}
       </AppText>
@@ -472,7 +484,10 @@ const styles = StyleSheet.create({
     gap: spacing[4],
     paddingTop: spacing[4],
   },
-  loadingCard: {
+  headerButton: {
+    backgroundColor: 'transparent',
+  },
+  loadingRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[3],
@@ -530,9 +545,11 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     alignItems: 'flex-start',
+    borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[3],
     justifyContent: 'space-between',
+    paddingVertical: spacing[2],
   },
   infoValue: {
     flex: 1,

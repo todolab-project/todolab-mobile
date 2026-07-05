@@ -378,6 +378,8 @@ compact header
 - planner section은 공통 `SectionHeader`의 8px 의미 marker, 굵은 제목, 우측 count·action 문법을 사용한다.
 - 목표 화면은 개별 목표를 낮은 outline row로 표시하고 생성·메뉴 action은 ghost 수준으로 유지한다.
 - 완료 기록은 주 이동과 날짜 선택을 한 compact surface로 묶고 `다시 열기`를 overflow 메뉴 없이 직접 제공한다.
+- Task 작성은 하나의 flat sheet 안에서 제목·유형·선택 정보를 나누고 입력 배경과 취소 action의 대비를 낮춘다.
+- Task 상세는 hero·날짜·정보·목표를 낮은 outline section으로 구분하고 metadata 행에는 얇은 rule을 사용한다.
 - 과거 기록 검색은 프로필의 보조 목적지로 두고 날짜·키워드·상태를 함께 탐색할 수 있게 한다.
 - active tab은 primary, inactive tab은 text-muted를 사용한다.
 - iOS는 SF Symbols, Android와 Web은 대응하는 Material 계열 symbol을 사용한다.

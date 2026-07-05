@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card } from '@/components/ui';
+import { AppText, Button, Card, SectionHeader } from '@/components/ui';
 import { spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -47,15 +47,11 @@ export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
   };
 
   return (
-    <Card variant="sheet" style={styles.card}>
-      <View style={styles.heading}>
-        <AppText variant="bodyLarge" weight="bold">
-          날짜 빠른 변경
-        </AppText>
-        <AppText tone="secondary" variant="caption">
-          현재 {task.plannedDate ? formatDateLabel(task.plannedDate) : '날짜 없음'}
-        </AppText>
-      </View>
+    <Card variant="outlined" style={styles.card}>
+      <SectionHeader
+        title="날짜 빠른 변경"
+        description={`현재 ${task.plannedDate ? formatDateLabel(task.plannedDate) : '날짜 없음'}`}
+      />
 
       <View style={styles.actions}>
         {dateActions.map((action) => {
@@ -109,9 +105,6 @@ export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
 const styles = StyleSheet.create({
   card: {
     gap: spacing[3],
-  },
-  heading: {
-    gap: spacing[1],
   },
   actions: {
     flexDirection: 'row',

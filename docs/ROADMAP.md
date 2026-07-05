@@ -530,9 +530,11 @@ type ApiResponse<T> = {
    - [x] 루틴·통계·피드는 별도 탭으로 만들지 않고 실제 제품 기능이 생길 때만 재검토
    - [x] 빠른 추가는 Today FAB로 유지하고 tab bar에 action button을 넣지 않음
 6. 화면 확장
-   - [ ] D-Day, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
+   - [x] D-Day, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
    - [x] D-Day 목표 목록과 연결 Task를 공통 planner section·compact outlined row로 변경
    - [x] Completed의 주 선택·완료 목록·요약을 compact planner row로 변경
+   - [x] Task 작성 form을 flat paper sheet·quiet input·ghost 취소 action으로 변경
+   - [x] Task 상세의 hero·정보·날짜·목표·삭제 영역을 outlined planner section으로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
 7. 달력 밀도와 navigation 후속
