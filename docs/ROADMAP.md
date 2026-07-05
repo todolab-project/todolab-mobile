@@ -501,6 +501,45 @@ type ApiResponse<T> = {
    - [x] 일정 metadata와 접근성 label에 `일정` 역할을 명시해 실행 Task와 구분
    - [ ] 첫 viewport에서 일정과 최소 한 개의 오늘 Task를 확인할 수 있고 정리 UI가 핵심 목록을 밀어내지 않는지 검증
 
+#### Phase 6 후속 3. Quiet Paper Planner 전면 개편
+
+목표: 데모 dashboard처럼 보이는 반복 카드 UI를 걷어내고, 매일 펼쳐 쓰는 차분한 paper planner라는 하나의 시각 언어로 Today와 Calendar를 다시 구성한다.
+
+1. theme foundation
+   - [ ] warm paper background, sheet surface, ink text, notebook rule, muted highlighter token 적용
+   - [ ] primary blue 의존도를 낮추고 sage·amber·powder blue를 의미 기반 accent로 제한
+   - [ ] light/dark 대비 테스트와 기존 semantic success·warning·danger 재조정
+2. component language
+   - [ ] 기본 목록을 반복 card보다 flat row와 얇은 rule 중심으로 변경
+   - [ ] radius, pill, border 사용 위치를 입력·선택·떠 있는 surface로 제한
+   - [ ] PageHeader, section label, date column, checkbox, metadata의 planner 문법 통일
+3. Today weekly planner
+   - [ ] Today 상단에 높이 100–140px의 compact 7일 strip 추가
+   - [ ] 오늘·선택 날짜, 하루 일정 점, 여러 날 일정 bar를 한 주 안에서 표시
+   - [ ] 주간 strip 아래 정보 순서를 `선택 날짜 일정 → 오늘 Task → 정리 → 완료`로 유지
+   - [ ] 주간 정보가 첫 실행 Task를 viewport 밖으로 밀어내지 않도록 preview 수 제한
+4. Calendar monthly planner
+   - [ ] Calendar의 주/월 toggle을 제거하고 월간 planner 전용 화면으로 단순화
+   - [ ] 6주 grid에 하루 일정 label과 여러 날 일정 연속 bar 배치
+   - [ ] 선택 날짜는 ink outline, 오늘은 highlighter dot, 기간 일정은 muted bar로 구분
+   - [ ] 일정이 많은 날짜는 최대 2개 lane과 `+N`으로 축약하고 아래 상세 목록 연결
+5. 화면 확장
+   - [ ] D-Day, Inbox, Completed, Task form/detail을 같은 paper surface와 rule list로 변경
+   - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
+   - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
+
+#### Phase 6 후속 4. 반복 Task와 일정
+
+목표: 매주 화요일 09:00 회의처럼 반복되는 실행 항목과 일정을 occurrence별로 계획하고 완료한다.
+
+- [x] 반복 규칙과 occurrence API 요구사항을 [`API_RECURRENCE.md`](./API_RECURRENCE.md)에 문서화
+- [ ] 백엔드 recurrence series, RRULE, occurrence, exception 계약 확정
+- [ ] Task 작성 화면에 반복 없음·매일·매주·매월·사용자 지정 선택 추가
+- [ ] `이번만 / 이후 모두 / 전체` 수정·삭제 범위 선택 UI
+- [ ] Today·Calendar 범위 조회에 occurrence 표시
+- [ ] occurrence별 완료·미룸·건너뛰기와 완료 기록 연결
+- [ ] 반복 일정과 로컬 알림의 책임 분리
+
 완료 기준:
 
 - 375pt iPhone 기본 글꼴에서 첫 viewport 안에 오늘 실행 Task가 최소 한 개 보인다.
@@ -636,6 +675,6 @@ Today 작업 목록 표시
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속 2의 Today 구조 정리다. 먼저 header의 중복 `+`와 Task card의 재정렬 `⋯`를 제거하고, 일정이 Today Task보다 먼저 보이도록 정보 순서를 바꾼다. 이어 `정리할 항목`을 inline 확장 대신 bottom sheet 또는 전용 화면으로 분리한다. 여러 날 일정과 Calendar 연속 bar는 Today·Calendar 범위 조회가 겹침 일정의 `startAt`, `endAt`을 안정적으로 반환하는지 계약을 먼저 확인한 뒤 구현한다. Calendar 날짜 cell의 완료·미룸·D-Day 상태 dot은 백엔드 `DAY`, `WEEK`, `MONTH` 범위 조회 계약이 확정된 뒤 연결한다. Android, iOS, Web 실제 환경 비교 smoke test는 현재 환경에 `adb`, `simctl`, 연결된 인앱 브라우저가 준비되는 즉시 병행한다. 재정렬 mutation은 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 단일 순서 저장 계약을 우선하고, 시각적 위/아래 버튼은 다시 노출하지 않는다.
+다음 모바일 작업은 Phase 6 후속 3의 `Quiet Paper Planner` theme foundation이다. warm paper·sheet·ink·rule·muted highlighter token을 먼저 적용한 뒤 공통 row와 header를 바꾸고, Today에는 compact 주간 strip, Calendar에는 월간 planner 전용 grid를 연결한다. 반복 Task와 일정은 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 mock과 form UI를 실제 저장 기능처럼 노출하지 않는다. Calendar 상태 dot과 실제 기기 비교는 각각 범위 조회 계약과 테스트 환경이 준비되는 즉시 병행한다.
 
 Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
