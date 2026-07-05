@@ -399,10 +399,9 @@ compact header
 - Today: compact header, 존재하는 일정 card, Task card, `정리할 항목`, 접힌 완료 순서만 기본 노출한다.
 - Today의 진행 요약 card, 과부하 meter, 기록함 Task 전체 목록은 기본 화면에 상시 노출하지 않는다.
 - 지난 미완료, 추천, 기록함은 `정리할 항목` 한 줄 진입점과 sheet 또는 별도 화면으로 합친다.
-- Calendar: compact header, 작은 주/월 segmented control, 날짜 선택, 선택 날짜 compact card 목록 순서를 유지한다.
+- Calendar: compact 월 header, 6주 날짜 grid, 선택 날짜 compact 목록 순서를 유지한다.
 - D-Day: compact header의 추가 행동, D-Day 숫자 중심 목표 card, 필요할 때 펼치는 연결 Task 순서를 사용한다.
 - Profile: 모든 폭에서 52–60px 세로 navigation row와 divider를 사용하고 desktop에서도 가로 tile로 전환하지 않는다.
-- Inbox: category section과 compact card를 사용하고 Today/내일 이동은 swipe 또는 overflow action으로 제공한다.
 - Completed: 통계보다 완료 card 목록을 우선하고 날짜 선택과 요약을 compact하게 둔다.
 - Task 작성·상세: 제목, 날짜, 시간처럼 자주 쓰는 필드를 먼저 두고 낮은 빈도의 설정은 점진적으로 펼친다.
 - 빈 상태와 오류는 가능한 한 큰 카드 대신 inline state를 사용하고 문구와 CTA를 한 번씩만 제공한다.
@@ -471,6 +470,7 @@ Rules:
 여러 행이 나타나는 초기 목록 조회는 정적인 skeleton row를 사용하고, 단건·짧은 조회는 compact spinner를 유지한다. skeleton 자체에는 반복 animation을 사용하지 않는다.
 
 목록 데이터 갱신에 실패해도 기존 데이터를 가능한 한 유지한다. 전체 화면 오류는 화면을 구성할 데이터가 전혀 없을 때만 사용한다.
+오류·경고·성공 피드백은 공통 `InlineNotice`의 낮은 outline과 semantic soft color를 사용하며 큰 Card를 새로 만들지 않는다.
 
 ## 12. Accessibility
 

@@ -536,6 +536,7 @@ type ApiResponse<T> = {
    - [x] Task 작성 form을 flat paper sheet·quiet input·ghost 취소 action으로 변경
    - [x] Task 상세의 hero·정보·날짜·목표·삭제 영역을 outlined planner section으로 변경
    - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
+   - [x] Today의 전체·부분·mutation 오류와 성공 피드백을 공통 compact `InlineNotice`로 변경
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
 7. 달력 밀도와 navigation 후속
    - [x] 월간 6주 row 높이를 고정하고 주 사이에 얇은 paper rule을 표시

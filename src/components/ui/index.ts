@@ -4,6 +4,7 @@ export { Card } from './card';
 export { EmptyState } from './empty-state';
 export { FadeInView } from './fade-in-view';
 export { IconButton } from './icon-button';
+export { InlineNotice } from './inline-notice';
 export { ListSkeleton } from './list-skeleton';
 export { PageHeader } from './page-header';
 export { Screen } from './screen';

@@ -5,9 +5,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import {
   AppText,
   Button,
-  Card,
   EmptyState,
   FadeInView,
+  InlineNotice,
   ListSkeleton,
   SectionHeader,
 } from '@/components/ui';
@@ -63,27 +63,16 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
 
   if (error) {
     return (
-      <Card
-        style={[
-          styles.errorCard,
-          {
-            backgroundColor: theme.colors.dangerSoft,
-            borderColor: theme.colors.danger,
-          },
-        ]}
-      >
-        <View style={styles.errorCopy}>
-          <AppText tone="danger" variant="label" weight="bold">
-            정보를 불러오지 못했어요
-          </AppText>
-          <AppText tone="secondary" variant="label">
-            {error.message}
-          </AppText>
-        </View>
-        <Button variant="secondary" onPress={() => void refetch()}>
-          다시 시도
-        </Button>
-      </Card>
+      <InlineNotice
+        message={error.message}
+        title="정보를 불러오지 못했어요"
+        tone="danger"
+        action={
+          <Button size="compact" variant="ghost" onPress={() => void refetch()}>
+            다시 시도
+          </Button>
+        }
+      />
     );
   }
 
@@ -144,11 +133,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         />
 
         {completeTask.error ? (
-          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-            <AppText tone="danger" variant="label">
-              {completeTask.error.message}
-            </AppText>
-          </View>
+          <InlineNotice message={completeTask.error.message} tone="danger" />
         ) : null}
 
         {executionTasks.length === 0 ? (
@@ -172,45 +157,22 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
       </View>
 
       {feedback ? (
-        <FadeInView
-          accessibilityLiveRegion="polite"
-          duration={motion.duration.normal}
-          style={[
-            styles.feedbackBanner,
-            {
-              backgroundColor:
-                feedback.tone === 'success' ? theme.colors.successSoft : theme.colors.primarySoft,
-            },
-          ]}
-        >
-          <AppText tone={feedback.tone} variant="label" weight="bold">
-            {feedback.message}
-          </AppText>
+        <FadeInView duration={motion.duration.normal}>
+          <InlineNotice message={feedback.message} tone={feedback.tone} />
         </FadeInView>
       ) : null}
 
       {supplementalError ? (
-        <Card
-          style={[
-            styles.supplementalErrorCard,
-            {
-              backgroundColor: theme.colors.warningSoft,
-              borderColor: theme.colors.warning,
-            },
-          ]}
-        >
-          <View style={styles.supplementalErrorCopy}>
-            <AppText tone="warning" variant="label" weight="bold">
-              일부 정보를 불러오지 못했어요
-            </AppText>
-            <AppText tone="secondary" variant="caption">
-              오늘 계획은 계속 사용할 수 있어요. {supplementalError.message}
-            </AppText>
-          </View>
-          <Button variant="ghost" onPress={() => void refetch()}>
-            다시 시도
-          </Button>
-        </Card>
+        <InlineNotice
+          message={`오늘 계획은 계속 사용할 수 있어요. ${supplementalError.message}`}
+          title="일부 정보를 불러오지 못했어요"
+          tone="warning"
+          action={
+            <Button size="compact" variant="ghost" onPress={() => void refetch()}>
+              다시 시도
+            </Button>
+          }
+        />
       ) : null}
 
       {reviewItemCount > 0 ? (
@@ -266,11 +228,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         />
 
         {isCompletedExpanded && reopenTask.error ? (
-          <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
-            <AppText tone="danger" variant="label">
-              {reopenTask.error.message}
-            </AppText>
-          </View>
+          <InlineNotice message={reopenTask.error.message} tone="danger" />
         ) : null}
 
         {isCompletedExpanded && doneTasks.length > 0 ? (
@@ -316,26 +274,6 @@ const styles = StyleSheet.create({
   container: {
     gap: spacing[4],
   },
-  feedbackBanner: {
-    borderRadius: radii.md,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-  },
-  errorCard: {
-    gap: spacing[3],
-  },
-  errorCopy: {
-    gap: spacing[1],
-  },
-  supplementalErrorCard: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-  },
-  supplementalErrorCopy: {
-    flex: 1,
-    gap: spacing[1],
-  },
   taskSection: {
     gap: spacing[2],
   },
@@ -374,10 +312,5 @@ const styles = StyleSheet.create({
   },
   taskList: {
     gap: spacing[1],
-  },
-  inlineError: {
-    borderRadius: radii.md,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
   },
 });
