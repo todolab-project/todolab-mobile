@@ -123,10 +123,11 @@ export function InboxOverview() {
                     showCompletionControl={false}
                     trailing={
                       <IconButton
+                        accessibilityHint="Today 또는 내일로 이동하는 행동을 표시합니다."
                         accessibilityLabel={`${task.title}, 이동 메뉴 ${
                           menuTaskId === task.id ? '닫기' : '열기'
                         }`}
-                        selected={menuTaskId === task.id}
+                        expanded={menuTaskId === task.id}
                         onPress={() =>
                           setMenuTaskId((current) => (current === task.id ? null : task.id))
                         }
@@ -140,6 +141,7 @@ export function InboxOverview() {
                       menuTaskId === task.id ? (
                         <View style={styles.taskActions}>
                           <Button
+                            accessibilityLabel={`${task.title}, Today로 이동`}
                             disabled={isMoving}
                             loading={moveToToday.isPending && moveToToday.variables === task.id}
                             size="compact"
@@ -149,6 +151,7 @@ export function InboxOverview() {
                             Today
                           </Button>
                           <Button
+                            accessibilityLabel={`${task.title}, 내일로 이동`}
                             disabled={isMoving}
                             loading={
                               moveToTomorrow.isPending && moveToTomorrow.variables === task.id

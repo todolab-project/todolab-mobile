@@ -171,10 +171,11 @@ export function CompletedOverview() {
                     completionDisabled={reopenTask.isPending}
                     trailing={
                       <IconButton
+                        accessibilityHint="완료 항목을 다시 여는 행동을 표시합니다."
                         accessibilityLabel={`${task.title}, 완료 항목 메뉴 ${
                           menuTaskId === task.id ? '닫기' : '열기'
                         }`}
-                        selected={menuTaskId === task.id}
+                        expanded={menuTaskId === task.id}
                         onPress={() =>
                           setMenuTaskId((current) => (current === task.id ? null : task.id))
                         }

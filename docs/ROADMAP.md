@@ -496,7 +496,7 @@ type ApiResponse<T> = {
    - [ ] 320px, font scale 1.5, light/dark 실제 화면 비교 검증
 6. 유사 사용성 점검
    - [x] 동일 목적의 추가 버튼, overflow, chevron이 한 화면에서 중복되지 않는지 전 화면 점검
-   - [ ] 눌렀을 때 펼침·이동·완료 중 무엇이 일어나는지 label과 affordance만으로 예측 가능한지 점검
+   - [x] 눌렀을 때 펼침·이동·완료 중 무엇이 일어나는지 label과 affordance만으로 예측 가능한지 점검
    - [ ] 일정과 Task가 같은 checkbox·card 문법을 쓰더라도 시간 약속과 실행 항목의 역할이 혼동되지 않는지 점검
    - [ ] 첫 viewport에서 일정과 최소 한 개의 오늘 Task를 확인할 수 있고 정리 UI가 핵심 목록을 밀어내지 않는지 검증
 

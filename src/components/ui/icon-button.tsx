@@ -8,6 +8,7 @@ type IconButtonProps = Omit<PressableProps, 'accessibilityLabel' | 'children' | 
   accessibilityLabel: string;
   children: ReactNode;
   selected?: boolean;
+  expanded?: boolean;
   style?: ViewStyle;
 };
 
@@ -15,6 +16,7 @@ export function IconButton({
   accessibilityLabel,
   children,
   selected = false,
+  expanded,
   disabled,
   onBlur,
   onFocus,
@@ -30,7 +32,7 @@ export function IconButton({
       {...props}
       accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
-      accessibilityState={{ disabled: isDisabled, selected }}
+      accessibilityState={{ disabled: isDisabled, expanded, selected }}
       disabled={isDisabled}
       hitSlop={4}
       onBlur={(event) => {
@@ -45,7 +47,7 @@ export function IconButton({
         styles.base,
         {
           backgroundColor:
-            pressed || selected ? theme.colors.primarySoft : theme.colors.surfaceMuted,
+            pressed || selected || expanded ? theme.colors.primarySoft : theme.colors.surfaceMuted,
           borderColor: isFocused ? theme.colors.text : 'transparent',
           borderWidth: isFocused ? 2 : 1,
           opacity: isDisabled ? 0.45 : 1,

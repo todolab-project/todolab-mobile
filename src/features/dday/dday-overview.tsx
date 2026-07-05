@@ -198,8 +198,9 @@ function DdayGoalCard({
             {dayLabel}
           </AppText>
           <IconButton
+            accessibilityHint="Today 할 일 추가와 목표 삭제 행동을 표시합니다."
             accessibilityLabel={`${goal.title} 목표 메뉴 ${menuOpen ? '닫기' : '열기'}`}
-            selected={menuOpen}
+            expanded={menuOpen}
             onPress={onToggleMenu}
           >
             <AppText tone="secondary" weight="bold">
