@@ -514,9 +514,9 @@ type ApiResponse<T> = {
    - [x] radius, pill, border 사용 위치를 입력·선택·떠 있는 surface로 제한
    - [ ] PageHeader, section label, date column, checkbox, metadata의 planner 문법 통일
 3. Today weekly planner
-   - [ ] Today 상단에 높이 100–140px의 compact 7일 strip 추가
-   - [ ] 상단은 월·요일·날짜·상태 점만 유지하고 우측 `언젠가`·통계·filter action은 추가하지 않음
-   - [ ] 오늘·선택 날짜, 하루 일정 점, 여러 날 일정 bar를 한 주 안에서 표시
+   - [x] Today 상단에 높이 100–140px의 compact 7일 strip 추가
+   - [x] 상단은 월·요일·날짜·상태 점만 유지하고 우측 `언젠가`·통계·filter action은 추가하지 않음
+   - [x] 오늘 날짜, 하루 일정 점, 여러 날 일정 bar를 한 주 안에서 표시
    - [ ] 주간 strip 아래 정보 순서를 `선택 날짜 일정 → 오늘 Task → 정리 → 완료`로 유지
    - [ ] 주간 정보가 첫 실행 Task를 viewport 밖으로 밀어내지 않도록 preview 수 제한
 4. Calendar monthly planner

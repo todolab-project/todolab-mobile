@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, Platform, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { Screen } from '@/components/ui';
-import { QuickCapture, TodayHeader, TodayOverview, useTodayOverview } from '@/features/today';
+import { QuickCapture, TodayOverview, TodayWeekStrip, useTodayOverview } from '@/features/today';
 import { spacing, useAppTheme } from '@/theme';
 import { toApiLocalDate } from '@/utils';
 
@@ -29,7 +29,7 @@ export default function TodayScreen() {
           ),
         }}
       >
-        <TodayHeader now={now} />
+        <TodayWeekStrip today={today} />
         <TodayOverview date={today} overview={overview} />
       </Screen>
       <KeyboardAvoidingView

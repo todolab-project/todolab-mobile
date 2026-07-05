@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, IconButton, PageHeader, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
-import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
+import { formatDateLabel, isLocalDateString, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
 import { getMonthCalendarDates, getWeekDates, shiftMonth } from './calendar-date';
@@ -18,10 +18,13 @@ type CalendarMode = 'week' | 'month';
 
 export function WeekCalendar() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ date?: string }>();
   const theme = useAppTheme();
   const today = toApiLocalDate();
   const [mode, setMode] = useState<CalendarMode>('week');
-  const [selectedDate, setSelectedDate] = useState<LocalDateString>(today);
+  const [selectedDate, setSelectedDate] = useState<LocalDateString>(
+    params.date && isLocalDateString(params.date) ? params.date : today,
+  );
   const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
   const monthDates = useMemo(() => getMonthCalendarDates(selectedDate), [selectedDate]);
   const rangeTasks = useCalendarRangeTasks(mode === 'week' ? 'WEEK' : 'MONTH', selectedDate);
