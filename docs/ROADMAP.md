@@ -169,14 +169,13 @@ type ApiResponse<T> = {
 - 존재하는 목표의 `GET /api/ddays/{id}`가 HTTP 500을 반환하는 문제 확인
 - `POST /api/ddays/{id}/tasks`가 유효한 Task 요청에도 HTTP 500을 반환하는 문제 확인
 - D-Day 연결 Task의 Today 이동은 반영되지만 응답이 HTTP 500으로 끝나는 문제 확인
-- 검색·필터 구현 전 [`API_SEARCH_FILTER.md`](./API_SEARCH_FILTER.md)의 조회·페이지네이션 계약 확정
-- drag 재정렬 단일 mutation을 위한 [`API_TODAY_REORDER.md`](./API_TODAY_REORDER.md)의 전체 순서 저장 계약 구현
+- 통합 검색 구현 전 [`API_SEARCH_FILTER.md`](./API_SEARCH_FILTER.md)의 관련 날짜와 cursor 계약 구현
 
 현재 백엔드는 인증과 사용자 구분이 없으므로, 실제 다중 사용자 서비스 배포 전에 백엔드 저장소에서 별도 설계와 구현이 필요하다. 이 저장소에는 필요한 계약만 문서화하고 백엔드 코드는 추가하지 않는다.
 
 ## 5. 모바일 정보 구조
 
-하단 탭은 모바일의 실제 사용 빈도를 기준으로 `오늘`, `달력`, `기록함`, `프로필` 네 개로 구성한다.
+하단 탭은 모바일의 실제 사용 빈도를 기준으로 `오늘`, `달력`, `프로필` 세 개로 구성한다. 날짜 없는 기록은 Today의 `정리할 항목`에서 처리한다.
 
 ### Today
 
@@ -549,6 +548,7 @@ type ApiResponse<T> = {
    - [x] 정리할 항목 화면을 Today와 같은 compact section·rule list 문법으로 전면 정리
    - [ ] 과거 Task·일정·완료 기록을 날짜와 키워드로 찾는 통합 검색을 프로필에서 제공
    - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
+   - [x] 통합 검색의 관련 날짜·결과 schema·정렬·cursor 요구사항을 문서화
 8. UI/UX 회귀 점검
    - [ ] 320px·375pt·430dp에서 calendar cell, event bar, `+N` clipping 비교
    - [ ] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
