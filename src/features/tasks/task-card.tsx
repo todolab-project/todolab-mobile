@@ -57,9 +57,8 @@ export function TaskCard({
         {
           backgroundColor: theme.colors.surface,
           borderColor: focusedControl ? theme.colors.primary : theme.colors.border,
-          borderBottomWidth: focusedControl ? 0 : StyleSheet.hairlineWidth,
-          borderRadius: focusedControl ? radii.md : radii.none,
-          borderWidth: focusedControl ? 1 : 0,
+          borderRadius: radii.md,
+          borderWidth: focusedControl ? 1 : StyleSheet.hairlineWidth,
         },
       ]}
     >
@@ -164,6 +163,7 @@ export function TaskCard({
 const styles = StyleSheet.create({
   row: {
     minHeight: 60,
+    overflow: 'hidden',
   },
   content: {
     alignItems: 'center',

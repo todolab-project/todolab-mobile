@@ -3,13 +3,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, FadeInView, ListSkeleton } from '@/components/ui';
-import {
-  ScheduleCard,
-  TaskCard,
-  useCompleteTask,
-  useReopenTask,
-  useReorderTodayTask,
-} from '@/features/tasks';
+import { ScheduleCard, TaskCard, useCompleteTask, useReopenTask } from '@/features/tasks';
 import { motion, radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
@@ -43,7 +37,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   } = overview;
   const completeTask = useCompleteTask(date);
   const reopenTask = useReopenTask(date);
-  const reorderTodayTask = useReorderTodayTask(date);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [isCompletedExpanded, setIsCompletedExpanded] = useState(false);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
@@ -56,17 +49,6 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const showFeedback = (message: string) => {
     setFeedback({ tone: 'success', message });
   };
-  const moveTaskToIndex = async (taskId: number, fromIndex: number, toIndex: number) => {
-    const direction = toIndex < fromIndex ? 'UP' : 'DOWN';
-    const moveCount = Math.abs(toIndex - fromIndex);
-
-    for (let moveIndex = 0; moveIndex < moveCount; moveIndex += 1) {
-      await reorderTodayTask.mutateAsync({ taskId, direction });
-    }
-
-    showFeedback('실행 순서를 옮겼어요.');
-  };
-
   if (isPending) {
     return <ListSkeleton accessibilityLabel="Today 정보를 불러오는 중" />;
   }
@@ -159,10 +141,10 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
           </AppText>
         </View>
 
-        {completeTask.error || reorderTodayTask.error ? (
+        {completeTask.error ? (
           <View style={[styles.inlineError, { backgroundColor: theme.colors.dangerSoft }]}>
             <AppText tone="danger" variant="label">
-              {completeTask.error?.message ?? reorderTodayTask.error?.message}
+              {completeTask.error.message}
             </AppText>
           </View>
         ) : null}
@@ -175,21 +157,12 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         ) : (
           <DraggableTodayTaskList
             tasks={executionTasks}
-            disabled={completeTask.isPending || reorderTodayTask.isPending}
+            disabled={completeTask.isPending}
             completingTaskId={completeTask.isPending ? completeTask.variables : undefined}
             onComplete={(taskId) =>
               completeTask.mutate(taskId, {
                 onSuccess: () => showFeedback('오늘 할 일을 완료했어요.'),
               })
-            }
-            onMove={(taskId, fromIndex, toIndex) =>
-              void moveTaskToIndex(taskId, fromIndex, toIndex)
-            }
-            onMoveOneStep={(taskId, direction) =>
-              reorderTodayTask.mutate(
-                { taskId, direction },
-                { onSuccess: () => showFeedback('실행 순서를 옮겼어요.') },
-              )
             }
             onOpen={openTask}
           />
@@ -375,7 +348,7 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   scheduleList: {
-    gap: spacing[0],
+    gap: spacing[1],
   },
   taskSectionHeading: {
     alignItems: 'center',
@@ -422,7 +395,7 @@ const styles = StyleSheet.create({
     minWidth: 56,
   },
   taskList: {
-    gap: spacing[0],
+    gap: spacing[1],
   },
   inlineError: {
     borderRadius: radii.md,

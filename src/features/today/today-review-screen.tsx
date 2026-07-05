@@ -45,7 +45,11 @@ export function TodayReviewScreen() {
         title="정리할 항목"
         description="미뤄 둔 기록을 오늘의 실행 목록으로 정리해 보세요."
         leading={
-          <IconButton accessibilityLabel="Today 화면으로 돌아가기" onPress={router.back}>
+          <IconButton
+            accessibilityLabel="Today 화면으로 돌아가기"
+            onPress={router.back}
+            style={styles.backButton}
+          >
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
               size={20}
@@ -108,7 +112,7 @@ export function TodayReviewScreen() {
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
                       size="compact"
-                      variant="secondary"
+                      variant="ghost"
                       onPress={() => moveTask(task.id, '지난 미완료를 오늘 할 일로 옮겼어요.')}
                     >
                       오늘로
@@ -137,7 +141,7 @@ export function TodayReviewScreen() {
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
                       size="compact"
-                      variant="secondary"
+                      variant="ghost"
                       onPress={() => moveTask(task.id, '추천 항목을 오늘 할 일에 추가했어요.')}
                     >
                       추가
@@ -198,7 +202,7 @@ function ReviewSection({ title, description, count, children }: ReviewSectionPro
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[5],
+    gap: spacing[4],
     paddingTop: spacing[4],
   },
   feedback: {
@@ -206,17 +210,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },
+  backButton: {
+    backgroundColor: 'transparent',
+  },
   errorCard: {
     gap: spacing[3],
   },
   sections: {
-    gap: spacing[6],
+    gap: spacing[4],
   },
   section: {
-    gap: spacing[3],
+    gap: spacing[2],
   },
   list: {
-    gap: spacing[0],
+    gap: spacing[1],
   },
   inboxRow: {
     alignItems: 'center',
