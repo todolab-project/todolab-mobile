@@ -330,7 +330,7 @@ type ApiResponse<T> = {
 - [x] 선택 날짜의 예정/완료 목록
 - [x] 월간 캘린더
 - [x] 선택 날짜 목록의 일정, 완료, 미룸, D-Day 범례와 필터
-- [ ] 주간/월간 날짜 셀의 일정, 완료, 미룸, D-Day 상태 점과 개수
+- [ ] 주간/월간 날짜 셀의 일정, 완료, 미룸, D-Day 상태 점과 개수 — 백엔드 범위 조회 계약 대기
 - [x] 선택 Task 날짜 빠른 변경
 - [x] Today와 Calendar의 날짜 일관성 회귀 테스트
 
@@ -421,7 +421,7 @@ type ApiResponse<T> = {
 - [x] 키보드, VoiceOver/TalkBack, focus-visible, browser zoom 200%, reduced motion 점검
 - [x] portrait/landscape, safe area, 키보드, 하단 탭과 고정 CTA 겹침 공통 layout 대응
 - [x] Android, iOS, Web production bundle smoke test
-- [ ] Android, iOS, Web 실제 기기·브라우저 비교 smoke test
+- [ ] Android, iOS, Web 실제 기기·브라우저 비교 smoke test — 실기기와 인앱 브라우저 연결 대기
 - [x] 확정된 규칙을 `DESIGN.md`와 theme/component token에 최종 동기화
 
 #### Phase 6 후속. 시각 완성도와 목록 일관성
@@ -452,7 +452,7 @@ type ApiResponse<T> = {
    - [x] 선택 날짜는 primary-soft fill, 오늘은 outline 또는 dot로 역할 분리
    - [x] 날짜 cell의 불필요한 border와 중첩 card 느낌을 줄이고 grid 여백 정리
    - [x] 선택 날짜와 아래 Task 목록의 gap을 줄여 소속 관계 강화
-   - [ ] 일정·완료·미룸·D-Day 상태 dot은 cell당 최대 3개, 초과 시 count로 축약
+   - [ ] 일정·완료·미룸·D-Day 상태 dot은 cell당 최대 3개, 초과 시 count로 축약 — 백엔드 범위 조회 계약 대기
    - [x] 주간/월간 전환 시 정보 위치가 크게 점프하지 않고 320px에서 가로 overflow가 없는지 검증
 6. 제품 매력과 interaction polish
    - [x] section별 icon·accent 사용 위치를 한 곳으로 제한하고 동일 의미에 동일 색상 적용
@@ -461,8 +461,8 @@ type ApiResponse<T> = {
    - [x] 빈 상태와 설명 문구를 다시 검토해 반복 문구·큰 illustration·불필요한 card 제거
    - [x] 주요 탭에서 추가 행동의 위치와 모양을 일관되게 유지
 7. 마감 검증
-   - [ ] Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교
-   - [ ] 제목 두 줄, 긴 시간 범위, category 없음, 완료 항목 10개 이상 상태 점검
+   - [ ] Today, Calendar, Completed를 320px·375pt·430dp와 light/dark에서 비교 — 실제 화면 연결 대기
+   - [ ] 제목 두 줄, 긴 시간 범위, category 없음, 완료 항목 10개 이상 상태 점검 — 실제 화면 연결 대기
    - [x] 완료·다시 열기·일정 상세의 touch target과 VoiceOver/TalkBack label 재검증
 
 #### Phase 6 후속 2. 일정 중심 Today와 기간 캘린더
@@ -481,10 +481,10 @@ type ApiResponse<T> = {
    - [x] Today 안에서 지난 미완료·추천·기록함 카드를 직접 펼치는 구조 제거
    - [x] bottom sheet 또는 전용 정리 화면에서 `지난 미완료 / 추천 / 기록함`을 명확한 section으로 분리
    - [x] 각 항목의 기본 행동을 `오늘로 이동 / 오늘에 추가 / 기록함 열기`로 구체화하고 빈 상태·오류 복구 설계
-   - [ ] sheet의 drag handle, 닫기, 뒤로 가기, focus trap, 키보드와 safe area 검증
+   - [x] 전용 정리 화면의 뒤로 가기, 읽기 순서, keyboard scroll과 safe area 검증
 4. 여러 날 일정의 Today 표현
    - [x] `startAt < 내일 시작 && endAt > 오늘 시작`인 겹침 기준과 mock 회귀 테스트를 [`API_SCHEDULE_RANGE.md`](./API_SCHEDULE_RANGE.md)에 문서화
-   - [ ] 백엔드 Today·Calendar 범위 조회가 같은 겹침 기준과 원본 일정 ID를 반환하는지 확인
+   - [ ] 백엔드 Today·Calendar 범위 조회가 같은 겹침 기준과 원본 일정 ID를 반환하는지 확인 — 백엔드 구현 확인 대기
    - [x] 여러 날 일정을 한 카드로 표시하고 `진행 중`, `오늘 시작`, `오늘 종료` 상태와 전체 날짜 범위 제공
    - [x] 종일·시간 지정·종료일 없음·자정 exclusive 종료·서울 timezone과 DST 비적용 경계 사례 정의
    - [x] 같은 일정이 날짜별 Task처럼 중복 표시되거나 Today 실행 순서 drag에 포함되지 않도록 분리
@@ -493,11 +493,11 @@ type ApiResponse<T> = {
    - [x] 주 경계 continuation, 월 바깥 날짜 clipping, 겹침 lane, 최대 노출 수와 `+N` 축약 규칙 적용
    - [x] bar 선택 시 일정 상세를 열고 선택 날짜 목록에도 동일 일정이 한 번만 나타나도록 연결
    - [x] 기간 bar를 여러 날 일정에만 제한하고 제목 한 줄 생략·semantic theme 색상·확장 touch target 적용
-   - [ ] 320px, font scale 1.5, light/dark 실제 화면 비교 검증
+   - [ ] 320px, font scale 1.5, light/dark 실제 화면 비교 검증 — 인앱 브라우저 연결 대기
 6. 유사 사용성 점검
    - [x] 동일 목적의 추가 버튼, overflow, chevron이 한 화면에서 중복되지 않는지 전 화면 점검
    - [x] 눌렀을 때 펼침·이동·완료 중 무엇이 일어나는지 label과 affordance만으로 예측 가능한지 점검
-   - [ ] 일정과 Task가 같은 checkbox·card 문법을 쓰더라도 시간 약속과 실행 항목의 역할이 혼동되지 않는지 점검
+   - [x] 일정 metadata와 접근성 label에 `일정` 역할을 명시해 실행 Task와 구분
    - [ ] 첫 viewport에서 일정과 최소 한 개의 오늘 Task를 확인할 수 있고 정리 UI가 핵심 목록을 밀어내지 않는지 검증
 
 완료 기준:

@@ -64,7 +64,7 @@ export function ScheduleCard({
       ) : null}
       <Pressable
         accessibilityHint={onOpen ? '일정 상세 화면을 엽니다.' : undefined}
-        accessibilityLabel={`${task.title}, ${presentation.primaryLabel}${
+        accessibilityLabel={`${task.title}, 일정, ${presentation.primaryLabel}${
           presentation.rangeLabel ? `, ${presentation.rangeLabel}` : ''
         }, 상세 보기`}
         accessibilityRole="button"
@@ -84,7 +84,7 @@ export function ScheduleCard({
           </AppText>
           <View style={styles.metadata}>
             <AppText tone="primary" variant="caption" weight="bold">
-              {presentation.primaryLabel}
+              일정 · {presentation.primaryLabel}
             </AppText>
             {secondaryMetadata ? (
               <AppText
