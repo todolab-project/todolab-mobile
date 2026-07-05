@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import {
   AppText,
@@ -95,11 +95,7 @@ export function TodayReviewScreen() {
       ) : (
         <View style={styles.sections}>
           {overview.staleTasks.length > 0 ? (
-            <ReviewSection
-              title="지난 미완료"
-              description="놓친 할 일을 다시 확인해요."
-              count={overview.staleTasks.length}
-            >
+            <ReviewSection title="지난 미완료" count={overview.staleTasks.length}>
               {overview.staleTasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -107,16 +103,12 @@ export function TodayReviewScreen() {
                   showCompletionControl={false}
                   onOpen={() => openTask(task.id)}
                   trailing={
-                    <Button
-                      accessibilityLabel={`${task.title}, 오늘 할 일로 이동`}
+                    <ReviewMoveAction
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
-                      size="compact"
-                      variant="ghost"
+                      label={`${task.title}, 오늘 할 일로 이동`}
                       onPress={() => moveTask(task.id, '지난 미완료를 오늘 할 일로 옮겼어요.')}
-                    >
-                      오늘로
-                    </Button>
+                    />
                   }
                 />
               ))}
@@ -124,11 +116,7 @@ export function TodayReviewScreen() {
           ) : null}
 
           {overview.recommendations.length > 0 ? (
-            <ReviewSection
-              title="추천"
-              description="오늘 처리하기 좋은 항목이에요."
-              count={overview.recommendations.length}
-            >
+            <ReviewSection title="추천" count={overview.recommendations.length}>
               {overview.recommendations.map(({ task }) => (
                 <TaskCard
                   key={task.id}
@@ -136,16 +124,12 @@ export function TodayReviewScreen() {
                   showCompletionControl={false}
                   onOpen={() => openTask(task.id)}
                   trailing={
-                    <Button
-                      accessibilityLabel={`${task.title}, 오늘 할 일에 추가`}
+                    <ReviewMoveAction
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
-                      size="compact"
-                      variant="ghost"
+                      label={`${task.title}, 오늘 할 일에 추가`}
                       onPress={() => moveTask(task.id, '추천 항목을 오늘 할 일에 추가했어요.')}
-                    >
-                      추가
-                    </Button>
+                    />
                   }
                 />
               ))}
@@ -153,29 +137,23 @@ export function TodayReviewScreen() {
           ) : null}
 
           {overview.inboxTasks.length > 0 ? (
-            <ReviewSection
-              title="기록함"
-              description="날짜를 정하지 않은 기록이에요."
-              count={overview.inboxTasks.length}
-            >
-              <Pressable
-                accessibilityHint="기록함 화면을 엽니다."
-                accessibilityLabel={`기록함 항목 ${overview.inboxTasks.length}개 정리하기`}
-                accessibilityRole="button"
-                onPress={() => router.push('/inbox')}
-                style={({ pressed }) => [
-                  styles.inboxRow,
-                  {
-                    backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-                    borderColor: theme.colors.border,
-                  },
-                ]}
-              >
-                <AppText weight="medium">기록함에서 날짜와 순서를 정리하세요.</AppText>
-                <AppText tone="secondary" weight="bold">
-                  열기 ›
-                </AppText>
-              </Pressable>
+            <ReviewSection title="기록함" count={overview.inboxTasks.length}>
+              {overview.inboxTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  showCompletionControl={false}
+                  onOpen={() => openTask(task.id)}
+                  trailing={
+                    <ReviewMoveAction
+                      disabled={moveToToday.isPending}
+                      loading={moveToToday.isPending && moveToToday.variables === task.id}
+                      label={`${task.title}, 오늘 할 일에 추가`}
+                      onPress={() => moveTask(task.id, '기록을 오늘 할 일에 추가했어요.')}
+                    />
+                  }
+                />
+              ))}
             </ReviewSection>
           ) : null}
         </View>
@@ -186,17 +164,53 @@ export function TodayReviewScreen() {
 
 type ReviewSectionProps = {
   title: string;
-  description: string;
   count: number;
   children: ReactNode;
 };
 
-function ReviewSection({ title, description, count, children }: ReviewSectionProps) {
+function ReviewSection({ title, count, children }: ReviewSectionProps) {
   return (
     <View style={styles.section}>
-      <SectionHeader title={title} description={description} count={count} />
+      <SectionHeader title={title} count={count} />
       <View style={styles.list}>{children}</View>
     </View>
+  );
+}
+
+type ReviewMoveActionProps = {
+  disabled: boolean;
+  loading: boolean;
+  label: string;
+  onPress: () => void;
+};
+
+function ReviewMoveAction({ disabled, loading, label, onPress }: ReviewMoveActionProps) {
+  const theme = useAppTheme();
+
+  return (
+    <Pressable
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ busy: loading, disabled }}
+      disabled={disabled}
+      hitSlop={4}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.moveAction,
+        {
+          backgroundColor: pressed ? theme.colors.highlightBlue : 'transparent',
+          opacity: disabled && !loading ? 0.45 : 1,
+        },
+      ]}
+    >
+      {loading ? (
+        <ActivityIndicator color={theme.colors.primary} size="small" />
+      ) : (
+        <AppText tone="primary" variant="caption" weight="bold">
+          + 오늘
+        </AppText>
+      )}
+    </Pressable>
   );
 }
 
@@ -225,15 +239,12 @@ const styles = StyleSheet.create({
   list: {
     gap: spacing[1],
   },
-  inboxRow: {
+  moveAction: {
     alignItems: 'center',
-    borderRadius: radii.md,
-    borderWidth: 1,
-    flexDirection: 'row',
-    gap: spacing[3],
-    justifyContent: 'space-between',
-    minHeight: 60,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
+    alignSelf: 'stretch',
+    borderRadius: radii.sm,
+    justifyContent: 'center',
+    minWidth: 64,
+    paddingHorizontal: spacing[2],
   },
 });
