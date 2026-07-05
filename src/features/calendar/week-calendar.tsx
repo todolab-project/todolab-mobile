@@ -278,7 +278,7 @@ function CalendarDateButton({
         style,
         {
           backgroundColor:
-            selected || pressed || isFocused ? theme.colors.primarySoft : 'transparent',
+            selected || pressed || isFocused ? theme.colors.highlightBlue : 'transparent',
           borderColor: isFocused || (isToday && !selected) ? theme.colors.primary : 'transparent',
         },
       ]}

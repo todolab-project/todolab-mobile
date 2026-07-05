@@ -30,7 +30,7 @@ export function CalendarPeriodBars({ dates, tasks, onOpen }: CalendarPeriodBarsP
           style={({ pressed }) => [
             styles.bar,
             {
-              backgroundColor: theme.colors.primarySoft,
+              backgroundColor: theme.colors.highlightBlue,
               left: `${(segment.startIndex / dates.length) * 100}%`,
               opacity: pressed ? 0.7 : 1,
               top: segment.lane * 24,

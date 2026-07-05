@@ -38,6 +38,14 @@ describe.each([
     expect(contrastRatio(theme.colors.text, theme.colors.background)).toBeGreaterThanOrEqual(4.5);
   });
 
+  it.each([
+    ['success', 'successSoft'],
+    ['warning', 'warningSoft'],
+    ['danger', 'dangerSoft'],
+  ] as const)('%s text가 highlighter surface에서 4.5:1 이상이다', (tone, surface) => {
+    expect(contrastRatio(theme.colors[tone], theme.colors[surface])).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('rule과 highlighter token이 theme에 정의되어 있다', () => {
     expect(theme.colors.rule).toBeTruthy();
     expect(theme.colors.highlightSage).toBeTruthy();
