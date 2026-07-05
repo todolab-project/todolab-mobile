@@ -37,10 +37,6 @@ export function WeekCalendar() {
     }
   };
 
-  const moveToToday = () => {
-    setSelectedDate(today);
-  };
-
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader title="달력" />
@@ -64,17 +60,6 @@ export function WeekCalendar() {
               name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
               size={20}
               tintColor={theme.colors.textSecondary}
-            />
-          </IconButton>
-          <IconButton
-            accessibilityLabel="오늘로 이동"
-            disabled={selectedDate === today}
-            onPress={moveToToday}
-          >
-            <SymbolView
-              name={{ ios: 'calendar', android: 'today', web: 'today' }}
-              size={18}
-              tintColor={selectedDate === today ? theme.colors.textMuted : theme.colors.primary}
             />
           </IconButton>
         </View>
@@ -132,8 +117,31 @@ function MonthDateGrid({
       </View>
       {Array.from({ length: 6 }, (_, weekIndex) =>
         dates.slice(weekIndex * 7, weekIndex * 7 + 7),
-      ).map((weekDates) => (
-        <View key={weekDates[0]}>
+      ).map((weekDates, weekIndex) => (
+        <View
+          key={weekDates[0]}
+          style={[
+            styles.monthWeek,
+            {
+              borderBottomColor: theme.colors.rule,
+              borderBottomWidth: weekIndex < 5 ? StyleSheet.hairlineWidth : 0,
+            },
+          ]}
+        >
+          <View style={styles.dayColumnRules}>
+            {Array.from({ length: 6 }, (_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.dayColumnRule,
+                  {
+                    backgroundColor: theme.colors.rule,
+                    left: `${((index + 1) / 7) * 100}%`,
+                  },
+                ]}
+              />
+            ))}
+          </View>
           <View style={styles.monthGrid}>
             {weekDates.map((date) => (
               <CalendarDateButton
@@ -148,18 +156,22 @@ function MonthDateGrid({
               />
             ))}
           </View>
-          <CalendarSingleDayLabels
-            dates={weekDates}
-            tasks={tasks}
-            onOpen={onOpenTask}
-            onSelectDate={onSelect}
-          />
-          <CalendarPeriodBars
-            dates={weekDates}
-            tasks={tasks}
-            onOpen={onOpenTask}
-            onSelectDate={onSelect}
-          />
+          <View style={styles.singleDayLane}>
+            <CalendarSingleDayLabels
+              dates={weekDates}
+              tasks={tasks}
+              onOpen={onOpenTask}
+              onSelectDate={onSelect}
+            />
+          </View>
+          <View style={styles.periodLanes}>
+            <CalendarPeriodBars
+              dates={weekDates}
+              tasks={tasks}
+              onOpen={onOpenTask}
+              onSelectDate={onSelect}
+            />
+          </View>
         </View>
       ))}
     </View>
@@ -284,13 +296,38 @@ const styles = StyleSheet.create({
   },
   monthGrid: {
     flexDirection: 'row',
-    paddingHorizontal: spacing[2],
     paddingTop: spacing[1],
+  },
+  monthWeek: {
+    marginHorizontal: spacing[2],
+    minHeight: 120,
+    position: 'relative',
+  },
+  dayColumnRules: {
+    bottom: 0,
+    left: 0,
+    opacity: 0.35,
+    pointerEvents: 'none',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  dayColumnRule: {
+    bottom: 0,
+    position: 'absolute',
+    top: 0,
+    width: StyleSheet.hairlineWidth,
   },
   monthDayButton: {
     minHeight: 48,
     paddingVertical: spacing[1],
     width: '14.285714%',
+  },
+  singleDayLane: {
+    minHeight: 24,
+  },
+  periodLanes: {
+    minHeight: 48,
   },
   todayDot: {
     borderRadius: radii.full,

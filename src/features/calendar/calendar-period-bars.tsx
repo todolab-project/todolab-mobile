@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
-import { doesScheduleOverlapDate, shiftLocalDate } from '@/utils';
+import { doesScheduleOverlapDate, formatTimeLabel, shiftLocalDate } from '@/utils';
 
 type CalendarPeriodBarsProps = {
   dates: LocalDateString[];
@@ -47,7 +47,7 @@ export function CalendarSingleDayLabels({
                 ]}
               >
                 <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
-                  {task.title}
+                  {getCalendarSingleDayLabel(task)}
                 </AppText>
               </Pressable>
             ) : null}
@@ -84,7 +84,7 @@ export function CalendarPeriodBars({
   if (layout.segments.length === 0) return null;
 
   return (
-    <View style={[styles.container, layout.overflowCount > 0 && styles.containerWithOverflow]}>
+    <View style={styles.container}>
       {layout.segments.map((segment) => (
         <Pressable
           accessibilityHint="일정 상세 화면을 엽니다."
@@ -143,6 +143,12 @@ export function buildCalendarSingleDayLabels(
         doesScheduleOverlapDate(task, date),
     ),
   );
+}
+
+export function getCalendarSingleDayLabel(task: TaskResponse) {
+  if (task.allDay || !task.startAt) return task.title;
+
+  return `${formatTimeLabel(task.startAt)} ${task.title}`;
 }
 
 export function layoutCalendarPeriodSegments(
@@ -226,7 +232,6 @@ const styles = StyleSheet.create({
   singleDayRow: {
     flexDirection: 'row',
     minHeight: 24,
-    paddingHorizontal: spacing[2],
   },
   singleDayCell: {
     alignItems: 'flex-start',
@@ -242,11 +247,7 @@ const styles = StyleSheet.create({
   },
   container: {
     height: 48,
-    marginHorizontal: spacing[1],
     position: 'relative',
-  },
-  containerWithOverflow: {
-    height: 68,
   },
   bar: {
     borderRadius: radii.sm,

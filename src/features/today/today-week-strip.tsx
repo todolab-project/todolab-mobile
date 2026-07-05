@@ -3,7 +3,10 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
 import { getWeekDates } from '@/features/calendar/calendar-date';
-import { CalendarPeriodBars } from '@/features/calendar/calendar-period-bars';
+import {
+  CalendarPeriodBars,
+  CalendarSingleDayLabels,
+} from '@/features/calendar/calendar-period-bars';
 import { useCalendarRangeTasks } from '@/features/calendar/use-calendar-range-tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
@@ -82,6 +85,17 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
           );
         })}
       </View>
+      <CalendarSingleDayLabels
+        dates={dates}
+        tasks={schedules}
+        onOpen={(taskId) =>
+          router.push({
+            pathname: '/tasks/[taskId]',
+            params: { taskId: String(taskId) },
+          })
+        }
+        onSelectDate={openCalendarDate}
+      />
       <CalendarPeriodBars
         dates={dates}
         tasks={schedules}

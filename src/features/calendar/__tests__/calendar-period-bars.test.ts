@@ -3,6 +3,7 @@ import type { TaskResponse } from '@/types';
 import {
   buildCalendarPeriodSegments,
   buildCalendarSingleDayLabels,
+  getCalendarSingleDayLabel,
   layoutCalendarPeriodSegments,
 } from '../calendar-period-bars';
 
@@ -127,6 +128,18 @@ describe('buildCalendarSingleDayLabels', () => {
       [],
       [],
     ]);
+  });
+
+  it('시간이 있는 하루 일정은 달력 label에 시작 시간을 함께 표시한다', () => {
+    const timed = {
+      ...schedule,
+      title: '백엔드 회의',
+      startAt: '2026-07-09T14:00:00',
+      endAt: '2026-07-09T14:30:00',
+    } satisfies TaskResponse;
+
+    expect(getCalendarSingleDayLabel(timed)).toBe('14:00 백엔드 회의');
+    expect(getCalendarSingleDayLabel({ ...timed, allDay: true })).toBe('백엔드 회의');
   });
 
   it('실행 Task는 달력 일정 label에서 제외한다', () => {
