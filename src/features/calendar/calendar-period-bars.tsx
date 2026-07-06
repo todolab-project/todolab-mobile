@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
@@ -19,6 +20,7 @@ export function CalendarSingleDayLabels({
   onSelectDate,
 }: CalendarPeriodBarsProps) {
   const theme = useAppTheme();
+  const [focusedItem, setFocusedItem] = useState<string | null>(null);
   const labels = buildCalendarSingleDayLabels(tasks, dates);
 
   if (labels.every((items) => items.length === 0)) return null;
@@ -36,12 +38,16 @@ export function CalendarSingleDayLabels({
                 accessibilityHint="일정 상세 화면을 엽니다."
                 accessibilityLabel={`${task.title}, 하루 일정 상세 보기`}
                 accessibilityRole="button"
-                hitSlop={6}
+                hitSlop={14}
+                onBlur={() => setFocusedItem(null)}
+                onFocus={() => setFocusedItem(`${date}-${task.id}`)}
                 onPress={() => onOpen(task.id)}
                 style={({ pressed }) => [
                   styles.singleDayLabel,
                   {
                     backgroundColor: theme.colors.highlightAmber,
+                    borderColor:
+                      focusedItem === `${date}-${task.id}` ? theme.colors.primary : 'transparent',
                     opacity: pressed ? 0.7 : 1,
                   },
                 ]}
@@ -56,8 +62,17 @@ export function CalendarSingleDayLabels({
                 accessibilityLabel={`${formatOverflowDate(date)} 하루 일정 ${items.length - 1}개 더 있음`}
                 accessibilityHint="이 날짜의 전체 일정 목록을 엽니다."
                 accessibilityRole="button"
-                hitSlop={6}
+                hitSlop={14}
+                onBlur={() => setFocusedItem(null)}
+                onFocus={() => setFocusedItem(`${date}-overflow`)}
                 onPress={() => onSelectDate?.(date)}
+                style={[
+                  styles.singleDayOverflow,
+                  {
+                    borderColor:
+                      focusedItem === `${date}-overflow` ? theme.colors.primary : 'transparent',
+                  },
+                ]}
               >
                 <AppText tone="muted" variant="caption" weight="semibold">
                   +{items.length - 1}
@@ -78,6 +93,7 @@ export function CalendarPeriodBars({
   onSelectDate,
 }: CalendarPeriodBarsProps) {
   const theme = useAppTheme();
+  const [focusedItem, setFocusedItem] = useState<string | null>(null);
   const layout = layoutCalendarPeriodSegments(tasks, dates);
   const overflowDate = dates[layout.overflowSegments[0]?.startIndex ?? 0];
 
@@ -85,42 +101,56 @@ export function CalendarPeriodBars({
 
   return (
     <View style={styles.container}>
-      {layout.segments.map((segment) => (
-        <Pressable
-          accessibilityHint="일정 상세 화면을 엽니다."
-          accessibilityLabel={`${segment.task.title}, 기간 일정 상세 보기`}
-          accessibilityRole="button"
-          hitSlop={12}
-          key={`${segment.task.id}-${segment.lane}`}
-          onPress={() => onOpen(segment.task.id)}
-          style={({ pressed }) => [
-            styles.bar,
-            {
-              backgroundColor: theme.colors.highlightSage,
-              left: `${(segment.startIndex / dates.length) * 100}%`,
-              opacity: pressed ? 0.7 : 1,
-              top: segment.lane * 24,
-              width: `${((segment.endIndex - segment.startIndex + 1) / dates.length) * 100}%`,
-            },
-          ]}
-        >
-          <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
-            {segment.continuesBefore ? '‹ ' : ''}
-            {segment.task.title}
-            {segment.continuesAfter ? ' ›' : ''}
-          </AppText>
-        </Pressable>
-      ))}
+      {layout.segments.map((segment) => {
+        const segmentKey = `${segment.task.id}-${segment.lane}`;
+
+        return (
+          <Pressable
+            accessibilityHint="일정 상세 화면을 엽니다."
+            accessibilityLabel={`${segment.task.title}, 기간 일정 상세 보기`}
+            accessibilityRole="button"
+            hitSlop={12}
+            key={segmentKey}
+            onBlur={() => setFocusedItem(null)}
+            onFocus={() => setFocusedItem(segmentKey)}
+            onPress={() => onOpen(segment.task.id)}
+            style={({ pressed }) => [
+              styles.bar,
+              {
+                backgroundColor: theme.colors.highlightSage,
+                borderColor: focusedItem === segmentKey ? theme.colors.primary : 'transparent',
+                left: `${(segment.startIndex / dates.length) * 100}%`,
+                opacity: pressed ? 0.7 : 1,
+                top: segment.lane * 24,
+                width: `${((segment.endIndex - segment.startIndex + 1) / dates.length) * 100}%`,
+              },
+            ]}
+          >
+            <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
+              {segment.continuesBefore ? '‹ ' : ''}
+              {segment.task.title}
+              {segment.continuesAfter ? ' ›' : ''}
+            </AppText>
+          </Pressable>
+        );
+      })}
       {layout.overflowCount > 0 ? (
         <Pressable
           accessibilityLabel={`기간 일정 ${layout.overflowCount}개 더 있음`}
           accessibilityHint="해당 날짜의 전체 일정 목록을 엽니다."
           accessibilityRole="button"
-          hitSlop={8}
+          hitSlop={14}
+          onBlur={() => setFocusedItem(null)}
+          onFocus={() => setFocusedItem('period-overflow')}
           onPress={() => {
             if (overflowDate) onSelectDate?.(overflowDate);
           }}
-          style={styles.overflow}
+          style={[
+            styles.overflow,
+            {
+              borderColor: focusedItem === 'period-overflow' ? theme.colors.primary : 'transparent',
+            },
+          ]}
         >
           <AppText align="right" tone="secondary" variant="caption" weight="semibold">
             +{layout.overflowCount}
@@ -241,9 +271,14 @@ const styles = StyleSheet.create({
   },
   singleDayLabel: {
     borderRadius: radii.sm,
+    borderWidth: 1,
     flex: 1,
     minWidth: 0,
     paddingHorizontal: 3,
+  },
+  singleDayOverflow: {
+    borderRadius: radii.sm,
+    borderWidth: 1,
   },
   container: {
     height: 48,
@@ -251,6 +286,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     borderRadius: radii.sm,
+    borderWidth: 1,
     height: 20,
     justifyContent: 'center',
     overflow: 'hidden',
@@ -258,6 +294,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   overflow: {
+    borderRadius: radii.sm,
+    borderWidth: 1,
     bottom: 0,
     position: 'absolute',
     right: spacing[1],

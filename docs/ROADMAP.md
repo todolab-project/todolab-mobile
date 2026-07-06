@@ -576,6 +576,7 @@ type ApiResponse<T> = {
    - [x] Today 주간 strip의 일정 label과 중복되는 일정 존재 dot 제거
    - [x] Calendar의 today dot은 일정 표시가 아닌 현재 날짜 표시로 역할을 제한
    - [x] warm paper background를 밝게 조정하고 pastel marker에 얇은 semantic outline 추가
+   - [x] Calendar의 작은 일정 label·기간 bar·`+N`에 44pt 터치 범위와 keyboard focus outline 적용
    - [ ] 320px·375pt·430dp에서 calendar cell, event bar, `+N` clipping 비교
    - [x] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
    - [ ] light/dark와 font scale 1.5에서 hairline 대비와 텍스트 생략 상태 확인
