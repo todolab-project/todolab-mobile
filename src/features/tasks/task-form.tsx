@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
 
-import { AppText, Button, Card } from '@/components/ui';
+import { AppText, Button, Card, InlineNotice } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse, TaskType, TaskUpsertRequest } from '@/types';
 import { taskLimits } from '@/types';
@@ -56,7 +56,6 @@ export function TaskForm({
         )
       : false,
   );
-  const message = validationMessage ?? errorMessage;
   const titleLength = values.title.trim().length;
   const canSubmit = titleLength > 0 && !isSubmitting;
   const canSetAllDay = Boolean(initialTask?.startAt);
@@ -249,11 +248,13 @@ export function TaskForm({
           </View>
         ) : null}
 
-        {message ? (
+        {validationMessage ? (
           <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-            {message}
+            {validationMessage}
           </AppText>
         ) : null}
+
+        {errorMessage ? <InlineNotice message={errorMessage} tone="danger" /> : null}
       </Card>
 
       <View style={styles.actions}>
