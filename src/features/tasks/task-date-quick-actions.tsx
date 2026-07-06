@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, SectionHeader } from '@/components/ui';
-import { spacing, useAppTheme, useMobileLayout } from '@/theme';
+import { Button, Card, InlineNotice, SectionHeader } from '@/components/ui';
+import { spacing, useMobileLayout } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
@@ -13,7 +13,6 @@ type TaskDateQuickActionsProps = {
 };
 
 export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
-  const theme = useAppTheme();
   const { isCompact } = useMobileLayout();
   const changeTaskDate = useChangeTaskDate();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -85,18 +84,9 @@ export function TaskDateQuickActions({ task }: TaskDateQuickActionsProps) {
       </View>
 
       {changeTaskDate.error ? (
-        <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-          {changeTaskDate.error.message}
-        </AppText>
+        <InlineNotice message={changeTaskDate.error.message} tone="danger" />
       ) : feedback ? (
-        <View
-          accessibilityLiveRegion="polite"
-          style={[styles.feedback, { backgroundColor: theme.colors.successSoft }]}
-        >
-          <AppText tone="success" variant="caption" weight="semibold">
-            {feedback}
-          </AppText>
-        </View>
+        <InlineNotice message={feedback} tone="success" />
       ) : null}
     </Card>
   );
@@ -118,9 +108,5 @@ const styles = StyleSheet.create({
   compactActionButton: {
     flexGrow: 1,
     minWidth: 72,
-  },
-  feedback: {
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
   },
 });
