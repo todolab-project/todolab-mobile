@@ -47,6 +47,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   const reopenTask = useReopenTask(date);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [isCompletedExpanded, setIsCompletedExpanded] = useState(false);
+  const [isReviewFocused, setIsReviewFocused] = useState(false);
   const { scheduleTasks, executionTasks } = splitTodayTasks(todayTasks);
   const reviewItemCount = staleTasks.length + recommendations.length + inboxTasks.length;
   const sortedScheduleTasks = [...scheduleTasks].sort(compareScheduleTasks);
@@ -183,12 +184,15 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
             accessibilityHint="지난 미완료, 추천, 기록함을 정리하는 화면을 엽니다."
             accessibilityLabel={`정리할 항목 ${reviewItemCount}개`}
             accessibilityRole="button"
+            onBlur={() => setIsReviewFocused(false)}
+            onFocus={() => setIsReviewFocused(true)}
             onPress={() => router.push('/today/review')}
             style={({ pressed }) => [
               styles.reviewRow,
               {
                 backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-                borderColor: theme.colors.border,
+                borderColor: isReviewFocused ? theme.colors.primary : theme.colors.border,
+                borderWidth: isReviewFocused ? 2 : 1,
               },
             ]}
           >

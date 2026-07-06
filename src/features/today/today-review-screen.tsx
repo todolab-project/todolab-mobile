@@ -188,6 +188,7 @@ type ReviewMoveActionProps = {
 
 function ReviewMoveAction({ disabled, loading, label, onPress }: ReviewMoveActionProps) {
   const theme = useAppTheme();
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <Pressable
@@ -196,11 +197,15 @@ function ReviewMoveAction({ disabled, loading, label, onPress }: ReviewMoveActio
       accessibilityState={{ busy: loading, disabled }}
       disabled={disabled}
       hitSlop={4}
+      onBlur={() => setIsFocused(false)}
+      onFocus={() => setIsFocused(true)}
       onPress={onPress}
       style={({ pressed }) => [
         styles.moveAction,
         {
           backgroundColor: pressed ? theme.colors.highlightBlue : 'transparent',
+          borderColor: isFocused ? theme.colors.primary : 'transparent',
+          borderWidth: isFocused ? 2 : 1,
           opacity: disabled && !loading ? 0.45 : 1,
         },
       ]}
