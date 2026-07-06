@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-import { AppText, Button, Card } from '@/components/ui';
+import { AppText, Button, Card, InlineNotice } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import { taskLimits } from '@/types';
 import { toApiLocalDate } from '@/utils';
@@ -68,19 +68,20 @@ export function DdayTodayTaskForm({
           styles.input,
           {
             backgroundColor: theme.colors.surface,
-            borderColor:
-              validationMessage || createTask.error ? theme.colors.danger : theme.colors.border,
+            borderColor: validationMessage ? theme.colors.danger : theme.colors.border,
             color: theme.colors.text,
           },
         ]}
         value={title}
       />
 
-      {validationMessage || createTask.error ? (
+      {validationMessage ? (
         <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-          {validationMessage ?? createTask.error?.message}
+          {validationMessage}
         </AppText>
       ) : null}
+
+      {createTask.error ? <InlineNotice message={createTask.error.message} tone="danger" /> : null}
 
       <View style={styles.actions}>
         <Button disabled={createTask.isPending} fullWidth variant="secondary" onPress={onCancel}>
