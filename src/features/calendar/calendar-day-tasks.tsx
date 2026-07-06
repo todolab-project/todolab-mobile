@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Card, EmptyState, ListSkeleton } from '@/components/ui';
+import { AppText, Button, Card, EmptyState, InlineNotice, ListSkeleton } from '@/components/ui';
 import { ScheduleCard, TaskCard, useCompleteTask } from '@/features/tasks';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
@@ -73,32 +73,22 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
       ) : null}
 
       {completeTask.error ? (
-        <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-          {completeTask.error.message}
-        </AppText>
+        <InlineNotice message={completeTask.error.message} tone="danger" />
       ) : null}
 
       {query.isPending ? (
         <ListSkeleton accessibilityLabel={`${dateLabel} Task를 불러오는 중`} count={2} />
       ) : query.error ? (
-        <Card
-          style={[
-            styles.errorCard,
-            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-          ]}
-        >
-          <View style={styles.errorCopy}>
-            <AppText tone="danger" variant="label" weight="bold">
-              이 날짜의 Task를 불러오지 못했어요
-            </AppText>
-            <AppText tone="secondary" variant="caption">
-              {query.error.message}
-            </AppText>
-          </View>
-          <Button variant="secondary" onPress={() => void query.refetch()}>
-            다시 시도
-          </Button>
-        </Card>
+        <InlineNotice
+          action={
+            <Button size="compact" variant="ghost" onPress={() => void query.refetch()}>
+              다시 시도
+            </Button>
+          }
+          message={query.error.message}
+          title="이 날짜의 Task를 불러오지 못했어요"
+          tone="danger"
+        />
       ) : !hasTasks ? (
         <EmptyState title="예정된 항목이 없어요" description="다른 날짜를 선택해 보세요." />
       ) : !hasFilteredTasks ? (
@@ -286,12 +276,6 @@ const styles = StyleSheet.create({
   },
   headingCopy: {
     flex: 1,
-    gap: spacing[1],
-  },
-  errorCard: {
-    gap: spacing[3],
-  },
-  errorCopy: {
     gap: spacing[1],
   },
   filterCard: {
