@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
@@ -24,6 +25,7 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
   const dates = getWeekDates(today);
   const query = useCalendarRangeTasks('WEEK', today);
   const schedules = query.data ?? [];
+  const [focusedDate, setFocusedDate] = useState<LocalDateString | null>(null);
   const openCalendarDate = (date: LocalDateString) => {
     router.push({ pathname: '/calendar', params: { date } });
   };
@@ -69,9 +71,18 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
                   weekday: 'long',
                 })}${isToday ? ', 오늘' : ''}, 달력에서 보기`}
                 accessibilityRole="button"
+                accessibilityState={{ selected: isToday }}
                 key={date}
+                onBlur={() => setFocusedDate(null)}
+                onFocus={() => setFocusedDate(date)}
                 onPress={() => openCalendarDate(date)}
-                style={styles.day}
+                style={({ pressed }) => [
+                  styles.day,
+                  {
+                    backgroundColor: pressed ? theme.colors.highlightBlue : 'transparent',
+                    borderColor: focusedDate === date ? theme.colors.primary : 'transparent',
+                  },
+                ]}
               >
                 <AppText
                   align="center"
@@ -152,6 +163,8 @@ const styles = StyleSheet.create({
   },
   day: {
     alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: 2,
     flex: 1,
     gap: spacing[1],
     minHeight: 56,
