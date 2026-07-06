@@ -546,6 +546,7 @@ type ApiResponse<T> = {
    - [x] Task 작성·수정 폼의 서버 제출 오류를 필드 검증과 분리해 `InlineNotice`로 변경
    - [x] D-Day 목표 생성 폼의 서버 제출 오류를 필드 검증과 분리해 `InlineNotice`로 변경
    - [x] D-Day Today Task 폼의 서버 오류를 입력 검증과 분리해 `InlineNotice`로 변경
+   - [x] 빠른 기록의 입력 검증·서버 오류·저장 성공 피드백을 역할별로 분리
    - [ ] 320px·375pt·430dp, font scale 1.5, light/dark 실제 비교
 7. 달력 밀도와 navigation 후속
    - [x] 월간 6주 row 높이를 고정하고 주 사이에 얇은 paper rule을 표시

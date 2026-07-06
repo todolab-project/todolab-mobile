@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AppText, Button, Card, IconButton } from '@/components/ui';
+import { AppText, Button, Card, IconButton, InlineNotice } from '@/components/ui';
 import { useCreateInboxTask } from '@/features/tasks';
 import { radii, sizes, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import { taskLimits } from '@/types';
@@ -60,7 +60,6 @@ export function QuickCapture() {
     );
   };
 
-  const message = validationMessage ?? createTask.error?.message;
   const openComposer = () => {
     setIsExpanded(true);
     requestAnimationFrame(() => inputRef.current?.focus());
@@ -101,7 +100,7 @@ export function QuickCapture() {
                 styles.input,
                 {
                   backgroundColor: theme.colors.surfaceMuted,
-                  borderColor: theme.colors.border,
+                  borderColor: validationMessage ? theme.colors.danger : theme.colors.border,
                   color: theme.colors.text,
                 },
               ]}
@@ -117,15 +116,17 @@ export function QuickCapture() {
             </Button>
           </View>
 
-          {message ? (
+          {validationMessage ? (
             <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-              {message}
-            </AppText>
-          ) : didSave ? (
-            <AppText accessibilityLiveRegion="polite" tone="success" variant="caption">
-              정리할 항목에 추가했어요.
+              {validationMessage}
             </AppText>
           ) : null}
+
+          {createTask.error ? (
+            <InlineNotice message={createTask.error.message} tone="danger" />
+          ) : null}
+
+          {didSave ? <InlineNotice message="정리할 항목에 추가했어요." tone="success" /> : null}
         </Card>
       ) : (
         <Button accessibilityLabel="빠르게 기록 열기" onPress={openComposer} style={styles.fab}>
