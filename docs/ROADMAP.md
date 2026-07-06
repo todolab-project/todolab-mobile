@@ -535,7 +535,7 @@ type ApiResponse<T> = {
    - [x] Completed의 주 선택·완료 목록·요약을 compact planner row로 변경
    - [x] Task 작성 form을 flat paper sheet·quiet input·ghost 취소 action으로 변경
    - [x] Task 상세의 hero·정보·날짜·목표·삭제 영역을 outlined planner section으로 변경
-   - [ ] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
+   - [x] empty/loading/error/feedback가 테마를 깨는 큰 demo card처럼 보이지 않도록 재정리
    - [x] Today의 전체·부분·mutation 오류와 성공 피드백을 공통 compact `InlineNotice`로 변경
    - [x] 정리할 항목의 조회·이동 오류와 성공 피드백을 `InlineNotice`로 변경
    - [x] 목표 목록과 연결 Task의 loading·error 상태를 compact row·`InlineNotice`로 변경

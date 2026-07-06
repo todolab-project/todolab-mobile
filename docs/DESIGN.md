@@ -266,6 +266,14 @@ compact header
 - 카드 전체가 눌리는 경우 pressed 상태를 명확히 제공한다.
 - 카드 중첩과 반복적인 그림자로 정보 구조를 만들지 않는다.
 
+### State Feedback
+
+- 조회·mutation·서버 제출 오류와 짧은 성공 피드백은 compact `InlineNotice`를 기본으로 사용한다.
+- 필드 형식이나 필수값 오류는 해당 입력 바로 아래에 표시하고 서버 오류와 시각적으로 분리한다.
+- 로딩은 목록 skeleton 또는 44–64px 높이의 compact spinner row로 표시한다.
+- 빈 상태는 맥락과 다음 행동만 짧게 제공하며 큰 illustration이나 장식 card를 사용하지 않는다.
+- 삭제 확인처럼 사용자의 주의를 강하게 요구하는 파괴적 행동만 danger card를 허용한다.
+
 ### Input
 
 - 기본 높이는 최소 44px, radius는 10px이다.
