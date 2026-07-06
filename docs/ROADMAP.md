@@ -577,7 +577,7 @@ type ApiResponse<T> = {
    - [x] Calendar의 today dot은 일정 표시가 아닌 현재 날짜 표시로 역할을 제한
    - [x] warm paper background를 밝게 조정하고 pastel marker에 얇은 semantic outline 추가
    - [ ] 320px·375pt·430dp에서 calendar cell, event bar, `+N` clipping 비교
-   - [ ] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
+   - [x] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
    - [ ] light/dark와 font scale 1.5에서 hairline 대비와 텍스트 생략 상태 확인
    - [ ] touch target, keyboard focus, screen reader label이 시각 단순화 후에도 유지되는지 검증
 

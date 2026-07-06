@@ -265,6 +265,8 @@ compact header
 - default는 surface, muted는 surface-muted, outlined는 transparent 배경을 사용한다.
 - 카드 전체가 눌리는 경우 pressed 상태를 명확히 제공한다.
 - 카드 중첩과 반복적인 그림자로 정보 구조를 만들지 않는다.
+- Today·정리할 항목·완료·D-Day의 실행 row는 10px radius, 최소 60px 높이, 12px 좌우 inset을 공통으로 사용한다.
+- row 안의 체크·메뉴·이동·재열기 action은 시각적 크기와 관계없이 최소 44×44pt hit area를 유지한다.
 
 ### State Feedback
 

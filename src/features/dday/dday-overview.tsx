@@ -14,7 +14,7 @@ import {
   Screen,
   SectionHeader,
 } from '@/components/ui';
-import { spacing, useAppTheme } from '@/theme';
+import { radii, spacing, useAppTheme } from '@/theme';
 import type { DdayGoalResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
 
@@ -342,13 +342,14 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   goalCard: {
+    borderRadius: radii.md,
     overflow: 'hidden',
   },
   goalContent: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[3],
-    minHeight: 68,
+    minHeight: 60,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
   },
