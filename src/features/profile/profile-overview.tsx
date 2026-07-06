@@ -2,6 +2,7 @@ import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
 import { SymbolView } from 'expo-symbols';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, PageHeader, Screen } from '@/components/ui';
@@ -42,6 +43,7 @@ const profileItems: ProfileItem[] = [
 export function ProfileOverview() {
   const router = useRouter();
   const theme = useAppTheme();
+  const [focusedItem, setFocusedItem] = useState<ProfileItem['href'] | null>(null);
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -85,13 +87,18 @@ export function ProfileOverview() {
             <Pressable
               key={item.href}
               accessibilityHint={`${item.title} 화면으로 이동합니다.`}
+              accessibilityLabel={`${item.title}, ${item.description}`}
               accessibilityRole="button"
+              onBlur={() => setFocusedItem(null)}
+              onFocus={() => setFocusedItem(item.href)}
               onPress={() => router.push(item.href as Href)}
               style={({ pressed }) => [
                 styles.row,
                 {
                   backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-                  borderColor: theme.colors.border,
+                  borderColor:
+                    focusedItem === item.href ? theme.colors.primary : theme.colors.border,
+                  borderWidth: focusedItem === item.href ? 2 : StyleSheet.hairlineWidth,
                 },
               ]}
             >
