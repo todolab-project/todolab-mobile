@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-import { AppText, Button, Card } from '@/components/ui';
+import { AppText, Button, Card, InlineNotice } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import { ddayGoalLimits } from '@/types';
 import type { DdayGoalRequest } from '@/types';
@@ -130,11 +130,7 @@ export function DdayCreateForm({ onCancel, onCreated }: DdayCreateFormProps) {
         )}
       </View>
 
-      {createGoal.error ? (
-        <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-          {createGoal.error.message}
-        </AppText>
-      ) : null}
+      {createGoal.error ? <InlineNotice message={createGoal.error.message} tone="danger" /> : null}
 
       <View style={styles.actions}>
         <Button disabled={createGoal.isPending} fullWidth variant="secondary" onPress={onCancel}>
