@@ -8,6 +8,7 @@ import {
   Button,
   Card,
   IconButton,
+  InlineNotice,
   PageHeader,
   Screen,
   SectionHeader,
@@ -84,19 +85,11 @@ export default function TaskDetailScreen() {
       />
 
       {parsedTaskId === null ? (
-        <Card
-          style={[
-            styles.stateCard,
-            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-          ]}
-        >
-          <AppText tone="danger" variant="label" weight="bold">
-            Task를 찾을 수 없어요
-          </AppText>
-          <AppText tone="secondary" variant="label">
-            올바르지 않은 상세 주소예요. 목록에서 다시 선택해 주세요.
-          </AppText>
-        </Card>
+        <InlineNotice
+          message="올바르지 않은 상세 주소예요. 목록에서 다시 선택해 주세요."
+          title="Task를 찾을 수 없어요"
+          tone="danger"
+        />
       ) : taskQuery.isPending ? (
         <View accessibilityLabel="Task 상세를 불러오는 중" style={styles.loadingRow}>
           <ActivityIndicator color={theme.colors.primary} />
@@ -105,24 +98,16 @@ export default function TaskDetailScreen() {
           </AppText>
         </View>
       ) : taskQuery.error ? (
-        <Card
-          style={[
-            styles.stateCard,
-            { backgroundColor: theme.colors.dangerSoft, borderColor: theme.colors.danger },
-          ]}
-        >
-          <View style={styles.stateCopy}>
-            <AppText tone="danger" variant="label" weight="bold">
-              상세 정보를 불러오지 못했어요
-            </AppText>
-            <AppText tone="secondary" variant="label">
-              {taskQuery.error.message}
-            </AppText>
-          </View>
-          <Button variant="secondary" onPress={() => void taskQuery.refetch()}>
-            다시 시도
-          </Button>
-        </Card>
+        <InlineNotice
+          action={
+            <Button size="compact" variant="ghost" onPress={() => void taskQuery.refetch()}>
+              다시 시도
+            </Button>
+          }
+          message={taskQuery.error.message}
+          title="상세 정보를 불러오지 못했어요"
+          tone="danger"
+        />
       ) : taskQuery.data && isEditing ? (
         <View style={styles.editing}>
           <TaskForm
@@ -279,18 +264,20 @@ function TaskDetail({
               </AppText>
             </View>
           ) : ddayGoals.error ? (
-            <View style={styles.stateCopy}>
-              <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-                {ddayGoals.error.message}
-              </AppText>
-              <Button
-                disabled={taskDdayGoal.isPending}
-                variant="secondary"
-                onPress={() => void ddayGoals.refetch()}
-              >
-                다시 시도
-              </Button>
-            </View>
+            <InlineNotice
+              action={
+                <Button
+                  disabled={taskDdayGoal.isPending}
+                  size="compact"
+                  variant="ghost"
+                  onPress={() => void ddayGoals.refetch()}
+                >
+                  다시 시도
+                </Button>
+              }
+              message={ddayGoals.error.message}
+              tone="danger"
+            />
           ) : ddayGoals.data?.length ? (
             <View style={styles.goalActions}>
               {ddayGoals.data.map((goal) => {
@@ -344,9 +331,7 @@ function TaskDetail({
           )}
 
           {taskDdayGoal.error ? (
-            <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
-              {taskDdayGoal.error.message}
-            </AppText>
+            <InlineNotice message={taskDdayGoal.error.message} tone="danger" />
           ) : null}
         </Card>
       ) : null}
@@ -493,9 +478,6 @@ const styles = StyleSheet.create({
     gap: spacing[3],
     justifyContent: 'center',
     minHeight: 64,
-  },
-  stateCard: {
-    gap: spacing[3],
   },
   stateCopy: {
     gap: spacing[1],
