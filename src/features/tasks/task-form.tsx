@@ -46,6 +46,7 @@ export function TaskForm({
     allDay: initialTask?.allDay ?? false,
   }));
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [focusedType, setFocusedType] = useState<TaskType | null>(null);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(
     initialTask
       ? Boolean(
@@ -136,12 +137,18 @@ export function TaskForm({
                   accessibilityState={{ checked: selected, disabled: isSubmitting }}
                   disabled={isSubmitting}
                   key={type.value}
+                  onBlur={() => setFocusedType(null)}
+                  onFocus={() => setFocusedType(type.value)}
                   onPress={() => updateField('type', type.value)}
                   style={[
                     styles.typeOption,
                     {
                       backgroundColor: selected ? theme.colors.highlightBlue : 'transparent',
-                      borderColor: selected ? theme.colors.primary : theme.colors.border,
+                      borderColor:
+                        focusedType === type.value || selected
+                          ? theme.colors.primary
+                          : theme.colors.border,
+                      borderWidth: focusedType === type.value ? 2 : 1,
                     },
                   ]}
                 >
