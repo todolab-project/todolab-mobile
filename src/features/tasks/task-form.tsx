@@ -14,6 +14,8 @@ type TaskFormValues = {
   allDay: boolean;
 };
 
+type TaskFormField = 'title' | 'description' | 'category';
+
 type TaskFormProps = {
   initialTask?: TaskResponse;
   submitLabel: string;
@@ -46,6 +48,7 @@ export function TaskForm({
     allDay: initialTask?.allDay ?? false,
   }));
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [focusedField, setFocusedField] = useState<TaskFormField | null>(null);
   const [focusedType, setFocusedType] = useState<TaskType | null>(null);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(
     initialTask
@@ -106,7 +109,9 @@ export function TaskForm({
             accessibilityLabel="Task 제목"
             editable={!isSubmitting}
             maxLength={taskLimits.title}
+            onBlur={() => setFocusedField(null)}
             onChangeText={(value) => updateField('title', value)}
+            onFocus={() => setFocusedField('title')}
             placeholder="예: 은행 앱 이체 확인"
             placeholderTextColor={theme.colors.textMuted}
             returnKeyType="next"
@@ -114,7 +119,12 @@ export function TaskForm({
               styles.input,
               {
                 backgroundColor: theme.colors.surface,
-                borderColor: validationMessage ? theme.colors.danger : theme.colors.border,
+                borderColor: validationMessage
+                  ? theme.colors.danger
+                  : focusedField === 'title'
+                    ? theme.colors.primary
+                    : theme.colors.border,
+                borderWidth: focusedField === 'title' ? 2 : 1,
                 color: theme.colors.text,
               },
             ]}
@@ -186,7 +196,9 @@ export function TaskForm({
               editable={!isSubmitting}
               maxLength={taskLimits.description}
               multiline
+              onBlur={() => setFocusedField(null)}
               onChangeText={(value) => updateField('description', value)}
+              onFocus={() => setFocusedField('description')}
               placeholder="필요한 맥락이나 다음 행동"
               placeholderTextColor={theme.colors.textMuted}
               style={[
@@ -194,7 +206,9 @@ export function TaskForm({
                 styles.textArea,
                 {
                   backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
+                  borderColor:
+                    focusedField === 'description' ? theme.colors.primary : theme.colors.border,
+                  borderWidth: focusedField === 'description' ? 2 : 1,
                   color: theme.colors.text,
                 },
               ]}
@@ -239,14 +253,18 @@ export function TaskForm({
               accessibilityLabel="Task 카테고리"
               editable={!isSubmitting}
               maxLength={taskLimits.category}
+              onBlur={() => setFocusedField(null)}
               onChangeText={(value) => updateField('category', value)}
+              onFocus={() => setFocusedField('category')}
               placeholder="예: 업무, 집, 건강"
               placeholderTextColor={theme.colors.textMuted}
               style={[
                 styles.input,
                 {
                   backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
+                  borderColor:
+                    focusedField === 'category' ? theme.colors.primary : theme.colors.border,
+                  borderWidth: focusedField === 'category' ? 2 : 1,
                   color: theme.colors.text,
                 },
               ]}

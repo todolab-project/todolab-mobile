@@ -582,6 +582,7 @@ type ApiResponse<T> = {
    - [x] Profile destination row에 명시적 screen reader label과 keyboard focus outline 적용
    - [x] Task 유형 radio에 checked·disabled 상태와 구분되는 keyboard focus outline 적용
    - [x] 빠른 기록 input에 검증 오류와 구분되는 keyboard focus border 적용
+   - [x] Task·D-Day form input에 검증 오류와 구분되는 keyboard focus border 적용
    - [ ] 320px·375pt·430dp에서 calendar cell, event bar, `+N` clipping 비교
    - [x] Today·정리할 항목·완료·D-Day의 row radius, inset, action 높이를 같은 규칙으로 통일
    - [ ] light/dark와 font scale 1.5에서 hairline 대비와 텍스트 생략 상태 확인

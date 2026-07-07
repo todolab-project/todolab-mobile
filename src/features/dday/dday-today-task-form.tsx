@@ -25,6 +25,7 @@ export function DdayTodayTaskForm({
   const createTask = useCreateDdayTodayTask();
   const [title, setTitle] = useState('');
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const handleSubmit = () => {
     const normalizedTitle = title.trim();
@@ -55,11 +56,13 @@ export function DdayTodayTaskForm({
         accessibilityLabel={`${goalTitle} 목표의 오늘 할 일 제목`}
         editable={!createTask.isPending}
         maxLength={taskLimits.title}
+        onBlur={() => setIsInputFocused(false)}
         onChangeText={(value) => {
           setTitle(value);
           setValidationMessage(null);
           createTask.reset();
         }}
+        onFocus={() => setIsInputFocused(true)}
         onSubmitEditing={handleSubmit}
         placeholder="오늘 끝낼 작은 행동"
         placeholderTextColor={theme.colors.textMuted}
@@ -68,7 +71,12 @@ export function DdayTodayTaskForm({
           styles.input,
           {
             backgroundColor: theme.colors.surface,
-            borderColor: validationMessage ? theme.colors.danger : theme.colors.border,
+            borderColor: validationMessage
+              ? theme.colors.danger
+              : isInputFocused
+                ? theme.colors.primary
+                : theme.colors.border,
+            borderWidth: isInputFocused ? 2 : 1,
             color: theme.colors.text,
           },
         ]}

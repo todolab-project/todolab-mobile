@@ -14,6 +14,8 @@ type DdayCreateFormProps = {
   onCreated: () => void;
 };
 
+type DdayFormField = 'title' | 'targetDate';
+
 const initialValues: DdayGoalFormValues = {
   title: '',
   targetDate: '',
@@ -24,6 +26,7 @@ export function DdayCreateForm({ onCancel, onCreated }: DdayCreateFormProps) {
   const createGoal = useCreateDdayGoal();
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<ReturnType<typeof validateDdayGoal>>({});
+  const [focusedField, setFocusedField] = useState<DdayFormField | null>(null);
 
   const updateField = (field: keyof DdayGoalFormValues, value: string) => {
     setValues((current) => ({ ...current, [field]: value }));
@@ -76,7 +79,9 @@ export function DdayCreateForm({ onCancel, onCreated }: DdayCreateFormProps) {
           accessibilityLabel="D-Day 목표 이름"
           editable={!createGoal.isPending}
           maxLength={ddayGoalLimits.title}
+          onBlur={() => setFocusedField(null)}
           onChangeText={(value) => updateField('title', value)}
+          onFocus={() => setFocusedField('title')}
           placeholder="예: 앱 정식 출시"
           placeholderTextColor={theme.colors.textMuted}
           returnKeyType="next"
@@ -84,7 +89,12 @@ export function DdayCreateForm({ onCancel, onCreated }: DdayCreateFormProps) {
             styles.input,
             {
               backgroundColor: theme.colors.surfaceMuted,
-              borderColor: errors.title ? theme.colors.danger : theme.colors.border,
+              borderColor: errors.title
+                ? theme.colors.danger
+                : focusedField === 'title'
+                  ? theme.colors.primary
+                  : theme.colors.border,
+              borderWidth: focusedField === 'title' ? 2 : 1,
               color: theme.colors.text,
             },
           ]}
@@ -106,14 +116,21 @@ export function DdayCreateForm({ onCancel, onCreated }: DdayCreateFormProps) {
           autoCapitalize="none"
           editable={!createGoal.isPending}
           maxLength={10}
+          onBlur={() => setFocusedField(null)}
           onChangeText={(value) => updateField('targetDate', value)}
+          onFocus={() => setFocusedField('targetDate')}
           placeholder="YYYY-MM-DD"
           placeholderTextColor={theme.colors.textMuted}
           style={[
             styles.input,
             {
               backgroundColor: theme.colors.surfaceMuted,
-              borderColor: errors.targetDate ? theme.colors.danger : theme.colors.border,
+              borderColor: errors.targetDate
+                ? theme.colors.danger
+                : focusedField === 'targetDate'
+                  ? theme.colors.primary
+                  : theme.colors.border,
+              borderWidth: focusedField === 'targetDate' ? 2 : 1,
               color: theme.colors.text,
             },
           ]}
