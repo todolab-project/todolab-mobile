@@ -23,6 +23,7 @@ export function QuickCapture() {
   const [title, setTitle] = useState('');
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [didSave, setDidSave] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const handleChange = (value: string) => {
     setTitle(value);
@@ -91,7 +92,9 @@ export function QuickCapture() {
               editable={!createTask.isPending}
               enterKeyHint="done"
               maxLength={taskLimits.title}
+              onBlur={() => setIsInputFocused(false)}
               onChangeText={handleChange}
+              onFocus={() => setIsInputFocused(true)}
               onSubmitEditing={handleSubmit}
               placeholder="할 일을 입력하세요"
               placeholderTextColor={theme.colors.textMuted}
@@ -100,7 +103,12 @@ export function QuickCapture() {
                 styles.input,
                 {
                   backgroundColor: theme.colors.surfaceMuted,
-                  borderColor: validationMessage ? theme.colors.danger : theme.colors.border,
+                  borderColor: validationMessage
+                    ? theme.colors.danger
+                    : isInputFocused
+                      ? theme.colors.primary
+                      : theme.colors.border,
+                  borderWidth: isInputFocused ? 2 : StyleSheet.hairlineWidth,
                   color: theme.colors.text,
                 },
               ]}
