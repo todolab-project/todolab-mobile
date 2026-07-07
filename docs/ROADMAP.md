@@ -563,6 +563,7 @@ type ApiResponse<T> = {
    - [x] 날짜 grid·하루 일정·기간 bar의 좌우 inset을 통일해 일 경계 밖 overflow 방지
    - [x] 정리할 항목의 큰 채움 action을 compact ghost action으로 낮추고 back button surface 제거
    - [x] 정리할 항목 화면을 Today와 같은 compact section·rule list 문법으로 전면 정리
+   - [x] 프로필에 통합 검색 진입점과 API 연결 전 준비 화면 route 추가
    - [ ] 과거 Task·일정·완료 기록을 날짜와 키워드로 찾는 통합 검색을 프로필에서 제공
    - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
    - [x] 통합 검색의 관련 날짜·결과 schema·정렬·cursor 요구사항을 문서화

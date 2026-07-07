@@ -12,7 +12,7 @@ type ProfileItem = {
   accent: 'amber' | 'sage' | 'blue';
   title: string;
   description: string;
-  href: '/dday' | '/completed' | '/settings';
+  href: '/dday' | '/search' | '/completed' | '/settings';
   icon: SymbolViewProps['name'];
 };
 
@@ -23,6 +23,13 @@ const profileItems: ProfileItem[] = [
     description: 'D-Day와 연결된 실행 항목',
     href: '/dday',
     icon: { ios: 'flag.fill', android: 'flag', web: 'flag' },
+  },
+  {
+    accent: 'blue',
+    title: '검색',
+    description: '과거 Task와 일정 찾기',
+    href: '/search',
+    icon: { ios: 'magnifyingglass', android: 'search', web: 'search' },
   },
   {
     accent: 'sage',

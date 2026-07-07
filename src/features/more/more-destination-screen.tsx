@@ -10,9 +10,15 @@ type MoreDestinationScreenProps = {
   title: string;
   description: string;
   icon: SymbolViewProps['name'];
+  emptyTitle?: string;
 };
 
-export function MoreDestinationScreen({ title, description, icon }: MoreDestinationScreenProps) {
+export function MoreDestinationScreen({
+  title,
+  description,
+  icon,
+  emptyTitle = '차근차근 준비하고 있어요',
+}: MoreDestinationScreenProps) {
   const router = useRouter();
   const theme = useAppTheme();
 
@@ -41,7 +47,7 @@ export function MoreDestinationScreen({ title, description, icon }: MoreDestinat
             />
           </View>
         }
-        title="설정은 준비 중이에요"
+        title={emptyTitle}
         description={description}
       />
     </Screen>
