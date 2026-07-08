@@ -5,15 +5,32 @@ import type {
   TaskRecommendationResponse,
   TaskResponse,
   TaskListQuery,
+  TaskSearchPage,
+  TaskSearchQuery,
   TodayOrderDirection,
   TaskUpsertRequest,
 } from '@/types';
 
 const TASKS_PATH = '/api/tasks';
 
+function serializeSearchQuery(query: TaskSearchQuery) {
+  return {
+    ...query,
+    statuses: query.statuses?.join(','),
+    taskTypes: query.taskTypes?.join(','),
+  };
+}
+
 export const taskApi = {
   list(query: TaskListQuery, signal?: AbortSignal) {
     return apiClient.get<TaskResponse[]>(TASKS_PATH, { query, signal });
+  },
+
+  search(query: TaskSearchQuery, signal?: AbortSignal) {
+    return apiClient.get<TaskSearchPage>(`${TASKS_PATH}/search`, {
+      query: serializeSearchQuery(query),
+      signal,
+    });
   },
 
   get(taskId: number, signal?: AbortSignal) {

@@ -3,6 +3,14 @@ import type { LocalDateString, LocalDateTimeString } from './date-time';
 export type TaskType = 'SCHEDULE' | 'TODO' | 'IDEA';
 export type TaskStatus = 'INBOX' | 'TODAY' | 'DONE';
 export type TaskQueryType = 'DAY' | 'WEEK' | 'MONTH';
+export type TaskSearchDateField = 'RELEVANT' | 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREATED';
+export type TaskSearchSort =
+  | 'RELEVANCE'
+  | 'DATE_DESC'
+  | 'DATE_ASC'
+  | 'UPDATED_DESC'
+  | 'CREATED_DESC';
+export type TaskSearchDateSource = 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREATED';
 export type TodayOrderDirection = 'UP' | 'DOWN';
 export type DeferReason =
   | 'TOO_BIG'
@@ -78,6 +86,34 @@ export type TaskListQuery = {
   type: TaskQueryType;
   taskType?: TaskType;
   date: LocalDateString;
+};
+
+export type TaskSearchQuery = {
+  q?: string;
+  statuses?: TaskStatus[];
+  taskTypes?: TaskType[];
+  category?: string;
+  ddayGoalId?: number;
+  hasDday?: boolean;
+  allDay?: boolean;
+  dateField?: TaskSearchDateField;
+  dateFrom?: LocalDateString;
+  dateTo?: LocalDateString;
+  sort?: TaskSearchSort;
+  cursor?: string;
+  limit?: number;
+};
+
+export type TaskSearchItem = {
+  task: TaskResponse;
+  relevantDate: LocalDateString;
+  dateSource: TaskSearchDateSource;
+};
+
+export type TaskSearchPage = {
+  items: TaskSearchItem[];
+  nextCursor: string | null;
+  hasNext: boolean;
 };
 
 export type TaskDateQuery = {

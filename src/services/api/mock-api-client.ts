@@ -8,7 +8,12 @@ import type {
   TaskRecommendationResponse,
   TaskQueryType,
   TaskResponse,
+  TaskSearchDateField,
+  TaskSearchDateSource,
+  TaskSearchItem,
+  TaskSearchPage,
   TaskStatus,
+  TaskType,
   TaskUpsertRequest,
   TodayOrderDirection,
 } from '@/types';
@@ -272,6 +277,146 @@ function getTaskRange(type: TaskQueryType, date: LocalDateString) {
     .map((value) => value as LocalDateString);
 }
 
+function splitQueryList<T extends string>(value: MockQueryValue): T[] {
+  if (typeof value !== 'string' || !value.trim()) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean) as T[];
+}
+
+function parseBooleanQuery(value: MockQueryValue) {
+  if (value === undefined || value === null) {
+    return null;
+  }
+
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  return String(value) === 'true';
+}
+
+function getTaskSearchDate(
+  task: TaskResponse,
+  dateField: TaskSearchDateField = 'RELEVANT',
+): { relevantDate: LocalDateString; dateSource: TaskSearchDateSource } | null {
+  if (dateField === 'PLANNED') {
+    if (!task.plannedDate) return null;
+
+    return {
+      relevantDate: task.plannedDate,
+      dateSource: 'PLANNED',
+    };
+  }
+
+  if (dateField === 'SCHEDULED') {
+    if (!task.startAt) return null;
+
+    return {
+      relevantDate: task.startAt.slice(0, 10) as LocalDateString,
+      dateSource: 'SCHEDULED',
+    };
+  }
+
+  if (dateField === 'COMPLETED') {
+    if (!task.completedAt) return null;
+
+    return {
+      relevantDate: task.completedAt.slice(0, 10) as LocalDateString,
+      dateSource: 'COMPLETED',
+    };
+  }
+
+  if (dateField === 'CREATED') {
+    return {
+      relevantDate: task.createdAt.slice(0, 10) as LocalDateString,
+      dateSource: 'CREATED',
+    };
+  }
+
+  if (task.status === 'DONE' && task.completedAt) {
+    return {
+      relevantDate: task.completedAt.slice(0, 10) as LocalDateString,
+      dateSource: 'COMPLETED',
+    };
+  }
+
+  if (task.startAt) {
+    return { relevantDate: task.startAt.slice(0, 10) as LocalDateString, dateSource: 'SCHEDULED' };
+  }
+
+  if (task.plannedDate) {
+    return { relevantDate: task.plannedDate, dateSource: 'PLANNED' };
+  }
+
+  return { relevantDate: task.createdAt.slice(0, 10) as LocalDateString, dateSource: 'CREATED' };
+}
+
+function searchTasks(query?: MockQueryParams): TaskSearchPage {
+  const keyword = String(query?.q ?? '')
+    .trim()
+    .toLocaleLowerCase();
+  const statuses = splitQueryList<TaskStatus>(query?.statuses);
+  const taskTypes = splitQueryList<TaskType>(query?.taskTypes);
+  const dateField = String(query?.dateField ?? 'RELEVANT') as TaskSearchDateField;
+  const dateFrom = query?.dateFrom ? String(query.dateFrom) : null;
+  const dateTo = query?.dateTo ? String(query.dateTo) : null;
+  const limit = Math.min(Math.max(Number(query?.limit ?? 20), 1), 50);
+  const hasDday = parseBooleanQuery(query?.hasDday);
+  const allDay = parseBooleanQuery(query?.allDay);
+
+  const items: TaskSearchItem[] = tasks
+    .filter((task) => {
+      const text = `${task.title} ${task.description ?? ''}`.toLocaleLowerCase();
+
+      if (keyword && !text.includes(keyword)) return false;
+      if (statuses.length > 0 && !statuses.includes(task.status)) return false;
+      if (taskTypes.length > 0 && !taskTypes.includes(task.type)) return false;
+      if (query?.category && task.category !== String(query.category)) return false;
+      if (query?.ddayGoalId && task.ddayGoalId !== Number(query.ddayGoalId)) return false;
+      if (hasDday !== null && Boolean(task.ddayGoalId) !== hasDday) {
+        return false;
+      }
+
+      if (allDay !== null && task.allDay !== allDay) return false;
+
+      const searchDate = getTaskSearchDate(task, dateField);
+
+      if (!searchDate) return false;
+
+      if (dateFrom && searchDate.relevantDate < dateFrom) return false;
+      if (dateTo && searchDate.relevantDate > dateTo) return false;
+
+      return true;
+    })
+    .map((task) => {
+      const searchDate = getTaskSearchDate(task, dateField);
+
+      if (!searchDate) {
+        throw new ApiClientError('Mock 검색 날짜를 계산할 수 없습니다.', { kind: 'configuration' });
+      }
+
+      return {
+        task: cloneTask(task),
+        ...searchDate,
+      };
+    })
+    .sort(
+      (left, right) =>
+        right.relevantDate.localeCompare(left.relevantDate) || right.task.id - left.task.id,
+    );
+
+  return {
+    items: items.slice(0, limit),
+    nextCursor: items.length > limit ? 'mock-next-cursor' : null,
+    hasNext: items.length > limit,
+  };
+}
+
 function sortTodayTasks(left: TaskResponse, right: TaskResponse) {
   if (left.type === 'SCHEDULE' && right.type !== 'SCHEDULE') {
     return -1;
@@ -347,6 +492,10 @@ export const mockApiClient = {
             range.some((rangeDate) => doesScheduleOverlapDate(task, rangeDate)),
         )
         .map(cloneTask) as T;
+    }
+
+    if (path === '/api/tasks/search') {
+      return searchTasks(options.query) as T;
     }
 
     if (path === '/api/tasks/today') {

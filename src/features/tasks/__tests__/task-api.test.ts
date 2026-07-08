@@ -110,6 +110,31 @@ describe('Task API', () => {
     expect(getMock).toHaveBeenCalledWith('/api/tasks/inbox', { signal: undefined });
   });
 
+  test('통합 검색 query를 API 계약에 맞게 직렬화한다', async () => {
+    await taskApi.search({
+      q: '회의',
+      statuses: ['TODAY', 'DONE'],
+      taskTypes: ['TODO', 'SCHEDULE'],
+      dateField: 'RELEVANT',
+      dateFrom: '2026-07-01',
+      dateTo: '2026-07-31',
+      limit: 20,
+    });
+
+    expect(getMock).toHaveBeenCalledWith('/api/tasks/search', {
+      query: {
+        q: '회의',
+        statuses: 'TODAY,DONE',
+        taskTypes: 'TODO,SCHEDULE',
+        dateField: 'RELEVANT',
+        dateFrom: '2026-07-01',
+        dateTo: '2026-07-31',
+        limit: 20,
+      },
+      signal: undefined,
+    });
+  });
+
   test('Task 완료 endpoint를 호출한다', async () => {
     await taskApi.complete(42);
 
