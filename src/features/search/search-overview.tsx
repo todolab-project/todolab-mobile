@@ -23,6 +23,7 @@ import { useTaskSearch } from './use-task-search';
 
 type SearchFilter = 'ALL' | 'PLANNED' | 'DONE' | 'SCHEDULE';
 type DateRangeFilter = 'ALL' | '7D' | '30D' | 'MONTH';
+type DdayFilter = 'ALL' | 'LINKED' | 'UNLINKED';
 
 const searchFilters: { value: SearchFilter; label: string }[] = [
   { value: 'ALL', label: '전체' },
@@ -38,6 +39,12 @@ const dateRangeFilters: { value: DateRangeFilter; label: string }[] = [
   { value: 'MONTH', label: '이번 달' },
 ];
 
+const ddayFilters: { value: DdayFilter; label: string }[] = [
+  { value: 'ALL', label: 'D-Day 전체' },
+  { value: 'LINKED', label: 'D-Day 연결' },
+  { value: 'UNLINKED', label: 'D-Day 없음' },
+];
+
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
   PLANNED: '예정',
   SCHEDULED: '일정',
@@ -51,6 +58,7 @@ export function SearchOverview() {
   const [keyword, setKeyword] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<SearchFilter>('ALL');
   const [selectedDateRange, setSelectedDateRange] = useState<DateRangeFilter>('ALL');
+  const [selectedDdayFilter, setSelectedDdayFilter] = useState<DdayFilter>('ALL');
   const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const deferredKeyword = useDeferredValue(keyword.trim());
   const today = toApiLocalDate();
@@ -58,10 +66,12 @@ export function SearchOverview() {
     () => getDateRangeQuery(selectedDateRange, today),
     [selectedDateRange, today],
   );
+  const ddayQuery = useMemo(() => getDdayQuery(selectedDdayFilter), [selectedDdayFilter]);
   const searchQuery = useMemo<TaskSearchQuery>(() => {
     const baseQuery = {
       q: deferredKeyword || undefined,
       ...dateRangeQuery,
+      ...ddayQuery,
       limit: 20,
     };
 
@@ -87,7 +97,7 @@ export function SearchOverview() {
     }
 
     return baseQuery;
-  }, [dateRangeQuery, deferredKeyword, selectedFilter]);
+  }, [dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter]);
   const search = useTaskSearch(searchQuery);
   const results = search.data?.items ?? [];
   const hasKeyword = keyword.trim().length > 0;
@@ -95,11 +105,19 @@ export function SearchOverview() {
     searchFilters.find((filter) => filter.value === selectedFilter)?.label ?? '전체';
   const selectedDateRangeLabel =
     dateRangeFilters.find((filter) => filter.value === selectedDateRange)?.label ?? '전체 기간';
+  const selectedDdayFilterLabel =
+    ddayFilters.find((filter) => filter.value === selectedDdayFilter)?.label ?? 'D-Day 전체';
   const baseSummary = hasKeyword
     ? `“${keyword.trim()}” · ${selectedFilterLabel}`
     : `${selectedFilterLabel} 기록`;
+  const activeExtraFilters = [
+    selectedDateRange === 'ALL' ? null : selectedDateRangeLabel,
+    selectedDdayFilter === 'ALL' ? null : selectedDdayFilterLabel,
+  ].filter((value): value is string => Boolean(value));
   const searchSummary =
-    selectedDateRange === 'ALL' ? baseSummary : `${baseSummary} · ${selectedDateRangeLabel}`;
+    activeExtraFilters.length > 0
+      ? `${baseSummary} · ${activeExtraFilters.join(' · ')}`
+      : baseSummary;
   const resultDescription = search.isFetching
     ? '검색 결과를 업데이트하고 있어요.'
     : hasKeyword
@@ -245,6 +263,45 @@ export function SearchOverview() {
           </View>
         </View>
 
+        <View style={styles.filterGroup}>
+          <AppText tone="secondary" variant="caption" weight="semibold">
+            D-Day
+          </AppText>
+          <View accessibilityLabel="D-Day 연결 검색 필터" style={styles.filters}>
+            {ddayFilters.map((filter) => {
+              const selected = selectedDdayFilter === filter.value;
+              const focusKey = `dday-${filter.value}`;
+
+              return (
+                <Pressable
+                  key={filter.value}
+                  accessibilityLabel={`${filter.label} 검색 필터`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  onBlur={() => setFocusedElement(null)}
+                  onFocus={() => setFocusedElement(focusKey)}
+                  onPress={() => setSelectedDdayFilter(filter.value)}
+                  style={[
+                    styles.filterChip,
+                    {
+                      backgroundColor: selected ? theme.colors.highlightSage : 'transparent',
+                      borderColor:
+                        focusedElement === focusKey || selected
+                          ? theme.colors.success
+                          : theme.colors.border,
+                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                    },
+                  ]}
+                >
+                  <AppText tone={selected ? 'success' : 'secondary'} variant="caption">
+                    {filter.label}
+                  </AppText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
         <View style={styles.searchMetaRow}>
           <View style={[styles.searchMetaPill, { backgroundColor: theme.colors.highlightSage }]}>
             <AppText tone="success" variant="caption" weight="semibold">
@@ -331,7 +388,7 @@ export function SearchOverview() {
           <SearchScopeRow
             icon={{ ios: 'line.3.horizontal.decrease', android: 'filter_list', web: 'filter_list' }}
             title="상세 필터"
-            description="상태, 종류, 카테고리, D-Day 연결"
+            description="카테고리와 세부 날짜 기준"
           />
           <SearchScopeRow
             icon={{ ios: 'arrow.down.doc', android: 'more_horiz', web: 'more_horiz' }}
@@ -425,6 +482,18 @@ function getDateRangeQuery(
       dateFrom: `${today.slice(0, 7)}-01` as LocalDateString,
       dateTo: today,
     };
+  }
+
+  return {};
+}
+
+function getDdayQuery(filter: DdayFilter): Pick<TaskSearchQuery, 'hasDday'> {
+  if (filter === 'LINKED') {
+    return { hasDday: true };
+  }
+
+  if (filter === 'UNLINKED') {
+    return { hasDday: false };
   }
 
   return {};
