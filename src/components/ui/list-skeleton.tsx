@@ -16,8 +16,10 @@ export function ListSkeleton({ accessibilityLabel, count = 3 }: ListSkeletonProp
   return (
     <View
       accessible
+      accessibilityHint="데이터를 불러오는 동안 임시 목록 모양을 보여줍니다."
       accessibilityLabel={accessibilityLabel}
       accessibilityRole="progressbar"
+      accessibilityState={{ busy: true }}
       style={styles.list}
     >
       {Array.from({ length: count }, (_, index) => (

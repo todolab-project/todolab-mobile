@@ -681,6 +681,7 @@ type ApiResponse<T> = {
 - [ ] 오프라인/느린 네트워크 처리
   - [x] network·timeout·5xx query retry 정책을 공통 함수와 회귀 테스트로 고정
   - [x] 주요 조회 화면의 API 오류를 공통 사용자용 문구로 정규화
+  - [x] 공통 목록 skeleton에 busy 상태와 screen reader hint 추가
 - [ ] 접근성 라벨, 읽기 순서, 명암, 글꼴 확대 점검
 - [ ] 성능 점검: 초기 진입, 긴 목록, 캘린더 렌더링
 - [ ] 오류 로깅과 개인정보 정책 결정
