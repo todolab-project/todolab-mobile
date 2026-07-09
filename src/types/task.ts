@@ -12,6 +12,8 @@ export type TaskSearchSort =
   | 'CREATED_DESC';
 export type TaskSearchDateSource = 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREATED';
 export type TodayOrderDirection = 'UP' | 'DOWN';
+export type RecurrenceEditScope = 'THIS' | 'THIS_AND_FUTURE' | 'ALL';
+export type RecurrenceException = 'SKIPPED' | 'MOVED' | 'MODIFIED';
 export type DeferReason =
   | 'TOO_BIG'
   | 'NOT_NEEDED_NOW'
@@ -43,6 +45,11 @@ export type TaskUpsertRequest = {
   endAt?: LocalDateTimeString | null;
   category?: string | null;
   allDay: boolean;
+  recurrenceRule?: string | null;
+  recurrenceTimeZone?: string | null;
+  recurrenceStartAt?: LocalDateTimeString | null;
+  recurrenceUntil?: LocalDateString | null;
+  recurrenceCount?: number | null;
 };
 
 export type TaskResponse = {
@@ -68,6 +75,15 @@ export type TaskResponse = {
   ddayGoalTitle: string | null;
   ddayGoalTargetDate: LocalDateString | null;
   ddayDaysLeft: number | null;
+  recurrenceSeriesId?: number | null;
+  recurrenceRule?: string | null;
+  recurrenceTimeZone?: string | null;
+  recurrenceStartAt?: LocalDateTimeString | null;
+  recurrenceUntil?: LocalDateString | null;
+  recurrenceCount?: number | null;
+  occurrenceDate?: LocalDateString | null;
+  originalOccurrenceDate?: LocalDateString | null;
+  recurrenceException?: RecurrenceException | null;
   createdAt: LocalDateTimeString;
   updatedAt: LocalDateTimeString | null;
 };

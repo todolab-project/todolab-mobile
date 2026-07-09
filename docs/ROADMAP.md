@@ -605,6 +605,7 @@ type ApiResponse<T> = {
 목표: 매주 화요일 09:00 회의처럼 반복되는 실행 항목과 일정을 occurrence별로 계획하고 완료한다.
 
 - [x] 반복 규칙과 occurrence API 요구사항을 [`API_RECURRENCE.md`](./API_RECURRENCE.md)에 문서화
+- [x] 반복 series·occurrence·exception 필드를 모바일 Task 타입과 mock 모델에 반영
 - [ ] 백엔드 recurrence series, RRULE, occurrence, exception 계약 확정
 - [ ] Task 작성 화면에 반복 없음·매일·매주·매월·사용자 지정 선택 추가
 - [ ] `이번만 / 이후 모두 / 전체` 수정·삭제 범위 선택 UI

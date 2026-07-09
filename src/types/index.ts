@@ -5,6 +5,8 @@ export type {
   CompleteTaskQuery,
   ConnectDdayGoalQuery,
   DeferReason,
+  RecurrenceEditScope,
+  RecurrenceException,
   ReorderTodayQuery,
   SetDeferReasonQuery,
   TaskCategoryGroupResponse,

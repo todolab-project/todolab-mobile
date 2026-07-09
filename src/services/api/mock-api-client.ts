@@ -168,6 +168,15 @@ function createTask(
     ddayGoalTitle: overrides.ddayGoalTitle ?? null,
     ddayGoalTargetDate: overrides.ddayGoalTargetDate ?? null,
     ddayDaysLeft: overrides.ddayDaysLeft ?? null,
+    recurrenceSeriesId: overrides.recurrenceSeriesId ?? null,
+    recurrenceRule: overrides.recurrenceRule ?? null,
+    recurrenceTimeZone: overrides.recurrenceTimeZone ?? null,
+    recurrenceStartAt: overrides.recurrenceStartAt ?? null,
+    recurrenceUntil: overrides.recurrenceUntil ?? null,
+    recurrenceCount: overrides.recurrenceCount ?? null,
+    occurrenceDate: overrides.occurrenceDate ?? null,
+    originalOccurrenceDate: overrides.originalOccurrenceDate ?? null,
+    recurrenceException: overrides.recurrenceException ?? null,
     createdAt: overrides.createdAt ?? now,
     updatedAt: overrides.updatedAt ?? null,
   };
@@ -238,6 +247,11 @@ function applyTaskRequest(task: TaskResponse, request: TaskUpsertRequest) {
   task.allDay = request.allDay;
   task.startAt = request.startAt ?? null;
   task.endAt = request.endAt ?? null;
+  task.recurrenceRule = request.recurrenceRule ?? null;
+  task.recurrenceTimeZone = request.recurrenceTimeZone ?? null;
+  task.recurrenceStartAt = request.recurrenceStartAt ?? null;
+  task.recurrenceUntil = request.recurrenceUntil ?? null;
+  task.recurrenceCount = request.recurrenceCount ?? null;
   task.updatedAt = now;
 
   return cloneTask(task);
@@ -580,6 +594,11 @@ export const mockApiClient = {
         endAt: request.endAt ?? null,
         allDay: request.allDay,
         category: request.category ?? null,
+        recurrenceRule: request.recurrenceRule ?? null,
+        recurrenceTimeZone: request.recurrenceTimeZone ?? null,
+        recurrenceStartAt: request.recurrenceStartAt ?? null,
+        recurrenceUntil: request.recurrenceUntil ?? null,
+        recurrenceCount: request.recurrenceCount ?? null,
         status: 'INBOX',
       });
 
