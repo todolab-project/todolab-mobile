@@ -76,6 +76,17 @@ export function SearchOverview() {
   }, [deferredKeyword, selectedFilter]);
   const search = useTaskSearch(searchQuery);
   const results = search.data?.items ?? [];
+  const hasKeyword = keyword.trim().length > 0;
+  const selectedFilterLabel =
+    searchFilters.find((filter) => filter.value === selectedFilter)?.label ?? '전체';
+  const searchSummary = hasKeyword
+    ? `“${keyword.trim()}” · ${selectedFilterLabel}`
+    : `${selectedFilterLabel} 기록`;
+  const resultDescription = search.isFetching
+    ? '검색 결과를 업데이트하고 있어요.'
+    : hasKeyword
+      ? `${searchSummary}에서 찾은 항목이에요.`
+      : `${searchSummary}을 최근 관련 날짜 순으로 보여줘요.`;
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -120,6 +131,28 @@ export function SearchOverview() {
             style={[styles.input, { color: theme.colors.text }]}
             value={keyword}
           />
+          {hasKeyword ? (
+            <Pressable
+              accessibilityLabel="검색어 지우기"
+              accessibilityRole="button"
+              hitSlop={4}
+              onBlur={() => setFocusedElement(null)}
+              onFocus={() => setFocusedElement('clear')}
+              onPress={() => setKeyword('')}
+              style={[
+                styles.clearButton,
+                {
+                  backgroundColor:
+                    focusedElement === 'clear' ? theme.colors.primarySoft : 'transparent',
+                  borderColor: focusedElement === 'clear' ? theme.colors.primary : 'transparent',
+                },
+              ]}
+            >
+              <AppText tone="secondary" variant="label" weight="bold">
+                ×
+              </AppText>
+            </Pressable>
+          ) : null}
         </View>
 
         <View accessibilityLabel="검색 필터" style={styles.filters}>
@@ -154,6 +187,17 @@ export function SearchOverview() {
             );
           })}
         </View>
+
+        <View style={styles.searchMetaRow}>
+          <View style={[styles.searchMetaPill, { backgroundColor: theme.colors.highlightSage }]}>
+            <AppText tone="success" variant="caption" weight="semibold">
+              {searchSummary}
+            </AppText>
+          </View>
+          <AppText tone="secondary" variant="caption">
+            mock 검색
+          </AppText>
+        </View>
       </Card>
 
       {search.error ? (
@@ -179,7 +223,7 @@ export function SearchOverview() {
             </AppText>
           </View>
           <AppText tone="secondary" variant="caption">
-            현재는 mock 데이터 기준으로 먼저 보여줘요.
+            {resultDescription}
           </AppText>
         </View>
 
@@ -344,6 +388,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: spacing[2],
   },
+  clearButton: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    borderWidth: 1,
+    height: 28,
+    justifyContent: 'center',
+    width: 28,
+  },
   filters: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -355,6 +407,18 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
     minHeight: 36,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[1],
+  },
+  searchMetaRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[2],
+    justifyContent: 'space-between',
+  },
+  searchMetaPill: {
+    borderRadius: radii.full,
+    flexShrink: 1,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[1],
   },
