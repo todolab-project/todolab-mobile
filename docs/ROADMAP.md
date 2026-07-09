@@ -606,6 +606,7 @@ type ApiResponse<T> = {
 
 - [x] 반복 규칙과 occurrence API 요구사항을 [`API_RECURRENCE.md`](./API_RECURRENCE.md)에 문서화
 - [x] 반복 series·occurrence·exception 필드를 모바일 Task 타입과 mock 모델에 반영
+- [x] 반복 Task·일정의 recurrence label 표시 유틸과 목록·상세 metadata 반영
 - [ ] 백엔드 recurrence series, RRULE, occurrence, exception 계약 확정
 - [ ] Task 작성 화면에 반복 없음·매일·매주·매월·사용자 지정 선택 추가
 - [ ] `이번만 / 이후 모두 / 전체` 수정·삭제 범위 선택 UI

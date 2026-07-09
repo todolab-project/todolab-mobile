@@ -6,6 +6,8 @@ import { motion, radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
 import { formatTimeLabel } from '@/utils';
 
+import { getRecurrenceLabel } from './recurrence-presentation';
+
 type TaskCardProps = {
   task: TaskResponse;
   onOpen?: () => void;
@@ -46,8 +48,11 @@ export function TaskCard({
     : !task.allDay && task.startAt
       ? formatTimeLabel(task.startAt)
       : null;
+  const recurrenceLabel = getRecurrenceLabel(task);
   const metadata = (
-    isDone ? [timeLabel, task.category] : [timeLabel, task.allDay ? '종일' : null, task.category]
+    isDone
+      ? [timeLabel, recurrenceLabel, task.category]
+      : [timeLabel, task.allDay ? '종일' : null, recurrenceLabel, task.category]
   ).filter((value): value is string => Boolean(value));
 
   return (

@@ -17,6 +17,7 @@ import { useDdayGoals } from '@/features/dday';
 import {
   TaskDateQuickActions,
   TaskForm,
+  getRecurrenceLabel,
   useDeleteTask,
   useTaskDdayGoal,
   useTaskDetail,
@@ -168,6 +169,7 @@ function TaskDetail({
   const [isDdayExpanded, setIsDdayExpanded] = useState(false);
   const status = statusLabels[task.status];
   const scheduleLabel = getScheduleLabel(task);
+  const recurrenceLabel = getRecurrenceLabel(task);
 
   return (
     <View style={styles.detail}>
@@ -220,6 +222,7 @@ function TaskDetail({
       <Card variant="outlined" style={styles.section}>
         <SectionHeader markerColor={theme.colors.highlightBlue} title="정보" />
         <InfoRow label="일정" value={scheduleLabel} />
+        <InfoRow label="반복" value={recurrenceLabel ?? '없음'} />
         <InfoRow
           label="계획일"
           value={task.plannedDate ? formatDateLabel(task.plannedDate) : '없음'}

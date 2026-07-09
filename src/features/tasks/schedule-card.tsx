@@ -5,6 +5,7 @@ import { AppText } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
+import { getRecurrenceLabel } from './recurrence-presentation';
 import { getSchedulePresentation } from './schedule-presentation';
 
 type ScheduleCardProps = {
@@ -27,7 +28,13 @@ export function ScheduleCard({
   const theme = useAppTheme();
   const [focusedControl, setFocusedControl] = useState<'checkbox' | 'content' | null>(null);
   const presentation = getSchedulePresentation(task, referenceDate);
-  const secondaryMetadata = [presentation.rangeLabel, task.category, task.ddayGoalTitle]
+  const recurrenceLabel = getRecurrenceLabel(task);
+  const secondaryMetadata = [
+    presentation.rangeLabel,
+    recurrenceLabel,
+    task.category,
+    task.ddayGoalTitle,
+  ]
     .filter((value): value is string => Boolean(value))
     .join(' · ');
 
@@ -68,7 +75,7 @@ export function ScheduleCard({
         accessibilityHint={onOpen ? '일정 상세 화면을 엽니다.' : undefined}
         accessibilityLabel={`${task.title}, 일정, ${presentation.primaryLabel}${
           presentation.rangeLabel ? `, ${presentation.rangeLabel}` : ''
-        }, 상세 보기`}
+        }${recurrenceLabel ? `, ${recurrenceLabel}` : ''}, 상세 보기`}
         accessibilityRole="button"
         accessibilityState={{ disabled: !onOpen }}
         disabled={!onOpen}
