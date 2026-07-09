@@ -571,6 +571,7 @@ type ApiResponse<T> = {
    - [x] 검색 화면에 빠른 기간 필터를 추가하고 `RELEVANT` 날짜 범위 query에 연결
    - [x] 검색 화면에 D-Day 연결 여부 필터를 추가하고 `hasDday` query에 연결
    - [x] 검색 화면에 빠른 카테고리 필터를 추가하고 `category` query에 연결
+   - [x] 검색 화면에 검색어·필터 전체 초기화 action 추가
    - [ ] 과거 Task·일정·완료 기록을 날짜와 키워드로 찾는 통합 검색을 프로필에서 제공
    - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
    - [x] 통합 검색의 관련 날짜·결과 schema·정렬·cursor 요구사항을 문서화

@@ -113,6 +113,12 @@ export function SearchOverview() {
   const search = useTaskSearch(searchQuery);
   const results = search.data?.items ?? [];
   const hasKeyword = keyword.trim().length > 0;
+  const hasActiveSearchConditions =
+    hasKeyword ||
+    selectedFilter !== 'ALL' ||
+    selectedDateRange !== 'ALL' ||
+    selectedDdayFilter !== 'ALL' ||
+    selectedCategory !== 'ALL';
   const selectedFilterLabel =
     searchFilters.find((filter) => filter.value === selectedFilter)?.label ?? '전체';
   const selectedDateRangeLabel =
@@ -138,6 +144,14 @@ export function SearchOverview() {
     : hasKeyword
       ? `${searchSummary}에서 찾은 항목이에요.`
       : `${searchSummary}을 최근 관련 날짜 순으로 보여줘요.`;
+  const resetSearchConditions = () => {
+    setKeyword('');
+    setSelectedFilter('ALL');
+    setSelectedDateRange('ALL');
+    setSelectedDdayFilter('ALL');
+    setSelectedCategory('ALL');
+    setFocusedElement(null);
+  };
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -362,9 +376,15 @@ export function SearchOverview() {
               {searchSummary}
             </AppText>
           </View>
-          <AppText tone="secondary" variant="caption">
-            mock 검색
-          </AppText>
+          {hasActiveSearchConditions ? (
+            <Button size="compact" variant="ghost" onPress={resetSearchConditions}>
+              초기화
+            </Button>
+          ) : (
+            <AppText tone="secondary" variant="caption">
+              mock 검색
+            </AppText>
+          )}
         </View>
       </Card>
 
