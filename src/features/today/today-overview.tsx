@@ -12,6 +12,7 @@ import {
   SectionHeader,
 } from '@/components/ui';
 import { ScheduleCard, TaskCard, useCompleteTask, useReopenTask } from '@/features/tasks';
+import { getUserFacingApiErrorMessage } from '@/services/api';
 import { motion, radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
@@ -65,7 +66,7 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
   if (error) {
     return (
       <InlineNotice
-        message={error.message}
+        message={getUserFacingApiErrorMessage(error)}
         title="정보를 불러오지 못했어요"
         tone="danger"
         action={

@@ -15,6 +15,7 @@ import {
   PageHeader,
   Screen,
 } from '@/components/ui';
+import { getUserFacingApiErrorMessage } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type {
   LocalDateString,
@@ -451,7 +452,7 @@ export function SearchOverview() {
       {search.error ? (
         <InlineNotice
           tone="danger"
-          message={search.error.message}
+          message={getUserFacingApiErrorMessage(search.error)}
           action={
             <Button size="compact" variant="ghost" onPress={() => void search.refetch()}>
               재시도

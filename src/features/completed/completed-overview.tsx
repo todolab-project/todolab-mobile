@@ -16,6 +16,7 @@ import {
   SectionHeader,
 } from '@/components/ui';
 import { TaskCard, useReopenTask } from '@/features/tasks';
+import { getUserFacingApiErrorMessage } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -128,7 +129,7 @@ export function CompletedOverview() {
         <ListSkeleton accessibilityLabel="완료 기록을 불러오는 중" />
       ) : week.error ? (
         <InlineNotice
-          message={week.error.message}
+          message={getUserFacingApiErrorMessage(week.error)}
           title="완료 기록을 불러오지 못했어요"
           tone="danger"
           action={

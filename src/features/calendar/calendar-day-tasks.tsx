@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, InlineNotice, ListSkeleton } from '@/components/ui';
 import { ScheduleCard, TaskCard, useCompleteTask } from '@/features/tasks';
+import { getUserFacingApiErrorMessage } from '@/services/api';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel } from '@/utils';
@@ -85,7 +86,7 @@ export function CalendarDayTasks({ date }: CalendarDayTasksProps) {
               다시 시도
             </Button>
           }
-          message={query.error.message}
+          message={getUserFacingApiErrorMessage(query.error)}
           title="이 날짜의 Task를 불러오지 못했어요"
           tone="danger"
         />
