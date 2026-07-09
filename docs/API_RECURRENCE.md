@@ -61,4 +61,4 @@ PATCH  /api/tasks/recurring/{seriesId}/occurrences/{date}/done
 - occurrence 완료·미룸·건너뛰기 저장 방식
 - 반복 전체 수정 후 기존 완료 기록 보존 방식
 - 서울 시간대와 향후 사용자 time zone migration
-- 알림 예약 책임을 서버와 기기 중 어디에 둘지
+- 알림 예약 책임은 [`API_NOTIFICATIONS.md`](./API_NOTIFICATIONS.md)에 따라 반복 occurrence 계산은 백엔드, 가까운 미래 로컬 예약은 모바일로 분리
