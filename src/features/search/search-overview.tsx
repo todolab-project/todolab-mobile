@@ -16,18 +16,26 @@ import {
   Screen,
 } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { TaskSearchItem, TaskSearchQuery, TaskType } from '@/types';
-import { formatDateLabel } from '@/utils';
+import type { LocalDateString, TaskSearchItem, TaskSearchQuery, TaskType } from '@/types';
+import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { useTaskSearch } from './use-task-search';
 
 type SearchFilter = 'ALL' | 'PLANNED' | 'DONE' | 'SCHEDULE';
+type DateRangeFilter = 'ALL' | '7D' | '30D' | 'MONTH';
 
 const searchFilters: { value: SearchFilter; label: string }[] = [
   { value: 'ALL', label: '전체' },
   { value: 'PLANNED', label: '예정' },
   { value: 'DONE', label: '완료' },
   { value: 'SCHEDULE', label: '일정' },
+];
+
+const dateRangeFilters: { value: DateRangeFilter; label: string }[] = [
+  { value: 'ALL', label: '전체 기간' },
+  { value: '7D', label: '최근 7일' },
+  { value: '30D', label: '최근 30일' },
+  { value: 'MONTH', label: '이번 달' },
 ];
 
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
@@ -42,46 +50,56 @@ export function SearchOverview() {
   const theme = useAppTheme();
   const [keyword, setKeyword] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<SearchFilter>('ALL');
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRangeFilter>('ALL');
   const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const deferredKeyword = useDeferredValue(keyword.trim());
+  const today = toApiLocalDate();
+  const dateRangeQuery = useMemo(
+    () => getDateRangeQuery(selectedDateRange, today),
+    [selectedDateRange, today],
+  );
   const searchQuery = useMemo<TaskSearchQuery>(() => {
+    const baseQuery = {
+      q: deferredKeyword || undefined,
+      ...dateRangeQuery,
+      limit: 20,
+    };
+
     if (selectedFilter === 'PLANNED') {
       return {
-        q: deferredKeyword || undefined,
+        ...baseQuery,
         statuses: ['INBOX', 'TODAY'],
-        limit: 20,
       };
     }
 
     if (selectedFilter === 'DONE') {
       return {
-        q: deferredKeyword || undefined,
+        ...baseQuery,
         statuses: ['DONE'],
-        limit: 20,
       };
     }
 
     if (selectedFilter === 'SCHEDULE') {
       return {
-        q: deferredKeyword || undefined,
+        ...baseQuery,
         taskTypes: ['SCHEDULE'],
-        limit: 20,
       };
     }
 
-    return {
-      q: deferredKeyword || undefined,
-      limit: 20,
-    };
-  }, [deferredKeyword, selectedFilter]);
+    return baseQuery;
+  }, [dateRangeQuery, deferredKeyword, selectedFilter]);
   const search = useTaskSearch(searchQuery);
   const results = search.data?.items ?? [];
   const hasKeyword = keyword.trim().length > 0;
   const selectedFilterLabel =
     searchFilters.find((filter) => filter.value === selectedFilter)?.label ?? '전체';
-  const searchSummary = hasKeyword
+  const selectedDateRangeLabel =
+    dateRangeFilters.find((filter) => filter.value === selectedDateRange)?.label ?? '전체 기간';
+  const baseSummary = hasKeyword
     ? `“${keyword.trim()}” · ${selectedFilterLabel}`
     : `${selectedFilterLabel} 기록`;
+  const searchSummary =
+    selectedDateRange === 'ALL' ? baseSummary : `${baseSummary} · ${selectedDateRangeLabel}`;
   const resultDescription = search.isFetching
     ? '검색 결과를 업데이트하고 있어요.'
     : hasKeyword
@@ -188,6 +206,45 @@ export function SearchOverview() {
           })}
         </View>
 
+        <View style={styles.filterGroup}>
+          <AppText tone="secondary" variant="caption" weight="semibold">
+            기간
+          </AppText>
+          <View accessibilityLabel="검색 날짜 범위" style={styles.filters}>
+            {dateRangeFilters.map((filter) => {
+              const selected = selectedDateRange === filter.value;
+              const focusKey = `date-${filter.value}`;
+
+              return (
+                <Pressable
+                  key={filter.value}
+                  accessibilityLabel={`${filter.label} 검색 기간`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  onBlur={() => setFocusedElement(null)}
+                  onFocus={() => setFocusedElement(focusKey)}
+                  onPress={() => setSelectedDateRange(filter.value)}
+                  style={[
+                    styles.filterChip,
+                    {
+                      backgroundColor: selected ? theme.colors.highlightAmber : 'transparent',
+                      borderColor:
+                        focusedElement === focusKey || selected
+                          ? theme.colors.warning
+                          : theme.colors.border,
+                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                    },
+                  ]}
+                >
+                  <AppText tone={selected ? 'warning' : 'secondary'} variant="caption">
+                    {filter.label}
+                  </AppText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
         <View style={styles.searchMetaRow}>
           <View style={[styles.searchMetaPill, { backgroundColor: theme.colors.highlightSage }]}>
             <AppText tone="success" variant="caption" weight="semibold">
@@ -268,8 +325,8 @@ export function SearchOverview() {
         <View style={styles.scopeList}>
           <SearchScopeRow
             icon={{ ios: 'calendar.badge.clock', android: 'date_range', web: 'date_range' }}
-            title="날짜 범위"
-            description="언제 했는지 기억나는 일 찾기"
+            title="직접 기간"
+            description="시작일과 종료일을 직접 고르는 검색"
           />
           <SearchScopeRow
             icon={{ ios: 'line.3.horizontal.decrease', android: 'filter_list', web: 'filter_list' }}
@@ -342,6 +399,37 @@ function getTaskTypeLabel(type: TaskType) {
   return 'Task';
 }
 
+function getDateRangeQuery(
+  filter: DateRangeFilter,
+  today: LocalDateString,
+): Pick<TaskSearchQuery, 'dateField' | 'dateFrom' | 'dateTo'> {
+  if (filter === '7D') {
+    return {
+      dateField: 'RELEVANT',
+      dateFrom: shiftLocalDate(today, -6) ?? today,
+      dateTo: today,
+    };
+  }
+
+  if (filter === '30D') {
+    return {
+      dateField: 'RELEVANT',
+      dateFrom: shiftLocalDate(today, -29) ?? today,
+      dateTo: today,
+    };
+  }
+
+  if (filter === 'MONTH') {
+    return {
+      dateField: 'RELEVANT',
+      dateFrom: `${today.slice(0, 7)}-01` as LocalDateString,
+      dateTo: today,
+    };
+  }
+
+  return {};
+}
+
 type SearchScopeRowProps = {
   icon: ComponentProps<typeof SymbolView>['name'];
   title: string;
@@ -399,6 +487,9 @@ const styles = StyleSheet.create({
   filters: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: spacing[2],
+  },
+  filterGroup: {
     gap: spacing[2],
   },
   filterChip: {

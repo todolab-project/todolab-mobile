@@ -568,6 +568,7 @@ type ApiResponse<T> = {
    - [x] 통합 검색 query type·API client·query key와 mock 검색 응답 추가
    - [x] 검색 화면에서 키워드·상태 필터로 mock 검색 결과를 조회하고 상세로 이동
    - [x] 검색 조건 요약·검색어 지우기·결과 업데이트 상태를 검색 화면에 표시
+   - [x] 검색 화면에 빠른 기간 필터를 추가하고 `RELEVANT` 날짜 범위 query에 연결
    - [ ] 과거 Task·일정·완료 기록을 날짜와 키워드로 찾는 통합 검색을 프로필에서 제공
    - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
    - [x] 통합 검색의 관련 날짜·결과 schema·정렬·cursor 요구사항을 문서화
