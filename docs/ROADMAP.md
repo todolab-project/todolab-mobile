@@ -684,7 +684,7 @@ type ApiResponse<T> = {
   - [x] 공통 목록 skeleton에 busy 상태와 screen reader hint 추가
 - [ ] 접근성 라벨, 읽기 순서, 명암, 글꼴 확대 점검
 - [ ] 성능 점검: 초기 진입, 긴 목록, 캘린더 렌더링
-- [ ] 오류 로깅과 개인정보 정책 결정
+- [x] 오류 로깅과 개인정보 정책 결정
 - [ ] Android package, iOS bundle identifier, EAS profile 구성
 - [ ] Android, iOS, Web smoke test
 
