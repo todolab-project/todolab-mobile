@@ -3,6 +3,7 @@ import type { TaskResponse } from '@/types';
 import {
   buildCalendarPeriodSegments,
   buildCalendarSingleDayLabels,
+  getCalendarScheduleAccessibilityLabel,
   getCalendarSingleDayLabel,
   layoutCalendarPeriodSegments,
 } from '../calendar-period-bars';
@@ -140,6 +141,17 @@ describe('buildCalendarSingleDayLabels', () => {
 
     expect(getCalendarSingleDayLabel(timed)).toBe('14:00 백엔드 회의');
     expect(getCalendarSingleDayLabel({ ...timed, allDay: true })).toBe('백엔드 회의');
+  });
+
+  it('반복 일정은 달력 접근성 label에 반복 정보를 포함한다', () => {
+    const recurring = {
+      ...schedule,
+      recurrenceRule: 'FREQ=WEEKLY;BYDAY=TU',
+    } satisfies TaskResponse;
+
+    expect(getCalendarScheduleAccessibilityLabel(recurring, '하루 일정')).toBe(
+      '기간 일정, 하루 일정, 매주 화',
+    );
   });
 
   it('실행 Task는 달력 일정 label에서 제외한다', () => {

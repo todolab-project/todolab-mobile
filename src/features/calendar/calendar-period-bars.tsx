@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
+import { getRecurrenceLabel } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { doesScheduleOverlapDate, formatTimeLabel, shiftLocalDate } from '@/utils';
@@ -36,7 +37,7 @@ export function CalendarSingleDayLabels({
             {task ? (
               <Pressable
                 accessibilityHint="일정 상세 화면을 엽니다."
-                accessibilityLabel={`${task.title}, 하루 일정 상세 보기`}
+                accessibilityLabel={`${getCalendarScheduleAccessibilityLabel(task, '하루 일정')}, 상세 보기`}
                 accessibilityRole="button"
                 hitSlop={14}
                 onBlur={() => setFocusedItem(null)}
@@ -107,7 +108,7 @@ export function CalendarPeriodBars({
         return (
           <Pressable
             accessibilityHint="일정 상세 화면을 엽니다."
-            accessibilityLabel={`${segment.task.title}, 기간 일정 상세 보기`}
+            accessibilityLabel={`${getCalendarScheduleAccessibilityLabel(segment.task, '기간 일정')}, 상세 보기`}
             accessibilityRole="button"
             hitSlop={12}
             key={segmentKey}
@@ -179,6 +180,10 @@ export function getCalendarSingleDayLabel(task: TaskResponse) {
   if (task.allDay || !task.startAt) return task.title;
 
   return `${formatTimeLabel(task.startAt)} ${task.title}`;
+}
+
+export function getCalendarScheduleAccessibilityLabel(task: TaskResponse, kind: string) {
+  return [task.title, kind, getRecurrenceLabel(task)].filter(Boolean).join(', ');
 }
 
 export function layoutCalendarPeriodSegments(
