@@ -24,6 +24,7 @@ import { useTaskSearch } from './use-task-search';
 type SearchFilter = 'ALL' | 'PLANNED' | 'DONE' | 'SCHEDULE';
 type DateRangeFilter = 'ALL' | '7D' | '30D' | 'MONTH';
 type DdayFilter = 'ALL' | 'LINKED' | 'UNLINKED';
+type CategoryFilter = 'ALL' | 'UI/UX' | 'API' | '일정' | 'D-Day';
 
 const searchFilters: { value: SearchFilter; label: string }[] = [
   { value: 'ALL', label: '전체' },
@@ -45,6 +46,14 @@ const ddayFilters: { value: DdayFilter; label: string }[] = [
   { value: 'UNLINKED', label: 'D-Day 없음' },
 ];
 
+const categoryFilters: { value: CategoryFilter; label: string }[] = [
+  { value: 'ALL', label: '카테고리 전체' },
+  { value: 'UI/UX', label: 'UI/UX' },
+  { value: 'API', label: 'API' },
+  { value: '일정', label: '일정' },
+  { value: 'D-Day', label: 'D-Day' },
+];
+
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
   PLANNED: '예정',
   SCHEDULED: '일정',
@@ -59,6 +68,7 @@ export function SearchOverview() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilter>('ALL');
   const [selectedDateRange, setSelectedDateRange] = useState<DateRangeFilter>('ALL');
   const [selectedDdayFilter, setSelectedDdayFilter] = useState<DdayFilter>('ALL');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('ALL');
   const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const deferredKeyword = useDeferredValue(keyword.trim());
   const today = toApiLocalDate();
@@ -67,11 +77,13 @@ export function SearchOverview() {
     [selectedDateRange, today],
   );
   const ddayQuery = useMemo(() => getDdayQuery(selectedDdayFilter), [selectedDdayFilter]);
+  const categoryQuery = useMemo(() => getCategoryQuery(selectedCategory), [selectedCategory]);
   const searchQuery = useMemo<TaskSearchQuery>(() => {
     const baseQuery = {
       q: deferredKeyword || undefined,
       ...dateRangeQuery,
       ...ddayQuery,
+      ...categoryQuery,
       limit: 20,
     };
 
@@ -97,7 +109,7 @@ export function SearchOverview() {
     }
 
     return baseQuery;
-  }, [dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter]);
+  }, [categoryQuery, dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter]);
   const search = useTaskSearch(searchQuery);
   const results = search.data?.items ?? [];
   const hasKeyword = keyword.trim().length > 0;
@@ -107,12 +119,15 @@ export function SearchOverview() {
     dateRangeFilters.find((filter) => filter.value === selectedDateRange)?.label ?? '전체 기간';
   const selectedDdayFilterLabel =
     ddayFilters.find((filter) => filter.value === selectedDdayFilter)?.label ?? 'D-Day 전체';
+  const selectedCategoryLabel =
+    categoryFilters.find((filter) => filter.value === selectedCategory)?.label ?? '카테고리 전체';
   const baseSummary = hasKeyword
     ? `“${keyword.trim()}” · ${selectedFilterLabel}`
     : `${selectedFilterLabel} 기록`;
   const activeExtraFilters = [
     selectedDateRange === 'ALL' ? null : selectedDateRangeLabel,
     selectedDdayFilter === 'ALL' ? null : selectedDdayFilterLabel,
+    selectedCategory === 'ALL' ? null : selectedCategoryLabel,
   ].filter((value): value is string => Boolean(value));
   const searchSummary =
     activeExtraFilters.length > 0
@@ -302,6 +317,45 @@ export function SearchOverview() {
           </View>
         </View>
 
+        <View style={styles.filterGroup}>
+          <AppText tone="secondary" variant="caption" weight="semibold">
+            카테고리
+          </AppText>
+          <View accessibilityLabel="카테고리 검색 필터" style={styles.filters}>
+            {categoryFilters.map((filter) => {
+              const selected = selectedCategory === filter.value;
+              const focusKey = `category-${filter.value}`;
+
+              return (
+                <Pressable
+                  key={filter.value}
+                  accessibilityLabel={`${filter.label} 검색 필터`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  onBlur={() => setFocusedElement(null)}
+                  onFocus={() => setFocusedElement(focusKey)}
+                  onPress={() => setSelectedCategory(filter.value)}
+                  style={[
+                    styles.filterChip,
+                    {
+                      backgroundColor: selected ? theme.colors.highlightBlue : 'transparent',
+                      borderColor:
+                        focusedElement === focusKey || selected
+                          ? theme.colors.primary
+                          : theme.colors.border,
+                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                    },
+                  ]}
+                >
+                  <AppText tone={selected ? 'primary' : 'secondary'} variant="caption">
+                    {filter.label}
+                  </AppText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
         <View style={styles.searchMetaRow}>
           <View style={[styles.searchMetaPill, { backgroundColor: theme.colors.highlightSage }]}>
             <AppText tone="success" variant="caption" weight="semibold">
@@ -388,7 +442,7 @@ export function SearchOverview() {
           <SearchScopeRow
             icon={{ ios: 'line.3.horizontal.decrease', android: 'filter_list', web: 'filter_list' }}
             title="상세 필터"
-            description="카테고리와 세부 날짜 기준"
+            description="세부 날짜 기준과 정렬"
           />
           <SearchScopeRow
             icon={{ ios: 'arrow.down.doc', android: 'more_horiz', web: 'more_horiz' }}
@@ -497,6 +551,14 @@ function getDdayQuery(filter: DdayFilter): Pick<TaskSearchQuery, 'hasDday'> {
   }
 
   return {};
+}
+
+function getCategoryQuery(filter: CategoryFilter): Pick<TaskSearchQuery, 'category'> {
+  if (filter === 'ALL') {
+    return {};
+  }
+
+  return { category: filter };
 }
 
 type SearchScopeRowProps = {
