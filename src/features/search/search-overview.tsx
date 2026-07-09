@@ -16,7 +16,13 @@ import {
   Screen,
 } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { LocalDateString, TaskSearchItem, TaskSearchQuery, TaskType } from '@/types';
+import type {
+  LocalDateString,
+  TaskSearchItem,
+  TaskSearchQuery,
+  TaskSearchSort,
+  TaskType,
+} from '@/types';
 import { formatDateLabel, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { useTaskSearch } from './use-task-search';
@@ -25,6 +31,7 @@ type SearchFilter = 'ALL' | 'PLANNED' | 'DONE' | 'SCHEDULE';
 type DateRangeFilter = 'ALL' | '7D' | '30D' | 'MONTH';
 type DdayFilter = 'ALL' | 'LINKED' | 'UNLINKED';
 type CategoryFilter = 'ALL' | 'UI/UX' | 'API' | '일정' | 'D-Day';
+type SortFilter = 'DATE_DESC' | 'DATE_ASC';
 
 const searchFilters: { value: SearchFilter; label: string }[] = [
   { value: 'ALL', label: '전체' },
@@ -54,6 +61,11 @@ const categoryFilters: { value: CategoryFilter; label: string }[] = [
   { value: 'D-Day', label: 'D-Day' },
 ];
 
+const sortFilters: { value: SortFilter; label: string; query: TaskSearchSort }[] = [
+  { value: 'DATE_DESC', label: '최신순', query: 'DATE_DESC' },
+  { value: 'DATE_ASC', label: '오래된순', query: 'DATE_ASC' },
+];
+
 const SEARCH_PAGE_SIZE = 5;
 
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
@@ -71,6 +83,7 @@ export function SearchOverview() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRangeFilter>('ALL');
   const [selectedDdayFilter, setSelectedDdayFilter] = useState<DdayFilter>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('ALL');
+  const [selectedSort, setSelectedSort] = useState<SortFilter>('DATE_DESC');
   const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const deferredKeyword = useDeferredValue(keyword.trim());
   const today = toApiLocalDate();
@@ -86,6 +99,7 @@ export function SearchOverview() {
       ...dateRangeQuery,
       ...ddayQuery,
       ...categoryQuery,
+      sort: sortFilters.find((filter) => filter.value === selectedSort)?.query,
       limit: SEARCH_PAGE_SIZE,
     };
 
@@ -111,7 +125,7 @@ export function SearchOverview() {
     }
 
     return baseQuery;
-  }, [categoryQuery, dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter]);
+  }, [categoryQuery, dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter, selectedSort]);
   const search = useTaskSearch(searchQuery);
   const results = search.data?.pages.flatMap((page) => page.items) ?? [];
   const hasKeyword = keyword.trim().length > 0;
@@ -120,7 +134,8 @@ export function SearchOverview() {
     selectedFilter !== 'ALL' ||
     selectedDateRange !== 'ALL' ||
     selectedDdayFilter !== 'ALL' ||
-    selectedCategory !== 'ALL';
+    selectedCategory !== 'ALL' ||
+    selectedSort !== 'DATE_DESC';
   const selectedFilterLabel =
     searchFilters.find((filter) => filter.value === selectedFilter)?.label ?? '전체';
   const selectedDateRangeLabel =
@@ -129,6 +144,8 @@ export function SearchOverview() {
     ddayFilters.find((filter) => filter.value === selectedDdayFilter)?.label ?? 'D-Day 전체';
   const selectedCategoryLabel =
     categoryFilters.find((filter) => filter.value === selectedCategory)?.label ?? '카테고리 전체';
+  const selectedSortLabel =
+    sortFilters.find((filter) => filter.value === selectedSort)?.label ?? '최신순';
   const baseSummary = hasKeyword
     ? `“${keyword.trim()}” · ${selectedFilterLabel}`
     : `${selectedFilterLabel} 기록`;
@@ -136,6 +153,7 @@ export function SearchOverview() {
     selectedDateRange === 'ALL' ? null : selectedDateRangeLabel,
     selectedDdayFilter === 'ALL' ? null : selectedDdayFilterLabel,
     selectedCategory === 'ALL' ? null : selectedCategoryLabel,
+    selectedSort === 'DATE_DESC' ? null : selectedSortLabel,
   ].filter((value): value is string => Boolean(value));
   const searchSummary =
     activeExtraFilters.length > 0
@@ -152,6 +170,7 @@ export function SearchOverview() {
     setSelectedDateRange('ALL');
     setSelectedDdayFilter('ALL');
     setSelectedCategory('ALL');
+    setSelectedSort('DATE_DESC');
     setFocusedElement(null);
   };
 
@@ -372,6 +391,45 @@ export function SearchOverview() {
           </View>
         </View>
 
+        <View style={styles.filterGroup}>
+          <AppText tone="secondary" variant="caption" weight="semibold">
+            정렬
+          </AppText>
+          <View accessibilityLabel="검색 결과 정렬" style={styles.filters}>
+            {sortFilters.map((filter) => {
+              const selected = selectedSort === filter.value;
+              const focusKey = `sort-${filter.value}`;
+
+              return (
+                <Pressable
+                  key={filter.value}
+                  accessibilityLabel={`${filter.label} 검색 정렬`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  onBlur={() => setFocusedElement(null)}
+                  onFocus={() => setFocusedElement(focusKey)}
+                  onPress={() => setSelectedSort(filter.value)}
+                  style={[
+                    styles.filterChip,
+                    {
+                      backgroundColor: selected ? theme.colors.highlightAmber : 'transparent',
+                      borderColor:
+                        focusedElement === focusKey || selected
+                          ? theme.colors.warning
+                          : theme.colors.border,
+                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                    },
+                  ]}
+                >
+                  <AppText tone={selected ? 'warning' : 'secondary'} variant="caption">
+                    {filter.label}
+                  </AppText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
         <View style={styles.searchMetaRow}>
           <View style={[styles.searchMetaPill, { backgroundColor: theme.colors.highlightSage }]}>
             <AppText tone="success" variant="caption" weight="semibold">
@@ -479,8 +537,8 @@ export function SearchOverview() {
           />
           <SearchScopeRow
             icon={{ ios: 'arrow.down.doc', android: 'more_horiz', web: 'more_horiz' }}
-            title="검색 정렬"
-            description="관련도, 최신순, 오래된순"
+            title="관련도 정렬"
+            description="검색어 점수와 업데이트 기준 정렬"
           />
         </View>
       </Card>

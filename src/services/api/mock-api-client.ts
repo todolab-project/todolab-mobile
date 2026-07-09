@@ -12,6 +12,7 @@ import type {
   TaskSearchDateSource,
   TaskSearchItem,
   TaskSearchPage,
+  TaskSearchSort,
   TaskStatus,
   TaskType,
   TaskUpsertRequest,
@@ -365,6 +366,7 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
   const dateField = String(query?.dateField ?? 'RELEVANT') as TaskSearchDateField;
   const dateFrom = query?.dateFrom ? String(query.dateFrom) : null;
   const dateTo = query?.dateTo ? String(query.dateTo) : null;
+  const sort = String(query?.sort ?? 'DATE_DESC') as TaskSearchSort;
   const limit = Math.min(Math.max(Number(query?.limit ?? 20), 1), 50);
   const offset = Math.max(Number(query?.cursor ?? 0), 0);
   const hasDday = parseBooleanQuery(query?.hasDday);
@@ -406,10 +408,13 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
         ...searchDate,
       };
     })
-    .sort(
-      (left, right) =>
-        right.relevantDate.localeCompare(left.relevantDate) || right.task.id - left.task.id,
-    );
+    .sort((left, right) => {
+      if (sort === 'DATE_ASC') {
+        return left.relevantDate.localeCompare(right.relevantDate) || left.task.id - right.task.id;
+      }
+
+      return right.relevantDate.localeCompare(left.relevantDate) || right.task.id - left.task.id;
+    });
 
   return {
     items: items.slice(offset, offset + limit),
