@@ -1,11 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { taskApi, taskQueryKeys } from '@/features/tasks';
 import type { TaskSearchQuery } from '@/types';
 
 export function useTaskSearch(query: TaskSearchQuery) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: taskQueryKeys.search(query),
-    queryFn: ({ signal }) => taskApi.search(query, signal),
+    queryFn: ({ pageParam, signal }) =>
+      taskApi.search({ ...query, cursor: pageParam ?? undefined }, signal),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 }

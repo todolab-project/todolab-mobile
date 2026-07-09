@@ -54,6 +54,8 @@ const categoryFilters: { value: CategoryFilter; label: string }[] = [
   { value: 'D-Day', label: 'D-Day' },
 ];
 
+const SEARCH_PAGE_SIZE = 5;
+
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
   PLANNED: '예정',
   SCHEDULED: '일정',
@@ -84,7 +86,7 @@ export function SearchOverview() {
       ...dateRangeQuery,
       ...ddayQuery,
       ...categoryQuery,
-      limit: 20,
+      limit: SEARCH_PAGE_SIZE,
     };
 
     if (selectedFilter === 'PLANNED') {
@@ -111,7 +113,7 @@ export function SearchOverview() {
     return baseQuery;
   }, [categoryQuery, dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter]);
   const search = useTaskSearch(searchQuery);
-  const results = search.data?.items ?? [];
+  const results = search.data?.pages.flatMap((page) => page.items) ?? [];
   const hasKeyword = keyword.trim().length > 0;
   const hasActiveSearchConditions =
     hasKeyword ||
@@ -439,6 +441,17 @@ export function SearchOverview() {
                 }
               />
             ))}
+            {search.hasNextPage ? (
+              <Button
+                fullWidth
+                loading={search.isFetchingNextPage}
+                size="compact"
+                variant="secondary"
+                onPress={() => void search.fetchNextPage()}
+              >
+                더 보기
+              </Button>
+            ) : null}
           </View>
         )}
       </Card>
@@ -466,8 +479,8 @@ export function SearchOverview() {
           />
           <SearchScopeRow
             icon={{ ios: 'arrow.down.doc', android: 'more_horiz', web: 'more_horiz' }}
-            title="페이지 이어보기"
-            description="긴 기록을 cursor 기반으로 계속 불러오기"
+            title="검색 정렬"
+            description="관련도, 최신순, 오래된순"
           />
         </View>
       </Card>

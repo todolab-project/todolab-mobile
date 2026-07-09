@@ -366,6 +366,7 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
   const dateFrom = query?.dateFrom ? String(query.dateFrom) : null;
   const dateTo = query?.dateTo ? String(query.dateTo) : null;
   const limit = Math.min(Math.max(Number(query?.limit ?? 20), 1), 50);
+  const offset = Math.max(Number(query?.cursor ?? 0), 0);
   const hasDday = parseBooleanQuery(query?.hasDday);
   const allDay = parseBooleanQuery(query?.allDay);
 
@@ -411,9 +412,9 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
     );
 
   return {
-    items: items.slice(0, limit),
-    nextCursor: items.length > limit ? 'mock-next-cursor' : null,
-    hasNext: items.length > limit,
+    items: items.slice(offset, offset + limit),
+    nextCursor: items.length > offset + limit ? String(offset + limit) : null,
+    hasNext: items.length > offset + limit,
   };
 }
 
