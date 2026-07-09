@@ -574,6 +574,7 @@ type ApiResponse<T> = {
    - [x] 검색 화면에 검색어·필터 전체 초기화 action 추가
    - [x] 검색 결과를 cursor 기반 infinite query와 `더 보기` action으로 연결
    - [x] 검색 화면에 최신순·오래된순 정렬 필터를 추가하고 `sort` query에 연결
+   - [x] mock 검색의 cursor pagination·정렬·복합 filter 회귀 테스트 추가
    - [ ] 과거 Task·일정·완료 기록을 날짜와 키워드로 찾는 통합 검색을 프로필에서 제공
    - [ ] 검색 API의 기간·키워드·상태 filter, pagination, timezone 계약을 백엔드와 확정
    - [x] 통합 검색의 관련 날짜·결과 schema·정렬·cursor 요구사항을 문서화
