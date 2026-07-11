@@ -692,6 +692,7 @@ type ApiResponse<T> = {
 - [ ] Android package, iOS bundle identifier, EAS profile 구성
   - [x] package·bundle identifier·EAS profile 확정 전 확인 항목 문서화
 - [ ] Android, iOS, Web smoke test
+  - [x] mock·real 모드별 Android/iOS/Web smoke test 시나리오 문서화
 
 완료 기준:
 
