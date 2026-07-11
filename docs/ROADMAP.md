@@ -685,6 +685,7 @@ type ApiResponse<T> = {
 - [ ] 접근성 라벨, 읽기 순서, 명암, 글꼴 확대 점검
   - [x] 화면별 읽기 순서와 font scale·명암 smoke test 체크리스트 문서화
 - [ ] 성능 점검: 초기 진입, 긴 목록, 캘린더 렌더링
+  - [x] 초기 진입·긴 목록·Calendar 렌더링 성능 예산과 가상화 전환 기준 문서화
 - [x] 오류 로깅과 개인정보 정책 결정
 - [ ] Android package, iOS bundle identifier, EAS profile 구성
 - [ ] Android, iOS, Web smoke test
