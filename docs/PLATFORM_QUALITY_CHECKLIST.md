@@ -1,0 +1,101 @@
+# 플랫폼 품질 점검표
+
+Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준이다. 새 의존성이나 빌드 설정을 추가하기 전에 현재 앱 설정과 실제 화면 동작을 이 문서 기준으로 확인한다.
+
+## 앱 아이콘과 splash
+
+현재 설정:
+
+- 공통 icon: `assets/images/icon.png`
+- iOS icon: `assets/expo.icon`
+- Android adaptive icon:
+  - foreground: `assets/images/android-icon-foreground.png`
+  - background: `assets/images/android-icon-background.png`
+  - monochrome: `assets/images/android-icon-monochrome.png`
+- Web favicon: `assets/images/favicon.png`
+- Splash icon: `assets/images/splash-icon.png`
+- Splash background: `#208AEF`
+
+점검 기준:
+
+- Android adaptive icon preview에서 foreground가 잘리지 않는다.
+- Android monochrome icon이 단색 테마에서 의미를 잃지 않는다.
+- iOS icon이 라운드 마스크 안에서 여백이 과하거나 부족하지 않다.
+- Splash background와 앱 첫 화면 background 전환이 튀지 않는다.
+- Splash icon은 저해상도 기기에서도 흐릿해 보이지 않는다.
+
+## 상태바와 safe area
+
+현재 앱은 `expo-status-bar`의 `style="auto"`와 공통 `Screen`의 `SafeAreaView`를 사용한다.
+
+점검 기준:
+
+- light/dark theme에서 status bar 아이콘 대비가 충분하다.
+- Today 하단 빠른 기록 composer가 iOS home indicator, Android navigation bar, 하단 tab과 겹치지 않는다.
+- KeyboardAvoidingView가 열린 상태에서도 입력 완료 버튼이 가려지지 않는다.
+- Task detail, Search, Completed처럼 뒤로 가기 icon button이 있는 화면은 notch와 겹치지 않는다.
+- Web 320px 폭에서도 content max width와 safe inset이 이상하게 중첩되지 않는다.
+
+## 키보드 동작
+
+현재 기준:
+
+- `Screen` scroll 화면은 `automaticallyAdjustKeyboardInsets`, `keyboardDismissMode="on-drag"`, `keyboardShouldPersistTaps="handled"`를 사용한다.
+- Today는 하단 composer를 위해 `KeyboardAvoidingView`를 별도로 둔다.
+- 하단 tab은 `tabBarHideOnKeyboard`를 사용한다.
+
+점검 기준:
+
+- 빠른 기록 input focus 시 composer가 키보드 위에 자연스럽게 올라온다.
+- Task 작성/수정 화면에서 제목 → 설명 → 카테고리 이동이 어색하지 않다.
+- 검색 화면에서 키보드가 열린 상태로 필터 chip을 눌러도 입력값이 사라지지 않는다.
+- Android back 버튼 첫 동작은 키보드 닫기, 다음 동작은 화면 뒤로 가기여야 한다.
+- Web에서는 Tab 순서가 시각 순서를 크게 벗어나지 않아야 한다.
+
+## 날짜 선택
+
+현재 앱은 native date picker 의존성 없이 Today week strip, Calendar month grid, Completed week picker, Task date quick actions로 날짜를 선택한다.
+
+점검 기준:
+
+- Today week strip과 Calendar month grid의 선택 날짜 표현이 다르게 느껴지지 않는다.
+- Completed week picker는 선택 날짜와 완료 count를 함께 보여준다.
+- Task date quick actions는 오늘·내일·7일 후·기록함을 44pt 이상 터치 영역으로 제공한다.
+- 날짜 변경 후 목록 query key와 화면 label이 같은 날짜를 가리킨다.
+- 시간대 기준은 `toApiLocalDate`와 백엔드 date contract를 따른다.
+
+## 햅틱
+
+현재 앱은 haptic 의존성을 사용하지 않는다. 도입 시 Expo SDK 56 호환성을 먼저 확인한다.
+
+도입 후보:
+
+- Task 완료
+- 일정 완료
+- D-Day 목표 생성
+- 빠른 기록 저장
+- 오류가 아닌 성공 feedback
+
+도입하지 않을 곳:
+
+- 화면 이동마다 반복되는 진동
+- filter chip 선택처럼 자주 누르는 보조 행동
+- 실패/오류에 강한 진동을 반복하는 패턴
+
+점검 기준:
+
+- iOS와 Android에서 같은 강도의 haptic이 과하게 느껴지지 않는다.
+- Web에서는 haptic 없이 같은 성공 문구와 상태 변화가 제공된다.
+- haptic 실패가 주요 action 실패로 이어지지 않는다.
+
+## 빌드 식별자
+
+출시 빌드 전 확정 필요:
+
+- Android package
+- iOS bundle identifier
+- EAS profile
+- 앱 표시 이름
+- scheme 유지 여부: `todolab`
+
+식별자 확정 전까지는 실제 store 제출용 build를 만들지 않는다.

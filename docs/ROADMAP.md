@@ -677,7 +677,9 @@ type ApiResponse<T> = {
 
 - [x] 로컬 알림 요구사항과 백엔드 알림 책임 분리
 - [ ] 앱 아이콘, splash, 상태바, safe area 최종 점검
+  - [x] 현재 app icon·splash·status bar·safe area 점검 기준 문서화
 - [ ] 햅틱, 키보드, 날짜 선택기의 플랫폼별 조정
+  - [x] 키보드·날짜 선택·햅틱 도입 기준 문서화
 - [ ] 오프라인/느린 네트워크 처리
   - [x] network·timeout·5xx query retry 정책을 공통 함수와 회귀 테스트로 고정
   - [x] 주요 조회 화면의 API 오류를 공통 사용자용 문구로 정규화
@@ -688,6 +690,7 @@ type ApiResponse<T> = {
   - [x] 초기 진입·긴 목록·Calendar 렌더링 성능 예산과 가상화 전환 기준 문서화
 - [x] 오류 로깅과 개인정보 정책 결정
 - [ ] Android package, iOS bundle identifier, EAS profile 구성
+  - [x] package·bundle identifier·EAS profile 확정 전 확인 항목 문서화
 - [ ] Android, iOS, Web smoke test
 
 완료 기준:
