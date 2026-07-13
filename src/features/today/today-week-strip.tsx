@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
 import { getWeekDates } from '@/features/calendar/calendar-date';
+import { getCalendarColumnBoundaryPercent } from '@/features/calendar/calendar-layout';
 import {
   CalendarPeriodBars,
   CalendarSingleDayLabels,
@@ -53,7 +54,7 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
                 styles.dayColumnRule,
                 {
                   backgroundColor: theme.colors.rule,
-                  left: `${((index + 1) / 7) * 100}%`,
+                  left: getCalendarColumnBoundaryPercent(index),
                 },
               ]}
             />

@@ -7,6 +7,12 @@ import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { doesScheduleOverlapDate, formatTimeLabel, shiftLocalDate } from '@/utils';
 
+import {
+  CALENDAR_DAY_WIDTH,
+  getCalendarSegmentLeftPercent,
+  getCalendarSegmentWidthPercent,
+} from './calendar-layout';
+
 type CalendarPeriodBarsProps = {
   dates: LocalDateString[];
   tasks: TaskResponse[];
@@ -120,10 +126,14 @@ export function CalendarPeriodBars({
               {
                 backgroundColor: theme.colors.highlightSage,
                 borderColor: focusedItem === segmentKey ? theme.colors.primary : 'transparent',
-                left: `${(segment.startIndex / dates.length) * 100}%`,
+                left: getCalendarSegmentLeftPercent(segment.startIndex, dates.length),
                 opacity: pressed ? 0.7 : 1,
                 top: segment.lane * 24,
-                width: `${((segment.endIndex - segment.startIndex + 1) / dates.length) * 100}%`,
+                width: getCalendarSegmentWidthPercent(
+                  segment.startIndex,
+                  segment.endIndex,
+                  dates.length,
+                ),
               },
             ]}
           >
@@ -272,13 +282,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'row',
     minWidth: 0,
-    width: '14.285714%',
+    overflow: 'hidden',
+    paddingHorizontal: 2,
+    width: CALENDAR_DAY_WIDTH,
   },
   singleDayLabel: {
     borderRadius: radii.sm,
     borderWidth: 1,
     flex: 1,
     minWidth: 0,
+    overflow: 'hidden',
     paddingHorizontal: 3,
   },
   singleDayOverflow: {
@@ -287,6 +300,7 @@ const styles = StyleSheet.create({
   },
   container: {
     height: 48,
+    overflow: 'hidden',
     position: 'relative',
   },
   bar: {
@@ -294,6 +308,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 20,
     justifyContent: 'center',
+    marginHorizontal: 2,
     overflow: 'hidden',
     paddingHorizontal: spacing[1],
     position: 'absolute',

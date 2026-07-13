@@ -10,6 +10,7 @@ import { formatDateLabel, isLocalDateString, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
 import { getMonthCalendarDates, shiftMonth } from './calendar-date';
+import { CALENDAR_DAY_WIDTH, getCalendarColumnBoundaryPercent } from './calendar-layout';
 import { CalendarPeriodBars, CalendarSingleDayLabels } from './calendar-period-bars';
 import { useCalendarRangeTasks } from './use-calendar-range-tasks';
 
@@ -136,7 +137,7 @@ function MonthDateGrid({
                   styles.dayColumnRule,
                   {
                     backgroundColor: theme.colors.rule,
-                    left: `${((index + 1) / 7) * 100}%`,
+                    left: getCalendarColumnBoundaryPercent(index),
                   },
                 ]}
               />
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing[2],
   },
   monthWeekday: {
-    width: '14.285714%',
+    width: CALENDAR_DAY_WIDTH,
   },
   monthGrid: {
     flexDirection: 'row',
@@ -321,7 +322,7 @@ const styles = StyleSheet.create({
   monthDayButton: {
     minHeight: 48,
     paddingVertical: spacing[1],
-    width: '14.285714%',
+    width: CALENDAR_DAY_WIDTH,
   },
   singleDayLane: {
     minHeight: 24,
