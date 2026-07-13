@@ -40,6 +40,8 @@ src/
 | [성능 점검 기준](./docs/PERFORMANCE_CHECKLIST.md)               | 초기 진입, 긴 목록, Calendar 렌더링 성능 기준      |
 | [플랫폼 품질 점검표](./docs/PLATFORM_QUALITY_CHECKLIST.md)      | icon, splash, safe area, 키보드, 햅틱, 식별자 기준 |
 | [Smoke test 체크리스트](./docs/SMOKE_TEST_CHECKLIST.md)         | Android, iOS, Web mock/real 모드 검증 시나리오     |
+| [화면 가이드](./docs/SCREEN_GUIDE.md)                           | 실제 화면 캡쳐와 화면별 사용 흐름 문서화           |
+| [마켓·소개 이미지 준비](./docs/APP_STORE_ASSETS.md)             | 앱 마켓, 소개 페이지용 이미지와 문구 초안          |
 | [오류 로깅과 개인정보 기준](./docs/ERROR_LOGGING_PRIVACY.md)    | 오류 로깅 수집 범위와 원문 데이터 비수집 기준      |
 | [반복 Task·일정 API 요구사항](./docs/API_RECURRENCE.md)         | 반복 series, occurrence, exception 백엔드 계약     |
 | [로컬 알림 요구사항과 백엔드 책임](./docs/API_NOTIFICATIONS.md) | 반복 일정과 로컬 알림 책임 분리                    |
