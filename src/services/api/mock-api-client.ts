@@ -52,6 +52,7 @@ const users: UserResponse[] = [
     displayName: 'Demo User',
     role: 'USER',
     createdAt: now,
+    updatedAt: null,
   },
 ];
 
@@ -252,6 +253,7 @@ function createUser(request: RegisterRequest) {
     displayName: request.displayName,
     role: 'USER',
     createdAt: now,
+    updatedAt: null,
   };
 
   nextUserId += 1;

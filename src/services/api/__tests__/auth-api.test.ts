@@ -65,6 +65,7 @@ describe('Auth API', () => {
         displayName: 'User',
         role: 'USER',
         createdAt: '2026-07-14T09:00:00',
+        updatedAt: null,
       },
     });
     const request = { email: 'user@example.com', password: 'password123' };

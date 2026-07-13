@@ -8,6 +8,7 @@ export type UserResponse = {
   displayName: string;
   role: UserRole;
   createdAt: LocalDateTimeString;
+  updatedAt: LocalDateTimeString | null;
 };
 
 export type RegisterRequest = {

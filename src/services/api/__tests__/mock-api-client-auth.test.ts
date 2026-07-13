@@ -13,6 +13,7 @@ describe('Mock auth API', () => {
     expect(response.email).toBe('mock-register@example.com');
     expect(response.displayName).toBe('Mock Register');
     expect(response.role).toBe('USER');
+    expect(response.updatedAt).toBeNull();
   });
 
   it('로그인 후 내 정보 응답을 반환한다', async () => {
