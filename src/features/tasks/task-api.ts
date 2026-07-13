@@ -11,7 +11,7 @@ import type {
   TaskUpsertRequest,
 } from '@/types';
 
-const TASKS_PATH = '/api/tasks';
+const TASKS_PATH = '/api/v1/tasks';
 
 function serializeSearchQuery(query: TaskSearchQuery) {
   return {

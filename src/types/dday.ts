@@ -9,10 +9,15 @@ export type DdayGoalRequest = {
   targetDate: LocalDateString;
 };
 
+export type DdayGoalTaskRequest = {
+  title: string;
+  date: LocalDateString;
+};
+
 export type DdayGoalResponse = {
   id: number;
   title: string;
   targetDate: LocalDateString;
   daysLeft: number;
-  createdAt: LocalDateTimeString;
+  createdAt: LocalDateTimeString | null;
 };

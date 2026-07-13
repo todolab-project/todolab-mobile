@@ -27,7 +27,7 @@ describe('D-Day API', () => {
   it('D-Day 목표 목록을 조회한다', async () => {
     await ddayApi.list();
 
-    expect(getMock).toHaveBeenCalledWith('/api/ddays', { signal: undefined });
+    expect(getMock).toHaveBeenCalledWith('/api/v1/dday-goals', { signal: undefined });
   });
 
   it('D-Day 목표를 생성한다', async () => {
@@ -35,18 +35,34 @@ describe('D-Day API', () => {
 
     await ddayApi.create(request);
 
-    expect(postMock).toHaveBeenCalledWith('/api/ddays', request, { signal: undefined });
+    expect(postMock).toHaveBeenCalledWith('/api/v1/dday-goals', request, { signal: undefined });
+  });
+
+  it('D-Day 목표를 단건 조회한다', async () => {
+    await ddayApi.get(42);
+
+    expect(getMock).toHaveBeenCalledWith('/api/v1/dday-goals/42', { signal: undefined });
   });
 
   it('D-Day 목표를 삭제한다', async () => {
     await ddayApi.delete(42);
 
-    expect(deleteMock).toHaveBeenCalledWith('/api/ddays/42', { signal: undefined });
+    expect(deleteMock).toHaveBeenCalledWith('/api/v1/dday-goals/42', { signal: undefined });
   });
 
   it('D-Day 목표에 연결된 Task 목록을 조회한다', async () => {
     await ddayApi.getTasks(42);
 
-    expect(getMock).toHaveBeenCalledWith('/api/ddays/42/tasks', { signal: undefined });
+    expect(getMock).toHaveBeenCalledWith('/api/v1/dday-goals/42/tasks', { signal: undefined });
+  });
+
+  it('D-Day 목표 기반 Today Task를 생성한다', async () => {
+    const request = { title: '출시 체크', date: '2026-06-29' as const };
+
+    await ddayApi.createTask(42, request);
+
+    expect(postMock).toHaveBeenCalledWith('/api/v1/dday-goals/42/tasks', request, {
+      signal: undefined,
+    });
   });
 });

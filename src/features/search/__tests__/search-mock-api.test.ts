@@ -3,10 +3,10 @@ import type { TaskSearchPage } from '@/types';
 
 describe('Mock task search API', () => {
   test('cursor 기반으로 다음 검색 페이지를 반환한다', async () => {
-    const firstPage = await mockApiClient.get<TaskSearchPage>('/api/tasks/search', {
+    const firstPage = await mockApiClient.get<TaskSearchPage>('/api/v1/tasks/search', {
       query: { limit: 3 },
     });
-    const secondPage = await mockApiClient.get<TaskSearchPage>('/api/tasks/search', {
+    const secondPage = await mockApiClient.get<TaskSearchPage>('/api/v1/tasks/search', {
       query: { cursor: firstPage.nextCursor, limit: 3 },
     });
 
@@ -19,7 +19,7 @@ describe('Mock task search API', () => {
   });
 
   test('날짜 오름차순 정렬을 적용한다', async () => {
-    const page = await mockApiClient.get<TaskSearchPage>('/api/tasks/search', {
+    const page = await mockApiClient.get<TaskSearchPage>('/api/v1/tasks/search', {
       query: { limit: 5, sort: 'DATE_ASC' },
     });
 
@@ -29,7 +29,7 @@ describe('Mock task search API', () => {
   });
 
   test('D-Day와 카테고리 필터를 함께 적용한다', async () => {
-    const page = await mockApiClient.get<TaskSearchPage>('/api/tasks/search', {
+    const page = await mockApiClient.get<TaskSearchPage>('/api/v1/tasks/search', {
       query: { category: 'D-Day', hasDday: true, limit: 10 },
     });
 

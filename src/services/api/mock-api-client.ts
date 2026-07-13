@@ -3,6 +3,7 @@ import { ApiClientError } from './api-error';
 import type {
   DdayGoalRequest,
   DdayGoalResponse,
+  DdayGoalTaskRequest,
   DeferReason,
   LocalDateString,
   TaskRecommendationResponse,
@@ -30,6 +31,8 @@ type MockApiOptions = {
 
 const now = '2026-06-30T09:00:00';
 const today = toApiLocalDate();
+const TASKS_PATH = '/api/v1/tasks';
+const DDAYS_PATH = '/api/v1/dday-goals';
 
 let nextTaskId = 100;
 let nextGoalId = 10;
@@ -221,13 +224,13 @@ function getGoal(goalId: number) {
 }
 
 function getTaskId(path: string) {
-  const match = path.match(/^\/api\/tasks\/(\d+)/);
+  const match = path.match(/^\/api\/v1\/tasks\/(\d+)/);
 
   return match ? Number(match[1]) : null;
 }
 
 function getGoalId(path: string) {
-  const match = path.match(/^\/api\/ddays\/(\d+)/);
+  const match = path.match(/^\/api\/v1\/dday-goals\/(\d+)/);
 
   return match ? Number(match[1]) : null;
 }
@@ -500,7 +503,7 @@ export const mockApiClient = {
   async get<T>(path: string, options: MockApiOptions = {}) {
     requireNotAborted(options.signal);
 
-    if (path === '/api/tasks') {
+    if (path === TASKS_PATH) {
       const date = getDate(options.query);
       const type = String(options.query?.type ?? 'DAY') as TaskQueryType;
       const range = getTaskRange(type, date);
@@ -514,11 +517,11 @@ export const mockApiClient = {
         .map(cloneTask) as T;
     }
 
-    if (path === '/api/tasks/search') {
+    if (path === `${TASKS_PATH}/search`) {
       return searchTasks(options.query) as T;
     }
 
-    if (path === '/api/tasks/today') {
+    if (path === `${TASKS_PATH}/today`) {
       const date = getDate(options.query);
 
       return tasks
@@ -531,7 +534,7 @@ export const mockApiClient = {
         .map(cloneTask) as T;
     }
 
-    if (path === '/api/tasks/today/recommendations') {
+    if (path === `${TASKS_PATH}/today/recommendations`) {
       const recommendations: TaskRecommendationResponse[] = tasks
         .filter((task) => task.status === 'INBOX' && !task.staleCarryOver)
         .slice(0, 3)
@@ -543,7 +546,7 @@ export const mockApiClient = {
       return recommendations as T;
     }
 
-    if (path === '/api/tasks/done') {
+    if (path === `${TASKS_PATH}/done`) {
       const date = getDate(options.query);
 
       return tasks
@@ -551,27 +554,31 @@ export const mockApiClient = {
         .map(cloneTask) as T;
     }
 
-    if (path === '/api/tasks/stale') {
+    if (path === `${TASKS_PATH}/stale`) {
       return tasks.filter((task) => task.staleCarryOver).map(cloneTask) as T;
     }
 
-    if (path === '/api/tasks/inbox') {
+    if (path === `${TASKS_PATH}/inbox`) {
       return tasks
         .filter((task) => task.status === 'INBOX' && !task.staleCarryOver)
         .map(cloneTask) as T;
     }
 
-    if (path === '/api/ddays') {
+    if (path === DDAYS_PATH) {
       return ddayGoals.map(cloneGoal) as T;
     }
 
     const taskId = getTaskId(path);
-    if (taskId && path === `/api/tasks/${taskId}`) {
+    if (taskId && path === `${TASKS_PATH}/${taskId}`) {
       return cloneTask(getTask(taskId)) as T;
     }
 
     const goalId = getGoalId(path);
-    if (goalId && path === `/api/ddays/${goalId}/tasks`) {
+    if (goalId && path === `${DDAYS_PATH}/${goalId}`) {
+      return cloneGoal(getGoal(goalId)) as T;
+    }
+
+    if (goalId && path === `${DDAYS_PATH}/${goalId}/tasks`) {
       return tasks.filter((task) => task.ddayGoalId === goalId).map(cloneTask) as T;
     }
 
@@ -583,7 +590,7 @@ export const mockApiClient = {
   async post<T>(path: string, body?: unknown, options: MockApiOptions = {}) {
     requireNotAborted(options.signal);
 
-    if (path === '/api/tasks') {
+    if (path === TASKS_PATH) {
       const request = body as TaskUpsertRequest;
       const task = createTask({
         id: nextTaskId,
@@ -608,7 +615,7 @@ export const mockApiClient = {
       return cloneTask(task) as T;
     }
 
-    if (path === '/api/ddays') {
+    if (path === DDAYS_PATH) {
       const request = body as DdayGoalRequest;
       const goal: DdayGoalResponse = {
         id: nextGoalId,
@@ -624,6 +631,33 @@ export const mockApiClient = {
       return cloneGoal(goal) as T;
     }
 
+    const goalId = getGoalId(path);
+    if (goalId && path === `${DDAYS_PATH}/${goalId}/tasks`) {
+      const goal = getGoal(goalId);
+      const request = body as DdayGoalTaskRequest;
+      const task = createTask({
+        id: nextTaskId,
+        title: request.title,
+        type: 'TODO',
+        allDay: false,
+        startAt: null,
+        endAt: null,
+        status: 'TODAY',
+        plannedDate: request.date,
+        targetDate: request.date,
+        todayOrder: getNextTodayOrder(request.date),
+        ddayGoalId: goal.id,
+        ddayGoalTitle: goal.title,
+        ddayGoalTargetDate: goal.targetDate,
+        ddayDaysLeft: getDaysLeft(goal.targetDate),
+      });
+
+      nextTaskId += 1;
+      tasks.unshift(task);
+
+      return cloneTask(task) as T;
+    }
+
     throw new ApiClientError(`Mock API가 지원하지 않는 POST 요청입니다. (${path})`, {
       kind: 'configuration',
     });
@@ -633,7 +667,7 @@ export const mockApiClient = {
     requireNotAborted(options.signal);
 
     const taskId = getTaskId(path);
-    if (taskId && path === `/api/tasks/${taskId}`) {
+    if (taskId && path === `${TASKS_PATH}/${taskId}`) {
       return applyTaskRequest(getTask(taskId), body as TaskUpsertRequest) as T;
     }
 
@@ -655,19 +689,19 @@ export const mockApiClient = {
     const task = getTask(taskId);
     const date = getDate(options.query);
 
-    if (path === `/api/tasks/${taskId}/done`) {
+    if (path === `${TASKS_PATH}/${taskId}/done`) {
       return setTaskStatus(task, 'DONE', date) as T;
     }
 
-    if (path === `/api/tasks/${taskId}/today`) {
+    if (path === `${TASKS_PATH}/${taskId}/today`) {
       return setTaskStatus(task, 'TODAY', date) as T;
     }
 
-    if (path === `/api/tasks/${taskId}/inbox`) {
+    if (path === `${TASKS_PATH}/${taskId}/inbox`) {
       return setTaskStatus(task, 'INBOX') as T;
     }
 
-    if (path === `/api/tasks/${taskId}/today-order`) {
+    if (path === `${TASKS_PATH}/${taskId}/today-order`) {
       return reorderToday(
         taskId,
         date,
@@ -675,7 +709,7 @@ export const mockApiClient = {
       ) as T;
     }
 
-    if (path === `/api/tasks/${taskId}/defer-reason`) {
+    if (path === `${TASKS_PATH}/${taskId}/defer-reason`) {
       const reason = String(options.query?.reason) as DeferReason;
       task.deferReason = reason;
       task.deferReasonLabel = deferReasonLabels[reason] ?? null;
@@ -684,11 +718,11 @@ export const mockApiClient = {
       return cloneTask(task) as T;
     }
 
-    if (path === `/api/tasks/${taskId}/dday-goal`) {
+    if (path === `${TASKS_PATH}/${taskId}/dday-goal`) {
       return connectGoal(task, Number(options.query?.ddayGoalId)) as T;
     }
 
-    if (path === `/api/tasks/${taskId}/done/cancel`) {
+    if (path === `${TASKS_PATH}/${taskId}/done/cancel`) {
       return setTaskStatus(task, 'TODAY', date) as T;
     }
 
@@ -701,7 +735,7 @@ export const mockApiClient = {
     requireNotAborted(options.signal);
 
     const taskId = getTaskId(path);
-    if (taskId && path === `/api/tasks/${taskId}`) {
+    if (taskId && path === `${TASKS_PATH}/${taskId}`) {
       const index = tasks.findIndex((task) => task.id === taskId);
 
       if (index >= 0) {
@@ -711,7 +745,7 @@ export const mockApiClient = {
       return null as T;
     }
 
-    if (taskId && path === `/api/tasks/${taskId}/defer-reason`) {
+    if (taskId && path === `${TASKS_PATH}/${taskId}/defer-reason`) {
       const task = getTask(taskId);
 
       task.deferReason = null;
@@ -721,12 +755,12 @@ export const mockApiClient = {
       return cloneTask(task) as T;
     }
 
-    if (taskId && path === `/api/tasks/${taskId}/dday-goal`) {
+    if (taskId && path === `${TASKS_PATH}/${taskId}/dday-goal`) {
       return disconnectGoal(getTask(taskId)) as T;
     }
 
     const goalId = getGoalId(path);
-    if (goalId && path === `/api/ddays/${goalId}`) {
+    if (goalId && path === `${DDAYS_PATH}/${goalId}`) {
       const index = ddayGoals.findIndex((goal) => goal.id === goalId);
 
       if (index >= 0) {

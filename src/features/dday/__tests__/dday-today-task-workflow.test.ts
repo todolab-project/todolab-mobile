@@ -1,31 +1,18 @@
-import { moveTaskToDate, taskApi } from '@/features/tasks';
 import type { TaskResponse } from '@/types';
 
+import { ddayApi } from '../dday-api';
 import { createDdayTodayTask } from '../dday-today-task-workflow';
 
-jest.mock('@/features/tasks', () => ({
-  moveTaskToDate: jest.fn(),
-  taskApi: {
-    connectDdayGoal: jest.fn(),
-    create: jest.fn(),
-    delete: jest.fn(),
+jest.mock('../dday-api', () => ({
+  ddayApi: {
+    createTask: jest.fn(),
   },
 }));
 
-const createMock = taskApi.create as jest.Mock;
-const connectMock = taskApi.connectDdayGoal as jest.Mock;
-const moveMock = moveTaskToDate as jest.Mock;
-const deleteMock = taskApi.delete as jest.Mock;
+const createTaskMock = ddayApi.createTask as jest.Mock;
 
 const createdTask = {
   id: 42,
-  status: 'INBOX',
-  plannedDate: null,
-  ddayGoalId: null,
-} as TaskResponse;
-
-const movedTask = {
-  ...createdTask,
   status: 'TODAY',
   plannedDate: '2026-06-29',
   ddayGoalId: 7,
@@ -33,39 +20,25 @@ const movedTask = {
 
 describe('D-Day 목표의 Today Task 생성 workflow', () => {
   beforeEach(() => {
-    createMock.mockReset().mockResolvedValue(createdTask);
-    connectMock.mockReset().mockResolvedValue({ ...createdTask, ddayGoalId: 7 });
-    moveMock.mockReset().mockResolvedValue(movedTask);
-    deleteMock.mockReset().mockResolvedValue(null);
+    createTaskMock.mockReset().mockResolvedValue(createdTask);
   });
 
-  it('Task 생성, 목표 연결, Today 이동을 순서대로 수행한다', async () => {
+  it('백엔드 트랜잭션 API로 목표 기반 Today Task를 생성한다', async () => {
     await expect(
       createDdayTodayTask({ goalId: 7, title: '출시 체크', date: '2026-06-29' }),
-    ).resolves.toEqual(movedTask);
+    ).resolves.toEqual(createdTask);
 
-    expect(connectMock).toHaveBeenCalledWith(42, 7);
-    expect(moveMock).toHaveBeenCalledWith(42, '2026-06-29');
-    expect(deleteMock).not.toHaveBeenCalled();
+    expect(createTaskMock).toHaveBeenCalledWith(7, {
+      title: '출시 체크',
+      date: '2026-06-29',
+    });
   });
 
-  it('Today 이동이 실제로 실패하면 생성한 Task를 삭제한다', async () => {
-    moveMock.mockRejectedValue(new Error('이동 실패'));
-
-    await expect(
-      createDdayTodayTask({ goalId: 7, title: '출시 체크', date: '2026-06-29' }),
-    ).rejects.toThrow('이동 실패');
-
-    expect(deleteMock).toHaveBeenCalledWith(42);
-  });
-
-  it('중간 단계가 실제로 실패하면 생성한 Task를 삭제한다', async () => {
-    connectMock.mockRejectedValue(new Error('연결 실패'));
+  it('백엔드 생성 실패를 그대로 전달한다', async () => {
+    createTaskMock.mockRejectedValue(new Error('생성 실패'));
 
     await expect(
       createDdayTodayTask({ goalId: 7, title: '출시 체크', date: '2026-06-29' }),
-    ).rejects.toThrow('연결 실패');
-
-    expect(deleteMock).toHaveBeenCalledWith(42);
+    ).rejects.toThrow('생성 실패');
   });
 });

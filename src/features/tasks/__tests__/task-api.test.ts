@@ -40,13 +40,13 @@ describe('Task API', () => {
 
     await taskApi.create(request);
 
-    expect(postMock).toHaveBeenCalledWith('/api/tasks', request, { signal: undefined });
+    expect(postMock).toHaveBeenCalledWith('/api/v1/tasks', request, { signal: undefined });
   });
 
   test('Task 상세를 id로 조회한다', async () => {
     await taskApi.get(42);
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/42', { signal: undefined });
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/42', { signal: undefined });
   });
 
   test('반복 Task 계약 필드를 생성 요청에 포함할 수 있다', async () => {
@@ -65,7 +65,7 @@ describe('Task API', () => {
 
     await taskApi.create(request);
 
-    expect(postMock).toHaveBeenCalledWith('/api/tasks', request, { signal: undefined });
+    expect(postMock).toHaveBeenCalledWith('/api/v1/tasks', request, { signal: undefined });
   });
 
   test('Task를 수정한다', async () => {
@@ -81,19 +81,19 @@ describe('Task API', () => {
 
     await taskApi.update(42, request);
 
-    expect(putMock).toHaveBeenCalledWith('/api/tasks/42', request, { signal: undefined });
+    expect(putMock).toHaveBeenCalledWith('/api/v1/tasks/42', request, { signal: undefined });
   });
 
   test('Task를 삭제한다', async () => {
     await taskApi.delete(42);
 
-    expect(deleteMock).toHaveBeenCalledWith('/api/tasks/42', { signal: undefined });
+    expect(deleteMock).toHaveBeenCalledWith('/api/v1/tasks/42', { signal: undefined });
   });
 
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {
     await taskApi.getToday('2026-06-24');
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/today', {
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/today', {
       query: { date: '2026-06-24' },
       signal: undefined,
     });
@@ -102,7 +102,7 @@ describe('Task API', () => {
   test('Today 추천 조회에 서울 기준 날짜를 전달한다', async () => {
     await taskApi.getTodayRecommendations('2026-06-24');
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/today/recommendations', {
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/today/recommendations', {
       query: { date: '2026-06-24' },
       signal: undefined,
     });
@@ -111,7 +111,7 @@ describe('Task API', () => {
   test('완료 조회에 날짜를 전달한다', async () => {
     await taskApi.getDone('2026-06-24');
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/done', {
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/done', {
       query: { date: '2026-06-24' },
       signal: undefined,
     });
@@ -120,13 +120,13 @@ describe('Task API', () => {
   test('지난 미완료 항목을 조회한다', async () => {
     await taskApi.getStale();
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/stale', { signal: undefined });
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/stale', { signal: undefined });
   });
 
   test('기록함을 별도 query 없이 조회한다', async () => {
     await taskApi.getInbox();
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/inbox', { signal: undefined });
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/inbox', { signal: undefined });
   });
 
   test('통합 검색 query를 API 계약에 맞게 직렬화한다', async () => {
@@ -140,7 +140,7 @@ describe('Task API', () => {
       limit: 20,
     });
 
-    expect(getMock).toHaveBeenCalledWith('/api/tasks/search', {
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/search', {
       query: {
         q: '회의',
         statuses: 'TODAY,DONE',
@@ -157,7 +157,7 @@ describe('Task API', () => {
   test('Task 완료 endpoint를 호출한다', async () => {
     await taskApi.complete(42);
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/done', undefined, {
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/done', undefined, {
       signal: undefined,
     });
   });
@@ -165,7 +165,7 @@ describe('Task API', () => {
   test('기록함 Task를 지정한 날짜의 Today로 이동한다', async () => {
     await taskApi.moveToToday(42, '2026-06-25');
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/today', undefined, {
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/today', undefined, {
       query: { date: '2026-06-25' },
       signal: undefined,
     });
@@ -174,7 +174,7 @@ describe('Task API', () => {
   test('Task를 기록함으로 이동한다', async () => {
     await taskApi.moveToInbox(42);
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/inbox', undefined, {
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/inbox', undefined, {
       signal: undefined,
     });
   });
@@ -182,17 +182,17 @@ describe('Task API', () => {
   test('Today Task 실행 순서를 한 칸 이동한다', async () => {
     await taskApi.reorderToday(42, '2026-06-25', 'UP');
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/today-order', undefined, {
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/today-order', undefined, {
       query: { date: '2026-06-25', direction: 'UP' },
       signal: undefined,
     });
   });
 
   test('Task 미룬 이유를 저장한다', async () => {
-    await taskApi.setDeferReason(42, 'TOO_BIG');
+    await taskApi.setDeferReason(42, 'NEED_INFO');
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/defer-reason', undefined, {
-      query: { reason: 'TOO_BIG' },
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/defer-reason', undefined, {
+      query: { reason: 'NEED_INFO' },
       signal: undefined,
     });
   });
@@ -200,13 +200,13 @@ describe('Task API', () => {
   test('Task 미룬 이유를 해제한다', async () => {
     await taskApi.clearDeferReason(42);
 
-    expect(deleteMock).toHaveBeenCalledWith('/api/tasks/42/defer-reason', { signal: undefined });
+    expect(deleteMock).toHaveBeenCalledWith('/api/v1/tasks/42/defer-reason', { signal: undefined });
   });
 
   test('Task를 D-Day 목표에 연결한다', async () => {
     await taskApi.connectDdayGoal(42, 7);
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/dday-goal', undefined, {
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/dday-goal', undefined, {
       query: { ddayGoalId: 7 },
       signal: undefined,
     });
@@ -215,13 +215,13 @@ describe('Task API', () => {
   test('Task의 D-Day 목표 연결을 해제한다', async () => {
     await taskApi.disconnectDdayGoal(42);
 
-    expect(deleteMock).toHaveBeenCalledWith('/api/tasks/42/dday-goal', { signal: undefined });
+    expect(deleteMock).toHaveBeenCalledWith('/api/v1/tasks/42/dday-goal', { signal: undefined });
   });
 
   test('완료 Task를 지정한 날짜의 Today로 다시 연다', async () => {
     await taskApi.reopenToday(42, '2026-06-25');
 
-    expect(patchMock).toHaveBeenCalledWith('/api/tasks/42/done/cancel', undefined, {
+    expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/done/cancel', undefined, {
       query: { date: '2026-06-25' },
       signal: undefined,
     });

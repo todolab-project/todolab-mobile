@@ -16,18 +16,16 @@ export type RecurrenceEditScope = 'THIS' | 'THIS_AND_FUTURE' | 'ALL';
 export type RecurrenceException = 'SKIPPED' | 'MOVED' | 'MODIFIED';
 export type DeferReason =
   | 'TOO_BIG'
-  | 'NOT_NEEDED_NOW'
-  | 'AVOIDING'
-  | 'NO_DEADLINE'
-  | 'WAITING_OTHER'
+  | 'NOT_IMPORTANT'
+  | 'NEED_INFO'
+  | 'NO_TIME'
   | 'ETC';
 
 export const deferReasonLabels: Record<DeferReason, string> = {
   TOO_BIG: '너무 큼',
-  NOT_NEEDED_NOW: '지금 필요 없음',
-  AVOIDING: '회피 중',
-  NO_DEADLINE: '마감 없음',
-  WAITING_OTHER: '대기 중',
+  NOT_IMPORTANT: '중요하지 않음',
+  NEED_INFO: '정보 필요',
+  NO_TIME: '시간 부족',
   ETC: '기타',
 };
 

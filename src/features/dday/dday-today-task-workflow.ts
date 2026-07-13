@@ -1,5 +1,6 @@
-import { moveTaskToDate, taskApi } from '@/features/tasks';
 import type { LocalDateString, TaskResponse } from '@/types';
+
+import { ddayApi } from './dday-api';
 
 export type CreateDdayTodayTaskVariables = {
   goalId: number;
@@ -8,26 +9,5 @@ export type CreateDdayTodayTaskVariables = {
 };
 
 export async function createDdayTodayTask({ goalId, title, date }: CreateDdayTodayTaskVariables) {
-  let createdTask: TaskResponse | null = null;
-
-  try {
-    createdTask = await taskApi.create({
-      title,
-      description: null,
-      category: null,
-      type: 'TODO',
-      allDay: false,
-      startAt: null,
-      endAt: null,
-    });
-    await taskApi.connectDdayGoal(createdTask.id, goalId);
-
-    return await moveTaskToDate(createdTask.id, date);
-  } catch (error) {
-    if (createdTask) {
-      await taskApi.delete(createdTask.id).catch(() => undefined);
-    }
-
-    throw error;
-  }
+  return ddayApi.createTask(goalId, { title, date });
 }
