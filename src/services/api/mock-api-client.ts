@@ -1,11 +1,14 @@
 import { ApiClientError } from './api-error';
 
 import type {
+  AuthenticatedUserResponse,
   DdayGoalRequest,
   DdayGoalResponse,
   DdayGoalTaskRequest,
   DeferReason,
+  LoginRequest,
   LocalDateString,
+  RegisterRequest,
   TaskRecommendationResponse,
   TaskQueryType,
   TaskResponse,
@@ -17,7 +20,9 @@ import type {
   TaskStatus,
   TaskType,
   TaskUpsertRequest,
+  TokenResponse,
   TodayOrderDirection,
+  UserResponse,
 } from '@/types';
 import { deferReasonLabels } from '@/types';
 import { doesScheduleOverlapDate, shiftLocalDate, toApiLocalDate } from '@/utils';
@@ -31,11 +36,24 @@ type MockApiOptions = {
 
 const now = '2026-06-30T09:00:00';
 const today = toApiLocalDate();
+const AUTH_PATH = '/api/v1/auth';
 const TASKS_PATH = '/api/v1/tasks';
 const DDAYS_PATH = '/api/v1/dday-goals';
 
+let nextUserId = 2;
 let nextTaskId = 100;
 let nextGoalId = 10;
+let currentUser: UserResponse | null = null;
+
+const users: UserResponse[] = [
+  {
+    id: 1,
+    email: 'demo@todolab.app',
+    displayName: 'Demo User',
+    role: 'USER',
+    createdAt: now,
+  },
+];
 
 const ddayGoals: DdayGoalResponse[] = [
   {
@@ -221,6 +239,36 @@ function getGoal(goalId: number) {
   }
 
   return goal;
+}
+
+function getUser(email: string) {
+  return users.find((user) => user.email.toLowerCase() === email.toLowerCase()) ?? null;
+}
+
+function createUser(request: RegisterRequest) {
+  const user: UserResponse = {
+    id: nextUserId,
+    email: request.email,
+    displayName: request.displayName,
+    role: 'USER',
+    createdAt: now,
+  };
+
+  nextUserId += 1;
+  users.push(user);
+
+  return user;
+}
+
+function createTokenResponse(user: UserResponse): TokenResponse {
+  currentUser = user;
+
+  return {
+    tokenType: 'Bearer',
+    accessToken: `mock-access-token-${user.id}`,
+    expiresAt: `${today}T23:59:59`,
+    user,
+  };
 }
 
 function getTaskId(path: string) {
@@ -498,6 +546,17 @@ export const mockApiClient = {
   async get<T>(path: string, options: MockApiOptions = {}) {
     requireNotAborted(options.signal);
 
+    if (path === `${AUTH_PATH}/me`) {
+      const user = currentUser ?? users[0];
+      const response: AuthenticatedUserResponse = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+
+      return response as T;
+    }
+
     if (path === TASKS_PATH) {
       const date = getDate(options.query);
       const type = String(options.query?.type ?? 'DAY') as TaskQueryType;
@@ -584,6 +643,27 @@ export const mockApiClient = {
 
   async post<T>(path: string, body?: unknown, options: MockApiOptions = {}) {
     requireNotAborted(options.signal);
+
+    if (path === `${AUTH_PATH}/register`) {
+      const request = body as RegisterRequest;
+      const existingUser = getUser(request.email);
+      const user = existingUser ?? createUser(request);
+
+      return { ...user } as T;
+    }
+
+    if (path === `${AUTH_PATH}/login`) {
+      const request = body as LoginRequest;
+      const user =
+        getUser(request.email) ??
+        createUser({
+          email: request.email,
+          displayName: request.email.split('@')[0] || 'Mock User',
+          password: request.password,
+        });
+
+      return createTokenResponse(user) as T;
+    }
 
     if (path === TASKS_PATH) {
       const request = body as TaskUpsertRequest;
