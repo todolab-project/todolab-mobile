@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
@@ -55,6 +55,19 @@ export function ProfileOverview() {
   const theme = useAppTheme();
   const [focusedItem, setFocusedItem] = useState<ProfileItem['href'] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getAccessToken()));
+  const me = useQuery({
+    queryKey: ['auth', 'me'],
+    queryFn: ({ signal }) => authApi.me(signal),
+    enabled: isLoggedIn,
+    retry: false,
+  });
+  const userEmail = me.data?.email;
+  const identityTitle = userEmail ?? (isLoggedIn ? '나의 플래너' : '로그인이 필요해요');
+  const identityDescription = isLoggedIn
+    ? me.isPending
+      ? '계정 정보를 확인하고 있어요.'
+      : '목표와 기록, 개인 설정을 관리하세요.'
+    : '실제 서버 데이터와 동기화하려면 로그인하세요.';
 
   const logout = () => {
     authApi.logout();
@@ -73,13 +86,11 @@ export function ProfileOverview() {
           </AppText>
         </View>
         <View style={styles.identityCopy}>
-          <AppText variant="bodyLarge" weight="bold">
-            {isLoggedIn ? '나의 플래너' : '로그인이 필요해요'}
+          <AppText numberOfLines={1} variant="bodyLarge" weight="bold">
+            {identityTitle}
           </AppText>
           <AppText tone="secondary" variant="caption">
-            {isLoggedIn
-              ? '목표와 기록, 개인 설정을 관리하세요.'
-              : '실제 서버 데이터와 동기화하려면 로그인하세요.'}
+            {identityDescription}
           </AppText>
         </View>
       </View>
