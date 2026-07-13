@@ -14,7 +14,7 @@
 ## 2. 조회 API
 
 ```http
-GET /api/tasks/search
+GET /api/v1/tasks/search
 ```
 
 ### Query parameter
@@ -61,7 +61,7 @@ GET /api/tasks/search
 예:
 
 ```http
-GET /api/tasks/search?q=병원&statuses=INBOX,TODAY&taskTypes=TODO&hasDday=true&sort=RELEVANCE&limit=20
+GET /api/v1/tasks/search?q=병원&statuses=INBOX,TODAY&taskTypes=TODO&hasDday=true&sort=RELEVANCE&limit=20
 ```
 
 ## 3. 응답

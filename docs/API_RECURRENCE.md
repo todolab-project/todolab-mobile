@@ -48,10 +48,10 @@
 필요 endpoint 예시:
 
 ```text
-POST   /api/tasks/recurring
-PATCH  /api/tasks/recurring/{seriesId}?scope=THIS|THIS_AND_FUTURE|ALL&occurrenceDate=YYYY-MM-DD
-DELETE /api/tasks/recurring/{seriesId}?scope=THIS|THIS_AND_FUTURE|ALL&occurrenceDate=YYYY-MM-DD
-PATCH  /api/tasks/recurring/{seriesId}/occurrences/{date}/done
+POST   /api/v1/tasks/recurring
+PATCH  /api/v1/tasks/recurring/{seriesId}?scope=THIS|THIS_AND_FUTURE|ALL&occurrenceDate=YYYY-MM-DD
+DELETE /api/v1/tasks/recurring/{seriesId}?scope=THIS|THIS_AND_FUTURE|ALL&occurrenceDate=YYYY-MM-DD
+PATCH  /api/v1/tasks/recurring/{seriesId}/occurrences/{date}/done
 ```
 
 ## 백엔드 확인 항목

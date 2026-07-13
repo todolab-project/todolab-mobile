@@ -164,10 +164,10 @@ type ApiResponse<T> = {
 - API 문서 또는 OpenAPI 명세
 - 날짜와 시간의 타임존 기준
 - 네트워크 재시도와 중복 생성 방지를 위한 요청 정책
-- `GET /api/tasks` 범위 조회가 `SCHEDULE`만 반환하는지와 `DAY`, `WEEK`, `MONTH`별 계약
+- `GET /api/v1/tasks` 범위 조회가 `SCHEDULE`만 반환하는지와 `DAY`, `WEEK`, `MONTH`별 계약
 - D-Day 삭제 성공 응답을 `data: null` 또는 삭제된 ID 중 하나로 통일
-- 존재하는 목표의 `GET /api/ddays/{id}`가 HTTP 500을 반환하는 문제 확인
-- `POST /api/ddays/{id}/tasks`가 유효한 Task 요청에도 HTTP 500을 반환하는 문제 확인
+- 존재하는 목표의 `GET /api/v1/dday-goals/{id}`가 HTTP 500을 반환하는 문제 확인
+- `POST /api/v1/dday-goals/{id}/tasks`가 유효한 Task 요청에도 HTTP 500을 반환하는 문제 확인
 - D-Day 연결 Task의 Today 이동은 반영되지만 응답이 HTTP 500으로 끝나는 문제 확인
 - 통합 검색 구현 전 [`API_SEARCH_FILTER.md`](./API_SEARCH_FILTER.md)의 관련 날짜와 cursor 계약 구현
 

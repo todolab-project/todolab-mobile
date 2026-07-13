@@ -4,7 +4,7 @@ Today와 Calendar가 여러 날에 걸친 일정을 빠뜨리거나 날짜마다
 
 ## Today 조회
 
-`GET /api/tasks/today?date=YYYY-MM-DD`는 일반 Today Task와 함께 요청 날짜에 걸쳐 있는 `SCHEDULE`을 반환해야 한다.
+`GET /api/v1/tasks/today?date=YYYY-MM-DD`는 일반 Today Task와 함께 요청 날짜에 걸쳐 있는 `SCHEDULE`을 반환해야 한다.
 
 일정 포함 기준은 서울 기준 하루 구간과 일정 범위의 겹침이다. 종료 경계의 최종 inclusive/exclusive 규칙은 백엔드 확인 후 확정한다.
 
