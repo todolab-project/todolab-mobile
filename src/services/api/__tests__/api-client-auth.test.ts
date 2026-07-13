@@ -1,16 +1,20 @@
+import { request } from '../api-client';
+import { subscribeSessionExpired } from '../auth-session';
+import { clearAccessToken, getAccessToken, setAccessToken } from '../auth-token-store';
+
+jest.mock('@/config', () => ({
+  env: { apiMode: 'real', apiUrl: 'https://api.example.com' },
+  requireApiUrl: () => 'https://api.example.com',
+}));
+
 describe('api client authorization', () => {
   beforeEach(() => {
-    jest.resetModules();
     installLocalStorage();
     localStorage.clear();
+    clearAccessToken();
   });
 
   it('저장된 access token을 Authorization 헤더로 첨부한다', async () => {
-    jest.doMock('@/config', () => ({
-      env: { apiMode: 'real', apiUrl: 'https://api.example.com' },
-      requireApiUrl: () => 'https://api.example.com',
-    }));
-
     const fetchMock = jest.fn().mockResolvedValue({
       ok: true,
       status: 200,
@@ -24,9 +28,6 @@ describe('api client authorization', () => {
     });
     globalThis.fetch = fetchMock;
 
-    const { request } = require('../api-client') as typeof import('../api-client');
-    const { setAccessToken } =
-      require('../auth-token-store') as typeof import('../auth-token-store');
     setAccessToken('access-token');
 
     await request('/api/v1/auth/me');
@@ -36,11 +37,6 @@ describe('api client authorization', () => {
   });
 
   it('401 응답을 받으면 access token을 삭제하고 세션 만료를 알린다', async () => {
-    jest.doMock('@/config', () => ({
-      env: { apiMode: 'real', apiUrl: 'https://api.example.com' },
-      requireApiUrl: () => 'https://api.example.com',
-    }));
-
     globalThis.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 401,
@@ -53,11 +49,6 @@ describe('api client authorization', () => {
         }),
     });
 
-    const { request } = require('../api-client') as typeof import('../api-client');
-    const { subscribeSessionExpired } =
-      require('../auth-session') as typeof import('../auth-session');
-    const { getAccessToken, setAccessToken } =
-      require('../auth-token-store') as typeof import('../auth-token-store');
     const listener = jest.fn();
     const unsubscribe = subscribeSessionExpired(listener);
     setAccessToken('expired-token');

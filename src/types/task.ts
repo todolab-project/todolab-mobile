@@ -14,12 +14,7 @@ export type TaskSearchDateSource = 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREA
 export type TodayOrderDirection = 'UP' | 'DOWN';
 export type RecurrenceEditScope = 'THIS' | 'THIS_AND_FUTURE' | 'ALL';
 export type RecurrenceException = 'SKIPPED' | 'MOVED' | 'MODIFIED';
-export type DeferReason =
-  | 'TOO_BIG'
-  | 'NOT_IMPORTANT'
-  | 'NEED_INFO'
-  | 'NO_TIME'
-  | 'ETC';
+export type DeferReason = 'TOO_BIG' | 'NOT_IMPORTANT' | 'NEED_INFO' | 'NO_TIME' | 'ETC';
 
 export const deferReasonLabels: Record<DeferReason, string> = {
   TOO_BIG: '너무 큼',

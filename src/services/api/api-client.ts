@@ -2,8 +2,7 @@ import { env, requireApiUrl } from '@/config';
 
 import { ApiClientError } from './api-error';
 import { notifySessionExpired } from './auth-session';
-import { clearAccessToken } from './auth-token-store';
-import { getAccessToken } from './auth-token-store';
+import { clearAccessToken, getAccessToken } from './auth-token-store';
 import { mockApiClient } from './mock-api-client';
 
 const DEFAULT_TIMEOUT_MS = 10_000;
