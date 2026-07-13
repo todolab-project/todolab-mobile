@@ -1,3 +1,11 @@
+export type {
+  AuthenticatedUserResponse,
+  LoginRequest,
+  RegisterRequest,
+  TokenResponse,
+  UserResponse,
+  UserRole,
+} from './auth';
 export type { DdayGoalRequest, DdayGoalResponse } from './dday';
 export { ddayGoalLimits } from './dday';
 export type { LocalDateString, LocalDateTimeString } from './date-time';

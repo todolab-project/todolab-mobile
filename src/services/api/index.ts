@@ -1,3 +1,5 @@
+export { authApi } from './auth-api';
+export { clearAccessToken, getAccessToken, setAccessToken } from './auth-token-store';
 export { apiClient, request } from './api-client';
 export type { ApiEnvelope } from './api-client';
 export { ApiClientError, getUserFacingApiErrorMessage } from './api-error';

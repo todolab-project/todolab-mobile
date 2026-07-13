@@ -1,6 +1,7 @@
 import { env, requireApiUrl } from '@/config';
 
 import { ApiClientError } from './api-error';
+import { getAccessToken } from './auth-token-store';
 import { mockApiClient } from './mock-api-client';
 
 const DEFAULT_TIMEOUT_MS = 10_000;
@@ -90,6 +91,10 @@ export async function request<T>(path: string, options: ApiRequestOptions = {}) 
   let timedOut = false;
 
   headers.set('Accept', 'application/json');
+  const accessToken = getAccessToken();
+  if (accessToken && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${accessToken}`);
+  }
   if (body !== undefined) {
     headers.set('Content-Type', 'application/json');
   }
