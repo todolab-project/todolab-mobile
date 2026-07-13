@@ -106,6 +106,25 @@ npm run ios
 npm run web
 ```
 
+### Smoke test 실행
+
+백엔드 없이 앱 흐름을 먼저 확인하려면 `.env.local`을 mock 모드로 둡니다.
+
+```dotenv
+EXPO_PUBLIC_API_MODE=mock
+```
+
+mock 모드에서는 임의 이메일과 8자 이상 비밀번호로 회원가입·로그인 흐름을 확인할 수 있습니다.
+
+백엔드 연동을 확인할 때는 real 모드와 플랫폼별 API URL을 함께 설정합니다.
+
+```dotenv
+EXPO_PUBLIC_API_MODE=real
+EXPO_PUBLIC_API_URL=http://localhost:8080
+```
+
+화면별 확인 순서는 [Smoke test 체크리스트](./docs/SMOKE_TEST_CHECKLIST.md)를 따릅니다.
+
 ### 검증
 
 ```bash
