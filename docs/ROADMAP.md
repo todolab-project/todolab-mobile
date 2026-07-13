@@ -759,6 +759,12 @@ Today 작업 목록 표시
 
 ## 11. 바로 다음 작업
 
-다음 모바일 작업은 Phase 6 후속 3의 공통 planner header와 date column 정리다. 이어 Today에 compact 주간 strip을 추가하고 Calendar는 월간 planner 전용으로 단순화한다. 하단 navigation은 `오늘 / 달력 / 기록함 / 프로필`로 재구성하며 D-Day와 기존 More 목적지는 Today와 프로필로 이동한다. 반복 Task와 일정은 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 mock과 form UI를 실제 저장 기능처럼 노출하지 않는다.
+현재 모바일 단독으로 진행 가능한 기반 작업은 대부분 문서화와 회귀 테스트까지 완료했다. 다음 작업은 실제 화면 또는 백엔드 계약이 필요한 항목을 우선한다.
 
-Calendar, D-Day, More의 핵심 세로 흐름을 Phase 5까지 연결한 뒤 Phase 6에서 Today를 포함한 전반적인 UI/UX를 집중적으로 정리한다. 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
+1. `EXPO_PUBLIC_API_MODE=mock`으로 앱을 실행해 [`SMOKE_TEST_CHECKLIST.md`](./SMOKE_TEST_CHECKLIST.md)의 Today, Calendar, Search, Completed, Profile 시나리오를 실제 화면에서 확인한다.
+2. 화면 연결이 가능하면 [`ACCESSIBILITY_CHECKLIST.md`](./ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](./PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 320px·375pt·430dp와 light/dark, font scale 1.5를 비교한다.
+3. 백엔드가 준비되면 `EXPO_PUBLIC_API_MODE=real`로 전환해 Today·Calendar 범위 조회, 검색 filter·pagination, 반복 occurrence 계약을 실제 응답으로 확인한다.
+4. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
+5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
+
+그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
