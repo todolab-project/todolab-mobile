@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
@@ -9,39 +9,49 @@ import { AppText, Button, IconButton, InlineNotice, PageHeader, Screen } from '@
 import { authApi, getUserFacingApiErrorMessage } from '@/services/api';
 import { radii, spacing, typography, useAppTheme } from '@/theme';
 
-export function LoginOverview() {
+export function RegisterOverview() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const theme = useAppTheme();
   const [email, setEmail] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
-  const login = useMutation({
-    mutationFn: () => authApi.login({ email: email.trim(), password }),
-    onSuccess: async () => {
+  const register = useMutation({
+    mutationFn: () =>
+      authApi.register({
+        email: email.trim(),
+        displayName: displayName.trim(),
+        password,
+      }),
+    onSuccess: () => {
       setValidationMessage(null);
-      await queryClient.invalidateQueries();
-      router.replace('/' as Href);
+      router.replace('/login' as Href);
     },
   });
   const errorMessage =
-    validationMessage ?? (login.error ? getUserFacingApiErrorMessage(login.error) : null);
+    validationMessage ?? (register.error ? getUserFacingApiErrorMessage(register.error) : null);
 
   const submit = () => {
     const normalizedEmail = email.trim();
-    if (!normalizedEmail || !password) {
-      setValidationMessage('이메일과 비밀번호를 입력해 주세요.');
+    const normalizedDisplayName = displayName.trim();
+    if (!normalizedEmail || !normalizedDisplayName || !password) {
+      setValidationMessage('이메일, 이름, 비밀번호를 입력해 주세요.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setValidationMessage('비밀번호는 8자 이상 입력해 주세요.');
       return;
     }
 
     setValidationMessage(null);
-    login.mutate();
+    register.mutate();
   };
 
   return (
     <Screen contentContainerStyle={styles.screen}>
       <PageHeader
-        title="로그인"
+        title="회원가입"
         leading={
           <IconButton accessibilityLabel="이전 화면으로 돌아가기" onPress={router.back}>
             <SymbolView
@@ -63,9 +73,10 @@ export function LoginOverview() {
               이메일
             </AppText>
             <TextInput
-              accessibilityLabel="이메일"
+              accessibilityLabel="회원가입 이메일"
               autoCapitalize="none"
               autoComplete="email"
+              editable={!register.isPending}
               inputMode="email"
               onChangeText={setEmail}
               placeholder="you@example.com"
@@ -85,14 +96,41 @@ export function LoginOverview() {
 
           <View style={styles.field}>
             <AppText variant="label" weight="bold">
+              이름
+            </AppText>
+            <TextInput
+              accessibilityLabel="표시 이름"
+              autoCapitalize="none"
+              autoComplete="name"
+              editable={!register.isPending}
+              maxLength={50}
+              onChangeText={setDisplayName}
+              placeholder="나의 플래너"
+              placeholderTextColor={theme.colors.textMuted}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                },
+              ]}
+              textContentType="name"
+              value={displayName}
+            />
+          </View>
+
+          <View style={styles.field}>
+            <AppText variant="label" weight="bold">
               비밀번호
             </AppText>
             <TextInput
-              accessibilityLabel="비밀번호"
+              accessibilityLabel="회원가입 비밀번호"
               autoCapitalize="none"
-              autoComplete="password"
+              autoComplete="password-new"
+              editable={!register.isPending}
               onChangeText={setPassword}
-              placeholder="비밀번호"
+              placeholder="8자 이상"
               placeholderTextColor={theme.colors.textMuted}
               secureTextEntry
               style={[
@@ -103,7 +141,7 @@ export function LoginOverview() {
                   color: theme.colors.text,
                 },
               ]}
-              textContentType="password"
+              textContentType="newPassword"
               value={password}
             />
           </View>
@@ -111,16 +149,11 @@ export function LoginOverview() {
 
         {errorMessage ? <InlineNotice tone="danger" message={errorMessage} /> : null}
 
-        <Button fullWidth loading={login.isPending} onPress={submit} size="large">
-          로그인
+        <Button fullWidth loading={register.isPending} onPress={submit} size="large">
+          회원가입
         </Button>
-        <Button
-          fullWidth
-          disabled={login.isPending}
-          onPress={() => router.push('/register' as Href)}
-          variant="ghost"
-        >
-          계정 만들기
+        <Button fullWidth disabled={register.isPending} onPress={router.back} variant="ghost">
+          로그인으로 돌아가기
         </Button>
       </KeyboardAvoidingView>
     </Screen>
