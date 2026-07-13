@@ -263,7 +263,7 @@ ToDoLab 적용 방향:
 
 목표: 기능은 이미 어느 정도 연결되었으므로, 이제 매일 열어도 부담 없는 가볍고 단정한 모바일 앱으로 다듬는다.
 
-- [ ] `UX_REVIEW_LOG.md`를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
+- [x] [`UX_REVIEW_LOG.md`](./UX_REVIEW_LOG.md)를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
 - [ ] Today 미니 달력의 외부 경계, 내부 세로선, 일정 label과 날짜 cell 정렬을 재점검한다.
 - [ ] 일정, 오늘 할 일, 오늘 완료한 일 section 색을 파스텔톤으로 유지하되 배경과 대비를 다시 맞춘다.
 - [ ] 빠른 입력 placeholder와 input inset을 더 짧고 자연스럽게 정리한다.
@@ -399,29 +399,25 @@ Today 작업 목록 표시
 | Platform quality checklist        | Android/iOS/Web safe area, icon, keyboard | 작성 완료 |
 | API contract notes                | 검색, 반복, 일정 범위, 날짜/시간 계약     | 작성 중   |
 | Release checklist                 | 배포 전 계정, 빌드, 환경, QA 확인         | 필요      |
-| UX review log                     | 화면별 불편점, 결정 이유, 보류 사유       | 필요      |
+| UX review log                     | 화면별 불편점, 결정 이유, 보류 사유       | 작성 중   |
 | Component inventory               | 공통 컴포넌트 사용처와 변형 정리          | 필요      |
 
 우선 작성하면 좋은 문서:
 
-1. `UX_REVIEW_LOG.md`
-   - 네이버 모바일 앱처럼 편하게 읽히는지, 화면별 어색함과 수정 결정을 계속 기록한다.
-   - Today, Calendar, 정리할 항목, Profile을 캡쳐 기준으로 점검한다.
-2. `RELEASE_CHECKLIST.md`
+1. `RELEASE_CHECKLIST.md`
    - 실제 사용 전 필요한 환경, 계정, 빌드, real API, 오류 로깅, 스토어 준비를 한 번에 확인한다.
-3. `COMPONENT_INVENTORY.md`
+2. `COMPONENT_INVENTORY.md`
    - Button, Card, Task row, Calendar cell, Bottom tab, Composer가 어디서 어떻게 쓰이는지 정리해 UI 일관성을 유지한다.
 
 ## 12. 바로 다음 작업
 
 다음 작업은 실제 화면 품질과 real API 잔여 계약을 우선한다.
 
-1. 네이버 모바일 앱 수준의 가볍고 단정한 사용감을 기준으로 Today, Calendar, 정리할 항목, Profile을 다시 리뷰하고 `UX_REVIEW_LOG.md`에 문제와 결정을 기록한다.
-2. Today 미니 달력의 외부 경계, 내부 세로선, 일정/오늘 할 일/완료 section 색 대비, 빠른 입력 placeholder, Profile shortcut card를 정리한다.
-3. Calendar 월간 grid의 일 단위 구분선 정렬, 일정 bar overflow, 불필요한 우측 상단 버튼 여부를 확인하고 수정한다.
-4. 정리할 항목 화면의 버튼과 section UI를 Today와 같은 planner 문법으로 재정리한다.
-5. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API와 반복 occurrence 계약은 백엔드 구현 완료 후 실제 응답으로 확인한다.
-6. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
-7. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
+1. Today 미니 달력의 외부 경계, 내부 세로선, 일정/오늘 할 일/완료 section 색 대비, 빠른 입력 placeholder, Profile shortcut card를 정리한다.
+2. Calendar 월간 grid의 일 단위 구분선 정렬, 일정 bar overflow, 불필요한 우측 상단 버튼 여부를 확인하고 수정한다.
+3. 정리할 항목 화면의 버튼과 section UI를 Today와 같은 planner 문법으로 재정리한다.
+4. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API와 반복 occurrence 계약은 백엔드 구현 완료 후 실제 응답으로 확인한다.
+5. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
+6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
