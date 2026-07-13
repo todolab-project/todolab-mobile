@@ -1,6 +1,8 @@
 import { env, requireApiUrl } from '@/config';
 
 import { ApiClientError } from './api-error';
+import { notifySessionExpired } from './auth-session';
+import { clearAccessToken } from './auth-token-store';
 import { getAccessToken } from './auth-token-store';
 import { mockApiClient } from './mock-api-client';
 
@@ -123,6 +125,11 @@ export async function request<T>(path: string, options: ApiRequestOptions = {}) 
     const envelope = isApiEnvelope(responseBody) ? responseBody : null;
 
     if (!response.ok) {
+      if (response.status === 401) {
+        clearAccessToken();
+        notifySessionExpired();
+      }
+
       throw new ApiClientError(
         envelope?.error?.message ?? `요청에 실패했습니다. (HTTP ${response.status})`,
         {
