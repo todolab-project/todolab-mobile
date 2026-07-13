@@ -23,7 +23,12 @@ function serializeSearchQuery(query: TaskSearchQuery) {
 
 export const taskApi = {
   list(query: TaskListQuery, signal?: AbortSignal) {
-    return apiClient.get<TaskResponse[]>(TASKS_PATH, { query, signal });
+    const serializedQuery = {
+      ...query,
+      date: query.type === 'MONTH' ? query.date.slice(0, 7) : query.date,
+    };
+
+    return apiClient.get<TaskResponse[]>(TASKS_PATH, { query: serializedQuery, signal });
   },
 
   search(query: TaskSearchQuery, signal?: AbortSignal) {

@@ -49,6 +49,15 @@ describe('Task API', () => {
     expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/42', { signal: undefined });
   });
 
+  test('월간 조회 날짜를 YYYY-MM 형식으로 직렬화한다', async () => {
+    await taskApi.list({ type: 'MONTH', date: '2026-07-14' });
+
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks', {
+      query: { type: 'MONTH', date: '2026-07' },
+      signal: undefined,
+    });
+  });
+
   test('Task를 수정한다', async () => {
     const request = {
       title: '운동 기록 정리',
