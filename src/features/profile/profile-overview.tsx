@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
@@ -5,7 +6,8 @@ import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, PageHeader, Screen } from '@/components/ui';
+import { AppText, Button, PageHeader, Screen } from '@/components/ui';
+import { authApi, getAccessToken } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 
 type ProfileItem = {
@@ -49,8 +51,16 @@ const profileItems: ProfileItem[] = [
 
 export function ProfileOverview() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const theme = useAppTheme();
   const [focusedItem, setFocusedItem] = useState<ProfileItem['href'] | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getAccessToken()));
+
+  const logout = () => {
+    authApi.logout();
+    queryClient.clear();
+    setIsLoggedIn(false);
+  };
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -64,13 +74,23 @@ export function ProfileOverview() {
         </View>
         <View style={styles.identityCopy}>
           <AppText variant="bodyLarge" weight="bold">
-            나의 플래너
+            {isLoggedIn ? '나의 플래너' : '로그인이 필요해요'}
           </AppText>
           <AppText tone="secondary" variant="caption">
-            목표와 기록, 개인 설정을 관리하세요.
+            {isLoggedIn
+              ? '목표와 기록, 개인 설정을 관리하세요.'
+              : '실제 서버 데이터와 동기화하려면 로그인하세요.'}
           </AppText>
         </View>
       </View>
+
+      <Button
+        fullWidth
+        onPress={isLoggedIn ? logout : () => router.push('/login' as Href)}
+        variant={isLoggedIn ? 'secondary' : 'primary'}
+      >
+        {isLoggedIn ? '로그아웃' : '로그인'}
+      </Button>
 
       <View accessibilityRole="list" style={styles.menu}>
         {profileItems.map((item) => {
