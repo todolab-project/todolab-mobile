@@ -25,7 +25,10 @@ export function RegisterOverview() {
       }),
     onSuccess: () => {
       setValidationMessage(null);
-      router.replace('/login' as Href);
+      router.replace({
+        pathname: '/login',
+        params: { email: email.trim(), registered: '1' },
+      } as Href);
     },
   });
   const errorMessage =

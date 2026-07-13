@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native';
@@ -11,9 +11,10 @@ import { radii, spacing, typography, useAppTheme } from '@/theme';
 
 export function LoginOverview() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ email?: string; registered?: string }>();
   const queryClient = useQueryClient();
   const theme = useAppTheme();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => params.email ?? '');
   const [password, setPassword] = useState('');
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const login = useMutation({
@@ -109,6 +110,9 @@ export function LoginOverview() {
           </View>
         </View>
 
+        {params.registered === '1' ? (
+          <InlineNotice tone="success" message="회원가입이 완료됐어요. 로그인해 주세요." />
+        ) : null}
         {errorMessage ? <InlineNotice tone="danger" message={errorMessage} /> : null}
 
         <Button fullWidth loading={login.isPending} onPress={submit} size="large">
