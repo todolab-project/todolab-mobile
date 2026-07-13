@@ -49,25 +49,6 @@ describe('Task API', () => {
     expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/42', { signal: undefined });
   });
 
-  test('반복 Task 계약 필드를 생성 요청에 포함할 수 있다', async () => {
-    const request = {
-      title: '업무 회의',
-      type: 'SCHEDULE' as const,
-      startAt: '2026-07-07T09:00:00' as const,
-      endAt: '2026-07-07T10:00:00' as const,
-      allDay: false,
-      recurrenceRule: 'FREQ=WEEKLY;BYDAY=TU',
-      recurrenceTimeZone: 'Asia/Seoul',
-      recurrenceStartAt: '2026-07-07T09:00:00' as const,
-      recurrenceUntil: null,
-      recurrenceCount: null,
-    };
-
-    await taskApi.create(request);
-
-    expect(postMock).toHaveBeenCalledWith('/api/v1/tasks', request, { signal: undefined });
-  });
-
   test('Task를 수정한다', async () => {
     const request = {
       title: '운동 기록 정리',

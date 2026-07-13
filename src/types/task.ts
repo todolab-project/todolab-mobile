@@ -43,11 +43,6 @@ export type TaskUpsertRequest = {
   endAt?: LocalDateTimeString | null;
   category?: string | null;
   allDay: boolean;
-  recurrenceRule?: string | null;
-  recurrenceTimeZone?: string | null;
-  recurrenceStartAt?: LocalDateTimeString | null;
-  recurrenceUntil?: LocalDateString | null;
-  recurrenceCount?: number | null;
 };
 
 export type TaskResponse = {
