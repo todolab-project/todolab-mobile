@@ -1,4 +1,9 @@
-import { clearAccessToken, getAccessToken, setAccessToken } from '../auth-token-store';
+import {
+  clearAccessToken,
+  getAccessToken,
+  setAccessToken,
+  subscribeAccessToken,
+} from '../auth-token-store';
 
 function installLocalStorage() {
   let storage: Record<string, string> = {};
@@ -41,5 +46,19 @@ describe('auth token store', () => {
 
     expect(getAccessToken()).toBeNull();
     expect(localStorage.getItem('todolab.accessToken')).toBeNull();
+  });
+
+  it('access token 변경을 구독자에게 알린다', () => {
+    const listener = jest.fn();
+    const unsubscribe = subscribeAccessToken(listener);
+
+    setAccessToken('token-value');
+    clearAccessToken();
+    unsubscribe();
+    setAccessToken('ignored-token');
+
+    expect(listener).toHaveBeenNthCalledWith(1, 'token-value');
+    expect(listener).toHaveBeenNthCalledWith(2, null);
+    expect(listener).toHaveBeenCalledTimes(2);
   });
 });

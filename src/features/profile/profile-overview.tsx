@@ -3,11 +3,11 @@ import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
 import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, PageHeader, Screen } from '@/components/ui';
-import { authApi, getAccessToken } from '@/services/api';
+import { authApi, getAccessToken, subscribeAccessToken } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 
 type ProfileItem = {
@@ -55,6 +55,9 @@ export function ProfileOverview() {
   const theme = useAppTheme();
   const [focusedItem, setFocusedItem] = useState<ProfileItem['href'] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getAccessToken()));
+
+  useEffect(() => subscribeAccessToken((token) => setIsLoggedIn(Boolean(token))), []);
+
   const me = useQuery({
     queryKey: ['auth', 'me'],
     queryFn: ({ signal }) => authApi.me(signal),

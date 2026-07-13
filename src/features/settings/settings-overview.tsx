@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText, Card, IconButton, PageHeader, Screen } from '@/components/ui';
 import { env } from '@/config';
-import { getAccessToken } from '@/services/api';
+import { getAccessToken, subscribeAccessToken } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 
 type SettingsRowProps = {
@@ -17,9 +17,12 @@ type SettingsRowProps = {
 export function SettingsOverview() {
   const router = useRouter();
   const theme = useAppTheme();
-  const [hasAccessToken] = useState(() => Boolean(getAccessToken()));
+  const [accessToken, setAccessToken] = useState(() => getAccessToken());
   const apiModeLabel = env.apiMode === 'real' ? 'real' : 'mock';
   const apiModeTone = env.apiMode === 'real' ? 'success' : 'warning';
+  const hasAccessToken = Boolean(accessToken);
+
+  useEffect(() => subscribeAccessToken(setAccessToken), []);
 
   return (
     <Screen contentContainerStyle={styles.screen}>

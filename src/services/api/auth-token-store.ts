@@ -1,6 +1,9 @@
 const ACCESS_TOKEN_STORAGE_KEY = 'todolab.accessToken';
 
+type AccessTokenListener = (token: string | null) => void;
+
 let memoryAccessToken: string | null = null;
+const accessTokenListeners = new Set<AccessTokenListener>();
 
 function normalizeToken(token: string | null | undefined) {
   const normalized = token?.trim();
@@ -33,17 +36,25 @@ export function setAccessToken(token: string | null | undefined) {
   memoryAccessToken = normalizeToken(token);
   const storage = getLocalStorage();
 
-  if (!storage) {
-    return;
-  }
-
-  if (memoryAccessToken) {
+  if (storage && memoryAccessToken) {
     storage.setItem(ACCESS_TOKEN_STORAGE_KEY, memoryAccessToken);
-  } else {
+  } else if (storage) {
     storage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
   }
+
+  accessTokenListeners.forEach((listener) => {
+    listener(memoryAccessToken);
+  });
 }
 
 export function clearAccessToken() {
   setAccessToken(null);
+}
+
+export function subscribeAccessToken(listener: AccessTokenListener) {
+  accessTokenListeners.add(listener);
+
+  return () => {
+    accessTokenListeners.delete(listener);
+  };
 }
