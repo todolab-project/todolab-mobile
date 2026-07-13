@@ -763,7 +763,7 @@ Today 작업 목록 표시
 
 1. `EXPO_PUBLIC_API_MODE=mock`으로 앱을 실행해 [`SMOKE_TEST_CHECKLIST.md`](./SMOKE_TEST_CHECKLIST.md)의 Today, Calendar, Search, Completed, Profile 시나리오를 실제 화면에서 확인한다.
 2. 화면 연결이 가능하면 [`ACCESSIBILITY_CHECKLIST.md`](./ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](./PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 320px·375pt·430dp와 light/dark, font scale 1.5를 비교한다.
-3. 백엔드가 준비되면 `EXPO_PUBLIC_API_MODE=real`로 전환해 Today·Calendar 범위 조회, 검색 filter·pagination, 반복 occurrence 계약을 실제 응답으로 확인한다.
+3. 백엔드가 준비되면 [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 `EXPO_PUBLIC_API_MODE=real`로 전환하고 Today·Calendar 범위 조회, 검색 filter·pagination, D-Day, 반복 occurrence 계약을 실제 응답으로 확인한다.
 4. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
 5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
