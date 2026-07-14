@@ -148,7 +148,7 @@ export function ProfileOverview() {
               </View>
               <View style={styles.copy}>
                 <AppText weight="medium">{item.title}</AppText>
-                <AppText tone="secondary" variant="caption">
+                <AppText numberOfLines={1} tone="secondary" variant="caption">
                   {item.description}
                 </AppText>
               </View>
@@ -165,7 +165,7 @@ export function ProfileOverview() {
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[5],
+    gap: spacing[4],
     paddingTop: spacing[4],
   },
   identity: {
@@ -196,8 +196,9 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[3],
-    minHeight: 64,
+    minHeight: 60,
     paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
   icon: {
     alignItems: 'center',

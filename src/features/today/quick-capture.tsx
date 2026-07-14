@@ -96,7 +96,7 @@ export function QuickCapture() {
               onChangeText={handleChange}
               onFocus={() => setIsInputFocused(true)}
               onSubmitEditing={handleSubmit}
-              placeholder="할 일을 입력하세요"
+              placeholder="할 일 입력"
               placeholderTextColor={theme.colors.textMuted}
               returnKeyType="done"
               style={[
@@ -134,7 +134,7 @@ export function QuickCapture() {
             <InlineNotice message={createTask.error.message} tone="danger" />
           ) : null}
 
-          {didSave ? <InlineNotice message="정리할 항목에 추가했어요." tone="success" /> : null}
+          {didSave ? <InlineNotice message="기록함에 추가했어요." tone="success" /> : null}
         </Card>
       ) : (
         <Button accessibilityLabel="빠르게 기록 열기" onPress={openComposer} style={styles.fab}>
