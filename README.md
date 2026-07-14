@@ -39,6 +39,7 @@ src/
 | [접근성 체크리스트](./docs/ACCESSIBILITY_CHECKLIST.md)          | 읽기 순서, 글꼴 확대, 명암, screen reader 점검     |
 | [성능 점검 기준](./docs/PERFORMANCE_CHECKLIST.md)               | 초기 진입, 긴 목록, Calendar 렌더링 성능 기준      |
 | [플랫폼 품질 점검표](./docs/PLATFORM_QUALITY_CHECKLIST.md)      | icon, splash, safe area, 키보드, 햅틱, 식별자 기준 |
+| [릴리즈 체크리스트](./docs/RELEASE_CHECKLIST.md)                | 실제 사용·배포 후보 전 최종 확인 항목              |
 | [Smoke test 체크리스트](./docs/SMOKE_TEST_CHECKLIST.md)         | Android, iOS, Web mock/real 모드 검증 시나리오     |
 | [화면 가이드](./docs/SCREEN_GUIDE.md)                           | 실제 화면 캡쳐와 화면별 사용 흐름 문서화           |
 | [마켓·소개 이미지 준비](./docs/APP_STORE_ASSETS.md)             | 앱 마켓, 소개 페이지용 이미지와 문구 초안          |

@@ -312,7 +312,7 @@ ToDoLab 적용 방향:
 
 목표: 개발용 데모가 아니라 Android, iOS, Web에서 실제 사용 가능한 앱으로 마감한다.
 
-- [ ] `RELEASE_CHECKLIST.md`를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
+- [x] [`RELEASE_CHECKLIST.md`](./RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
 - [ ] 앱 아이콘, splash, 상태바, safe area를 최종 점검한다.
 - [ ] Android package, iOS bundle identifier, EAS profile을 확정한다.
 - [ ] 실제 Android, iOS, Web에서 mock/real smoke test를 반복한다.
@@ -398,15 +398,13 @@ Today 작업 목록 표시
 | Performance checklist             | 긴 목록, Calendar, 초기 로딩 성능 기준    | 작성 완료 |
 | Platform quality checklist        | Android/iOS/Web safe area, icon, keyboard | 작성 완료 |
 | API contract notes                | 검색, 반복, 일정 범위, 날짜/시간 계약     | 작성 중   |
-| Release checklist                 | 배포 전 계정, 빌드, 환경, QA 확인         | 필요      |
+| Release checklist                 | 배포 전 계정, 빌드, 환경, QA 확인         | 작성 완료 |
 | UX review log                     | 화면별 불편점, 결정 이유, 보류 사유       | 작성 중   |
 | Component inventory               | 공통 컴포넌트 사용처와 변형 정리          | 필요      |
 
 우선 작성하면 좋은 문서:
 
-1. `RELEASE_CHECKLIST.md`
-   - 실제 사용 전 필요한 환경, 계정, 빌드, real API, 오류 로깅, 스토어 준비를 한 번에 확인한다.
-2. `COMPONENT_INVENTORY.md`
+1. `COMPONENT_INVENTORY.md`
    - Button, Card, Task row, Calendar cell, Bottom tab, Composer가 어디서 어떻게 쓰이는지 정리해 UI 일관성을 유지한다.
 
 ## 12. 바로 다음 작업
