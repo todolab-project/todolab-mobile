@@ -100,6 +100,7 @@ export function TodayReviewScreen() {
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
                       label={`${task.title}, 오늘 할 일로 이동`}
+                      text="오늘로"
                       onPress={() => moveTask(task.id, '지난 미완료를 오늘 할 일로 옮겼어요.')}
                     />
                   }
@@ -125,6 +126,7 @@ export function TodayReviewScreen() {
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
                       label={`${task.title}, 오늘 할 일에 추가`}
+                      text="추가"
                       onPress={() => moveTask(task.id, '추천 항목을 오늘 할 일에 추가했어요.')}
                     />
                   }
@@ -150,6 +152,7 @@ export function TodayReviewScreen() {
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
                       label={`${task.title}, 오늘 할 일에 추가`}
+                      text="추가"
                       onPress={() => moveTask(task.id, '기록을 오늘 할 일에 추가했어요.')}
                     />
                   }
@@ -183,10 +186,11 @@ type ReviewMoveActionProps = {
   disabled: boolean;
   loading: boolean;
   label: string;
+  text: string;
   onPress: () => void;
 };
 
-function ReviewMoveAction({ disabled, loading, label, onPress }: ReviewMoveActionProps) {
+function ReviewMoveAction({ disabled, loading, label, text, onPress }: ReviewMoveActionProps) {
   const theme = useAppTheme();
   const [isFocused, setIsFocused] = useState(false);
 
@@ -214,7 +218,7 @@ function ReviewMoveAction({ disabled, loading, label, onPress }: ReviewMoveActio
         <ActivityIndicator color={theme.colors.primary} size="small" />
       ) : (
         <AppText tone="primary" variant="caption" weight="bold">
-          + 오늘
+          {text}
         </AppText>
       )}
     </Pressable>
@@ -243,7 +247,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderRadius: radii.sm,
     justifyContent: 'center',
-    minWidth: 64,
-    paddingHorizontal: spacing[2],
+    minWidth: 52,
+    paddingHorizontal: spacing[1],
   },
 });
