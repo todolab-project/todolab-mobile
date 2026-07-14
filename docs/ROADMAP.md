@@ -400,12 +400,9 @@ Today 작업 목록 표시
 | API contract notes                | 검색, 반복, 일정 범위, 날짜/시간 계약     | 작성 중   |
 | Release checklist                 | 배포 전 계정, 빌드, 환경, QA 확인         | 작성 완료 |
 | UX review log                     | 화면별 불편점, 결정 이유, 보류 사유       | 작성 중   |
-| Component inventory               | 공통 컴포넌트 사용처와 변형 정리          | 필요      |
+| Component inventory               | 공통 컴포넌트 사용처와 변형 정리          | 작성 완료 |
 
-우선 작성하면 좋은 문서:
-
-1. `COMPONENT_INVENTORY.md`
-   - Button, Card, Task row, Calendar cell, Bottom tab, Composer가 어디서 어떻게 쓰이는지 정리해 UI 일관성을 유지한다.
+우선 작성하면 좋은 산출물은 작성 완료했다. 이후 새 패턴이 생기면 `DESIGN.md`, `UX_REVIEW_LOG.md`, `COMPONENT_INVENTORY.md` 중 적절한 문서에 반영한다.
 
 ## 12. 바로 다음 작업
 

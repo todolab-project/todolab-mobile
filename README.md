@@ -43,6 +43,7 @@ src/
 | [Smoke test 체크리스트](./docs/SMOKE_TEST_CHECKLIST.md)         | Android, iOS, Web mock/real 모드 검증 시나리오     |
 | [화면 가이드](./docs/SCREEN_GUIDE.md)                           | 실제 화면 캡쳐와 화면별 사용 흐름 문서화           |
 | [마켓·소개 이미지 준비](./docs/APP_STORE_ASSETS.md)             | 앱 마켓, 소개 페이지용 이미지와 문구 초안          |
+| [컴포넌트 인벤토리](./docs/COMPONENT_INVENTORY.md)              | 공통 UI와 주요 도메인 컴포넌트 사용 기준           |
 | [UX 리뷰 로그](./docs/UX_REVIEW_LOG.md)                         | 화면별 불편점, 결정 이유, 다음 UI/UX 수정 후보     |
 | [백엔드 연동 Runbook](./docs/BACKEND_INTEGRATION_RUNBOOK.md)    | real API 연결 전 환경, endpoint, smoke test 순서   |
 | [오류 로깅과 개인정보 기준](./docs/ERROR_LOGGING_PRIVACY.md)    | 오류 로깅 수집 범위와 원문 데이터 비수집 기준      |
