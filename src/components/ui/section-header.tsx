@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
   marker: {
     borderRadius: radii.full,
     borderWidth: 1,
-    height: 10,
-    width: 10,
+    height: 14,
+    width: 8,
   },
   trailing: {
     alignItems: 'center',
