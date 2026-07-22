@@ -314,7 +314,7 @@ ToDoLab 적용 방향:
 
 - [x] [`RELEASE_CHECKLIST.md`](./RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
 - [x] 앱 아이콘, splash, 상태바, safe area의 현재 설정과 남은 실기기 확인 항목을 문서화한다.
-- [ ] Android package, iOS bundle identifier, EAS profile을 확정한다.
+- [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [ ] 실제 Android, iOS, Web에서 mock/real smoke test를 반복한다.
 - [ ] 접근성 label, 읽기 순서, 명암, keyboard focus, screen reader 동선을 최종 점검한다.
 - [ ] 초기 진입, 긴 목록, Calendar 렌더링 성능을 실제 기기 기준으로 점검한다.
