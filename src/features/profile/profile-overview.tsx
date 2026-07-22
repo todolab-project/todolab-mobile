@@ -6,7 +6,7 @@ import { SymbolView } from 'expo-symbols';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, PageHeader, Screen } from '@/components/ui';
+import { AppText, Button, Screen } from '@/components/ui';
 import { authApi, getAccessToken, subscribeAccessToken } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 
@@ -80,8 +80,6 @@ export function ProfileOverview() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <PageHeader title="프로필" />
-
       <View style={styles.identity}>
         <View style={[styles.avatar, { backgroundColor: theme.colors.highlightSage }]}>
           <AppText variant="bodyLarge" weight="bold">

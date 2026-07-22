@@ -220,7 +220,7 @@ function TaskDetail({
       <TaskDateQuickActions task={task} />
 
       <Card variant="outlined" style={styles.section}>
-        <SectionHeader markerColor={theme.colors.highlightBlue} title="정보" />
+        <SectionHeader title="정보" />
         <InfoRow label="일정" value={scheduleLabel} />
         <InfoRow label="반복" value={recurrenceLabel ?? '없음'} />
         <InfoRow

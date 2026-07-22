@@ -1,6 +1,6 @@
 import { KeyboardAvoidingView, Platform, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { PageHeader, Screen } from '@/components/ui';
+import { Screen } from '@/components/ui';
 import { QuickCapture, TodayOverview, TodayWeekStrip, useTodayOverview } from '@/features/today';
 import { spacing, useAppTheme } from '@/theme';
 import { toApiLocalDate } from '@/utils';
@@ -29,7 +29,6 @@ export default function TodayScreen() {
           ),
         }}
       >
-        <PageHeader title="오늘" />
         <TodayWeekStrip today={today} />
         <TodayOverview date={today} overview={overview} />
       </Screen>

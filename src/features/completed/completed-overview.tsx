@@ -143,7 +143,6 @@ export function CompletedOverview() {
           {selectedDay?.tasks.length ? (
             <View style={styles.log}>
               <SectionHeader
-                markerColor={theme.colors.success}
                 title={formatDateLabel(selectedDay.date)}
                 action={
                   <AppText tone="success" variant="label" weight="semibold">

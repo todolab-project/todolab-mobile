@@ -104,11 +104,7 @@ export function DdayOverview() {
         />
       ) : (
         <View style={styles.goalList}>
-          <SectionHeader
-            count={goals.length}
-            markerColor={theme.colors.highlightSage}
-            title="나의 목표"
-          />
+          <SectionHeader count={goals.length} title="나의 목표" />
           {goals.map((goal) => (
             <View key={goal.id} style={styles.goalItem}>
               <DdayGoalCard

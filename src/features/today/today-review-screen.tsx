@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import type { ColorValue } from 'react-native';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import {
@@ -84,12 +83,7 @@ export function TodayReviewScreen() {
       ) : (
         <View style={styles.sections}>
           {overview.staleTasks.length > 0 ? (
-            <ReviewSection
-              title="지난 미완료"
-              count={overview.staleTasks.length}
-              markerBorderColor={theme.colors.warning}
-              markerColor={theme.colors.highlightAmber}
-            >
+            <ReviewSection title="지난 미완료" count={overview.staleTasks.length}>
               {overview.staleTasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -111,12 +105,7 @@ export function TodayReviewScreen() {
           ) : null}
 
           {overview.recommendations.length > 0 ? (
-            <ReviewSection
-              title="추천"
-              count={overview.recommendations.length}
-              markerBorderColor={theme.colors.primary}
-              markerColor={theme.colors.highlightBlue}
-            >
+            <ReviewSection title="추천" count={overview.recommendations.length}>
               {overview.recommendations.map(({ task }) => (
                 <TaskCard
                   key={task.id}
@@ -138,12 +127,7 @@ export function TodayReviewScreen() {
           ) : null}
 
           {overview.inboxTasks.length > 0 ? (
-            <ReviewSection
-              title="기록함"
-              count={overview.inboxTasks.length}
-              markerBorderColor={theme.colors.textMuted}
-              markerColor={theme.colors.surfaceMuted}
-            >
+            <ReviewSection title="기록함" count={overview.inboxTasks.length}>
               {overview.inboxTasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -173,25 +157,12 @@ type ReviewSectionProps = {
   title: string;
   count: number;
   children: ReactNode;
-  markerBorderColor?: ColorValue;
-  markerColor: ColorValue;
 };
 
-function ReviewSection({
-  title,
-  count,
-  children,
-  markerBorderColor,
-  markerColor,
-}: ReviewSectionProps) {
+function ReviewSection({ title, count, children }: ReviewSectionProps) {
   return (
     <View style={styles.section}>
-      <SectionHeader
-        title={title}
-        count={count}
-        markerColor={markerColor}
-        markerBorderColor={markerBorderColor}
-      />
+      <SectionHeader title={title} count={count} />
       <View style={styles.list}>{children}</View>
     </View>
   );
