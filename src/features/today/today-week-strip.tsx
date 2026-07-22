@@ -45,7 +45,15 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
       <AppText variant="bodyLarge" weight="bold">
         {formatDateLabel(today, { month: 'long' })}
       </AppText>
-      <View style={styles.calendarGrid}>
+      <View
+        style={[
+          styles.calendarGrid,
+          {
+            borderColor: theme.colors.border,
+            backgroundColor: theme.colors.surfaceElevated,
+          },
+        ]}
+      >
         <View style={styles.dayColumnRules}>
           {Array.from({ length: 6 }, (_, index) => (
             <View
@@ -142,6 +150,10 @@ const styles = StyleSheet.create({
     padding: spacing[3],
   },
   calendarGrid: {
+    borderRadius: radii.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    minHeight: 104,
+    overflow: 'hidden',
     position: 'relative',
   },
   dayColumnRules: {
@@ -168,7 +180,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     flex: 1,
     gap: spacing[1],
-    minHeight: 56,
+    minHeight: 64,
+    paddingBottom: spacing[1],
+    paddingTop: spacing[2],
   },
   date: {
     alignItems: 'center',

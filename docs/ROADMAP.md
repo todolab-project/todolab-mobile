@@ -264,7 +264,7 @@ ToDoLab 적용 방향:
 목표: 기능은 이미 어느 정도 연결되었으므로, 이제 매일 열어도 부담 없는 가볍고 단정한 모바일 앱으로 다듬는다.
 
 - [x] [`UX_REVIEW_LOG.md`](./UX_REVIEW_LOG.md)를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
-- [ ] Today 미니 달력의 외부 경계, 내부 세로선, 일정 label과 날짜 cell 정렬을 재점검한다.
+- [x] Today 미니 달력의 외부 경계, 내부 세로선, 일정 label과 날짜 cell 정렬을 재점검한다.
 - [ ] 일정, 오늘 할 일, 오늘 완료한 일 section 색을 파스텔톤으로 유지하되 배경과 대비를 다시 맞춘다.
 - [ ] 빠른 입력 placeholder와 input inset을 더 짧고 자연스럽게 정리한다.
 - [ ] Profile shortcut card의 좌우 간격, radius, icon treatment를 Today Task row와 같은 문법으로 맞춘다.
