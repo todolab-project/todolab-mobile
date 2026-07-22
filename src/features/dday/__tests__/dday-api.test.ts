@@ -50,6 +50,17 @@ describe('D-Day API', () => {
     expect(deleteMock).toHaveBeenCalledWith('/api/v1/dday-goals/42', { signal: undefined });
   });
 
+  it('D-Day 목표 삭제 성공 응답은 null 또는 삭제된 ID 형태를 허용한다', async () => {
+    deleteMock.mockResolvedValueOnce(null);
+    await expect(ddayApi.delete(42)).resolves.toBeNull();
+
+    deleteMock.mockResolvedValueOnce(42);
+    await expect(ddayApi.delete(42)).resolves.toBe(42);
+
+    deleteMock.mockResolvedValueOnce({ id: 42 });
+    await expect(ddayApi.delete(42)).resolves.toEqual({ id: 42 });
+  });
+
   it('D-Day 목표에 연결된 Task 목록을 조회한다', async () => {
     await ddayApi.getTasks(42);
 

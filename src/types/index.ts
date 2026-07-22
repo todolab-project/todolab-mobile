@@ -6,7 +6,12 @@ export type {
   UserResponse,
   UserRole,
 } from './auth';
-export type { DdayGoalRequest, DdayGoalResponse, DdayGoalTaskRequest } from './dday';
+export type {
+  DdayGoalDeleteResponse,
+  DdayGoalRequest,
+  DdayGoalResponse,
+  DdayGoalTaskRequest,
+} from './dday';
 export { ddayGoalLimits } from './dday';
 export type { LocalDateString, LocalDateTimeString } from './date-time';
 export type {

@@ -21,3 +21,5 @@ export type DdayGoalResponse = {
   daysLeft: number;
   createdAt: LocalDateTimeString | null;
 };
+
+export type DdayGoalDeleteResponse = null | number | { id: number };

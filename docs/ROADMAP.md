@@ -283,7 +283,7 @@ ToDoLab 적용 방향:
 
 - [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약을 백엔드와 확정하고 real API 응답으로 smoke test한다. 프론트는 `/api/v1/tasks/search` 실제 요청을 보내도록 연결했다.
 - [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다.
-- [ ] D-Day 삭제 성공 응답 형식을 `data: null` 또는 삭제된 ID 중 하나로 통일한다.
+- [ ] D-Day 삭제 성공 응답 형식을 `data: null` 또는 삭제된 ID 중 하나로 백엔드에서 통일한다. 프론트는 두 응답 계열을 모두 성공으로 받을 수 있게 열었다.
 - [ ] 반복 Task·일정의 series, RRULE, occurrence, exception 계약을 확정한다.
 - [ ] 401 세션 만료 이후 사용자 동선과 refresh token 도입 여부를 결정한다.
 - [ ] network, timeout, 5xx 오류에서 retry와 기존 데이터 유지가 화면별로 자연스러운지 확인한다.

@@ -1,5 +1,11 @@
 import { apiClient } from '@/services/api';
-import type { DdayGoalRequest, DdayGoalResponse, DdayGoalTaskRequest, TaskResponse } from '@/types';
+import type {
+  DdayGoalDeleteResponse,
+  DdayGoalRequest,
+  DdayGoalResponse,
+  DdayGoalTaskRequest,
+  TaskResponse,
+} from '@/types';
 
 const DDAYS_PATH = '/api/v1/dday-goals';
 
@@ -17,7 +23,7 @@ export const ddayApi = {
   },
 
   delete(goalId: number, signal?: AbortSignal) {
-    return apiClient.delete<unknown>(`${DDAYS_PATH}/${goalId}`, { signal });
+    return apiClient.delete<DdayGoalDeleteResponse>(`${DDAYS_PATH}/${goalId}`, { signal });
   },
 
   getTasks(goalId: number, signal?: AbortSignal) {

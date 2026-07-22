@@ -112,6 +112,12 @@ type ApiEnvelope<T> = {
 | `GET`    | `/api/v1/dday-goals/{goalId}/tasks` | 목표 연결 Task         |
 | `POST`   | `/api/v1/dday-goals/{goalId}/tasks` | 목표용 Today Task 생성 |
 
+삭제 성공 응답:
+
+- 모바일은 `data: null`, `data: 42`, `data: { "id": 42 }`를 성공으로 처리할 수 있게 열어 둔다.
+- 백엔드는 store/API 문서 기준으로 `data: null` 또는 삭제된 ID 중 하나를 최종 표준으로 정한다.
+- 실패 시에는 공통 오류 envelope을 유지하고, 이미 삭제된 목표는 404 또는 멱등 200 중 하나로 정책을 정한다.
+
 ## 6. 백엔드에서 우선 확인해야 할 항목
 
 1. 인증
