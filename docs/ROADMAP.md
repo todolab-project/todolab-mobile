@@ -267,7 +267,7 @@ ToDoLab 적용 방향:
 - [x] Today 미니 달력의 외부 경계, 내부 세로선, 일정 label과 날짜 cell 정렬을 재점검한다.
 - [x] 일정, 오늘 할 일, 오늘 완료한 일 section 색을 파스텔톤으로 유지하되 배경과 대비를 다시 맞춘다.
 - [x] 빠른 입력 placeholder와 input inset을 더 짧고 자연스럽게 정리한다.
-- [ ] Profile shortcut card의 좌우 간격, radius, icon treatment를 Today Task row와 같은 문법으로 맞춘다.
+- [x] Profile shortcut card의 좌우 간격, radius, icon treatment를 Today Task row와 같은 문법으로 맞춘다.
 - [ ] 정리할 항목 화면의 버튼 중심 UI를 section/list 중심 UI로 계속 다듬는다.
 - [ ] 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 
