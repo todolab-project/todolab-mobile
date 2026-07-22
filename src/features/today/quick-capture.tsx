@@ -96,7 +96,7 @@ export function QuickCapture() {
               onChangeText={handleChange}
               onFocus={() => setIsInputFocused(true)}
               onSubmitEditing={handleSubmit}
-              placeholder="할 일 입력"
+              placeholder="오늘 할 일"
               placeholderTextColor={theme.colors.textMuted}
               returnKeyType="done"
               style={[
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   composerCard: {
     gap: spacing[1],
-    paddingHorizontal: spacing[3],
+    paddingHorizontal: spacing[2],
     paddingVertical: spacing[2],
     width: '100%',
   },
@@ -169,19 +169,19 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
     flex: 1,
-    fontSize: 16,
-    minHeight: 44,
+    fontSize: 15,
+    minHeight: 40,
     minWidth: 0,
     outlineWidth: 0,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
   },
   closeButton: {
     backgroundColor: 'transparent',
   },
   submitButton: {
     borderRadius: radii.full,
-    minWidth: 56,
+    minWidth: 52,
   },
   fab: {
     borderRadius: radii.full,
