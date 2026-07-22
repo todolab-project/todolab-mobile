@@ -60,6 +60,26 @@ npx expo start --web --localhost
 - 320px 스크린샷 기준으로 Today 미니 달력의 일정 label은 깨지지는 않지만 다소 조밀하게 보인다.
 - Calendar의 월간 grid는 overflow 없이 들어오지만, 320px에서는 일정 label이 빠르게 축약되므로 긴 일정이 많은 달에는 추가 밀도 조정이 필요할 수 있다.
 
+### Web mock font-scale stress 재확인
+
+환경:
+
+- API 모드: `mock`
+- 브라우저: Chrome extension 연결
+- Expo dev server: `http://localhost:8081`
+- 조건: 320px 폭에서 150% 확대를 보수적으로 근사한 213px viewport
+
+결과:
+
+- 최초 확인에서 Calendar 완료 Task metadata 안의 D-Day 목표명 span이 카드 오른쪽을 살짝 넘쳤다.
+- `TaskCard` metadata를 중첩 Text 구조에서 단일 문자열 label로 변경했다.
+- 재확인 결과 Today와 Calendar 모두 213px viewport에서 horizontal overflow와 개별 element overflow가 없다.
+
+남은 확인:
+
+- 실제 browser zoom 150% 또는 OS font scale 1.5에서 같은 결과가 유지되는지 확인한다.
+- dark mode 대비는 별도 확인이 필요하다.
+
 ## 2026-07-14
 
 커밋 기준: `199c6b8` 이후 로컬 변경 포함

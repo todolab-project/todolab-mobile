@@ -54,6 +54,7 @@ export function TaskCard({
       ? [timeLabel, recurrenceLabel, task.category]
       : [timeLabel, task.allDay ? '종일' : null, recurrenceLabel, task.category]
   ).filter((value): value is string => Boolean(value));
+  const metadataLabel = [...metadata, task.ddayGoalTitle].filter(Boolean).join(' · ');
 
   return (
     <View
@@ -145,15 +146,9 @@ export function TaskCard({
               </AppText>
             ) : null}
 
-            {metadata.length > 0 || task.ddayGoalTitle ? (
+            {metadataLabel ? (
               <AppText numberOfLines={1} tone="secondary" variant="caption">
-                {metadata.join(' · ')}
-                {task.ddayGoalTitle ? (
-                  <AppText tone="warning" variant="caption" weight="semibold">
-                    {metadata.length > 0 ? ' · ' : ''}
-                    {task.ddayGoalTitle}
-                  </AppText>
-                ) : null}
+                {metadataLabel}
               </AppText>
             ) : null}
           </View>
