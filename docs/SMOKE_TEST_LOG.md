@@ -1,5 +1,39 @@
 # Smoke Test Log
 
+## 2026-07-22
+
+커밋 기준: `da64884` 이후 로컬 변경 없음
+
+환경:
+
+- API 모드: `mock`
+- Expo dev server: `http://localhost:8081`
+- 확인 대상: Today, Calendar의 320px, 375pt, 430dp, font scale 1.5, light/dark 화면 QA
+
+실행:
+
+```bash
+npx expo start --web --localhost
+```
+
+결과:
+
+- sandbox 네트워크 제한 상태에서는 Expo가 버전 확인 이후 dev server URL까지 진행하지 못했다.
+- 네트워크 허용 상태로 재실행하자 `http://localhost:8081` dev server는 정상 기동했다.
+- 현재 Codex 세션에서 연결 가능한 in-app browser 목록이 비어 있어 실제 viewport별 화면 확인은 완료하지 못했다.
+
+남은 확인:
+
+- 320px, 375px, 430px, 720px 폭에서 Today 주간 strip과 Calendar grid의 horizontal overflow 여부
+- font scale 1.5 또는 browser zoom 150%에서 섹션 제목, row action, 빠른 입력 composer label 유지 여부
+- light/dark에서 section marker, hairline, calendar rule 대비
+- Calendar의 하루 일정 label과 기간 bar가 날짜 cell 밖으로 튀지 않는지
+
+메모:
+
+- 실제 화면 확인 전용 항목이므로 [`ROADMAP.md`](./ROADMAP.md)의 화면 크기별 확인 항목은 완료 처리하지 않았다.
+- 브라우저 또는 실제 기기 연결이 가능해지면 같은 dev server 기준으로 재확인한다.
+
 ## 2026-07-14
 
 커밋 기준: `199c6b8` 이후 로컬 변경 포함
