@@ -26,14 +26,50 @@ export function getMonthCalendarDates(value: LocalDateString): LocalDateString[]
   }
 
   const firstDay = `${value.slice(0, 7)}-01` as LocalDateString;
+  const [year, month] = value.split('-').map(Number);
+  const lastDayOfMonth = new Date(Date.UTC(year, month, 0, 12)).getUTCDate();
+  const lastDay = `${value.slice(0, 7)}-${String(lastDayOfMonth).padStart(
+    2,
+    '0',
+  )}` as LocalDateString;
   const firstWeek = getWeekDates(firstDay);
+  const lastWeek = getWeekDates(lastDay);
   const gridStart = firstWeek[0];
+  const gridEnd = lastWeek.at(-1);
+
+  if (!gridStart || !gridEnd) {
+    return [];
+  }
+
+  const dayCount = Math.floor(
+    (Date.parse(`${gridEnd}T12:00:00.000Z`) - Date.parse(`${gridStart}T12:00:00.000Z`)) /
+      86_400_000,
+  );
+
+  return Array.from({ length: dayCount + 1 }, (_, index) =>
+    shiftLocalDate(gridStart, index),
+  ).filter((date): date is LocalDateString => date !== null);
+}
+
+export function getThreeWeekCalendarDates(value: LocalDateString): LocalDateString[] {
+  if (!isLocalDateString(value)) {
+    return [];
+  }
+
+  const currentWeek = getWeekDates(value);
+  const currentWeekStart = currentWeek[0];
+
+  if (!currentWeekStart) {
+    return [];
+  }
+
+  const gridStart = shiftLocalDate(currentWeekStart, -7);
 
   if (!gridStart) {
     return [];
   }
 
-  return Array.from({ length: 42 }, (_, index) => shiftLocalDate(gridStart, index)).filter(
+  return Array.from({ length: 21 }, (_, index) => shiftLocalDate(gridStart, index)).filter(
     (date): date is LocalDateString => date !== null,
   );
 }

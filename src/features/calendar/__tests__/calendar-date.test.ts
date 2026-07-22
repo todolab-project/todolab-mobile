@@ -1,4 +1,9 @@
-import { getMonthCalendarDates, getWeekDates, shiftMonth } from '../calendar-date';
+import {
+  getMonthCalendarDates,
+  getThreeWeekCalendarDates,
+  getWeekDates,
+  shiftMonth,
+} from '../calendar-date';
 
 describe('getWeekDates', () => {
   it('월요일부터 일요일까지 한 주를 반환한다', () => {
@@ -27,19 +32,31 @@ describe('getWeekDates', () => {
 });
 
 describe('getMonthCalendarDates', () => {
-  it('월요일부터 일요일까지 6주 고정 그리드를 반환한다', () => {
-    const dates = getMonthCalendarDates('2026-06-28');
+  it('이번 달이 걸친 주까지만 반환한다', () => {
+    const dates = getMonthCalendarDates('2026-07-23');
 
-    expect(dates).toHaveLength(42);
-    expect(dates[0]).toBe('2026-06-01');
-    expect(dates.at(-1)).toBe('2026-07-12');
+    expect(dates).toHaveLength(35);
+    expect(dates[0]).toBe('2026-06-29');
+    expect(dates.at(-1)).toBe('2026-08-02');
   });
 
-  it('이전 연도와 다음 달 날짜를 포함한다', () => {
-    const dates = getMonthCalendarDates('2026-01-15');
+  it('6주가 필요한 달은 6주까지만 반환한다', () => {
+    const dates = getMonthCalendarDates('2026-03-15');
 
-    expect(dates[0]).toBe('2025-12-29');
-    expect(dates.at(-1)).toBe('2026-02-08');
+    expect(dates).toHaveLength(42);
+    expect(dates[0]).toBe('2026-02-23');
+    expect(dates.at(-1)).toBe('2026-04-05');
+  });
+});
+
+describe('getThreeWeekCalendarDates', () => {
+  it('선택 날짜 기준 이전 주, 현재 주, 다음 주를 반환한다', () => {
+    const dates = getThreeWeekCalendarDates('2026-07-23');
+
+    expect(dates).toHaveLength(21);
+    expect(dates[0]).toBe('2026-07-13');
+    expect(dates[7]).toBe('2026-07-20');
+    expect(dates.at(-1)).toBe('2026-08-02');
   });
 });
 

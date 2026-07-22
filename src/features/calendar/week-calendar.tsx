@@ -3,13 +3,13 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, IconButton, PageHeader, Screen } from '@/components/ui';
+import { AppText, Screen } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
-import { formatDateLabel, isLocalDateString, toApiLocalDate } from '@/utils';
+import { formatDateLabel, isLocalDateString, shiftLocalDate, toApiLocalDate } from '@/utils';
 
 import { CalendarDayTasks } from './calendar-day-tasks';
-import { getMonthCalendarDates, shiftMonth } from './calendar-date';
+import { getThreeWeekCalendarDates } from './calendar-date';
 import { CALENDAR_DAY_WIDTH, getCalendarColumnBoundaryPercent } from './calendar-layout';
 import { CalendarPeriodBars, CalendarSingleDayLabels } from './calendar-period-bars';
 import { useCalendarRangeTasks } from './use-calendar-range-tasks';
@@ -24,49 +24,111 @@ export function WeekCalendar() {
   const [selectedDate, setSelectedDate] = useState<LocalDateString>(
     params.date && isLocalDateString(params.date) ? params.date : today,
   );
-  const monthDates = useMemo(() => getMonthCalendarDates(selectedDate), [selectedDate]);
+  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
+  const [pickerYear, setPickerYear] = useState(() => Number(selectedDate.slice(0, 4)));
+  const calendarDates = useMemo(() => getThreeWeekCalendarDates(selectedDate), [selectedDate]);
   const rangeTasks = useCalendarRangeTasks('MONTH', selectedDate);
   const openTask = (taskId: number) => {
     router.push({ pathname: '/tasks/[taskId]', params: { taskId: String(taskId) } });
   };
 
-  const moveMonth = (amount: number) => {
-    const nextSelectedDate = shiftMonth(selectedDate, amount);
+  const moveWeek = (amount: number) => {
+    const nextSelectedDate = shiftLocalDate(selectedDate, amount * 7);
 
     if (nextSelectedDate) {
       setSelectedDate(nextSelectedDate);
+      setPickerYear(Number(nextSelectedDate.slice(0, 4)));
+      setMonthPickerOpen(false);
+    }
+  };
+
+  const movePickerYear = (amount: number) => {
+    setPickerYear((current) => current + amount);
+  };
+
+  const selectMonth = (month: number) => {
+    const selectedDay = Number(selectedDate.slice(8, 10));
+    const lastDayOfTargetMonth = new Date(Date.UTC(pickerYear, month, 0, 12)).getUTCDate();
+    const targetDate = `${pickerYear}-${String(month).padStart(2, '0')}-${String(
+      Math.min(selectedDay, lastDayOfTargetMonth),
+    ).padStart(2, '0')}` as LocalDateString;
+
+    if (isLocalDateString(targetDate)) {
+      setSelectedDate(targetDate);
+      setMonthPickerOpen(false);
     }
   };
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <PageHeader title="달력" />
-
-      <View style={[styles.calendarSurface, { backgroundColor: theme.colors.surface }]}>
+      <View style={styles.calendarSurface}>
         <View style={styles.calendarHeading}>
-          <IconButton accessibilityLabel="이전 달" onPress={() => moveMonth(-1)}>
+          <Pressable
+            accessibilityLabel="이전 주"
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => moveWeek(-1)}
+            style={({ pressed }) => [
+              styles.calendarNavButton,
+              { backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent' },
+            ]}
+          >
             <SymbolView
               name={{ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' }}
-              size={20}
+              size={18}
               tintColor={theme.colors.textSecondary}
             />
-          </IconButton>
-          <View style={styles.calendarHeadingCopy}>
-            <AppText align="center" variant="label" weight="bold">
+          </Pressable>
+          <Pressable
+            accessibilityLabel={`${formatDateLabel(selectedDate, {
+              year: 'numeric',
+              month: 'long',
+            })} 월 선택 열기`}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: monthPickerOpen }}
+            hitSlop={8}
+            onPress={() => {
+              setPickerYear(Number(selectedDate.slice(0, 4)));
+              setMonthPickerOpen((current) => !current);
+            }}
+            style={({ pressed }) => [
+              styles.monthTitleButton,
+              { backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent' },
+            ]}
+          >
+            <AppText align="center" variant="title" weight="bold">
               {formatDateLabel(selectedDate, { year: 'numeric', month: 'long' })}
             </AppText>
-          </View>
-          <IconButton accessibilityLabel="다음 달" onPress={() => moveMonth(1)}>
+          </Pressable>
+          <Pressable
+            accessibilityLabel="다음 주"
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => moveWeek(1)}
+            style={({ pressed }) => [
+              styles.calendarNavButton,
+              { backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent' },
+            ]}
+          >
             <SymbolView
               name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
-              size={20}
+              size={18}
               tintColor={theme.colors.textSecondary}
             />
-          </IconButton>
+          </Pressable>
         </View>
 
+        {monthPickerOpen ? (
+          <MonthPicker
+            pickerYear={pickerYear}
+            selectedDate={selectedDate}
+            onMoveYear={movePickerYear}
+            onSelectMonth={selectMonth}
+          />
+        ) : null}
+
         <MonthDateGrid
-          dates={monthDates}
+          dates={calendarDates}
           selectedDate={selectedDate}
           today={today}
           onSelect={setSelectedDate}
@@ -77,6 +139,96 @@ export function WeekCalendar() {
 
       <CalendarDayTasks date={selectedDate} />
     </Screen>
+  );
+}
+
+type MonthPickerProps = {
+  pickerYear: number;
+  selectedDate: LocalDateString;
+  onMoveYear: (amount: number) => void;
+  onSelectMonth: (month: number) => void;
+};
+
+function MonthPicker({ pickerYear, selectedDate, onMoveYear, onSelectMonth }: MonthPickerProps) {
+  const theme = useAppTheme();
+  const selectedYear = Number(selectedDate.slice(0, 4));
+  const selectedMonth = Number(selectedDate.slice(5, 7));
+
+  return (
+    <View
+      style={[
+        styles.monthPickerSurface,
+        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+      ]}
+    >
+      <View style={styles.monthPickerHeader}>
+        <Pressable
+          accessibilityLabel="이전 연도"
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={() => onMoveYear(-1)}
+          style={({ pressed }) => [
+            styles.monthPickerNavButton,
+            { backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent' },
+          ]}
+        >
+          <SymbolView
+            name={{ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' }}
+            size={14}
+            tintColor={theme.colors.textSecondary}
+          />
+        </Pressable>
+        <AppText align="center" tone="secondary" variant="label" weight="semibold">
+          {pickerYear}년
+        </AppText>
+        <Pressable
+          accessibilityLabel="다음 연도"
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={() => onMoveYear(1)}
+          style={({ pressed }) => [
+            styles.monthPickerNavButton,
+            { backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent' },
+          ]}
+        >
+          <SymbolView
+            name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+            size={14}
+            tintColor={theme.colors.textSecondary}
+          />
+        </Pressable>
+      </View>
+      <View style={styles.monthPickerGrid}>
+        {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => {
+          const selected = pickerYear === selectedYear && month === selectedMonth;
+
+          return (
+            <Pressable
+              accessibilityLabel={`${pickerYear}년 ${month}월 선택`}
+              accessibilityRole="button"
+              accessibilityState={{ selected }}
+              key={month}
+              onPress={() => onSelectMonth(month)}
+              style={({ pressed }) => [
+                styles.monthOption,
+                {
+                  backgroundColor: selected
+                    ? theme.colors.primarySoft
+                    : pressed
+                      ? theme.colors.surfaceMuted
+                      : 'transparent',
+                  borderColor: selected ? theme.colors.primary : theme.colors.border,
+                },
+              ]}
+            >
+              <AppText align="center" tone={selected ? 'primary' : 'default'} weight="semibold">
+                {month}월
+              </AppText>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
   );
 }
 
@@ -101,7 +253,12 @@ function MonthDateGrid({
   const selectedMonth = selectedDate.slice(0, 7);
 
   return (
-    <View>
+    <View
+      style={[
+        styles.monthGridSurface,
+        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+      ]}
+    >
       <View style={styles.monthWeekdays}>
         {weekdayLabels.map((label, index) => (
           <AppText
@@ -116,16 +273,16 @@ function MonthDateGrid({
           </AppText>
         ))}
       </View>
-      {Array.from({ length: 6 }, (_, weekIndex) =>
+      {Array.from({ length: Math.ceil(dates.length / 7) }, (_, weekIndex) =>
         dates.slice(weekIndex * 7, weekIndex * 7 + 7),
-      ).map((weekDates, weekIndex) => (
+      ).map((weekDates, weekIndex, weeks) => (
         <View
           key={weekDates[0]}
           style={[
             styles.monthWeek,
             {
               borderBottomColor: theme.colors.rule,
-              borderBottomWidth: weekIndex < 5 ? StyleSheet.hairlineWidth : 0,
+              borderBottomWidth: weekIndex < weeks.length - 1 ? StyleSheet.hairlineWidth : 0,
             },
           ]}
         >
@@ -239,7 +396,7 @@ function CalendarDateButton({
       ) : null}
       <AppText
         align="center"
-        tone={selected ? 'primary' : !isCurrentMonth ? 'muted' : 'default'}
+        tone={selected ? 'primary' : isCurrentMonth ? 'default' : 'muted'}
         variant={weekdayLabel ? 'bodyLarge' : 'label'}
         weight={selected || isToday ? 'heavy' : 'semibold'}
       >
@@ -264,20 +421,64 @@ const styles = StyleSheet.create({
     paddingTop: spacing[4],
   },
   calendarSurface: {
-    borderRadius: radii.lg,
-    overflow: 'hidden',
+    gap: spacing[1],
   },
   calendarHeading: {
     alignItems: 'center',
     flexDirection: 'row',
+    gap: spacing[2],
+    justifyContent: 'center',
+    paddingBottom: spacing[1],
+  },
+  monthGridSurface: {
+    borderRadius: radii.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  calendarNavButton: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    height: 32,
+    justifyContent: 'center',
+    width: 32,
+  },
+  monthTitleButton: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    minHeight: 36,
+    paddingHorizontal: spacing[2],
+  },
+  monthPickerSurface: {
+    borderRadius: radii.md,
+    borderWidth: StyleSheet.hairlineWidth,
     gap: spacing[1],
-    justifyContent: 'space-between',
     padding: spacing[2],
   },
-  calendarHeadingCopy: {
-    flex: 1,
+  monthPickerHeader: {
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[1],
     justifyContent: 'center',
+  },
+  monthPickerNavButton: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    height: 28,
+    justifyContent: 'center',
+    width: 28,
+  },
+  monthPickerGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing[2],
+  },
+  monthOption: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
+    minHeight: 40,
+    width: '31.5%',
   },
   dayButton: {
     alignItems: 'center',
