@@ -31,10 +31,19 @@ export function SectionHeader({
             styles.marker,
             {
               backgroundColor: markerColor,
-              borderColor: markerBorderColor ?? 'transparent',
+              borderColor: markerBorderColor ?? markerColor,
             },
           ]}
-        />
+        >
+          <View
+            style={[
+              styles.markerDot,
+              {
+                backgroundColor: markerBorderColor ?? markerColor,
+              },
+            ]}
+          />
+        </View>
       ) : null}
       <View style={styles.copy}>
         <AppText variant="bodyLarge" weight="bold">
@@ -71,10 +80,17 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   marker: {
+    alignItems: 'center',
     borderRadius: radii.full,
-    borderWidth: 1,
-    height: 14,
-    width: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    height: 18,
+    justifyContent: 'center',
+    width: 18,
+  },
+  markerDot: {
+    borderRadius: radii.full,
+    height: 7,
+    width: 7,
   },
   trailing: {
     alignItems: 'center',
