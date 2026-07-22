@@ -164,7 +164,7 @@ type ApiResponse<T> = {
 - 주간/월간 전환
 - 오늘로 돌아가기
 - 선택 날짜의 일정과 할 일
-- 일정, 완료, 미룸, D-Day 표시 및 필터
+- 일정, 완료, 미룸, D-Day 표시
 - 빠른 날짜 변경
 
 작은 화면에서는 월간 칸 안에 제목을 억지로 넣지 않고 상태 점과 개수만 보여준 뒤 선택 날짜의 목록을 아래에 표시한다.
@@ -255,7 +255,7 @@ ToDoLab 적용 방향:
 - `EXPO_PUBLIC_API_MODE=mock | real`로 로컬 UI 개발과 실제 백엔드 연동을 분리한다.
 - Today, Calendar, Profile 3탭 구조를 기준으로 한다.
 - Today는 주간 strip, 일정, 오늘 할 일, 정리할 항목, 접힌 완료 목록을 중심으로 구성한다.
-- Calendar는 월간 planner grid와 일정 bar 중심으로 구성한다.
+- Calendar는 선택일 기준 3주 planner grid와 일정 bar 중심으로 구성한다.
 - 인증, Task, D-Day, 검색 mock 흐름은 모바일에서 동작한다.
 - real API smoke test는 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록하고, 반복 실행 기준은 [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)를 따른다.
 
@@ -264,11 +264,19 @@ ToDoLab 적용 방향:
 목표: 기능은 이미 어느 정도 연결되었으므로, 이제 매일 열어도 부담 없는 가볍고 단정한 모바일 앱으로 다듬는다.
 
 - [x] [`UX_REVIEW_LOG.md`](./UX_REVIEW_LOG.md)를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
-- [x] Today 미니 달력의 외부 경계, 내부 세로선, 일정 label과 날짜 cell 정렬을 재점검한다.
+- [x] Today 미니 달력은 외부 card를 제거하고 grid 자체의 얇은 경계, 내부 세로선, 조용한 일정 label로 정리한다.
 - [x] 일정, 오늘 할 일, 오늘 완료한 일 section 색을 파스텔톤으로 유지하되 배경과 대비를 다시 맞춘다.
 - [x] 빠른 입력 placeholder와 input inset을 더 짧고 자연스럽게 정리한다.
 - [x] Profile shortcut card의 좌우 간격, radius, icon treatment를 Today Task row와 같은 문법으로 맞춘다.
 - [x] 정리할 항목 화면의 버튼 중심 UI를 section/list 중심 UI로 계속 다듬는다.
+- [x] 탭 루트의 중복 page title을 제거하고 첫 콘텐츠 노출을 앞당긴다.
+- [x] light theme을 흰 배경과 쿨그레이 border 중심으로 조정한다.
+- [x] Section marker 원형 badge를 제거하고 제목·count·카드 간격 중심으로 정리한다.
+- [x] Calendar grid를 선택일 기준 이전 1주, 현재 주, 다음 1주의 3주 범위로 정리한다.
+- [x] Calendar header를 큰 월 제목과 양옆 작은 chevron으로 정리하고, 선택 날짜 목록의 중복 날짜 제목을 제거한다.
+- [x] Today 미니 달력 높이와 날짜 cell 밀도를 줄인다.
+- [x] Calendar와 Today의 일정 label 시각적 무게를 낮추고, Calendar 하단 filter chip은 기본 노출하지 않게 정리한다.
+- [x] Calendar 좌우 이동을 선택 날짜 기준 1주 이동으로 바꾸고, 월 제목에서 같은 폭의 월 선택 panel을 열 수 있게 한다.
 - [ ] 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 
 완료 기준:
@@ -408,8 +416,8 @@ Today 작업 목록 표시
 
 다음 작업은 실제 화면 품질과 real API 잔여 계약을 우선한다.
 
-1. Today 미니 달력의 외부 경계, 내부 세로선, 일정/오늘 할 일/완료 section 색 대비, 빠른 입력 placeholder, Profile shortcut card를 정리한다.
-2. Calendar 월간 grid의 일 단위 구분선 정렬, 일정 bar overflow, 불필요한 우측 상단 버튼 여부를 확인하고 수정한다.
+1. 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
+2. Calendar 월간 grid의 일 단위 구분선 정렬, 일정 bar overflow, range API 계약을 실제 데이터로 확인한다.
 3. 정리할 항목 화면의 버튼과 section UI를 Today와 같은 planner 문법으로 재정리한다.
 4. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API와 반복 occurrence 계약은 백엔드 구현 완료 후 실제 응답으로 확인한다.
 5. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
