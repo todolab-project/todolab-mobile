@@ -352,7 +352,7 @@ compact header
 - 3주 grid는 이전 주, 현재 주, 다음 주를 보여 주며 월 경계 날짜는 muted tone으로 표시한다.
 - 월 제목과 이전·다음 이동은 한 줄에 두고 중복된 기간 문구나 큰 설명을 추가하지 않는다.
 - 이전·다음 chevron은 현재 선택 날짜 기준으로 정확히 1주씩 이동한다. 보이는 범위의 끝으로 점프하지 않는다.
-- 월 제목은 눌러서 달력 grid와 같은 폭의 월 선택 panel을 펼칠 수 있다.
+- 월 제목은 눌러서 달력 grid와 같은 폭의 월 선택 panel을 펼칠 수 있다. panel은 보조 control이므로 버튼 높이와 간격을 compact하게 유지해 달력과 선택 날짜 목록을 과하게 밀지 않는다.
 - Calendar와 Today 주간 strip은 바깥 카드와 내부 grid를 중첩하지 않는다. 필요하면 grid 자체의 얇은 border 하나만 사용한다.
 - 날짜 cell은 기본적으로 flat하게 두고 선택 날짜만 primary-soft surface, 오늘은 outline 또는 4px dot로 표시한다.
 - 주말은 secondary text로만 구분하고 빨강·파랑을 장식적으로 반복하지 않는다.
@@ -381,7 +381,7 @@ compact header
 - 독립 Inbox 화면은 유지하지 않고 날짜 없는 기록의 조회·정리는 Today 흐름에 포함한다.
 - 3주 달력은 주 높이를 동일하게 유지하고 주 경계에 얇은 neutral rule을 사용한다.
 - 날짜 열 경계에도 같은 rule을 더 낮은 대비로 사용해 일 단위 칸을 구분한다.
-- 시간이 있는 하루 일정은 `HH:mm 제목`의 한 줄 label로 표시한다.
+- 시간이 있는 하루 일정은 Today 주간 strip에서는 `HH:mm 제목`, Calendar 3주 grid의 좁은 cell에서는 `HH:mm` 중심의 compact label로 표시한다.
 - Today 주간 strip은 하루 일정을 점으로만 축약하지 않고 한 줄 label을 함께 제공한다.
 - Task 사이에는 4px 안팎의 작은 간격만 두고, 임의 색상은 쓰지 않는다. 색은 일정·완료·경고처럼 의미가 정해진 상태에만 사용한다.
 - Task와 일정은 개별적인 낮은 radius outline row로 구분하되 떠 있는 큰 카드처럼 보이는 그림자는 사용하지 않는다.
@@ -397,7 +397,7 @@ compact header
 - Task 작성은 하나의 flat sheet 안에서 제목·유형·선택 정보를 나누고 입력 배경과 취소 action의 대비를 낮춘다.
 - Task 상세는 hero·날짜·정보·목표를 낮은 outline section으로 구분하고 metadata 행에는 얇은 rule을 사용한다.
 - 과거 기록 검색은 프로필의 보조 목적지로 두고 날짜·키워드·상태를 함께 탐색할 수 있게 한다.
-- active tab은 primary, inactive tab은 text-muted를 사용한다.
+- active tab은 선명한 blue, inactive tab은 text-muted를 사용해 선택된 탭이 즉시 구분되게 한다.
 - iOS는 SF Symbols, Android와 Web은 대응하는 Material 계열 symbol을 사용한다.
 - 아이콘 의미와 접근성 label은 플랫폼 간 동일해야 한다.
 

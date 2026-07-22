@@ -277,6 +277,9 @@ ToDoLab 적용 방향:
 - [x] Today 미니 달력 높이와 날짜 cell 밀도를 줄인다.
 - [x] Calendar와 Today의 일정 label 시각적 무게를 낮추고, Calendar 하단 filter chip은 기본 노출하지 않게 정리한다.
 - [x] Calendar 좌우 이동을 선택 날짜 기준 1주 이동으로 바꾸고, 월 제목에서 같은 폭의 월 선택 panel을 열 수 있게 한다.
+- [x] 하단 탭 active 상태가 선명한 blue로 보이게 조정한다.
+- [x] Calendar 월 선택 panel의 버튼 높이와 간격을 줄여 달력과 목록을 덜 밀게 한다.
+- [x] Calendar 좁은 날짜 cell의 하루 일정 label은 제목 대신 시간 중심으로 축약한다.
 - [ ] 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 
 완료 기준:
@@ -416,8 +419,8 @@ Today 작업 목록 표시
 
 다음 작업은 실제 화면 품질과 real API 잔여 계약을 우선한다.
 
-1. 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
-2. Calendar 월간 grid의 일 단위 구분선 정렬, 일정 bar overflow, range API 계약을 실제 데이터로 확인한다.
+1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
+2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. 정리할 항목 화면의 버튼과 section UI를 Today와 같은 planner 문법으로 재정리한다.
 4. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API와 반복 occurrence 계약은 백엔드 구현 완료 후 실제 응답으로 확인한다.
 5. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
