@@ -15,7 +15,6 @@ import {
   PageHeader,
   Screen,
 } from '@/components/ui';
-import { env } from '@/config';
 import { getUserFacingApiErrorMessage } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type {
@@ -69,7 +68,6 @@ const sortFilters: { value: SortFilter; label: string; query: TaskSearchSort }[]
 ];
 
 const SEARCH_PAGE_SIZE = 5;
-const isSearchApiEnabled = env.apiMode === 'mock';
 
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
   PLANNED: '예정',
@@ -129,7 +127,7 @@ export function SearchOverview() {
 
     return baseQuery;
   }, [categoryQuery, dateRangeQuery, ddayQuery, deferredKeyword, selectedFilter, selectedSort]);
-  const search = useTaskSearch(searchQuery, { enabled: isSearchApiEnabled });
+  const search = useTaskSearch(searchQuery);
   const results = search.data?.pages.flatMap((page) => page.items) ?? [];
   const hasKeyword = keyword.trim().length > 0;
   const hasActiveSearchConditions =
@@ -164,11 +162,9 @@ export function SearchOverview() {
       : baseSummary;
   const resultDescription = search.isFetching
     ? '검색 결과를 업데이트하고 있어요.'
-    : !isSearchApiEnabled
-      ? '백엔드 검색 API 연결 후 사용할 수 있어요.'
-      : hasKeyword
-        ? `${searchSummary}에서 찾은 항목이에요.`
-        : `${searchSummary}을 최근 관련 날짜 순으로 보여줘요.`;
+    : hasKeyword
+      ? `${searchSummary}에서 찾은 항목이에요.`
+      : `${searchSummary}을 최근 관련 날짜 순으로 보여줘요.`;
   const resetSearchConditions = () => {
     setKeyword('');
     setSelectedFilter('ALL');
@@ -447,18 +443,13 @@ export function SearchOverview() {
             </Button>
           ) : (
             <AppText tone="secondary" variant="caption">
-              {isSearchApiEnabled ? 'mock 검색' : '준비 중'}
+              통합 검색
             </AppText>
           )}
         </View>
       </Card>
 
-      {!isSearchApiEnabled ? (
-        <InlineNotice
-          tone="warning"
-          message="통합 검색 API가 백엔드에 연결되기 전까지 실제 검색 요청은 보내지 않아요."
-        />
-      ) : search.error ? (
+      {search.error ? (
         <InlineNotice
           tone="danger"
           message={getUserFacingApiErrorMessage(search.error)}
@@ -485,12 +476,7 @@ export function SearchOverview() {
           </AppText>
         </View>
 
-        {!isSearchApiEnabled ? (
-          <EmptyState
-            title="검색 API 연결 전이에요"
-            description="Today, Calendar, D-Day 흐름을 먼저 사용할 수 있고 검색은 백엔드 계약 구현 후 열어요."
-          />
-        ) : search.isLoading ? (
+        {search.isLoading ? (
           <ListSkeleton accessibilityLabel="검색 결과를 불러오는 중" count={3} />
         ) : results.length === 0 ? (
           <EmptyState

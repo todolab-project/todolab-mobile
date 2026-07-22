@@ -281,7 +281,7 @@ ToDoLab 적용 방향:
 
 목표: mock에서 예쁜 화면이 아니라 실제 데이터로 매일 사용할 수 있는 상태를 만든다.
 
-- [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약을 백엔드와 확정하고 real API로 연결한다.
+- [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약을 백엔드와 확정하고 real API 응답으로 smoke test한다. 프론트는 `/api/v1/tasks/search` 실제 요청을 보내도록 연결했다.
 - [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다.
 - [ ] D-Day 삭제 성공 응답 형식을 `data: null` 또는 삭제된 ID 중 하나로 통일한다.
 - [ ] 반복 Task·일정의 series, RRULE, occurrence, exception 계약을 확정한다.
