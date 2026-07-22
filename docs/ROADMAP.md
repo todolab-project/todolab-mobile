@@ -313,7 +313,7 @@ ToDoLab 적용 방향:
 목표: 개발용 데모가 아니라 Android, iOS, Web에서 실제 사용 가능한 앱으로 마감한다.
 
 - [x] [`RELEASE_CHECKLIST.md`](./RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
-- [ ] 앱 아이콘, splash, 상태바, safe area를 최종 점검한다.
+- [x] 앱 아이콘, splash, 상태바, safe area의 현재 설정과 남은 실기기 확인 항목을 문서화한다.
 - [ ] Android package, iOS bundle identifier, EAS profile을 확정한다.
 - [ ] 실제 Android, iOS, Web에서 mock/real smoke test를 반복한다.
 - [ ] 접근성 label, 읽기 순서, 명암, keyboard focus, screen reader 동선을 최종 점검한다.
