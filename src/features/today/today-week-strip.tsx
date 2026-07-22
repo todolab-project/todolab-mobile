@@ -34,13 +34,7 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
   return (
     <View
       accessibilityLabel={`${formatDateLabel(today, { month: 'long' })} 주간 일정`}
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.border,
-        },
-      ]}
+      style={styles.container}
     >
       <AppText variant="bodyLarge" weight="bold">
         {formatDateLabel(today, { month: 'long' })}
@@ -143,16 +137,12 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radii.lg,
-    borderWidth: StyleSheet.hairlineWidth,
     gap: spacing[2],
-    overflow: 'hidden',
-    padding: spacing[3],
   },
   calendarGrid: {
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
-    minHeight: 104,
+    minHeight: 96,
     overflow: 'hidden',
     position: 'relative',
   },
@@ -180,15 +170,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     flex: 1,
     gap: spacing[1],
-    minHeight: 64,
+    minHeight: 56,
     paddingBottom: spacing[1],
-    paddingTop: spacing[2],
+    paddingTop: spacing[1],
   },
   date: {
     alignItems: 'center',
     borderRadius: radii.full,
-    height: 32,
+    height: 30,
     justifyContent: 'center',
-    width: 32,
+    width: 30,
   },
 });

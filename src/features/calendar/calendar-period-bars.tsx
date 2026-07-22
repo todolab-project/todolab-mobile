@@ -59,7 +59,7 @@ export function CalendarSingleDayLabels({
                   },
                 ]}
               >
-                <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
+                <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
                   {getCalendarSingleDayLabel(task)}
                 </AppText>
               </Pressable>
@@ -137,7 +137,7 @@ export function CalendarPeriodBars({
               },
             ]}
           >
-            <AppText numberOfLines={1} tone="default" variant="caption" weight="semibold">
+            <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
               {segment.continuesBefore ? '‹ ' : ''}
               {segment.task.title}
               {segment.continuesAfter ? ' ›' : ''}
