@@ -34,6 +34,32 @@ npx expo start --web --localhost
 - 실제 화면 확인 전용 항목이므로 [`ROADMAP.md`](./ROADMAP.md)의 화면 크기별 확인 항목은 완료 처리하지 않았다.
 - 브라우저 또는 실제 기기 연결이 가능해지면 같은 dev server 기준으로 재확인한다.
 
+### Web mock viewport 재확인
+
+환경:
+
+- API 모드: `mock`
+- 브라우저: Chrome extension 연결
+- Expo dev server: `http://localhost:8081`
+
+통과:
+
+- Today: 320px, 375px, 430px, 720px에서 horizontal overflow 없음
+- Calendar: 320px, 375px, 430px, 720px에서 horizontal overflow 없음
+- Today 첫 viewport에서 주간 일정, 일정 목록, 오늘 할 일이 노출됨
+- Calendar 320px에서 월간 grid와 선택 날짜 목록이 같은 화면 흐름 안에 표시됨
+
+남은 확인:
+
+- font scale 1.5 또는 browser zoom 150%에서 섹션 제목과 row action 유지 여부
+- dark mode에서 section marker, calendar rule, hairline 대비
+- 실제 iOS 375pt, Android 430dp 기기 또는 simulator에서 safe area와 하단 tab 겹침 여부
+
+메모:
+
+- 320px 스크린샷 기준으로 Today 미니 달력의 일정 label은 깨지지는 않지만 다소 조밀하게 보인다.
+- Calendar의 월간 grid는 overflow 없이 들어오지만, 320px에서는 일정 label이 빠르게 축약되므로 긴 일정이 많은 달에는 추가 밀도 조정이 필요할 수 있다.
+
 ## 2026-07-14
 
 커밋 기준: `199c6b8` 이후 로컬 변경 포함
