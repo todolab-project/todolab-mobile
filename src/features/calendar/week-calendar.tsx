@@ -316,6 +316,7 @@ function MonthDateGrid({
           </View>
           <View style={styles.singleDayLane}>
             <CalendarSingleDayLabels
+              compact
               dates={weekDates}
               tasks={tasks}
               onOpen={onOpenTask}
@@ -468,16 +469,17 @@ const styles = StyleSheet.create({
     width: 28,
   },
   monthPickerGrid: {
+    columnGap: spacing[2],
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing[2],
+    rowGap: spacing[1],
   },
   monthOption: {
     alignItems: 'center',
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
-    minHeight: 40,
+    minHeight: 36,
     width: '31.5%',
   },
   dayButton: {

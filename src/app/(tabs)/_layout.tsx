@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 
 import { TabBarIcon } from '@/components/navigation';
-import { typography, useAppTheme } from '@/theme';
+import { palette, typography, useAppTheme } from '@/theme';
 
 export default function TabLayout() {
   const theme = useAppTheme();
@@ -10,7 +10,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.colors.primary,
+        tabBarActiveTintColor: palette.blue[600],
         tabBarInactiveTintColor: theme.colors.textMuted,
         tabBarHideOnKeyboard: true,
         tabBarLabelStyle: {

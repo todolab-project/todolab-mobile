@@ -14,6 +14,7 @@ import {
 } from './calendar-layout';
 
 type CalendarPeriodBarsProps = {
+  compact?: boolean;
   dates: LocalDateString[];
   tasks: TaskResponse[];
   onOpen: (taskId: number) => void;
@@ -21,6 +22,7 @@ type CalendarPeriodBarsProps = {
 };
 
 export function CalendarSingleDayLabels({
+  compact = false,
   dates,
   tasks,
   onOpen,
@@ -51,6 +53,7 @@ export function CalendarSingleDayLabels({
                 onPress={() => onOpen(task.id)}
                 style={({ pressed }) => [
                   styles.singleDayLabel,
+                  compact && styles.singleDayLabelCompact,
                   {
                     backgroundColor: theme.colors.highlightAmber,
                     borderColor:
@@ -59,8 +62,15 @@ export function CalendarSingleDayLabels({
                   },
                 ]}
               >
-                <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
-                  {getCalendarSingleDayLabel(task)}
+                <AppText
+                  align={compact ? 'center' : undefined}
+                  numberOfLines={1}
+                  tone="secondary"
+                  variant="caption"
+                  weight="medium"
+                  style={compact ? styles.compactSingleDayLabelText : undefined}
+                >
+                  {getCalendarSingleDayLabel(task, compact)}
                 </AppText>
               </Pressable>
             ) : null}
@@ -186,8 +196,9 @@ export function buildCalendarSingleDayLabels(
   );
 }
 
-export function getCalendarSingleDayLabel(task: TaskResponse) {
+export function getCalendarSingleDayLabel(task: TaskResponse, compact = false) {
   if (task.allDay || !task.startAt) return task.title;
+  if (compact) return formatTimeLabel(task.startAt);
 
   return `${formatTimeLabel(task.startAt)} ${task.title}`;
 }
@@ -293,6 +304,13 @@ const styles = StyleSheet.create({
     minWidth: 0,
     overflow: 'hidden',
     paddingHorizontal: 3,
+  },
+  singleDayLabelCompact: {
+    paddingHorizontal: 1,
+  },
+  compactSingleDayLabelText: {
+    fontSize: 10,
+    lineHeight: 14,
   },
   singleDayOverflow: {
     borderRadius: radii.sm,
