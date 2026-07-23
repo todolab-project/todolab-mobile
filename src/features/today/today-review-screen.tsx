@@ -90,7 +90,7 @@ export function TodayReviewScreen() {
                   task={task}
                   showCompletionControl={false}
                   onOpen={() => openTask(task.id)}
-                  trailing={
+                  action={
                     <ReviewMoveAction
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
@@ -112,7 +112,7 @@ export function TodayReviewScreen() {
                   task={task}
                   showCompletionControl={false}
                   onOpen={() => openTask(task.id)}
-                  trailing={
+                  action={
                     <ReviewMoveAction
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
@@ -134,7 +134,7 @@ export function TodayReviewScreen() {
                   task={task}
                   showCompletionControl={false}
                   onOpen={() => openTask(task.id)}
-                  trailing={
+                  action={
                     <ReviewMoveAction
                       disabled={moveToToday.isPending}
                       loading={moveToToday.isPending && moveToToday.variables === task.id}
@@ -204,7 +204,7 @@ function ReviewMoveAction({ disabled, loading, label, text, onPress }: ReviewMov
         <ActivityIndicator color={theme.colors.primary} size="small" />
       ) : (
         <AppText tone="primary" variant="caption" weight="semibold">
-          {text} ›
+          + {text}
         </AppText>
       )}
     </Pressable>
@@ -232,8 +232,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radii.full,
     justifyContent: 'center',
-    minHeight: 32,
-    minWidth: 64,
+    minHeight: 28,
+    minWidth: 56,
     paddingHorizontal: spacing[2],
   },
 });
