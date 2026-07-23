@@ -86,6 +86,7 @@ export function TodayReviewScreen() {
             <ReviewSection title="지난 미완료" count={overview.staleTasks.length}>
               {overview.staleTasks.map((task) => (
                 <TaskCard
+                  compact
                   key={task.id}
                   task={task}
                   showCompletionControl={false}
@@ -108,6 +109,7 @@ export function TodayReviewScreen() {
             <ReviewSection title="추천" count={overview.recommendations.length}>
               {overview.recommendations.map(({ task }) => (
                 <TaskCard
+                  compact
                   key={task.id}
                   task={task}
                   showCompletionControl={false}
@@ -130,6 +132,7 @@ export function TodayReviewScreen() {
             <ReviewSection title="기록함" count={overview.inboxTasks.length}>
               {overview.inboxTasks.map((task) => (
                 <TaskCard
+                  compact
                   key={task.id}
                   task={task}
                   showCompletionControl={false}

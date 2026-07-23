@@ -10,6 +10,7 @@ import { getRecurrenceLabel } from './recurrence-presentation';
 
 type TaskCardProps = {
   task: TaskResponse;
+  compact?: boolean;
   onOpen?: () => void;
   onComplete?: () => void;
   onReopen?: () => void;
@@ -22,6 +23,7 @@ type TaskCardProps = {
 
 export function TaskCard({
   task,
+  compact = false,
   onOpen,
   onComplete,
   onReopen,
@@ -60,6 +62,7 @@ export function TaskCard({
     <View
       style={[
         styles.row,
+        compact && styles.rowCompact,
         {
           backgroundColor: theme.colors.surface,
           borderColor: focusedControl ? theme.colors.primary : theme.colors.border,
@@ -68,7 +71,7 @@ export function TaskCard({
         },
       ]}
     >
-      <View style={styles.content}>
+      <View style={[styles.content, compact && styles.contentCompact]}>
         {showCompletionControl ? (
           <Pressable
             accessibilityHint={
@@ -125,6 +128,7 @@ export function TaskCard({
           onPress={onOpen}
           style={({ pressed }) => [
             styles.copyPressable,
+            compact && styles.copyPressableCompact,
             {
               backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent',
             },
@@ -155,7 +159,9 @@ export function TaskCard({
         </Pressable>
         {trailing}
       </View>
-      {action ? <View style={styles.actionRow}>{action}</View> : null}
+      {action ? (
+        <View style={[styles.actionRow, compact && styles.actionRowCompact]}>{action}</View>
+      ) : null}
     </View>
   );
 }
@@ -165,6 +171,9 @@ const styles = StyleSheet.create({
     minHeight: 60,
     overflow: 'hidden',
   },
+  rowCompact: {
+    minHeight: 52,
+  },
   content: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -172,6 +181,11 @@ const styles = StyleSheet.create({
     minHeight: 60,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  contentCompact: {
+    minHeight: 52,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[1],
   },
   checkboxHitArea: {
     alignItems: 'center',
@@ -203,10 +217,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[1],
     paddingVertical: spacing[2],
   },
+  copyPressableCompact: {
+    paddingVertical: spacing[1],
+  },
   actionRow: {
     alignItems: 'flex-end',
     paddingBottom: spacing[2],
     paddingHorizontal: spacing[2],
+  },
+  actionRowCompact: {
+    paddingBottom: spacing[1],
   },
   doneTitle: {
     textDecorationLine: 'line-through',
