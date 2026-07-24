@@ -70,7 +70,7 @@ export function ProfileOverview() {
     ? me.isPending
       ? '계정 정보를 확인하고 있어요.'
       : '목표와 기록, 개인 설정을 관리하세요.'
-    : '실제 서버 데이터와 동기화하려면 로그인하세요.';
+    : '로그인하면 서버와 동기화돼요.';
 
   const logout = () => {
     authApi.logout();
@@ -80,29 +80,35 @@ export function ProfileOverview() {
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
-      <View style={styles.identity}>
-        <View style={[styles.avatar, { backgroundColor: theme.colors.highlightSage }]}>
-          <AppText variant="bodyLarge" weight="bold">
-            나
-          </AppText>
-        </View>
-        <View style={styles.identityCopy}>
-          <AppText numberOfLines={1} variant="bodyLarge" weight="bold">
-            {identityTitle}
-          </AppText>
-          <AppText tone="secondary" variant="caption">
-            {identityDescription}
-          </AppText>
-        </View>
-      </View>
-
-      <Button
-        fullWidth
-        onPress={isLoggedIn ? logout : () => router.push('/login' as Href)}
-        variant={isLoggedIn ? 'secondary' : 'primary'}
+      <View
+        style={[
+          styles.identityCard,
+          { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+        ]}
       >
-        {isLoggedIn ? '로그아웃' : '로그인'}
-      </Button>
+        <View style={styles.identity}>
+          <View style={[styles.avatar, { backgroundColor: theme.colors.highlightSage }]}>
+            <AppText variant="bodyLarge" weight="bold">
+              나
+            </AppText>
+          </View>
+          <View style={styles.identityCopy}>
+            <AppText numberOfLines={1} variant="bodyLarge" weight="bold">
+              {identityTitle}
+            </AppText>
+            <AppText numberOfLines={2} tone="secondary" variant="caption">
+              {identityDescription}
+            </AppText>
+          </View>
+        </View>
+        <Button
+          onPress={isLoggedIn ? logout : () => router.push('/login' as Href)}
+          size="compact"
+          variant={isLoggedIn ? 'ghost' : 'secondary'}
+        >
+          {isLoggedIn ? '로그아웃' : '로그인'}
+        </Button>
+      </View>
 
       <View accessibilityRole="list" style={styles.menu}>
         {profileItems.map((item) => {
@@ -163,14 +169,24 @@ export function ProfileOverview() {
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[4],
+    gap: spacing[3],
     paddingTop: spacing[4],
+  },
+  identityCard: {
+    alignItems: 'center',
+    borderRadius: radii.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    gap: spacing[3],
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
   identity: {
     alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     gap: spacing[3],
-    paddingVertical: spacing[2],
+    minWidth: 0,
   },
   avatar: {
     alignItems: 'center',
@@ -185,24 +201,24 @@ const styles = StyleSheet.create({
   },
   menu: {
     backgroundColor: 'transparent',
-    gap: spacing[2],
+    gap: spacing[1],
   },
   row: {
     alignItems: 'center',
     borderRadius: radii.lg,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
-    gap: spacing[3],
-    minHeight: 64,
+    gap: spacing[2],
+    minHeight: 58,
     paddingHorizontal: spacing[3],
-    paddingVertical: spacing[3],
+    paddingVertical: spacing[2],
   },
   icon: {
     alignItems: 'center',
     borderRadius: radii.md,
-    height: 36,
+    height: 32,
     justifyContent: 'center',
-    width: 36,
+    width: 32,
   },
   copy: {
     flex: 1,
