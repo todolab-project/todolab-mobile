@@ -43,7 +43,7 @@ export function TodayReviewScreen() {
     <Screen scroll contentContainerStyle={styles.screen}>
       <PageHeader
         title="정리할 항목"
-        description="미뤄 둔 기록을 오늘의 실행 목록으로 정리해 보세요."
+        description="오늘 할 일로 옮길 항목을 골라보세요."
         leading={
           <IconButton
             accessibilityLabel="Today 화면으로 돌아가기"
@@ -216,14 +216,14 @@ function ReviewMoveAction({ disabled, loading, label, text, onPress }: ReviewMov
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[4],
+    gap: spacing[3],
     paddingTop: spacing[4],
   },
   backButton: {
     backgroundColor: 'transparent',
   },
   sections: {
-    gap: spacing[4],
+    gap: spacing[3],
   },
   section: {
     gap: spacing[2],
