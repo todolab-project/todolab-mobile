@@ -98,6 +98,7 @@ compact top bar: Today · 날짜 · 보조 메뉴
 - D-Day 목표 생성, 목록, 삭제, 연결된 할 일 조회
 - 할 일과 D-Day 연결 및 해제
 - 카테고리별 그룹 조회
+- Task·일정·완료 기록 통합 검색
 
 공통 응답 형태:
 
@@ -115,6 +116,19 @@ type ApiResponse<T> = {
 
 최근 Web real API 연동 smoke test 결과는 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록한다.
 
+백엔드 최신 원본 계약은 `todolab-backend`의 다음 문서를 기준으로 대조한다.
+
+- [`API_V1_FRONTEND.md`](../../backend/docs/API_V1_FRONTEND.md): 모바일 v1 API endpoint와 응답 envelope
+- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ENVIRONMENT_INTEGRATION.md): local, staging, production API URL과 CORS origin
+- [`AUTH_CONTRACT.md`](../../backend/docs/AUTH_CONTRACT.md): JWT access token, 401/403, refresh token 미도입 정책
+- [`API_ERROR_CODES.md`](../../backend/docs/API_ERROR_CODES.md): 오류 코드, retry 가능 여부, 안전한 사용자 문구
+- [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md): 반복 series/occurrence 저장 모델과 현재 API 상태
+- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md): 로컬 알림과 향후 server push 책임 분리
+- [`TIMEZONE_CONTRACT.md`](../../backend/docs/TIMEZONE_CONTRACT.md): `Asia/Seoul` 기준과 사용자 timezone 도입 조건
+- [`DATA_MODEL_GLOSSARY.md`](../../backend/docs/DATA_MODEL_GLOSSARY.md): Task 상태, 날짜 필드, owner scope 의미
+- [`MOBILE_INTEGRATION_RUNBOOK.md`](../../backend/docs/MOBILE_INTEGRATION_RUNBOOK.md): 백엔드 기준 real-mode smoke test 절차
+- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/MOBILE_API_BACKEND_STATUS.md): 모바일 요구 항목의 백엔드 구현/확인 상태
+
 연동 통과 항목:
 
 - 회원가입, 로그인, 내 정보 조회
@@ -123,7 +137,9 @@ type ApiResponse<T> = {
 - 모바일 로그인 후 Today 실제 데이터 표시
 - Today와 Calendar에서 같은 실제 Task 표시
 - D-Day 연결 label 표시
-- 검색 API 미연결 안내 표시
+- 통합 검색 API 계약 구현 확인. 모바일은 `/api/v1/tasks/search` 실제 요청으로 검색어, 상태, 종류, 기간, cursor 흐름을 검증한다.
+- Web real API Authorization CORS preflight 통과
+- 서비스 기준 시간대 `Asia/Seoul` 계약 확인
 
 연동 중 발견해 조치한 항목:
 
@@ -133,13 +149,12 @@ type ApiResponse<T> = {
 
 백엔드에서 계속 확인하거나 보완할 항목:
 
-- 개발, 스테이징, 운영 API URL 확정
-- API 문서 또는 OpenAPI 명세
-- 날짜와 시간의 타임존 기준 및 `DAY`, `WEEK`, `MONTH`별 범위 조회 계약 고정
+- staging, production API URL 확정
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
 - D-Day 삭제 성공 응답을 `data: null` 또는 삭제된 ID 중 하나로 통일
-- 통합 검색 구현 전 [`API_SEARCH_FILTER.md`](./API_SEARCH_FILTER.md)의 관련 날짜와 cursor 계약 구현
-- 반복 Task·일정 구현 전 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 series, RRULE, occurrence, exception 계약 확정
+- 통합 검색 real API를 실제 모바일 화면에서 smoke test하고 cursor 정렬 안정성을 재검증
+- 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](./API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
+- 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
 
 백엔드 연동을 다시 진행할 때는 [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)를 기준으로 mock 검증 → real API 검증 → smoke log 기록 순서로 진행한다. 이 저장소에는 필요한 계약과 모바일 변경만 문서화하고 백엔드 코드는 추가하지 않는다.
 
@@ -292,10 +307,10 @@ ToDoLab 적용 방향:
 
 목표: mock에서 예쁜 화면이 아니라 실제 데이터로 매일 사용할 수 있는 상태를 만든다.
 
-- [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약을 백엔드와 확정하고 real API 응답으로 smoke test한다. 프론트는 `/api/v1/tasks/search` 실제 요청을 보내도록 연결했다.
+- [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약은 백엔드 문서상 확정됐다. 모바일 real API 화면에서 성공 결과, 빈 상태, cursor pagination을 smoke test하고 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록한다.
 - [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다.
 - [ ] D-Day 삭제 성공 응답 형식을 `data: null` 또는 삭제된 ID 중 하나로 백엔드에서 통일한다. 프론트는 두 응답 계열을 모두 성공으로 받을 수 있게 열었다.
-- [ ] 반복 Task·일정의 series, RRULE, occurrence, exception 계약을 확정한다.
+- [ ] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약은 정리됐지만, 반복 생성/수정 API가 아직 없어 실제 저장 UI는 보류한다.
 - [ ] 401 세션 만료 이후 사용자 동선과 refresh token 도입 여부를 결정한다.
 - [ ] network, timeout, 5xx 오류에서 retry와 기존 데이터 유지가 화면별로 자연스러운지 확인한다.
 
@@ -422,8 +437,8 @@ Today 작업 목록 표시
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. 정리할 항목 화면의 버튼과 section UI를 Today와 같은 planner 문법으로 재정리한다.
-4. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API와 반복 occurrence 계약은 백엔드 구현 완료 후 실제 응답으로 확인한다.
-5. 반복 Task와 일정의 작성·수정 UI는 [`API_RECURRENCE.md`](./API_RECURRENCE.md)의 백엔드 계약이 확정되기 전까지 실제 저장 기능처럼 노출하지 않는다.
+4. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API는 실제 응답으로 검증한다. 반복 occurrence는 조회 표시는 허용하되 생성/수정 UI는 백엔드 API 제공 후 연다.
+5. 반복 Task와 일정의 작성·수정 UI는 백엔드 반복 생성/수정 API가 제공되기 전까지 실제 저장 기능처럼 노출하지 않는다.
 6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

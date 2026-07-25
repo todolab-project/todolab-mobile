@@ -47,7 +47,7 @@ API URL:
 - [ ] 기록함/정리할 항목에서 오늘 할 일로 이동 또는 추가
 - [ ] Today 일정 표시, 오늘 할 일 완료, 완료 다시 열기
 - [ ] Calendar 월간 grid, 하루 일정 label, 여러 날 일정 bar
-- [ ] Search mock 결과 또는 real API 준비 상태
+- [ ] Search mock 결과와 real `/api/v1/tasks/search` 검색, filter, pagination
 - [ ] D-Day 목표 생성, 목표 상세, 목표 연결 Task 생성
 - [ ] Completed 주 이동, 완료 목록, 다시 열기
 - [ ] Profile 목적지 이동

@@ -104,8 +104,9 @@
 - 로그인, 내 정보 조회, 401 세션 만료 흐름이 동작한다.
 - Today와 Calendar가 같은 날짜 기준으로 같은 일정을 보여준다.
 - Calendar 범위 조회가 여러 날 일정의 원본 ID를 중복 없이 내려준다.
-- 검색은 백엔드 구현 전까지 준비 중 상태로 유지된다.
+- Search는 `/api/v1/tasks/search` real API로 검색어, 상태 filter, 상세 filter, 빈 상태, cursor pagination을 확인한다.
 - network, timeout, 5xx 오류에서 공통 오류 문구와 retry 버튼이 표시된다.
+- 반복 생성/수정과 서버 push 알림은 백엔드 API 제공 전까지 실제 저장 기능처럼 노출하지 않는다.
 
 ## 완료 기록 방식
 

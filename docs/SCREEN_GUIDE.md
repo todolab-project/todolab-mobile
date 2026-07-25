@@ -116,7 +116,7 @@ docs/screenshots/
 
 - 여러 날 일정은 날짜마다 복제하지 않고 하나의 원본 ID로 표시한다.
 - Calendar의 일정 bar는 날짜 cell 경계를 넘지 않아야 한다.
-- Calendar 범위 조회는 백엔드 계약 확인이 필요하다.
+- Calendar 범위 조회는 백엔드 v1 계약과 `Asia/Seoul` 시간대 기준을 따른다. 여러 날 일정 bar와 Today 목록이 같은 원본 Task를 가리키는지 real mode에서 확인한다.
 
 ## Search
 
@@ -145,7 +145,7 @@ docs/screenshots/
 
 개발 참고:
 
-- mock 검색은 이미 동작하지만 real API는 백엔드 검색 계약 확인이 필요하다.
+- mock 검색과 real `/api/v1/tasks/search` 계약이 모두 준비되어 있다. real mode에서는 검색어, filter, 빈 상태, cursor pagination을 smoke test한다.
 - 검색 결과에는 관련 날짜와 date source가 함께 보여야 한다.
 
 ## Completed
@@ -249,7 +249,7 @@ docs/screenshots/
 
 개발 참고:
 
-- D-Day 관련 백엔드 500 응답 이슈는 real 모드 연동 시 확인이 필요하다.
+- D-Day v1 endpoint를 사용한다. legacy `/api/ddays/**` alias는 모바일 신규 계약에 추가하지 않는다.
 
 ## 캡쳐 후 업데이트 체크리스트
 

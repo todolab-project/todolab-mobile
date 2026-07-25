@@ -2,6 +2,17 @@
 
 이 문서는 ToDoLab Mobile을 실제 백엔드와 붙이기 전에 프론트엔드 기준으로 확인해야 할 환경, API 계약, smoke test 순서를 정리한다. 백엔드 구현 변경은 `todolab-backend` 저장소에서 진행하고, 이 저장소에서는 클라이언트 요구 사항과 검증 결과만 관리한다.
 
+백엔드 원본 계약은 다음 문서를 기준으로 한다.
+
+- [`API_V1_FRONTEND.md`](../../backend/docs/API_V1_FRONTEND.md)
+- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ENVIRONMENT_INTEGRATION.md)
+- [`AUTH_CONTRACT.md`](../../backend/docs/AUTH_CONTRACT.md)
+- [`API_ERROR_CODES.md`](../../backend/docs/API_ERROR_CODES.md)
+- [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md)
+- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md)
+- [`TIMEZONE_CONTRACT.md`](../../backend/docs/TIMEZONE_CONTRACT.md)
+- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/MOBILE_API_BACKEND_STATUS.md)
+
 ## 1. 환경 모드
 
 로컬 UI 개발과 실제 연동 테스트는 `EXPO_PUBLIC_API_MODE`로 분리한다.
@@ -140,7 +151,9 @@ type ApiEnvelope<T> = {
    - 목표 상세 조회와 목표 Task 생성에서 500이 발생하지 않는지
    - Task와 D-Day 연결/해제가 양쪽 화면에 일관되게 반영되는지
 6. 반복 일정
-   - `API_RECURRENCE.md`의 series, occurrence, exception 계약 확정 전까지 작성·수정 저장 기능은 제한한다.
+   - 백엔드 `RECURRENCE_MODEL.md` 기준으로 occurrence 조회 표시는 가능하지만, 반복 생성/수정 API 제공 전까지 작성·수정 저장 기능은 제한한다.
+7. 알림
+   - 백엔드 `NOTIFICATION_CONTRACT.md` 기준으로 서버 push API는 아직 없고, 모바일 로컬 알림은 가까운 미래 occurrence에 대한 best-effort 예약으로만 다룬다.
 
 ## 7. real 모드 smoke test 순서
 
@@ -171,8 +184,9 @@ type ApiEnvelope<T> = {
 
 ## 8. 현재 보류 또는 추가 확정이 필요한 계약
 
-- 반복 Task·일정의 series, RRULE, occurrence, exception 저장·수정 계약
+- 반복 Task·일정의 생성/수정 API와 모바일 저장 UI 노출 시점
 - Calendar 월간 범위 조회가 앞뒤 빈칸 날짜까지 포함해야 하는지
-- 검색 결과의 relevance 기준과 cursor 정렬 안정성
+- 검색 결과의 relevance 기준과 cursor 정렬 안정성 real-mode 검증
 - D-Day 목표 삭제 시 연결된 Task 처리 방식
 - refresh token 또는 silent re-auth 도입 여부
+- idempotency 또는 client request id 정책
