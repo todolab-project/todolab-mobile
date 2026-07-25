@@ -1,6 +1,5 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import type { ComponentProps } from 'react';
 import { useDeferredValue, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
@@ -85,6 +84,7 @@ export function SearchOverview() {
   const [selectedDdayFilter, setSelectedDdayFilter] = useState<DdayFilter>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('ALL');
   const [selectedSort, setSelectedSort] = useState<SortFilter>('DATE_DESC');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const deferredKeyword = useDeferredValue(keyword.trim());
   const today = toApiLocalDate();
@@ -156,6 +156,7 @@ export function SearchOverview() {
     selectedCategory === 'ALL' ? null : selectedCategoryLabel,
     selectedSort === 'DATE_DESC' ? null : selectedSortLabel,
   ].filter((value): value is string => Boolean(value));
+  const activeExtraFilterCount = activeExtraFilters.length;
   const searchSummary =
     activeExtraFilters.length > 0
       ? `${baseSummary} · ${activeExtraFilters.join(' · ')}`
@@ -275,161 +276,199 @@ export function SearchOverview() {
           })}
         </View>
 
-        <View style={styles.filterGroup}>
-          <AppText tone="secondary" variant="caption" weight="semibold">
-            기간
-          </AppText>
-          <View accessibilityLabel="검색 날짜 범위" style={styles.filters}>
-            {dateRangeFilters.map((filter) => {
-              const selected = selectedDateRange === filter.value;
-              const focusKey = `date-${filter.value}`;
-
-              return (
-                <Pressable
-                  key={filter.value}
-                  accessibilityLabel={`${filter.label} 검색 기간`}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected }}
-                  onBlur={() => setFocusedElement(null)}
-                  onFocus={() => setFocusedElement(focusKey)}
-                  onPress={() => setSelectedDateRange(filter.value)}
-                  style={[
-                    styles.filterChip,
-                    {
-                      backgroundColor: selected ? theme.colors.highlightAmber : 'transparent',
-                      borderColor:
-                        focusedElement === focusKey || selected
-                          ? theme.colors.warning
-                          : theme.colors.border,
-                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
-                    },
-                  ]}
-                >
-                  <AppText tone={selected ? 'warning' : 'secondary'} variant="caption">
-                    {filter.label}
-                  </AppText>
-                </Pressable>
-              );
-            })}
+        <Pressable
+          accessibilityLabel={`상세 검색 필터 ${showAdvancedFilters ? '접기' : '펼치기'}`}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: showAdvancedFilters }}
+          onPress={() => setShowAdvancedFilters((current) => !current)}
+          style={({ pressed }) => [
+            styles.advancedToggle,
+            {
+              backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
+              borderColor: theme.colors.border,
+            },
+          ]}
+        >
+          <View style={styles.advancedToggleCopy}>
+            <AppText variant="caption" weight="semibold">
+              상세 필터
+            </AppText>
+            <AppText numberOfLines={1} tone="secondary" variant="caption">
+              {activeExtraFilterCount > 0
+                ? `${activeExtraFilterCount}개 적용 · ${activeExtraFilters.join(' · ')}`
+                : '기간 · D-Day · 카테고리 · 정렬'}
+            </AppText>
           </View>
-        </View>
+          <SymbolView
+            name={{
+              ios: showAdvancedFilters ? 'chevron.up' : 'chevron.down',
+              android: showAdvancedFilters ? 'keyboard_arrow_up' : 'keyboard_arrow_down',
+              web: showAdvancedFilters ? 'keyboard_arrow_up' : 'keyboard_arrow_down',
+            }}
+            size={18}
+            tintColor={theme.colors.textMuted}
+          />
+        </Pressable>
 
-        <View style={styles.filterGroup}>
-          <AppText tone="secondary" variant="caption" weight="semibold">
-            D-Day
-          </AppText>
-          <View accessibilityLabel="D-Day 연결 검색 필터" style={styles.filters}>
-            {ddayFilters.map((filter) => {
-              const selected = selectedDdayFilter === filter.value;
-              const focusKey = `dday-${filter.value}`;
+        {showAdvancedFilters ? (
+          <View style={styles.advancedFilters}>
+            <View style={styles.filterGroup}>
+              <AppText tone="secondary" variant="caption" weight="semibold">
+                기간
+              </AppText>
+              <View accessibilityLabel="검색 날짜 범위" style={styles.filters}>
+                {dateRangeFilters.map((filter) => {
+                  const selected = selectedDateRange === filter.value;
+                  const focusKey = `date-${filter.value}`;
 
-              return (
-                <Pressable
-                  key={filter.value}
-                  accessibilityLabel={`${filter.label} 검색 필터`}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected }}
-                  onBlur={() => setFocusedElement(null)}
-                  onFocus={() => setFocusedElement(focusKey)}
-                  onPress={() => setSelectedDdayFilter(filter.value)}
-                  style={[
-                    styles.filterChip,
-                    {
-                      backgroundColor: selected ? theme.colors.highlightSage : 'transparent',
-                      borderColor:
-                        focusedElement === focusKey || selected
-                          ? theme.colors.success
-                          : theme.colors.border,
-                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
-                    },
-                  ]}
-                >
-                  <AppText tone={selected ? 'success' : 'secondary'} variant="caption">
-                    {filter.label}
-                  </AppText>
-                </Pressable>
-              );
-            })}
+                  return (
+                    <Pressable
+                      key={filter.value}
+                      accessibilityLabel={`${filter.label} 검색 기간`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onBlur={() => setFocusedElement(null)}
+                      onFocus={() => setFocusedElement(focusKey)}
+                      onPress={() => setSelectedDateRange(filter.value)}
+                      style={[
+                        styles.filterChip,
+                        {
+                          backgroundColor: selected ? theme.colors.highlightAmber : 'transparent',
+                          borderColor:
+                            focusedElement === focusKey || selected
+                              ? theme.colors.warning
+                              : theme.colors.border,
+                          borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                        },
+                      ]}
+                    >
+                      <AppText tone={selected ? 'warning' : 'secondary'} variant="caption">
+                        {filter.label}
+                      </AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={styles.filterGroup}>
+              <AppText tone="secondary" variant="caption" weight="semibold">
+                D-Day
+              </AppText>
+              <View accessibilityLabel="D-Day 연결 검색 필터" style={styles.filters}>
+                {ddayFilters.map((filter) => {
+                  const selected = selectedDdayFilter === filter.value;
+                  const focusKey = `dday-${filter.value}`;
+
+                  return (
+                    <Pressable
+                      key={filter.value}
+                      accessibilityLabel={`${filter.label} 검색 필터`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onBlur={() => setFocusedElement(null)}
+                      onFocus={() => setFocusedElement(focusKey)}
+                      onPress={() => setSelectedDdayFilter(filter.value)}
+                      style={[
+                        styles.filterChip,
+                        {
+                          backgroundColor: selected ? theme.colors.highlightSage : 'transparent',
+                          borderColor:
+                            focusedElement === focusKey || selected
+                              ? theme.colors.success
+                              : theme.colors.border,
+                          borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                        },
+                      ]}
+                    >
+                      <AppText tone={selected ? 'success' : 'secondary'} variant="caption">
+                        {filter.label}
+                      </AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={styles.filterGroup}>
+              <AppText tone="secondary" variant="caption" weight="semibold">
+                카테고리
+              </AppText>
+              <View accessibilityLabel="카테고리 검색 필터" style={styles.filters}>
+                {categoryFilters.map((filter) => {
+                  const selected = selectedCategory === filter.value;
+                  const focusKey = `category-${filter.value}`;
+
+                  return (
+                    <Pressable
+                      key={filter.value}
+                      accessibilityLabel={`${filter.label} 검색 필터`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onBlur={() => setFocusedElement(null)}
+                      onFocus={() => setFocusedElement(focusKey)}
+                      onPress={() => setSelectedCategory(filter.value)}
+                      style={[
+                        styles.filterChip,
+                        {
+                          backgroundColor: selected ? theme.colors.highlightBlue : 'transparent',
+                          borderColor:
+                            focusedElement === focusKey || selected
+                              ? theme.colors.primary
+                              : theme.colors.border,
+                          borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                        },
+                      ]}
+                    >
+                      <AppText tone={selected ? 'primary' : 'secondary'} variant="caption">
+                        {filter.label}
+                      </AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={styles.filterGroup}>
+              <AppText tone="secondary" variant="caption" weight="semibold">
+                정렬
+              </AppText>
+              <View accessibilityLabel="검색 결과 정렬" style={styles.filters}>
+                {sortFilters.map((filter) => {
+                  const selected = selectedSort === filter.value;
+                  const focusKey = `sort-${filter.value}`;
+
+                  return (
+                    <Pressable
+                      key={filter.value}
+                      accessibilityLabel={`${filter.label} 검색 정렬`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected }}
+                      onBlur={() => setFocusedElement(null)}
+                      onFocus={() => setFocusedElement(focusKey)}
+                      onPress={() => setSelectedSort(filter.value)}
+                      style={[
+                        styles.filterChip,
+                        {
+                          backgroundColor: selected ? theme.colors.highlightAmber : 'transparent',
+                          borderColor:
+                            focusedElement === focusKey || selected
+                              ? theme.colors.warning
+                              : theme.colors.border,
+                          borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
+                        },
+                      ]}
+                    >
+                      <AppText tone={selected ? 'warning' : 'secondary'} variant="caption">
+                        {filter.label}
+                      </AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
           </View>
-        </View>
-
-        <View style={styles.filterGroup}>
-          <AppText tone="secondary" variant="caption" weight="semibold">
-            카테고리
-          </AppText>
-          <View accessibilityLabel="카테고리 검색 필터" style={styles.filters}>
-            {categoryFilters.map((filter) => {
-              const selected = selectedCategory === filter.value;
-              const focusKey = `category-${filter.value}`;
-
-              return (
-                <Pressable
-                  key={filter.value}
-                  accessibilityLabel={`${filter.label} 검색 필터`}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected }}
-                  onBlur={() => setFocusedElement(null)}
-                  onFocus={() => setFocusedElement(focusKey)}
-                  onPress={() => setSelectedCategory(filter.value)}
-                  style={[
-                    styles.filterChip,
-                    {
-                      backgroundColor: selected ? theme.colors.highlightBlue : 'transparent',
-                      borderColor:
-                        focusedElement === focusKey || selected
-                          ? theme.colors.primary
-                          : theme.colors.border,
-                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
-                    },
-                  ]}
-                >
-                  <AppText tone={selected ? 'primary' : 'secondary'} variant="caption">
-                    {filter.label}
-                  </AppText>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-
-        <View style={styles.filterGroup}>
-          <AppText tone="secondary" variant="caption" weight="semibold">
-            정렬
-          </AppText>
-          <View accessibilityLabel="검색 결과 정렬" style={styles.filters}>
-            {sortFilters.map((filter) => {
-              const selected = selectedSort === filter.value;
-              const focusKey = `sort-${filter.value}`;
-
-              return (
-                <Pressable
-                  key={filter.value}
-                  accessibilityLabel={`${filter.label} 검색 정렬`}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected }}
-                  onBlur={() => setFocusedElement(null)}
-                  onFocus={() => setFocusedElement(focusKey)}
-                  onPress={() => setSelectedSort(filter.value)}
-                  style={[
-                    styles.filterChip,
-                    {
-                      backgroundColor: selected ? theme.colors.highlightAmber : 'transparent',
-                      borderColor:
-                        focusedElement === focusKey || selected
-                          ? theme.colors.warning
-                          : theme.colors.border,
-                      borderWidth: focusedElement === focusKey ? 2 : StyleSheet.hairlineWidth,
-                    },
-                  ]}
-                >
-                  <AppText tone={selected ? 'warning' : 'secondary'} variant="caption">
-                    {filter.label}
-                  </AppText>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
+        ) : null}
 
         <View style={styles.searchMetaRow}>
           <View style={[styles.searchMetaPill, { backgroundColor: theme.colors.highlightSage }]}>
@@ -513,35 +552,6 @@ export function SearchOverview() {
             ) : null}
           </View>
         )}
-      </Card>
-
-      <Card variant="outlined" style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <AppText variant="bodyLarge" weight="bold">
-            다음 연결 예정
-          </AppText>
-          <AppText tone="secondary" variant="caption">
-            백엔드 검색 API 확정 후 더 정교하게 열어요.
-          </AppText>
-        </View>
-
-        <View style={styles.scopeList}>
-          <SearchScopeRow
-            icon={{ ios: 'calendar.badge.clock', android: 'date_range', web: 'date_range' }}
-            title="직접 기간"
-            description="시작일과 종료일을 직접 고르는 검색"
-          />
-          <SearchScopeRow
-            icon={{ ios: 'line.3.horizontal.decrease', android: 'filter_list', web: 'filter_list' }}
-            title="상세 필터"
-            description="세부 날짜 기준과 정렬"
-          />
-          <SearchScopeRow
-            icon={{ ios: 'arrow.down.doc', android: 'more_horiz', web: 'more_horiz' }}
-            title="관련도 정렬"
-            description="검색어 점수와 업데이트 기준 정렬"
-          />
-        </View>
       </Card>
     </Screen>
   );
@@ -653,37 +663,13 @@ function getCategoryQuery(filter: CategoryFilter): Pick<TaskSearchQuery, 'catego
   return { category: filter };
 }
 
-type SearchScopeRowProps = {
-  icon: ComponentProps<typeof SymbolView>['name'];
-  title: string;
-  description: string;
-};
-
-function SearchScopeRow({ icon, title, description }: SearchScopeRowProps) {
-  const theme = useAppTheme();
-
-  return (
-    <View style={styles.scopeRow}>
-      <View style={[styles.scopeIcon, { backgroundColor: theme.colors.highlightSage }]}>
-        <SymbolView name={icon} size={16} tintColor={theme.colors.success} />
-      </View>
-      <View style={styles.scopeCopy}>
-        <AppText weight="medium">{title}</AppText>
-        <AppText tone="secondary" variant="caption">
-          {description}
-        </AppText>
-      </View>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[4],
+    gap: spacing[3],
     paddingTop: spacing[3],
   },
   searchCard: {
-    gap: spacing[3],
+    gap: spacing[2],
   },
   inputFrame: {
     alignItems: 'center',
@@ -714,6 +700,25 @@ const styles = StyleSheet.create({
   },
   filterGroup: {
     gap: spacing[2],
+  },
+  advancedToggle: {
+    alignItems: 'center',
+    borderRadius: radii.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    gap: spacing[2],
+    justifyContent: 'space-between',
+    minHeight: 48,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
+  },
+  advancedToggleCopy: {
+    flex: 1,
+    gap: 2,
+    minWidth: 0,
+  },
+  advancedFilters: {
+    gap: spacing[3],
   },
   filterChip: {
     alignItems: 'center',
@@ -763,25 +768,5 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing[1],
     minWidth: 0,
-  },
-  scopeList: {
-    gap: spacing[2],
-  },
-  scopeRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: spacing[3],
-    minHeight: 52,
-  },
-  scopeIcon: {
-    alignItems: 'center',
-    borderRadius: radii.md,
-    height: 32,
-    justifyContent: 'center',
-    width: 32,
-  },
-  scopeCopy: {
-    flex: 1,
-    gap: spacing[1],
   },
 });
