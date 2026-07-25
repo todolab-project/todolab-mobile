@@ -192,9 +192,14 @@ function TaskDetail({
               {status}
             </AppText>
           </View>
-          <AppText tone="secondary" variant="caption" weight="semibold">
-            {typeLabels[task.type]}
-          </AppText>
+          <View style={styles.statusTrailing}>
+            <AppText tone="secondary" variant="caption" weight="semibold">
+              {typeLabels[task.type]}
+            </AppText>
+            <Button disabled={isDeleting} size="compact" variant="ghost" onPress={onEdit}>
+              수정
+            </Button>
+          </View>
         </View>
 
         <View style={styles.titleBlock}>
@@ -211,10 +216,6 @@ function TaskDetail({
             </AppText>
           )}
         </View>
-
-        <Button disabled={isDeleting} size="compact" variant="ghost" onPress={onEdit}>
-          수정
-        </Button>
       </Card>
 
       <TaskDateQuickActions task={task} />
@@ -513,6 +514,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[2],
     justifyContent: 'space-between',
+  },
+  statusTrailing: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[1],
   },
   statusBadge: {
     borderRadius: radii.full,
