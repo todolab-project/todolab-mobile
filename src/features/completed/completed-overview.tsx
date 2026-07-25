@@ -153,21 +153,12 @@ export function CompletedOverview() {
               <View style={styles.tasks}>
                 {selectedDay.tasks.map((task) => (
                   <TaskCard
+                    compact
                     key={task.id}
                     task={task}
+                    isCompleting={reopenTask.isPending && reopenTask.variables === task.id}
                     completionDisabled={reopenTask.isPending}
-                    trailing={
-                      <Button
-                        accessibilityLabel={`${task.title}, 오늘 할 일로 다시 열기`}
-                        loading={reopenTask.isPending && reopenTask.variables === task.id}
-                        disabled={reopenTask.isPending}
-                        size="compact"
-                        variant="ghost"
-                        onPress={() => reopenTask.mutate(task.id)}
-                      >
-                        다시 열기
-                      </Button>
-                    }
+                    onReopen={() => reopenTask.mutate(task.id)}
                     onOpen={() =>
                       router.push({
                         pathname: '/tasks/[taskId]',
