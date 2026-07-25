@@ -83,7 +83,11 @@ export function TodayReviewScreen() {
       ) : (
         <View style={styles.sections}>
           {overview.staleTasks.length > 0 ? (
-            <ReviewSection title="지난 미완료" count={overview.staleTasks.length}>
+            <ReviewSection
+              title="지난 미완료"
+              description="놓친 일을 오늘 다시 볼지 결정해요."
+              count={overview.staleTasks.length}
+            >
               {overview.staleTasks.map((task) => (
                 <TaskCard
                   compact
@@ -106,7 +110,11 @@ export function TodayReviewScreen() {
           ) : null}
 
           {overview.recommendations.length > 0 ? (
-            <ReviewSection title="추천" count={overview.recommendations.length}>
+            <ReviewSection
+              title="추천"
+              description="오늘 처리하기 좋은 항목이에요."
+              count={overview.recommendations.length}
+            >
               {overview.recommendations.map(({ task }) => (
                 <TaskCard
                   compact
@@ -129,7 +137,11 @@ export function TodayReviewScreen() {
           ) : null}
 
           {overview.inboxTasks.length > 0 ? (
-            <ReviewSection title="기록함" count={overview.inboxTasks.length}>
+            <ReviewSection
+              title="기록함"
+              description="날짜를 정하지 않은 기록이에요."
+              count={overview.inboxTasks.length}
+            >
               {overview.inboxTasks.map((task) => (
                 <TaskCard
                   compact
@@ -158,14 +170,15 @@ export function TodayReviewScreen() {
 
 type ReviewSectionProps = {
   title: string;
+  description: string;
   count: number;
   children: ReactNode;
 };
 
-function ReviewSection({ title, count, children }: ReviewSectionProps) {
+function ReviewSection({ title, description, count, children }: ReviewSectionProps) {
   return (
     <View style={styles.section}>
-      <SectionHeader title={title} count={count} />
+      <SectionHeader title={title} description={description} count={count} />
       <View style={styles.list}>{children}</View>
     </View>
   );
@@ -196,8 +209,8 @@ function ReviewMoveAction({ disabled, loading, label, text, onPress }: ReviewMov
       style={({ pressed }) => [
         styles.moveAction,
         {
-          backgroundColor: pressed ? theme.colors.highlightBlue : theme.colors.surfaceMuted,
-          borderColor: isFocused ? theme.colors.primary : theme.colors.border,
+          backgroundColor: pressed ? theme.colors.highlightBlue : 'transparent',
+          borderColor: isFocused ? theme.colors.primary : 'transparent',
           borderWidth: isFocused ? 2 : StyleSheet.hairlineWidth,
           opacity: disabled && !loading ? 0.45 : 1,
         },
@@ -207,7 +220,7 @@ function ReviewMoveAction({ disabled, loading, label, text, onPress }: ReviewMov
         <ActivityIndicator color={theme.colors.primary} size="small" />
       ) : (
         <AppText tone="primary" variant="caption" weight="semibold">
-          + {text}
+          {text} ›
         </AppText>
       )}
     </Pressable>
@@ -236,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     justifyContent: 'center',
     minHeight: 28,
-    minWidth: 56,
+    minWidth: 54,
     paddingHorizontal: spacing[2],
   },
 });
