@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
 import { AppText, Screen } from '@/components/ui';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { formatDateLabel, isLocalDateString, shiftLocalDate, toApiLocalDate } from '@/utils';
 
@@ -250,7 +251,9 @@ function MonthDateGrid({
   onOpenTask = () => undefined,
 }: DatePickerProps) {
   const theme = useAppTheme();
+  const { isCompact, isShortViewport } = useMobileLayout();
   const selectedMonth = selectedDate.slice(0, 7);
+  const shouldUseDenseGrid = isCompact || isShortViewport;
 
   return (
     <View
@@ -280,6 +283,7 @@ function MonthDateGrid({
           key={weekDates[0]}
           style={[
             styles.monthWeek,
+            shouldUseDenseGrid && styles.monthWeekDense,
             {
               borderBottomColor: theme.colors.rule,
               borderBottomWidth: weekIndex < weeks.length - 1 ? StyleSheet.hairlineWidth : 0,
@@ -309,12 +313,12 @@ function MonthDateGrid({
                 key={date}
                 selected={date === selectedDate}
                 onPress={() => onSelect(date)}
-                style={styles.monthDayButton}
+                style={[styles.monthDayButton, shouldUseDenseGrid && styles.monthDayButtonDense]}
                 theme={theme}
               />
             ))}
           </View>
-          <View style={styles.singleDayLane}>
+          <View style={[styles.singleDayLane, shouldUseDenseGrid && styles.singleDayLaneDense]}>
             <CalendarSingleDayLabels
               compact
               dates={weekDates}
@@ -323,7 +327,7 @@ function MonthDateGrid({
               onSelectDate={onSelect}
             />
           </View>
-          <View style={styles.periodLanes}>
+          <View style={[styles.periodLanes, shouldUseDenseGrid && styles.periodLanesDense]}>
             <CalendarPeriodBars
               dates={weekDates}
               tasks={tasks}
@@ -344,7 +348,7 @@ type CalendarDateButtonProps = {
   isCurrentMonth: boolean;
   weekdayLabel?: string;
   onPress: () => void;
-  style: typeof styles.monthDayButton;
+  style: StyleProp<ViewStyle>;
   theme: ReturnType<typeof useAppTheme>;
 };
 
@@ -507,6 +511,9 @@ const styles = StyleSheet.create({
     minHeight: 120,
     position: 'relative',
   },
+  monthWeekDense: {
+    minHeight: 104,
+  },
   dayColumnRules: {
     bottom: 0,
     left: 0,
@@ -527,11 +534,20 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[1],
     width: CALENDAR_DAY_WIDTH,
   },
+  monthDayButtonDense: {
+    minHeight: 42,
+  },
   singleDayLane: {
     minHeight: 24,
   },
+  singleDayLaneDense: {
+    minHeight: 20,
+  },
   periodLanes: {
     minHeight: 48,
+  },
+  periodLanesDense: {
+    minHeight: 40,
   },
   todayDot: {
     borderRadius: radii.full,
