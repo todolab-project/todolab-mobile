@@ -295,6 +295,9 @@ ToDoLab 적용 방향:
 - [x] 하단 탭 active 상태가 선명한 blue로 보이게 조정한다.
 - [x] Calendar 월 선택 panel의 버튼 높이와 간격을 줄여 달력과 목록을 덜 밀게 한다.
 - [x] Calendar 좁은 날짜 cell의 하루 일정 label은 제목 대신 시간 중심으로 축약한다.
+- [x] Search 화면은 기본 필터와 상세 필터를 분리해 첫 화면 밀도를 낮춘다.
+- [x] Completed 화면은 완료 Task를 compact card로 맞추고 중복 `다시 열기` 버튼을 줄인다.
+- [x] D-Day 목표 메뉴는 작은 화면에서 읽기 쉬운 세로 액션으로 정리한다.
 - [ ] 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 
 완료 기준:
@@ -436,9 +439,8 @@ Today 작업 목록 표시
 
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
-3. 정리할 항목 화면의 버튼과 section UI를 Today와 같은 planner 문법으로 재정리한다.
-4. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API는 실제 응답으로 검증한다. 반복 occurrence는 조회 표시는 허용하되 생성/수정 UI는 백엔드 API 제공 후 연다.
-5. 반복 Task와 일정의 작성·수정 UI는 백엔드 반복 생성/수정 API가 제공되기 전까지 실제 저장 기능처럼 노출하지 않는다.
-6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
+3. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API는 실제 응답으로 검증한다. 반복 occurrence는 조회 표시는 허용하되 생성/수정 UI는 백엔드 API 제공 후 연다.
+4. 반복 Task와 일정의 작성·수정 UI는 백엔드 반복 생성/수정 API가 제공되기 전까지 실제 저장 기능처럼 노출하지 않는다.
+5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
