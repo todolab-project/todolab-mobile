@@ -22,6 +22,8 @@
 | `mock` | `EXPO_PUBLIC_API_MODE=mock` | 백엔드 없이 in-memory dummy data로 화면 확인 |
 | `real` | `EXPO_PUBLIC_API_MODE=real` | `EXPO_PUBLIC_API_URL`의 실제 API와 연동      |
 
+`EXPO_PUBLIC_API_MODE`를 생략하면 모바일은 `mock`으로 동작한다. real API smoke test를 할 때만 명시적으로 `real`을 설정한다.
+
 ```dotenv
 EXPO_PUBLIC_API_MODE=real
 EXPO_PUBLIC_API_URL=http://localhost:8080
