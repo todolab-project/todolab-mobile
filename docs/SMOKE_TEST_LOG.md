@@ -1,5 +1,47 @@
 # Smoke Test Log
 
+## 2026-07-26 예정: local real API 재검증
+
+커밋 기준: `main` 현재 HEAD
+
+환경:
+
+- API 모드: `real`
+- Expo dev server: `http://localhost:8081` 또는 대체 포트 `http://localhost:8090`
+- API URL: `http://localhost:8080`
+- 백엔드 기준 문서:
+  - `todolab-backend/docs/API_V1_FRONTEND.md`
+  - `todolab-backend/docs/MOBILE_INTEGRATION_RUNBOOK.md`
+  - `todolab-backend/docs/MOBILE_API_BACKEND_STATUS.md`
+
+사전 확인:
+
+- [ ] `npm run validate` 통과
+- [ ] 백엔드 local server 기동
+- [ ] Expo Web CORS origin이 백엔드 허용 목록에 포함됨
+- [ ] `Authorization` preflight가 성공함
+- [ ] `.env.local`에 실제 secret, token, password가 없음
+
+실행할 smoke test:
+
+- [ ] Auth: 회원가입, 로그인, 내 정보 조회, 로그아웃
+- [ ] 401: access token 없음/만료 시 안전한 오류 문구와 로그인 동선
+- [ ] Today: 일정, 오늘 할 일, 완료한 일, 빠른 기록, 완료, 다시 열기
+- [ ] 정리할 항목: 지난 미완료, 추천, 기록함에서 오늘로 이동 또는 추가
+- [ ] Calendar: 선택 날짜 기준 3주 grid, 당일 일정 bar, 여러 날 일정 bar, 선택 날짜 목록
+- [ ] Search: `/api/v1/tasks/search` 검색어, 상태 filter, 상세 filter, 빈 상태, cursor pagination
+- [ ] D-Day: 목표 생성, 목표 상세, 목표 Task 생성, Task 연결/해제, 삭제 성공 응답
+- [ ] Completed: 주 이동, 완료 목록, 다시 열기
+- [ ] 오류 상태: network, timeout, 5xx에서 기존 데이터 유지와 retry
+
+기록할 특이사항:
+
+- 검색 결과의 `relevantDate`, `dateSource`, cursor 정렬 안정성
+- Calendar 여러 날 일정의 원본 Task ID 중복/누락 여부
+- D-Day 삭제 성공 응답이 `data: null`, 삭제 ID, `{ id }` 중 어떤 형태인지
+- 401 이후 token 삭제와 화면 전환이 자연스러운지
+- 반복 occurrence는 조회 표시만 확인하고 생성/수정 UI는 열지 않음
+
 ## 2026-07-22
 
 커밋 기준: `da64884` 이후 로컬 변경 없음
@@ -149,7 +191,7 @@ npx expo export --platform web --output-dir /private/tmp/todolab-mobile-web-expo
 - 모바일 완료 처리와 다시 열기
 - Today와 Calendar에서 같은 실제 Task 표시
 - D-Day 연결 label 표시
-- 검색 API 미연결 안내 표시
+- 당시 기준 검색 API 미연결 안내 표시. 2026-07-26 현재 백엔드 문서상 `/api/v1/tasks/search` 계약이 준비되어 다음 real smoke test에서 실제 검색 결과와 pagination을 재검증한다.
 
 이슈와 조치:
 
