@@ -6,7 +6,7 @@ import { taskApi } from './task-api';
 import { cacheCreatedTask } from './task-cache';
 import { taskQueryKeys } from './task-query-keys';
 
-export function useCreateInboxTask() {
+export function useCreateTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -17,3 +17,5 @@ export function useCreateInboxTask() {
     },
   });
 }
+
+export const useCreateInboxTask = useCreateTask;

@@ -3,14 +3,14 @@ import { SymbolView } from 'expo-symbols';
 import { StyleSheet } from 'react-native';
 
 import { IconButton, PageHeader, Screen } from '@/components/ui';
-import { TaskForm, useCreateInboxTask } from '@/features/tasks';
+import { TaskForm, useCreateTask } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 import type { TaskUpsertRequest } from '@/types';
 
 export default function NewTaskScreen() {
   const router = useRouter();
   const theme = useAppTheme();
-  const createTask = useCreateInboxTask();
+  const createTask = useCreateTask();
 
   const handleSubmit = (request: TaskUpsertRequest) => {
     createTask.mutate(request, {
