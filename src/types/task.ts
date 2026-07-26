@@ -130,7 +130,8 @@ export type TaskSearchItem = {
 export type TaskSearchPage = {
   items: TaskSearchItem[];
   nextCursor: string | null;
-  hasNext: boolean;
+  limit?: number;
+  hasNext?: boolean;
 };
 
 export type TaskDateQuery = {

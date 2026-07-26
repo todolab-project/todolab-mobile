@@ -84,14 +84,16 @@ type TaskSearchItem = {
 type TaskSearchPage = {
   items: TaskSearchItem[];
   nextCursor: string | null;
-  hasNext: boolean;
+  limit?: number;
+  hasNext?: boolean;
 };
 ```
 
 - `task`는 단건 조회와 동일한 완전한 `TaskResponse`다.
 - `relevantDate`와 `dateSource`는 검색 결과의 날짜 label과 날짜별 grouping에 사용한다.
 - 서버는 서비스 시간대 기준 날짜를 반환하며 모바일이 UTC 문자열을 다시 추측하지 않게 한다.
-- 마지막 페이지는 `nextCursor: null`, `hasNext: false`다.
+- 마지막 페이지는 `nextCursor: null`이다.
+- 백엔드 v1 응답은 `limit`을 포함할 수 있다. 모바일 pagination은 `hasNext`가 아니라 `nextCursor` 존재 여부를 기준으로 판단한다.
 - 결과가 없을 때도 성공 응답과 빈 `items`를 반환한다.
 - 전체 개수는 초기 응답 비용을 늘릴 수 있으므로 필수 계약에 포함하지 않는다.
 
