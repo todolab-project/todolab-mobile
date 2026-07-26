@@ -131,7 +131,6 @@ export type TaskSearchPage = {
   items: TaskSearchItem[];
   nextCursor: string | null;
   limit?: number;
-  hasNext?: boolean;
 };
 
 export type TaskDateQuery = {
