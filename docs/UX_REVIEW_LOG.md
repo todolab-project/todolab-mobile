@@ -186,6 +186,24 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - Today, D-Day, Completed, Task 상세의 section marker가 모두 과하지 않게 보이는지 실제 화면에서 확인한다.
 - dark mode에서 marker border와 fill 대비가 충분한지 확인한다.
 
+### 2026-07-26 보조 화면 밀도와 액션 톤 정리
+
+- Search 화면은 기본 상태 filter만 먼저 보이고, 기간·D-Day·카테고리·정렬은 `상세 필터`로 접었다.
+- Search 화면의 백엔드 준비 안내성 card는 제거하고, 실제 검색 결과와 빈 상태가 화면의 중심이 되게 했다.
+- 정리할 항목 화면은 section마다 한 줄 설명을 추가해 `지난 미완료`, `추천`, `기록함`의 판단 기준이 바로 보이게 했다.
+- 정리할 항목 action은 `+` 장식을 제거하고 `오늘로 ›`, `추가 ›`처럼 낮은 강조의 텍스트 action으로 정리했다.
+- Completed 화면은 완료 Task를 compact card로 맞추고 별도 `다시 열기` 버튼을 제거했다. 완료 checkbox 자체가 다시 열기 역할을 하므로 중복 action을 줄였다.
+- D-Day 목표 메뉴는 가로 버튼 나열에서 세로 action으로 바꿔 작은 화면에서 버튼 간 의미가 더 분명하게 보이도록 했다.
+- Calendar 3주 grid는 compact 폭 또는 짧은 viewport에서 week 높이와 label lane을 낮춰 선택 날짜 목록 진입성을 높였다.
+- Task 상세 Hero card는 `수정` action을 상태 row 오른쪽으로 올려 제목과 정보 section이 더 빨리 보이게 했다.
+
+남은 확인:
+
+- Search 상세 필터가 접힌 상태에서도 사용자가 필터 기능을 발견할 수 있는지 실제 화면에서 확인한다.
+- Completed의 checkbox 다시 열기 동작이 사용자가 예상 가능한지, 별도 텍스트 action이 없어도 충분한지 확인한다.
+- D-Day 목표 메뉴가 세로로 펼쳐질 때 card 높이가 과하게 길어 보이지 않는지 확인한다.
+- Calendar compact grid에서 일정 label이 너무 빨리 잘리지 않는지 320px와 font scale 1.5로 확인한다.
+
 ## 다음 리뷰 때 추가할 것
 
 - 실제 화면 캡쳐 링크 또는 파일명
