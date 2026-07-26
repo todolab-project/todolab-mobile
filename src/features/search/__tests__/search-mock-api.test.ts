@@ -11,8 +11,8 @@ describe('Mock task search API', () => {
     });
 
     expect(firstPage.items).toHaveLength(3);
-    expect(firstPage.hasNext).toBe(true);
     expect(firstPage.nextCursor).toBe('3');
+    expect(firstPage.limit).toBe(3);
     expect(secondPage.items.map((item) => item.task.id)).not.toEqual(
       firstPage.items.map((item) => item.task.id),
     );

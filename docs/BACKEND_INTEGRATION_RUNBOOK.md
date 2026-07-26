@@ -145,7 +145,7 @@ type ApiEnvelope<T> = {
    - 여러 날 일정이 구간 내 날짜별로 중복·누락 없이 표현되는지
 4. Search
    - `statuses`, `taskTypes`는 comma-separated query string으로 받는지
-   - `cursor`, `limit`, `hasNext`, `nextCursor` pagination이 동작하는지
+   - `cursor`, `limit`, `nextCursor` pagination이 동작하는지
    - 날짜 filter의 timezone 기준이 `Asia/Seoul`과 어긋나지 않는지
 5. D-Day
    - 목표 상세 조회와 목표 Task 생성에서 500이 발생하지 않는지

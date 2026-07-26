@@ -501,7 +501,7 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
   return {
     items: items.slice(offset, offset + limit),
     nextCursor: items.length > offset + limit ? String(offset + limit) : null,
-    hasNext: items.length > offset + limit,
+    limit,
   };
 }
 
