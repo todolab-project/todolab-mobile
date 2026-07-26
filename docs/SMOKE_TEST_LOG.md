@@ -63,6 +63,11 @@
 
 - Search 응답의 `items`, `nextCursor`, `limit` 계약은 모바일 타입과 real API가 일치한다.
 
+### 2026-07-27 여러 날 일정 smoke 보류
+
+- 여러 날 일정 overlap과 Calendar 원본 ID 1회 반환을 추가 확인하려 했으나, 테스트 도중 local backend `8080` 연결이 종료되어 `ECONNREFUSED`가 발생했다.
+- 다음 재개 시 `type=SCHEDULE`, `startAt=2026-07-27T09:00:00`, `endAt=2026-07-30T18:00:00`, 짧은 제목으로 기간 일정을 생성한 뒤 7월 27일–30일 Today 포함 여부와 7월 Calendar 원본 ID 1회 반환을 확인한다.
+
 ## 2026-07-26 예정: local real API 재검증
 
 커밋 기준: `main` 현재 HEAD
