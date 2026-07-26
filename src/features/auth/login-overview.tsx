@@ -11,7 +11,7 @@ import { radii, spacing, typography, useAppTheme } from '@/theme';
 
 export function LoginOverview() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ email?: string; registered?: string }>();
+  const params = useLocalSearchParams<{ email?: string; expired?: string; registered?: string }>();
   const queryClient = useQueryClient();
   const theme = useAppTheme();
   const [email, setEmail] = useState(() => params.email ?? '');
@@ -112,6 +112,9 @@ export function LoginOverview() {
 
         {params.registered === '1' ? (
           <InlineNotice tone="success" message="회원가입이 완료됐어요. 로그인해 주세요." />
+        ) : null}
+        {params.expired === '1' ? (
+          <InlineNotice tone="warning" message="세션이 만료됐어요. 다시 로그인해 주세요." />
         ) : null}
         {errorMessage ? <InlineNotice tone="danger" message={errorMessage} /> : null}
 

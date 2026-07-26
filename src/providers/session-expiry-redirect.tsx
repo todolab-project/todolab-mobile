@@ -13,7 +13,7 @@ export function SessionExpiryRedirect({ children }: PropsWithChildren) {
     () =>
       subscribeSessionExpired(() => {
         queryClient.clear();
-        router.replace('/login');
+        router.replace({ pathname: '/login', params: { expired: '1' } });
       }),
     [router],
   );
