@@ -316,7 +316,7 @@ ToDoLab 적용 방향:
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
 - [ ] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약은 정리됐지만, 반복 생성/수정 API가 아직 없어 실제 저장 UI는 보류한다.
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
-- [ ] network, timeout, 5xx 오류에서 retry와 기존 데이터 유지가 화면별로 자연스러운지 확인한다.
+- [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 
 완료 기준:
 
