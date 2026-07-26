@@ -1,5 +1,12 @@
 # Smoke Test Log
 
+## 2026-07-27 사전 포트 점검
+
+- `8081`: Expo/Node listen 확인
+- `8080`: 백엔드 listen 없음
+- 결론: real API smoke test는 백엔드 local server 기동 후 진행한다.
+- 모바일 쪽은 세션 만료 안내, retry 정책, Calendar/Search 조회 전환 중 기존 데이터 유지까지 반영했다.
+
 ## 2026-07-26 예정: local real API 재검증
 
 커밋 기준: `main` 현재 HEAD
