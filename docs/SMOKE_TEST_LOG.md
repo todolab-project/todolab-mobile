@@ -7,6 +7,32 @@
 - 결론: real API smoke test는 백엔드 local server 기동 후 진행한다.
 - 모바일 쪽은 세션 만료 안내, retry 정책, Calendar/Search 조회 전환 중 기존 데이터 유지까지 반영했다.
 
+## 2026-07-27 local real API smoke test
+
+커밋 기준: `2ea9257` 이후 push 완료, 이후 로컬 변경 포함 전
+
+환경:
+
+- API 모드: `real`
+- API URL: `http://127.0.0.1:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 방식: Node `fetch` 기반 API smoke. access token은 출력하지 않음.
+
+통과:
+
+- Auth: 회원가입, 로그인, 내 정보 조회
+- Task: 기록함 TODO 생성, 기록함 조회
+- Today: 오늘로 이동, Today 조회, 완료, 완료 목록 조회, 다시 열기
+- Search: `/api/v1/tasks/search` 키워드 검색 결과에서 생성 Task 확인
+- D-Day: 목표 생성, 목록 조회, 상세 조회, 목표 연결 Today Task 생성, 연결 Task 조회, 삭제
+- D-Day 삭제 성공 응답 `data: null` 확인
+
+보류/확인 필요:
+
+- Calendar 월간 일정 조회는 이번 자동 smoke에서 완료 처리하지 않았다. 현재 모바일의 새 Task 작성 화면은 날짜/시간 입력 UI가 없어 실제 앱 흐름만으로 `SCHEDULE` 테스트 데이터를 만들 수 없다.
+- Today로 이동한 일반 TODO는 Today 조회에는 포함되지만 Calendar 월간 조회에는 포함되지 않았다. Calendar는 시간이 있는 일정 또는 날짜 기준이 있는 항목 중심으로 별도 smoke data가 필요하다.
+- 새 일정 날짜/시간 생성 UI 또는 백엔드 seed data가 준비되면 Calendar 하루 일정 label, 여러 날 일정 bar, Today/Calendar 일정 일관성을 재검증한다.
+
 ## 2026-07-26 예정: local real API 재검증
 
 커밋 기준: `main` 현재 HEAD
