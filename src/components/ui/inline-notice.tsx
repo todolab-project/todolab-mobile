@@ -39,10 +39,12 @@ export function InlineNotice({ message, title, tone = 'default', action }: Inlin
     },
   };
   const appearance = appearances[tone];
+  const accessibilityRole = tone === 'danger' || tone === 'warning' ? 'alert' : undefined;
 
   return (
     <View
       accessibilityLiveRegion="polite"
+      accessibilityRole={accessibilityRole}
       style={[
         styles.container,
         {
