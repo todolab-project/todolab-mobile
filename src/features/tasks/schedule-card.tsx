@@ -37,6 +37,9 @@ export function ScheduleCard({
   ]
     .filter((value): value is string => Boolean(value))
     .join(' · ');
+  const scheduleAccessibilityLabel = `${task.title}, 일정, ${presentation.primaryLabel}${
+    presentation.rangeLabel ? `, ${presentation.rangeLabel}` : ''
+  }${recurrenceLabel ? `, ${recurrenceLabel}` : ''}`;
 
   return (
     <View
@@ -53,7 +56,7 @@ export function ScheduleCard({
       {onComplete ? (
         <Pressable
           accessibilityHint="일정을 완료합니다."
-          accessibilityLabel={`${task.title} 일정 완료`}
+          accessibilityLabel={`${scheduleAccessibilityLabel} 완료`}
           accessibilityRole="checkbox"
           accessibilityState={{ busy: isCompleting, checked: false, disabled: completionDisabled }}
           disabled={completionDisabled}
@@ -73,9 +76,7 @@ export function ScheduleCard({
       ) : null}
       <Pressable
         accessibilityHint={onOpen ? '일정 상세 화면을 엽니다.' : undefined}
-        accessibilityLabel={`${task.title}, 일정, ${presentation.primaryLabel}${
-          presentation.rangeLabel ? `, ${presentation.rangeLabel}` : ''
-        }${recurrenceLabel ? `, ${recurrenceLabel}` : ''}, 상세 보기`}
+        accessibilityLabel={`${scheduleAccessibilityLabel}, 상세 보기`}
         accessibilityRole="button"
         accessibilityState={{ disabled: !onOpen }}
         disabled={!onOpen}
