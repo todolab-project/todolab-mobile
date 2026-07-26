@@ -45,19 +45,22 @@
 - `THIS_AND_FUTURE`: 이번 occurrence와 이후
 - `ALL`: 반복 전체
 
-필요 endpoint 예시:
+백엔드 v1 문서의 현재 scope 형태:
 
 ```text
-POST   /api/v1/tasks/recurring
-PATCH  /api/v1/tasks/recurring/{seriesId}?scope=THIS|THIS_AND_FUTURE|ALL&occurrenceDate=YYYY-MM-DD
-DELETE /api/v1/tasks/recurring/{seriesId}?scope=THIS|THIS_AND_FUTURE|ALL&occurrenceDate=YYYY-MM-DD
-PATCH  /api/v1/tasks/recurring/{seriesId}/occurrences/{date}/done
+PUT    /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
+DELETE /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 ```
+
+단, 백엔드 `RECURRENCE_MODEL.md`는 모바일이 반복 UI를 실제 저장 기능처럼 열면 안 된다고 명시한다. 따라서 모바일은 조회된 occurrence label 표시까지만 허용하고, 반복 생성/수정/삭제 UI는 백엔드와 아래 항목을 재확인한 뒤 연다.
 
 ## 백엔드 확인 항목
 
 - RRULE parser와 validation 범위
 - 월말, 윤년, 공휴일을 건너뛰는 규칙 지원 여부
+- 반복 생성 endpoint 제공 여부와 `TaskRequest`의 반복 필드 수용 시점
+- `PUT /api/v1/tasks/{id}?recurrenceScope=...`를 모바일 수정 UI에서 사용해도 되는 시점
+- `DELETE /api/v1/tasks/{id}?recurrenceScope=...`를 모바일 삭제 UI에서 사용해도 되는 시점
 - occurrence 완료·미룸·건너뛰기 저장 방식
 - 반복 전체 수정 후 기존 완료 기록 보존 방식
 - 서울 시간대와 향후 사용자 time zone migration
