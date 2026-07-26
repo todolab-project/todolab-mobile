@@ -311,7 +311,7 @@ ToDoLab 적용 방향:
 
 목표: mock에서 예쁜 화면이 아니라 실제 데이터로 매일 사용할 수 있는 상태를 만든다.
 
-- [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약은 백엔드 문서상 확정됐다. 모바일 real API 화면에서 성공 결과, 빈 상태, cursor pagination을 smoke test하고 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록한다.
+- [x] 검색 API의 키워드, 상태 filter, 종류 filter, 빈 상태, cursor pagination을 real API로 smoke test하고 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록했다. 기간 filter와 timezone은 실제 화면 회귀에서 계속 확인한다.
 - [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다. 2026-07-27 real API smoke에서 단일 시간 일정의 생성, Today 조회, Calendar 월간 조회, Search는 통과했다. 여러 날 일정 bar와 원본 ID 중복/누락은 추가 재검증한다.
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
 - [ ] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약은 정리됐지만, 반복 생성/수정 API가 아직 없어 실제 저장 UI는 보류한다.

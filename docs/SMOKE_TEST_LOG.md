@@ -50,6 +50,19 @@
 - 이전 일정 생성 400은 백엔드 일정 계약 문제가 아니라 smoke title이 30자 제한을 초과한 것이 원인이었다.
 - 새 Task 작성 화면에 일정 날짜와 시작·종료 시간 입력을 추가했으므로, 이후 Calendar real smoke data는 앱 흐름으로 만들 수 있다.
 
+### 2026-07-27 Search cursor smoke test
+
+통과:
+
+- `/api/v1/tasks/search?q=...&limit=2` 첫 페이지에서 2개와 `nextCursor` 반환 확인
+- 같은 검색어와 `cursor`로 두 번째 페이지 조회 시 남은 1개와 `nextCursor=null` 확인
+- 없는 검색어는 `items=[]`, `nextCursor=null` 반환
+- `statuses=INBOX&taskTypes=TODO` filter로 생성한 TODO 3개만 조회됨
+
+메모:
+
+- Search 응답의 `items`, `nextCursor`, `limit` 계약은 모바일 타입과 real API가 일치한다.
+
 ## 2026-07-26 예정: local real API 재검증
 
 커밋 기준: `main` 현재 HEAD
