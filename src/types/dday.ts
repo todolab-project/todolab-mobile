@@ -22,4 +22,4 @@ export type DdayGoalResponse = {
   createdAt: LocalDateTimeString | null;
 };
 
-export type DdayGoalDeleteResponse = null | number | { id: number };
+export type DdayGoalDeleteResponse = null;

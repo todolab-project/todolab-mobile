@@ -38,7 +38,7 @@
 
 - 검색 결과의 `relevantDate`, `dateSource`, cursor 정렬 안정성
 - Calendar 여러 날 일정의 원본 Task ID 중복/누락 여부
-- D-Day 삭제 성공 응답이 `data: null`, 삭제 ID, `{ id }` 중 어떤 형태인지
+- D-Day 삭제 성공 응답이 백엔드 v1 표준인 `data: null`인지
 - 401 이후 token 삭제와 화면 전환이 자연스러운지
 - 반복 occurrence는 조회 표시만 확인하고 생성/수정 UI는 열지 않음
 

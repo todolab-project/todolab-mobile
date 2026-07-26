@@ -151,7 +151,7 @@ type ApiResponse<T> = {
 
 - staging, production API URL 확정
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
-- D-Day 삭제 성공 응답을 `data: null` 또는 삭제된 ID 중 하나로 통일
+- D-Day 삭제 성공 응답은 백엔드 v1 기준 `data: null`이다.
 - 통합 검색 real API를 실제 모바일 화면에서 smoke test하고 cursor 정렬 안정성을 재검증
 - 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](./API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
 - 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
@@ -313,7 +313,7 @@ ToDoLab 적용 방향:
 
 - [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약은 백엔드 문서상 확정됐다. 모바일 real API 화면에서 성공 결과, 빈 상태, cursor pagination을 smoke test하고 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록한다.
 - [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다.
-- [ ] D-Day 삭제 성공 응답 형식을 `data: null` 또는 삭제된 ID 중 하나로 백엔드에서 통일한다. 프론트는 두 응답 계열을 모두 성공으로 받을 수 있게 열었다.
+- [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
 - [ ] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약은 정리됐지만, 반복 생성/수정 API가 아직 없어 실제 저장 UI는 보류한다.
 - [ ] 401 세션 만료 이후 사용자 동선과 refresh token 도입 여부를 결정한다.
 - [ ] network, timeout, 5xx 오류에서 retry와 기존 데이터 유지가 화면별로 자연스러운지 확인한다.
