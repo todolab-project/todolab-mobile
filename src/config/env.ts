@@ -5,7 +5,7 @@ export type ApiMode = 'real' | 'mock';
 
 function parseApiMode(value: string | undefined): ApiMode {
   if (!value) {
-    return 'real';
+    return 'mock';
   }
 
   if (value === 'real' || value === 'mock') {

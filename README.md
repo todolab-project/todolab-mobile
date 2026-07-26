@@ -78,10 +78,12 @@ cp .env.example .env.local
 
 ```dotenv
 EXPO_PUBLIC_API_URL=http://localhost:8080
-EXPO_PUBLIC_API_MODE=real
+EXPO_PUBLIC_API_MODE=mock
 ```
 
 `EXPO_PUBLIC_*` 값은 앱 번들에 포함되므로 API 주소처럼 공개 가능한 값만 사용하고, 토큰·비밀번호·서버 비밀 키는 넣지 않습니다.
+
+`EXPO_PUBLIC_API_MODE`를 생략하면 기본값은 `mock`입니다. 로컬 UI 개발은 백엔드 없이 mock으로 먼저 확인하고, 실제 백엔드 연동 테스트 때만 `real`로 바꿉니다.
 
 API 모드:
 
