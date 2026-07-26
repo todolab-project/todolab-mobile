@@ -57,6 +57,7 @@ export function TaskCard({
       : [timeLabel, task.allDay ? '종일' : null, recurrenceLabel, task.category]
   ).filter((value): value is string => Boolean(value));
   const metadataLabel = [...metadata, task.ddayGoalTitle].filter(Boolean).join(' · ');
+  const detailAccessibilityLabel = `${task.title}${metadataLabel ? `, ${metadataLabel}` : ''} 상세 보기`;
 
   return (
     <View
@@ -119,7 +120,7 @@ export function TaskCard({
 
         <Pressable
           accessibilityHint={onOpen ? '할 일 상세 화면을 엽니다.' : undefined}
-          accessibilityLabel={`${task.title} 상세 보기`}
+          accessibilityLabel={detailAccessibilityLabel}
           accessibilityRole="button"
           accessibilityState={{ disabled: !onOpen }}
           disabled={!onOpen}
