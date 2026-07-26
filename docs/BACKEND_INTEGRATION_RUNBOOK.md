@@ -78,7 +78,7 @@ type ApiEnvelope<T> = {
 - `expiresAt`
 - `user`
 
-401 응답을 받으면 모바일은 access token을 삭제하고 세션 만료 상태로 전환한다. refresh token 흐름은 현재 모바일 계약에 포함되어 있지 않다.
+401 응답을 받으면 모바일은 access token을 삭제하고 로그인 화면으로 이동해 "세션이 만료됐어요. 다시 로그인해 주세요." 안내를 표시한다. refresh token 흐름은 현재 모바일 계약에 포함되어 있지 않다.
 
 ## 4. 현재 모바일이 호출하는 Task API
 
