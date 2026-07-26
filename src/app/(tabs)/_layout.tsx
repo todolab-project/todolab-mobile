@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 
 import { TabBarIcon } from '@/components/navigation';
-import { palette, typography, useAppTheme } from '@/theme';
+import { typography, useAppTheme } from '@/theme';
 
 export default function TabLayout() {
   const theme = useAppTheme();
@@ -10,7 +10,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: palette.blue[600],
+        tabBarActiveTintColor: theme.colors.primaryPressed,
         tabBarInactiveTintColor: theme.colors.textMuted,
         tabBarHideOnKeyboard: true,
         tabBarLabelStyle: {
@@ -28,9 +28,10 @@ export default function TabLayout() {
         options={{
           title: '오늘',
           tabBarAccessibilityLabel: '오늘',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, focused, size }) => (
             <TabBarIcon
               color={color}
+              focused={focused}
               size={size}
               name={{ ios: 'sun.max.fill', android: 'today', web: 'today' }}
             />
@@ -42,9 +43,10 @@ export default function TabLayout() {
         options={{
           title: '달력',
           tabBarAccessibilityLabel: '캘린더',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, focused, size }) => (
             <TabBarIcon
               color={color}
+              focused={focused}
               size={size}
               name={{ ios: 'calendar', android: 'calendar_month', web: 'calendar_month' }}
             />
@@ -56,9 +58,10 @@ export default function TabLayout() {
         options={{
           title: '프로필',
           tabBarAccessibilityLabel: '프로필',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, focused, size }) => (
             <TabBarIcon
               color={color}
+              focused={focused}
               size={size}
               name={{ ios: 'person.crop.circle.fill', android: 'person', web: 'person' }}
             />
