@@ -365,23 +365,32 @@ function parseBooleanQuery(value: MockQueryValue) {
 
 function getTaskSearchDate(
   task: TaskResponse,
-  dateField: TaskSearchDateField = 'RELEVANT',
+  dateField?: TaskSearchDateField,
 ): { relevantDate: LocalDateString; dateSource: TaskSearchDateSource } | null {
   if (dateField === 'PLANNED') {
     if (!task.plannedDate) return null;
 
     return {
       relevantDate: task.plannedDate,
-      dateSource: 'PLANNED',
+      dateSource: 'TARGET_DATE',
     };
   }
 
-  if (dateField === 'SCHEDULED') {
+  if (dateField === 'TARGET') {
+    if (!task.targetDate) return null;
+
+    return {
+      relevantDate: task.targetDate,
+      dateSource: 'TARGET_DATE',
+    };
+  }
+
+  if (dateField === 'START') {
     if (!task.startAt) return null;
 
     return {
       relevantDate: task.startAt.slice(0, 10) as LocalDateString,
-      dateSource: 'SCHEDULED',
+      dateSource: 'START_AT',
     };
   }
 
@@ -390,33 +399,44 @@ function getTaskSearchDate(
 
     return {
       relevantDate: task.completedAt.slice(0, 10) as LocalDateString,
-      dateSource: 'COMPLETED',
+      dateSource: 'COMPLETED_AT',
     };
   }
 
   if (dateField === 'CREATED') {
     return {
       relevantDate: task.createdAt.slice(0, 10) as LocalDateString,
-      dateSource: 'CREATED',
+      dateSource: 'CREATED_AT',
+    };
+  }
+
+  if (dateField === 'UPDATED') {
+    return {
+      relevantDate: (task.updatedAt ?? task.createdAt).slice(0, 10) as LocalDateString,
+      dateSource: task.updatedAt ? 'UPDATED_AT' : 'CREATED_AT',
     };
   }
 
   if (task.status === 'DONE' && task.completedAt) {
     return {
       relevantDate: task.completedAt.slice(0, 10) as LocalDateString,
-      dateSource: 'COMPLETED',
+      dateSource: 'COMPLETED_AT',
     };
   }
 
   if (task.startAt) {
-    return { relevantDate: task.startAt.slice(0, 10) as LocalDateString, dateSource: 'SCHEDULED' };
+    return { relevantDate: task.startAt.slice(0, 10) as LocalDateString, dateSource: 'START_AT' };
+  }
+
+  if (task.targetDate) {
+    return { relevantDate: task.targetDate, dateSource: 'TARGET_DATE' };
   }
 
   if (task.plannedDate) {
-    return { relevantDate: task.plannedDate, dateSource: 'PLANNED' };
+    return { relevantDate: task.plannedDate, dateSource: 'TARGET_DATE' };
   }
 
-  return { relevantDate: task.createdAt.slice(0, 10) as LocalDateString, dateSource: 'CREATED' };
+  return { relevantDate: task.createdAt.slice(0, 10) as LocalDateString, dateSource: 'CREATED_AT' };
 }
 
 function searchTasks(query?: MockQueryParams): TaskSearchPage {
@@ -425,10 +445,10 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
     .toLocaleLowerCase();
   const statuses = splitQueryList<TaskStatus>(query?.statuses);
   const taskTypes = splitQueryList<TaskType>(query?.taskTypes);
-  const dateField = String(query?.dateField ?? 'RELEVANT') as TaskSearchDateField;
+  const dateField = query?.dateField ? (String(query.dateField) as TaskSearchDateField) : undefined;
   const dateFrom = query?.dateFrom ? String(query.dateFrom) : null;
   const dateTo = query?.dateTo ? String(query.dateTo) : null;
-  const sort = String(query?.sort ?? 'DATE_DESC') as TaskSearchSort;
+  const sort = String(query?.sort ?? 'RELEVANT_DATE_DESC') as TaskSearchSort;
   const limit = Math.min(Math.max(Number(query?.limit ?? 20), 1), 50);
   const offset = Math.max(Number(query?.cursor ?? 0), 0);
   const hasDday = parseBooleanQuery(query?.hasDday);
@@ -471,7 +491,7 @@ function searchTasks(query?: MockQueryParams): TaskSearchPage {
       };
     })
     .sort((left, right) => {
-      if (sort === 'DATE_ASC') {
+      if (sort === 'RELEVANT_DATE_ASC' || sort === 'CREATED_AT_ASC' || sort === 'UPDATED_AT_ASC') {
         return left.relevantDate.localeCompare(right.relevantDate) || left.task.id - right.task.id;
       }
 

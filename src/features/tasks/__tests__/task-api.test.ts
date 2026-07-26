@@ -124,9 +124,10 @@ describe('Task API', () => {
       q: '회의',
       statuses: ['TODAY', 'DONE'],
       taskTypes: ['TODO', 'SCHEDULE'],
-      dateField: 'RELEVANT',
+      dateField: 'TARGET',
       dateFrom: '2026-07-01',
       dateTo: '2026-07-31',
+      sort: 'RELEVANT_DATE_DESC',
       limit: 20,
     });
 
@@ -135,9 +136,10 @@ describe('Task API', () => {
         q: '회의',
         statuses: 'TODAY,DONE',
         taskTypes: 'TODO,SCHEDULE',
-        dateField: 'RELEVANT',
+        dateField: 'TARGET',
         dateFrom: '2026-07-01',
         dateTo: '2026-07-31',
+        sort: 'RELEVANT_DATE_DESC',
         limit: 20,
       },
       signal: undefined,

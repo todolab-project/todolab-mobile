@@ -31,7 +31,7 @@ type SearchFilter = 'ALL' | 'PLANNED' | 'DONE' | 'SCHEDULE';
 type DateRangeFilter = 'ALL' | '7D' | '30D' | 'MONTH';
 type DdayFilter = 'ALL' | 'LINKED' | 'UNLINKED';
 type CategoryFilter = 'ALL' | 'UI/UX' | 'API' | '일정' | 'D-Day';
-type SortFilter = 'DATE_DESC' | 'DATE_ASC';
+type SortFilter = 'RELEVANT_DATE_DESC' | 'RELEVANT_DATE_ASC';
 
 const searchFilters: { value: SearchFilter; label: string }[] = [
   { value: 'ALL', label: '전체' },
@@ -62,17 +62,19 @@ const categoryFilters: { value: CategoryFilter; label: string }[] = [
 ];
 
 const sortFilters: { value: SortFilter; label: string; query: TaskSearchSort }[] = [
-  { value: 'DATE_DESC', label: '최신순', query: 'DATE_DESC' },
-  { value: 'DATE_ASC', label: '오래된순', query: 'DATE_ASC' },
+  { value: 'RELEVANT_DATE_DESC', label: '최신순', query: 'RELEVANT_DATE_DESC' },
+  { value: 'RELEVANT_DATE_ASC', label: '오래된순', query: 'RELEVANT_DATE_ASC' },
 ];
 
 const SEARCH_PAGE_SIZE = 5;
 
 const dateSourceLabels: Record<TaskSearchItem['dateSource'], string> = {
-  PLANNED: '예정',
-  SCHEDULED: '일정',
-  COMPLETED: '완료',
-  CREATED: '생성',
+  TARGET_DATE: '목표일',
+  START_AT: '일정',
+  COMPLETED_AT: '완료',
+  CREATED_AT: '생성',
+  UPDATED_AT: '수정',
+  NONE: '날짜 없음',
 };
 
 export function SearchOverview() {
@@ -83,7 +85,7 @@ export function SearchOverview() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRangeFilter>('ALL');
   const [selectedDdayFilter, setSelectedDdayFilter] = useState<DdayFilter>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('ALL');
-  const [selectedSort, setSelectedSort] = useState<SortFilter>('DATE_DESC');
+  const [selectedSort, setSelectedSort] = useState<SortFilter>('RELEVANT_DATE_DESC');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const deferredKeyword = useDeferredValue(keyword.trim());
@@ -136,7 +138,7 @@ export function SearchOverview() {
     selectedDateRange !== 'ALL' ||
     selectedDdayFilter !== 'ALL' ||
     selectedCategory !== 'ALL' ||
-    selectedSort !== 'DATE_DESC';
+    selectedSort !== 'RELEVANT_DATE_DESC';
   const selectedFilterLabel =
     searchFilters.find((filter) => filter.value === selectedFilter)?.label ?? '전체';
   const selectedDateRangeLabel =
@@ -154,7 +156,7 @@ export function SearchOverview() {
     selectedDateRange === 'ALL' ? null : selectedDateRangeLabel,
     selectedDdayFilter === 'ALL' ? null : selectedDdayFilterLabel,
     selectedCategory === 'ALL' ? null : selectedCategoryLabel,
-    selectedSort === 'DATE_DESC' ? null : selectedSortLabel,
+    selectedSort === 'RELEVANT_DATE_DESC' ? null : selectedSortLabel,
   ].filter((value): value is string => Boolean(value));
   const activeExtraFilterCount = activeExtraFilters.length;
   const searchSummary =
@@ -172,7 +174,7 @@ export function SearchOverview() {
     setSelectedDateRange('ALL');
     setSelectedDdayFilter('ALL');
     setSelectedCategory('ALL');
-    setSelectedSort('DATE_DESC');
+    setSelectedSort('RELEVANT_DATE_DESC');
     setFocusedElement(null);
   };
 
@@ -618,7 +620,7 @@ function getDateRangeQuery(
 ): Pick<TaskSearchQuery, 'dateField' | 'dateFrom' | 'dateTo'> {
   if (filter === '7D') {
     return {
-      dateField: 'RELEVANT',
+      dateField: 'TARGET',
       dateFrom: shiftLocalDate(today, -6) ?? today,
       dateTo: today,
     };
@@ -626,7 +628,7 @@ function getDateRangeQuery(
 
   if (filter === '30D') {
     return {
-      dateField: 'RELEVANT',
+      dateField: 'TARGET',
       dateFrom: shiftLocalDate(today, -29) ?? today,
       dateTo: today,
     };
@@ -634,7 +636,7 @@ function getDateRangeQuery(
 
   if (filter === 'MONTH') {
     return {
-      dateField: 'RELEVANT',
+      dateField: 'TARGET',
       dateFrom: `${today.slice(0, 7)}-01` as LocalDateString,
       dateTo: today,
     };

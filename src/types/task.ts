@@ -3,14 +3,27 @@ import type { LocalDateString, LocalDateTimeString } from './date-time';
 export type TaskType = 'SCHEDULE' | 'TODO' | 'IDEA';
 export type TaskStatus = 'INBOX' | 'TODAY' | 'DONE';
 export type TaskQueryType = 'DAY' | 'WEEK' | 'MONTH';
-export type TaskSearchDateField = 'RELEVANT' | 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREATED';
+export type TaskSearchDateField =
+  | 'PLANNED'
+  | 'START'
+  | 'TARGET'
+  | 'COMPLETED'
+  | 'CREATED'
+  | 'UPDATED';
 export type TaskSearchSort =
-  | 'RELEVANCE'
-  | 'DATE_DESC'
-  | 'DATE_ASC'
-  | 'UPDATED_DESC'
-  | 'CREATED_DESC';
-export type TaskSearchDateSource = 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREATED';
+  | 'RELEVANT_DATE_ASC'
+  | 'RELEVANT_DATE_DESC'
+  | 'CREATED_AT_ASC'
+  | 'CREATED_AT_DESC'
+  | 'UPDATED_AT_ASC'
+  | 'UPDATED_AT_DESC';
+export type TaskSearchDateSource =
+  | 'TARGET_DATE'
+  | 'START_AT'
+  | 'COMPLETED_AT'
+  | 'CREATED_AT'
+  | 'UPDATED_AT'
+  | 'NONE';
 export type TodayOrderDirection = 'UP' | 'DOWN';
 export type RecurrenceEditScope = 'THIS' | 'THIS_AND_FUTURE' | 'ALL';
 export type RecurrenceException = 'SKIPPED' | 'MOVED' | 'MODIFIED';

@@ -20,7 +20,7 @@ describe('Mock task search API', () => {
 
   test('날짜 오름차순 정렬을 적용한다', async () => {
     const page = await mockApiClient.get<TaskSearchPage>('/api/v1/tasks/search', {
-      query: { limit: 5, sort: 'DATE_ASC' },
+      query: { limit: 5, sort: 'RELEVANT_DATE_ASC' },
     });
 
     const dates = page.items.map((item) => item.relevantDate);
