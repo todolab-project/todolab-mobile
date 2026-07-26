@@ -20,6 +20,10 @@ export function SettingsOverview() {
   const [accessToken, setAccessToken] = useState(() => getAccessToken());
   const apiModeLabel = env.apiMode === 'real' ? 'real' : 'mock';
   const apiModeTone = env.apiMode === 'real' ? 'success' : 'warning';
+  const connectionDescription =
+    env.apiMode === 'real'
+      ? '실제 백엔드와 연결해 데이터를 확인합니다.'
+      : '백엔드 없이 더미 데이터로 화면을 확인합니다.';
   const hasAccessToken = Boolean(accessToken);
 
   useEffect(() => subscribeAccessToken(setAccessToken), []);
@@ -53,14 +57,18 @@ export function SettingsOverview() {
               API 연결
             </AppText>
             <AppText tone="secondary" variant="caption">
-              실사용 전 현재 앱이 연결할 백엔드 대상을 확인합니다.
+              {connectionDescription}
             </AppText>
           </View>
         </View>
 
         <View style={styles.rows}>
           <SettingsRow label="모드" tone={apiModeTone} value={apiModeLabel} />
-          <SettingsRow label="API URL" value={env.apiUrl ?? '미설정'} />
+          <SettingsRow
+            label="API URL"
+            tone={env.apiMode === 'real' ? 'default' : 'secondary'}
+            value={env.apiMode === 'real' ? (env.apiUrl ?? '미설정') : 'mock에서는 사용 안 함'}
+          />
           <SettingsRow label="Access Token" value={hasAccessToken ? '저장됨' : '없음'} />
         </View>
       </Card>
