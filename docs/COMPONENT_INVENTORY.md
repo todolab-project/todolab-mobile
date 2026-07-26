@@ -89,13 +89,13 @@ Calendar 기준:
 
 ## Profile과 보조 화면
 
-| 컴포넌트/화면       | 위치                                            | 역할                                      | 주의점                                       |
-| ------------------- | ----------------------------------------------- | ----------------------------------------- | -------------------------------------------- |
-| `ProfileOverview`   | `src/features/profile/profile-overview.tsx`     | 로그인 상태, 목표/검색/완료/설정 shortcut | row 밀도는 Today row와 맞춤                  |
-| `SearchOverview`    | `src/features/search/search-overview.tsx`       | 통합 검색과 filter                        | real API 준비 상태와 mock 결과를 명확히 구분 |
-| `CompletedOverview` | `src/features/completed/completed-overview.tsx` | 완료 기록                                 | 통계보다 완료 목록을 우선                    |
-| `DdayOverview`      | `src/features/dday/dday-overview.tsx`           | D-Day 목표 관리                           | 목표와 연결 Task의 위계 분리                 |
-| `SettingsOverview`  | `src/features/settings/settings-overview.tsx`   | 설정 placeholder                          | 실제 설정 기능 추가 전 과한 메뉴 금지        |
+| 컴포넌트/화면       | 위치                                            | 역할                                      | 주의점                                     |
+| ------------------- | ----------------------------------------------- | ----------------------------------------- | ------------------------------------------ |
+| `ProfileOverview`   | `src/features/profile/profile-overview.tsx`     | 로그인 상태, 목표/검색/완료/설정 shortcut | row 밀도는 Today row와 맞춤                |
+| `SearchOverview`    | `src/features/search/search-overview.tsx`       | 통합 검색과 filter                        | real API enum 계약과 mock 결과를 함께 유지 |
+| `CompletedOverview` | `src/features/completed/completed-overview.tsx` | 완료 기록                                 | 통계보다 완료 목록을 우선                  |
+| `DdayOverview`      | `src/features/dday/dday-overview.tsx`           | D-Day 목표 관리                           | 목표와 연결 Task의 위계 분리               |
+| `SettingsOverview`  | `src/features/settings/settings-overview.tsx`   | 설정 placeholder                          | 실제 설정 기능 추가 전 과한 메뉴 금지      |
 
 ## 새 화면을 만들 때 선택 순서
 

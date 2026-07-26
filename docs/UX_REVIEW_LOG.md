@@ -115,7 +115,7 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 
 - Profile row의 `minHeight: 64`, icon 32, gap 12가 Today/정리할 항목 row와 같은 리듬으로 보이는지 확인한다.
 - 로그인 버튼이 목적지 row보다 시각적으로 너무 강해 보이지 않는지 확인한다.
-- 검색이 “과거 Task와 일정 찾기”를 약속하는 만큼 real API 미연결 상태 안내가 충분히 자연스러운지 확인한다.
+- 검색이 “과거 Task와 일정 찾기”를 약속하는 만큼 real API enum, 빈 상태, pagination이 실제 화면에서 자연스럽게 이어지는지 확인한다.
 
 결정:
 
@@ -125,7 +125,7 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 다음 작업 후보:
 
 1. Profile row와 Today review row의 radius, border, padding을 같은 토큰 기준으로 맞춘다.
-2. 검색 진입 후 real API 준비 중 상태의 문구와 CTA를 다시 확인한다.
+2. 검색 진입 후 real API 결과, 빈 상태, pagination 문구와 CTA를 다시 확인한다.
 3. 설정/프로필 확장 전까지 불필요한 통계나 feed 진입점은 추가하지 않는다.
 
 ## 우선순위
