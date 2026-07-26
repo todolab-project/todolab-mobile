@@ -33,6 +33,23 @@
 - Today로 이동한 일반 TODO는 Today 조회에는 포함되지만 Calendar 월간 조회에는 포함되지 않았다. Calendar는 시간이 있는 일정 또는 날짜 기준이 있는 항목 중심으로 별도 smoke data가 필요하다.
 - 새 일정 날짜/시간 생성 UI 또는 백엔드 seed data가 준비되면 Calendar 하루 일정 label, 여러 날 일정 bar, Today/Calendar 일정 일관성을 재검증한다.
 
+### 2026-07-27 일정 생성 계약 재검증
+
+커밋 기준: `1811f4e`
+
+통과:
+
+- 짧은 제목과 `type=SCHEDULE`, `startAt`, `endAt`, `allDay=false`로 일정 생성 성공
+- 생성된 일정은 `status=TODAY`로 반환됨
+- `GET /api/v1/tasks/today?date=2026-07-27`에서 생성 일정 확인
+- `GET /api/v1/tasks?type=MONTH&date=2026-07`에서 생성 일정 확인
+- `/api/v1/tasks/search?q=...&taskTypes=SCHEDULE`에서 생성 일정 확인
+
+메모:
+
+- 이전 일정 생성 400은 백엔드 일정 계약 문제가 아니라 smoke title이 30자 제한을 초과한 것이 원인이었다.
+- 새 Task 작성 화면에 일정 날짜와 시작·종료 시간 입력을 추가했으므로, 이후 Calendar real smoke data는 앱 흐름으로 만들 수 있다.
+
 ## 2026-07-26 예정: local real API 재검증
 
 커밋 기준: `main` 현재 HEAD

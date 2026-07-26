@@ -312,7 +312,7 @@ ToDoLab 적용 방향:
 목표: mock에서 예쁜 화면이 아니라 실제 데이터로 매일 사용할 수 있는 상태를 만든다.
 
 - [ ] 검색 API의 기간, 키워드, 상태 filter, pagination, timezone 계약은 백엔드 문서상 확정됐다. 모바일 real API 화면에서 성공 결과, 빈 상태, cursor pagination을 smoke test하고 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록한다.
-- [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다. 2026-07-27 real API smoke에서 TODO→Today 흐름은 통과했지만, 새 일정 날짜/시간 생성 UI가 없어 Calendar 일정 smoke data 생성은 보류했다.
+- [ ] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증한다. 2026-07-27 real API smoke에서 단일 시간 일정의 생성, Today 조회, Calendar 월간 조회, Search는 통과했다. 여러 날 일정 bar와 원본 ID 중복/누락은 추가 재검증한다.
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
 - [ ] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약은 정리됐지만, 반복 생성/수정 API가 아직 없어 실제 저장 UI는 보류한다.
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
@@ -328,7 +328,7 @@ ToDoLab 적용 방향:
 목표: 매주 화요일 09:00 회의처럼 반복되는 실행 항목과 일정을 occurrence별로 계획하고 완료한다.
 
 - [ ] Task 작성 화면에 반복 없음, 매일, 매주, 매월, 사용자 지정 선택을 추가한다.
-- [ ] Task 작성 화면에서 일정 날짜와 시작·종료 시간을 입력할 수 있게 해 Calendar real smoke data를 앱 흐름으로 만들 수 있게 한다.
+- [x] Task 작성 화면에서 일정 날짜와 시작·종료 시간을 입력할 수 있게 해 Calendar real smoke data를 앱 흐름으로 만들 수 있게 한다.
 - [ ] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.
 - [ ] Today와 Calendar 범위 조회에 occurrence를 표시한다.
 - [ ] occurrence별 완료, 미룸, 건너뛰기와 완료 기록을 연결한다.
