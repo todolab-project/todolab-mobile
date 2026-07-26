@@ -5,6 +5,9 @@ import { AppText, Button, Card, InlineNotice } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse, TaskType, TaskUpsertRequest } from '@/types';
 import { taskLimits } from '@/types';
+import { toApiLocalDate } from '@/utils';
+
+import { normalizeScheduleFormInput } from './task-form-schedule';
 
 type TaskFormValues = {
   title: string;
@@ -12,9 +15,18 @@ type TaskFormValues = {
   category: string;
   type: TaskType;
   allDay: boolean;
+  scheduleDate: string;
+  startTime: string;
+  endTime: string;
 };
 
-type TaskFormField = 'title' | 'description' | 'category';
+type TaskFormField =
+  | 'title'
+  | 'description'
+  | 'category'
+  | 'scheduleDate'
+  | 'startTime'
+  | 'endTime';
 
 type TaskFormProps = {
   initialTask?: TaskResponse;
@@ -46,6 +58,13 @@ export function TaskForm({
     category: initialTask?.category ?? '',
     type: initialTask?.type ?? 'TODO',
     allDay: initialTask?.allDay ?? false,
+    scheduleDate:
+      initialTask?.startAt?.slice(0, 10) ??
+      initialTask?.targetDate ??
+      initialTask?.plannedDate ??
+      toApiLocalDate(),
+    startTime: initialTask?.startAt?.slice(11, 16) ?? '09:00',
+    endTime: initialTask?.endAt?.slice(11, 16) ?? '',
   }));
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<TaskFormField | null>(null);
@@ -62,7 +81,7 @@ export function TaskForm({
   );
   const titleLength = values.title.trim().length;
   const canSubmit = titleLength > 0 && !isSubmitting;
-  const canSetAllDay = Boolean(initialTask?.startAt);
+  const isSchedule = values.type === 'SCHEDULE';
 
   const updateField = <Key extends keyof TaskFormValues>(key: Key, value: TaskFormValues[Key]) => {
     setValues((current) => ({ ...current, [key]: value }));
@@ -79,14 +98,28 @@ export function TaskForm({
       return;
     }
 
+    const schedule = isSchedule
+      ? normalizeScheduleFormInput({
+          allDay: values.allDay,
+          date: values.scheduleDate,
+          startTime: values.startTime,
+          endTime: values.endTime,
+        })
+      : null;
+
+    if (schedule && !schedule.ok) {
+      setValidationMessage(schedule.message);
+      return;
+    }
+
     onSubmit({
       title,
       description: description || null,
       category: category || null,
       type: values.type,
-      allDay: canSetAllDay && values.allDay,
-      startAt: initialTask?.startAt ?? null,
-      endAt: initialTask?.endAt ?? null,
+      allDay: schedule?.allDay ?? false,
+      startAt: schedule?.startAt ?? null,
+      endAt: schedule?.endAt ?? null,
     });
   };
 
@@ -171,6 +204,122 @@ export function TaskForm({
           </View>
         </View>
 
+        {isSchedule ? (
+          <View style={styles.scheduleFields}>
+            <View style={styles.field}>
+              <AppText variant="label" weight="bold">
+                일정 날짜
+              </AppText>
+              <TextInput
+                accessibilityHint="YYYY-MM-DD 형식으로 입력해 주세요."
+                accessibilityLabel="일정 날짜"
+                editable={!isSubmitting}
+                onBlur={() => setFocusedField(null)}
+                onChangeText={(value) => updateField('scheduleDate', value)}
+                onFocus={() => setFocusedField('scheduleDate')}
+                placeholder="2026-07-27"
+                placeholderTextColor={theme.colors.textMuted}
+                returnKeyType="next"
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.colors.surface,
+                    borderColor:
+                      focusedField === 'scheduleDate' ? theme.colors.primary : theme.colors.border,
+                    borderWidth: focusedField === 'scheduleDate' ? 2 : 1,
+                    color: theme.colors.text,
+                  },
+                ]}
+                value={values.scheduleDate}
+              />
+            </View>
+
+            <View style={styles.switchRow}>
+              <View style={styles.switchCopy}>
+                <AppText variant="label" weight="bold">
+                  종일 일정
+                </AppText>
+                <AppText tone="secondary" variant="caption">
+                  하루 전체를 차지하는 일정으로 저장해요.
+                </AppText>
+              </View>
+              <Switch
+                accessibilityLabel="종일 일정 여부"
+                disabled={isSubmitting}
+                onValueChange={(value) => updateField('allDay', value)}
+                thumbColor={values.allDay ? theme.colors.primary : theme.colors.surface}
+                trackColor={{ false: theme.colors.borderStrong, true: theme.colors.primarySoft }}
+                value={values.allDay}
+              />
+            </View>
+
+            {!values.allDay ? (
+              <View style={styles.timeRow}>
+                <View style={[styles.field, styles.timeField]}>
+                  <AppText variant="label" weight="bold">
+                    시작
+                  </AppText>
+                  <TextInput
+                    accessibilityHint="HH:mm 형식으로 입력해 주세요."
+                    accessibilityLabel="일정 시작 시간"
+                    editable={!isSubmitting}
+                    onBlur={() => setFocusedField(null)}
+                    onChangeText={(value) => updateField('startTime', value)}
+                    onFocus={() => setFocusedField('startTime')}
+                    placeholder="09:00"
+                    placeholderTextColor={theme.colors.textMuted}
+                    returnKeyType="next"
+                    style={[
+                      styles.input,
+                      {
+                        backgroundColor: theme.colors.surface,
+                        borderColor:
+                          focusedField === 'startTime' ? theme.colors.primary : theme.colors.border,
+                        borderWidth: focusedField === 'startTime' ? 2 : 1,
+                        color: theme.colors.text,
+                      },
+                    ]}
+                    value={values.startTime}
+                  />
+                </View>
+
+                <View style={[styles.field, styles.timeField]}>
+                  <View style={styles.labelRow}>
+                    <AppText variant="label" weight="bold">
+                      종료
+                    </AppText>
+                    <AppText tone="muted" variant="caption">
+                      선택
+                    </AppText>
+                  </View>
+                  <TextInput
+                    accessibilityHint="비워두면 시작 시간만 있는 일정으로 저장됩니다."
+                    accessibilityLabel="일정 종료 시간"
+                    editable={!isSubmitting}
+                    onBlur={() => setFocusedField(null)}
+                    onChangeText={(value) => updateField('endTime', value)}
+                    onFocus={() => setFocusedField('endTime')}
+                    placeholder="10:00"
+                    placeholderTextColor={theme.colors.textMuted}
+                    returnKeyType="done"
+                    style={[
+                      styles.input,
+                      {
+                        backgroundColor: theme.colors.surface,
+                        borderColor:
+                          focusedField === 'endTime' ? theme.colors.primary : theme.colors.border,
+                        borderWidth: focusedField === 'endTime' ? 2 : 1,
+                        color: theme.colors.text,
+                      },
+                    ]}
+                    value={values.endTime}
+                  />
+                </View>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+
         <Button
           accessibilityState={{ expanded: isDetailsExpanded }}
           size="compact"
@@ -214,27 +363,6 @@ export function TaskForm({
               ]}
               textAlignVertical="top"
               value={values.description}
-            />
-          </View>
-        ) : null}
-
-        {isDetailsExpanded && canSetAllDay ? (
-          <View style={styles.switchRow}>
-            <View style={styles.switchCopy}>
-              <AppText variant="label" weight="bold">
-                종일 항목
-              </AppText>
-              <AppText tone="secondary" variant="caption">
-                시간 선택 없이 하루 단위로 관리해요.
-              </AppText>
-            </View>
-            <Switch
-              accessibilityLabel="종일 항목 여부"
-              disabled={isSubmitting}
-              onValueChange={(value) => updateField('allDay', value)}
-              thumbColor={values.allDay ? theme.colors.primary : theme.colors.surface}
-              trackColor={{ false: theme.colors.borderStrong, true: theme.colors.primarySoft }}
-              value={values.allDay}
             />
           </View>
         ) : null}
@@ -313,6 +441,16 @@ const styles = StyleSheet.create({
   },
   field: {
     gap: spacing[2],
+  },
+  scheduleFields: {
+    gap: spacing[3],
+  },
+  timeRow: {
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  timeField: {
+    flex: 1,
   },
   labelRow: {
     alignItems: 'center',
