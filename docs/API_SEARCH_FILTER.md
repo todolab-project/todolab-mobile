@@ -21,36 +21,40 @@ GET /api/v1/tasks/search
 
 ### Query parameter
 
-| 이름         | 형식                                                                 | 필수   | 기본값     | 의미                                        |
-| ------------ | -------------------------------------------------------------------- | ------ | ---------- | ------------------------------------------- |
-| `q`          | string                                                               | 아니오 | 없음       | 제목·설명 부분 검색                         |
-| `statuses`   | `INBOX,TODAY,DONE`의 쉼표 구분 목록                                  | 아니오 | 전체       | Task 상태                                   |
-| `taskTypes`  | `TODO,SCHEDULE,IDEA`의 쉼표 구분 목록                                | 아니오 | 전체       | Task 종류                                   |
-| `category`   | string                                                               | 아니오 | 전체       | 정규화된 카테고리의 완전 일치               |
-| `ddayGoalId` | positive integer                                                     | 아니오 | 전체       | 특정 D-Day 목표 연결                        |
-| `hasDday`    | boolean                                                              | 아니오 | 전체       | D-Day 연결 유무. `ddayGoalId`가 있으면 무시 |
-| `allDay`     | boolean                                                              | 아니오 | 전체       | 종일 Task 여부                              |
-| `dateField`  | `RELEVANT`, `PLANNED`, `SCHEDULED`, `COMPLETED`, `CREATED`           | 아니오 | `RELEVANT` | 날짜 범위가 적용될 필드                     |
-| `dateFrom`   | `YYYY-MM-DD`                                                         | 아니오 | 없음       | 포함되는 시작일, 서비스 시간대 기준         |
-| `dateTo`     | `YYYY-MM-DD`                                                         | 아니오 | 없음       | 포함되는 종료일, 서비스 시간대 기준         |
-| `sort`       | `RELEVANCE`, `DATE_DESC`, `DATE_ASC`, `UPDATED_DESC`, `CREATED_DESC` | 아니오 | 아래 규칙  | 정렬                                        |
-| `cursor`     | opaque string                                                        | 아니오 | 없음       | 다음 페이지 커서                            |
-| `limit`      | integer, 1–50                                                        | 아니오 | `20`       | 페이지 크기                                 |
+| 이름         | 형식                                                                                                                | 필수   | 기본값              | 의미                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- | ------ | ------------------- | ------------------------------------------- |
+| `q`          | string                                                                                                              | 아니오 | 없음                | 제목·설명 부분 검색                         |
+| `statuses`   | `INBOX,TODAY,DONE`의 쉼표 구분 목록                                                                                 | 아니오 | 전체                | Task 상태                                   |
+| `taskTypes`  | `TODO,SCHEDULE,IDEA`의 쉼표 구분 목록                                                                               | 아니오 | 전체                | Task 종류                                   |
+| `category`   | string                                                                                                              | 아니오 | 전체                | 정규화된 카테고리의 완전 일치               |
+| `ddayGoalId` | positive integer                                                                                                    | 아니오 | 전체                | 특정 D-Day 목표 연결                        |
+| `hasDday`    | boolean                                                                                                             | 아니오 | 전체                | D-Day 연결 유무. `ddayGoalId`가 있으면 무시 |
+| `allDay`     | boolean                                                                                                             | 아니오 | 전체                | 종일 Task 여부                              |
+| `dateField`  | `PLANNED`, `START`, `TARGET`, `COMPLETED`, `CREATED`, `UPDATED`                                                     | 아니오 | `PLANNED`           | 날짜 범위가 적용될 필드                     |
+| `dateFrom`   | `YYYY-MM-DD`                                                                                                        | 아니오 | 없음                | 포함되는 시작일, 서비스 시간대 기준         |
+| `dateTo`     | `YYYY-MM-DD`                                                                                                        | 아니오 | 없음                | 포함되는 종료일, 서비스 시간대 기준         |
+| `sort`       | `RELEVANT_DATE_ASC`, `RELEVANT_DATE_DESC`, `CREATED_AT_ASC`, `CREATED_AT_DESC`, `UPDATED_AT_ASC`, `UPDATED_AT_DESC` | 아니오 | `RELEVANT_DATE_ASC` | 정렬                                        |
+| `cursor`     | opaque string                                                                                                       | 아니오 | 없음                | 다음 페이지 커서                            |
+| `limit`      | integer, 1–100                                                                                                      | 아니오 | `50`                | 페이지 크기                                 |
 
 `q`와 문자열 필터는 앞뒤 공백을 제거한다. `q`는 한 글자부터 허용하고 한글·영문 대소문자를 사용자 관점에서 동일하게 검색한다. 빈 `q`는 검색 조건에서 제외한다.
 
-날짜 문자열과 범위 의미는 [`API_DATE_TIME.md`](./API_DATE_TIME.md)를 따른다. `dateFrom > dateTo`, 알 수 없는 enum, 유효하지 않은 커서에는 보정된 빈 목록이 아니라 HTTP 400을 반환한다.
+날짜 문자열과 범위 의미는 백엔드 [`TIMEZONE_CONTRACT.md`](../../backend/docs/TIMEZONE_CONTRACT.md)를 따른다. `dateFrom > dateTo`, 알 수 없는 enum, 유효하지 않은 커서에는 보정된 빈 목록이 아니라 HTTP 400을 반환한다.
 
 ### 관련 날짜
 
-`RELEVANT`는 항목 종류와 상태에 따라 사용자가 가장 자연스럽게 기억할 날짜를 선택한다.
+응답의 `relevantDate`와 `dateSource`는 백엔드가 선택한 결과 대표 날짜다. 모바일은 이를 검색 결과 날짜 label로 그대로 사용하고 UTC 변환이나 자체 추론을 하지 않는다.
 
-1. `DONE`이면 `completedAt`
-2. 시간 또는 종일 일정이면 `startAt`을 서비스 시간대의 날짜로 변환한 값
-3. 실행 Task이면 `plannedDate`
-4. 위 값이 없으면 `createdAt`
+`dateSource` 값:
 
-명시적인 `SCHEDULED`는 `startAt`, `COMPLETED`는 `completedAt`, `PLANNED`는 `plannedDate`만 대상으로 한다. 해당 값이 없는 항목은 그 필드의 날짜 검색에서 제외한다.
+- `TARGET_DATE`
+- `START_AT`
+- `COMPLETED_AT`
+- `CREATED_AT`
+- `UPDATED_AT`
+- `NONE`
+
+모바일의 기간 quick filter는 현재 `TARGET` 기준으로 요청한다. 완료 날짜, 시작일, 수정일 등 더 세밀한 기간 검색 UI는 real API smoke test 이후 별도 UX로 확장한다.
 
 ### 검색 범위
 
@@ -63,7 +67,7 @@ GET /api/v1/tasks/search
 예:
 
 ```http
-GET /api/v1/tasks/search?q=병원&statuses=INBOX,TODAY&taskTypes=TODO&hasDday=true&sort=RELEVANCE&limit=20
+GET /api/v1/tasks/search?q=병원&statuses=INBOX,TODAY&taskTypes=TODO&hasDday=true&sort=RELEVANT_DATE_DESC&limit=20
 ```
 
 ## 3. 응답
@@ -74,7 +78,7 @@ GET /api/v1/tasks/search?q=병원&statuses=INBOX,TODAY&taskTypes=TODO&hasDday=tr
 type TaskSearchItem = {
   task: TaskResponse;
   relevantDate: LocalDateString;
-  dateSource: 'PLANNED' | 'SCHEDULED' | 'COMPLETED' | 'CREATED';
+  dateSource: 'TARGET_DATE' | 'START_AT' | 'COMPLETED_AT' | 'CREATED_AT' | 'UPDATED_AT' | 'NONE';
 };
 
 type TaskSearchPage = {
@@ -93,11 +97,11 @@ type TaskSearchPage = {
 
 ## 4. 정렬과 페이지 안정성
 
-- `q`가 있으면 기본 정렬은 `RELEVANCE`, 없으면 `DATE_DESC`다.
-- `RELEVANCE`가 같으면 `updatedAt DESC`, `id DESC`를 적용한다.
-- `DATE_ASC`, `DATE_DESC`는 `relevantDate` 다음에 `id DESC`를 적용한다.
-- 다른 정렬도 마지막 tie-breaker로 `id`를 사용한다.
-- 커서는 정렬 기준과 마지막 Task 식별자를 포함한 opaque 값이어야 한다.
+- 백엔드 기본 정렬은 `RELEVANT_DATE_ASC`다.
+- 모바일 기본 정렬은 사용자가 최근 기록을 먼저 훑기 쉽도록 `RELEVANT_DATE_DESC`를 명시해 요청한다.
+- `RELEVANT_DATE_ASC`, `RELEVANT_DATE_DESC`는 `relevantDate` 기준으로 정렬한다.
+- `CREATED_AT_*`, `UPDATED_AT_*`는 생성/수정 시각 기준으로 정렬한다.
+- 현재 백엔드 cursor는 마지막으로 받은 `task.id` 문자열이다.
 - 같은 커서 요청은 데이터 변경이 없는 동안 같은 다음 구간을 반환해야 한다.
 - 커서는 검색 조건에 종속된다. 다른 조건에 재사용하면 HTTP 400을 반환한다.
 
@@ -114,14 +118,15 @@ type TaskSearchPage = {
 
 오류 `message`는 모바일에 그대로 노출할 수 있는 안전한 사용자 문구여야 하며 SQL, stack trace, 내부 식별자를 포함하지 않는다.
 
-## 6. 모바일 구현 전 확인 항목
+## 6. 모바일 real API 확인 항목
 
-- [ ] OpenAPI에 query enum, 기본값, 최대 길이와 응답 schema가 등록되어 있다.
-- [ ] 한글 조합형·완성형과 영문 대소문자 검색 결과가 일관된다.
+- [x] OpenAPI에 query enum, 기본값, 최대 길이와 응답 schema가 등록되어 있다.
+- [x] 모바일 타입, mock API, Search UI sort/dateField enum을 백엔드 v1 계약과 맞췄다.
+- [ ] real mode에서 한글 조합형·완성형과 영문 대소문자 검색 결과가 일관된다.
 - [ ] 중복·누락 없는 cursor pagination 통합 테스트가 있다.
 - [ ] Task 변경 후 같은 조건 재조회 시 결과 포함 여부가 즉시 갱신된다.
 - [ ] 서울 자정 경계의 `startAt`, `completedAt`, `createdAt`이 올바른 `relevantDate`로 반환된다.
-- [ ] 여러 날 일정은 시작일을 대표 날짜로 반환하고 기간 정보는 기존 Task 필드로 표현한다.
+- [ ] 여러 날 일정의 대표 날짜와 기간 정보가 검색 결과 label과 상세 화면에서 자연스럽게 연결된다.
 - [ ] 빈 검색, 필터만 검색, 결과 없음, 만료·오염된 커서가 테스트되어 있다.
 - [ ] 300ms debounce와 이전 요청 취소를 사용해도 서버가 불필요한 작업을 계속하지 않는다.
 - [ ] 대표 데이터 기준 첫 페이지 응답 시간 목표를 합의한다.
