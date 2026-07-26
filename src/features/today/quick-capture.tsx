@@ -89,6 +89,7 @@ export function QuickCapture() {
             <TextInput
               ref={inputRef}
               accessibilityLabel="빠르게 할 일 기록"
+              accessibilityHint="입력한 내용은 기록함에 추가됩니다."
               editable={!createTask.isPending}
               enterKeyHint="done"
               maxLength={taskLimits.title}
@@ -137,7 +138,12 @@ export function QuickCapture() {
           {didSave ? <InlineNotice message="기록함에 추가했어요." tone="success" /> : null}
         </Card>
       ) : (
-        <Button accessibilityLabel="빠르게 기록 열기" onPress={openComposer} style={styles.fab}>
+        <Button
+          accessibilityHint="하단 입력창을 열어 기록함에 할 일을 추가합니다."
+          accessibilityLabel="빠르게 기록 열기"
+          onPress={openComposer}
+          style={styles.fab}
+        >
           <AppText style={{ color: theme.colors.textOnPrimary }} variant="title" weight="medium">
             +
           </AppText>
