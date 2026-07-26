@@ -20,7 +20,7 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
   - background color: `#E6F4FE`
 - Web favicon: `assets/images/favicon.png` — 48×48 PNG
 - Splash icon: `assets/images/splash-icon.png` — 228×213 PNG
-- Splash background: `#208AEF`
+- Splash background: `#FFFFFF`
 - Android splash image width: 76
 
 점검 기준:
@@ -28,14 +28,14 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 - Android adaptive icon preview에서 foreground가 잘리지 않는다.
 - Android monochrome icon이 단색 테마에서 의미를 잃지 않는다.
 - iOS icon이 라운드 마스크 안에서 여백이 과하거나 부족하지 않다.
-- Splash background와 앱 첫 화면 background 전환이 튀지 않는다.
+- Splash background와 앱 첫 화면 background 전환이 튀지 않는다. 현재 앱의 흰 배경 중심 테마에 맞춰 splash도 흰색을 사용한다.
 - Splash icon은 저해상도 기기에서도 흐릿해 보이지 않는다.
 
 남은 실기기 확인:
 
 - Android adaptive icon preview에서 foreground, background, monochrome이 모두 자연스럽게 합성되는지
 - iOS icon이 실제 홈 화면 라운드 마스크 안에서 너무 작거나 크지 않은지
-- Splash blue 배경에서 앱의 warm paper background로 넘어갈 때 전환이 튀지 않는지
+- Splash 흰 배경에서 앱 첫 화면으로 넘어갈 때 logo 크기와 배경 전환이 튀지 않는지
 
 ## 상태바와 safe area
 
