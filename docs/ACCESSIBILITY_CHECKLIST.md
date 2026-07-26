@@ -11,6 +11,7 @@
 - 색상만으로 상태를 전달하지 않는다.
   - 완료, 오류, 선택, 반복, 일정 상태는 문구·역할·상태값 중 하나를 함께 제공한다.
 - 공통 오류와 loading 상태는 `InlineNotice`, `ListSkeleton`의 접근성 속성을 우선 사용한다.
+- 오류·경고 `InlineNotice`는 alert 역할과 live region으로 중요한 상태 변화를 전달한다.
 
 ## 화면별 읽기 순서
 
