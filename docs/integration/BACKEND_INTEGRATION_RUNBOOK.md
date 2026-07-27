@@ -181,6 +181,8 @@ type ApiEnvelope<T> = {
 4. Auth
    - 회원가입 → 로그인 → 프로필 email 표시 → 로그아웃
    - 만료 token 또는 비로그인 상태에서 401 처리 확인
+   - API 단독 smoke는 `EXPO_PUBLIC_API_URL=http://localhost:8080 npm run smoke:auth:real`로 실행한다.
+   - smoke script는 임시 계정 email만 출력하고 token과 비밀번호는 출력하지 않는다.
 5. Today
    - 오늘 일정, 오늘 할 일, 오늘 완료한 일 표시
    - 빠른 기록 추가, 완료, 다시 열기
