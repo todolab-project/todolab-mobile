@@ -142,7 +142,7 @@ type ApiResponse<T> = {
 
 - staging, production API URL 확정
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
-- 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](../api/API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../../backend/docs/api/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
+- 반복 Task·일정은 백엔드 문서상 생성 계약이 추가된 상태로 보이나, 백엔드 상태 문서 정합성과 real smoke가 끝날 때까지 모바일 저장 UI 노출은 보류
 - 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../../backend/docs/api/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
 - real API 화면 smoke에서 검색 cursor 정렬, 기간 filter, timezone 경계는 계속 회귀 확인
 
@@ -304,7 +304,7 @@ ToDoLab 적용 방향:
 - [x] 검색 API의 키워드, 상태 filter, 종류 filter, 빈 상태, cursor pagination을 real API로 smoke test하고 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다. 기간 filter와 timezone은 실제 화면 회귀에서 계속 확인한다.
 - [x] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증했다. 2026-07-28 real API smoke에서 2026-07-28–2026-07-30 기간 일정이 해당 날짜 Today에만 포함되고 Calendar 월간 조회에는 원본 ID 1회로 반환됨을 확인했다.
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
-- [x] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약을 정리했고, 반복 생성/수정 API 제공 전까지 실제 저장 UI를 열지 않는 기준을 확정했다.
+- [x] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약을 정리했고, 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 UI를 열지 않는 기준을 확정했다.
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 
@@ -317,8 +317,8 @@ ToDoLab 적용 방향:
 
 목표: 매주 화요일 09:00 회의처럼 반복되는 실행 항목과 일정을 occurrence별로 계획하고 완료한다.
 
-- [ ] 백엔드 반복 생성/수정 API 제공 여부와 `TaskUpsertRequest` 반복 필드 수용 시점을 재확인한다.
-- [ ] 백엔드 API가 열리면 Task 작성 화면에 반복 없음, 매일, 매주, 매월, 사용자 지정 선택을 추가한다.
+- [ ] 백엔드 반복 생성 계약, 상태 문서, real smoke 결과를 재확인한다.
+- [ ] 백엔드 반복 생성이 real smoke를 통과하면 Task 작성 화면에 반복 없음, 매일, 매주, 매월, 사용자 지정 선택을 추가한다.
 - [x] Task 작성 화면에서 일정 날짜와 시작·종료 시간을 입력할 수 있게 해 Calendar real smoke data를 앱 흐름으로 만들 수 있게 한다.
 - [ ] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.
 - [ ] Today와 Calendar 범위 조회에 occurrence를 표시한다.
@@ -433,7 +433,7 @@ Today 작업 목록 표시
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
-4. 반복 Task와 일정의 작성·수정 UI는 백엔드 반복 생성/수정 API가 제공되기 전까지 실제 저장 기능처럼 노출하지 않는다.
+4. 반복 Task와 일정의 작성·수정 UI는 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 기능처럼 노출하지 않는다.
 5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

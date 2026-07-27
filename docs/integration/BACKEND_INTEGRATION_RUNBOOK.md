@@ -164,7 +164,7 @@ type ApiEnvelope<T> = {
    - 목표 상세 조회와 목표 Task 생성에서 500이 발생하지 않는지
    - Task와 D-Day 연결/해제가 양쪽 화면에 일관되게 반영되는지
 7. 반복 일정
-   - 백엔드 `RECURRENCE_MODEL.md` 기준으로 occurrence 조회 표시는 가능하지만, 반복 생성/수정 API 제공 전까지 작성·수정 저장 기능은 제한한다.
+   - 백엔드 `RECURRENCE_MODEL.md` 기준으로 반복 생성 계약은 추가된 것으로 보이나, 백엔드 상태 문서 정합성과 real smoke가 끝날 때까지 작성·수정 저장 기능은 제한한다.
 8. 알림
    - 백엔드 `NOTIFICATION_CONTRACT.md` 기준으로 서버 push API는 아직 없고, 모바일 로컬 알림은 가까운 미래 occurrence에 대한 best-effort 예약으로만 다룬다.
 9. 중복 요청 방지
@@ -201,7 +201,7 @@ type ApiEnvelope<T> = {
 
 ## 8. 현재 보류 또는 추가 확정이 필요한 계약
 
-- 반복 Task·일정의 생성/수정 API와 모바일 저장 UI 노출 시점
+- 반복 Task·일정의 생성 계약, 상태 문서 정합성, real smoke 결과와 모바일 저장 UI 노출 시점
 - 검색 결과의 relevance 기준, 기간 filter, timezone 경계
 - D-Day 목표 삭제 시 연결된 Task 처리 방식
 - refresh token 또는 silent re-auth 도입 여부

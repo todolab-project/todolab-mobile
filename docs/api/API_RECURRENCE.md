@@ -52,13 +52,14 @@ PUT    /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 DELETE /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 ```
 
-단, 백엔드 `RECURRENCE_MODEL.md`는 모바일이 반복 UI를 실제 저장 기능처럼 열면 안 된다고 명시한다. 따라서 모바일은 조회된 occurrence label 표시까지만 허용하고, 반복 생성/수정/삭제 UI는 백엔드와 아래 항목을 재확인한 뒤 연다.
+백엔드 `RECURRENCE_MODEL.md`와 `API_V1_FRONTEND.md`에는 `POST /api/v1/tasks`의 `recurrence` 생성 계약과 `recurrenceScope` 수정·삭제 계약이 추가되어 있다. 다만 백엔드 상태 문서에는 아직 예전 보류 문구가 남아 있어, 모바일은 조회된 occurrence label 표시까지만 유지하고 반복 생성/수정/삭제 UI는 문서 정합성과 real smoke를 재확인한 뒤 연다.
 
 ## 백엔드 확인 항목
 
 - RRULE parser와 validation 범위
 - 월말, 윤년, 공휴일을 건너뛰는 규칙 지원 여부
-- 반복 생성 endpoint 제공 여부와 `TaskRequest`의 반복 필드 수용 시점
+- `POST /api/v1/tasks`의 `recurrence` 생성 계약이 실제 local/staging API에서 통과하는지
+- 백엔드 상태 문서의 “반복 생성/수정 API 미제공” 문구가 최신 계약과 정리되었는지
 - `PUT /api/v1/tasks/{id}?recurrenceScope=...`를 모바일 수정 UI에서 사용해도 되는 시점
 - `DELETE /api/v1/tasks/{id}?recurrenceScope=...`를 모바일 삭제 UI에서 사용해도 되는 시점
 - occurrence 완료·미룸·건너뛰기 저장 방식
