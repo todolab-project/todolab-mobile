@@ -139,7 +139,7 @@ EXPO_PUBLIC_API_URL=http://localhost:8080
 npm run validate
 ```
 
-개별 검증은 `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm test`로 실행합니다. 코드 포맷을 적용하려면 `npm run format`을 사용합니다.
+개별 검증은 `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run docs:check`, `npm test`로 실행합니다. 코드 포맷을 적용하려면 `npm run format`을 사용합니다.
 
 ## 개발 원칙
 
