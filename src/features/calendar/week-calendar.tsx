@@ -482,9 +482,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
+    flexBasis: '30%',
+    flexGrow: 1,
     justifyContent: 'center',
+    maxWidth: '32%',
     minHeight: 36,
-    width: '31.5%',
   },
   dayButton: {
     alignItems: 'center',
