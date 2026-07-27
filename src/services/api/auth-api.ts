@@ -18,7 +18,7 @@ export const authApi = {
 
   async login(request: LoginRequest, signal?: AbortSignal) {
     const response = await apiClient.post<TokenResponse>(`${AUTH_PATH}/login`, request, { signal });
-    setAccessToken(response.accessToken);
+    await setAccessToken(response.accessToken);
     return response;
   },
 
@@ -27,6 +27,6 @@ export const authApi = {
   },
 
   logout() {
-    clearAccessToken();
+    return clearAccessToken();
   },
 };

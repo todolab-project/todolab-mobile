@@ -63,7 +63,15 @@ type ApiEnvelope<T> = {
 
 ## 3. 인증 계약
 
-모바일은 로그인 성공 시 `accessToken`만 로컬 token store에 저장하고, 이후 요청에 `Authorization: Bearer <accessToken>`을 자동 첨부한다.
+모바일은 로그인 성공 시 `accessToken`만 저장하고, 이후 요청에 `Authorization: Bearer <accessToken>`을 자동 첨부한다.
+
+토큰 저장 보안 기준:
+
+- iOS와 Android는 `expo-secure-store`를 사용해 OS 보안 저장소에 access token을 저장한다.
+- Web은 브라우저 제약상 `localStorage` fallback을 사용하되, 운영 Web에서는 XSS 방지와 배포 CSP를 별도 점검한다.
+- 앱 시작 시 저장된 token을 먼저 메모리로 복원한 뒤 API 요청을 보낸다.
+- token은 로그, 오류 메시지, smoke test 출력에 남기지 않는다.
+- refresh token은 현재 도입하지 않으며, access token 만료 시 다시 로그인한다.
 
 | Method | Path                    | 용도               |
 | ------ | ----------------------- | ------------------ |
@@ -78,7 +86,7 @@ type ApiEnvelope<T> = {
 - `expiresAt`
 - `user`
 
-401 응답을 받으면 모바일은 access token을 삭제하고 로그인 화면으로 이동해 "세션이 만료됐어요. 다시 로그인해 주세요." 안내를 표시한다. refresh token 흐름은 현재 모바일 계약에 포함되어 있지 않다.
+401 응답을 받으면 모바일은 access token을 삭제하고 캐시를 비운 뒤 로그인 화면으로 이동해 "세션이 만료됐어요. 다시 로그인해 주세요." 안내를 표시한다. 403 응답은 재로그인 반복 대신 권한 오류로 보여준다.
 
 ## 4. 현재 모바일이 호출하는 Task API
 

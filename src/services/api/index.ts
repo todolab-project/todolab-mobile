@@ -3,6 +3,7 @@ export { subscribeSessionExpired } from './auth-session';
 export {
   clearAccessToken,
   getAccessToken,
+  initializeAccessToken,
   setAccessToken,
   subscribeAccessToken,
 } from './auth-token-store';

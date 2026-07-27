@@ -125,7 +125,7 @@ export async function request<T>(path: string, options: ApiRequestOptions = {}) 
 
     if (!response.ok) {
       if (response.status === 401) {
-        clearAccessToken();
+        void clearAccessToken();
         notifySessionExpired();
       }
 

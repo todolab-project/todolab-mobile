@@ -1,6 +1,11 @@
 import { request } from '../api-client';
 import { subscribeSessionExpired } from '../auth-session';
-import { clearAccessToken, getAccessToken, setAccessToken } from '../auth-token-store';
+import {
+  clearAccessToken,
+  getAccessToken,
+  resetAuthTokenStoreForTesting,
+  setAccessToken,
+} from '../auth-token-store';
 
 jest.mock('@/config', () => ({
   env: { apiMode: 'real', apiUrl: 'https://api.example.com' },
@@ -8,10 +13,11 @@ jest.mock('@/config', () => ({
 }));
 
 describe('api client authorization', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     installLocalStorage();
     localStorage.clear();
-    clearAccessToken();
+    resetAuthTokenStoreForTesting();
+    await clearAccessToken();
   });
 
   it('저장된 access token을 Authorization 헤더로 첨부한다', async () => {
@@ -28,7 +34,7 @@ describe('api client authorization', () => {
     });
     globalThis.fetch = fetchMock;
 
-    setAccessToken('access-token');
+    await setAccessToken('access-token');
 
     await request('/api/v1/auth/me');
 
@@ -51,7 +57,7 @@ describe('api client authorization', () => {
 
     const listener = jest.fn();
     const unsubscribe = subscribeSessionExpired(listener);
-    setAccessToken('expired-token');
+    await setAccessToken('expired-token');
 
     await expect(request('/api/v1/auth/me')).rejects.toThrow('로그인이 필요해요.');
 
