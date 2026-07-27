@@ -225,7 +225,7 @@ type ApiResponse<T> = {
 ToDoLab 적용 방향:
 
 - Today는 미니 달력, 일정, 오늘 할 일, 완료 목록의 위계를 분명히 하되 첫 viewport에서 실제 할 일을 바로 볼 수 있게 한다.
-- Calendar는 월간 grid의 칸, 세로/가로 구분선, 일정 bar가 일 단위 구간 안에 정확히 정렬되도록 우선 정리한다.
+- Calendar는 3주 planner grid의 칸, 세로/가로 구분선, 일정 bar가 일 단위 구간 안에 정확히 정렬되도록 우선 정리한다.
 - Profile은 설정/기록/검색 진입점이 서비스 홈의 shortcut처럼 보이게 card spacing과 icon treatment를 통일한다.
 - 정리할 항목 화면은 버튼 나열보다 `지난 미완료`, `추천`, `기록함`을 각각 명확한 list/card section으로 정리한다.
 

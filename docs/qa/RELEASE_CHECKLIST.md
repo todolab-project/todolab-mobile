@@ -46,7 +46,7 @@ API URL:
 - [ ] 빠른 기록 추가
 - [ ] 기록함/정리할 항목에서 오늘 할 일로 이동 또는 추가
 - [ ] Today 일정 표시, 오늘 할 일 완료, 완료 다시 열기
-- [ ] Calendar 월간 grid, 하루 일정 label, 여러 날 일정 bar
+- [ ] Calendar 3주 grid, 하루 일정 label, 여러 날 일정 bar
 - [ ] Search mock 결과와 real `/api/v1/tasks/search` 검색, filter, pagination
 - [ ] D-Day 목표 생성, 목표 상세, 목표 연결 Task 생성
 - [ ] Completed 주 이동, 완료 목록, 다시 열기
@@ -98,7 +98,7 @@ API URL:
 
 - [ ] 초기 진입에서 skeleton 또는 기존 데이터 유지가 자연스럽다.
 - [ ] 긴 Today/Completed 목록에서 스크롤이 끊기지 않는다.
-- [ ] Calendar 월간 grid와 일정 bar 렌더링이 과하게 느리지 않다.
+- [ ] Calendar 3주 grid와 일정 bar 렌더링이 과하게 느리지 않다.
 - [ ] query retry가 무한 반복처럼 보이지 않는다.
 - [ ] pull-to-refresh 후 데이터가 중복 표시되지 않는다.
 

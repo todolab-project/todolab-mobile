@@ -74,7 +74,7 @@ PageHeader
 
 | 컴포넌트                  | 위치                                             | 역할                      | 주의점                                       |
 | ------------------------- | ------------------------------------------------ | ------------------------- | -------------------------------------------- |
-| `WeekCalendar`            | `src/features/calendar/week-calendar.tsx`        | 월간 calendar 화면        | 이름은 기존 유지지만 현재 월간 planner 역할  |
+| `WeekCalendar`            | `src/features/calendar/week-calendar.tsx`        | Calendar 3주 planner 화면 | 이름은 기존 유지지만 현재 planner 역할       |
 | `CalendarSingleDayLabels` | `src/features/calendar/calendar-period-bars.tsx` | 하루 일정 label           | 날짜 cell 밖 overflow 금지                   |
 | `CalendarPeriodBars`      | `src/features/calendar/calendar-period-bars.tsx` | 여러 날 일정 bar          | 주 경계 clipping과 `+N` 동작 확인            |
 | `CalendarDayTasks`        | `src/features/calendar/calendar-day-tasks.tsx`   | 선택 날짜 목록            | Calendar grid와 날짜 기준 일치               |

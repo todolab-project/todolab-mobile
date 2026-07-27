@@ -390,10 +390,10 @@ compact header
 - Calendar의 날짜·하루 일정·기간 bar는 하나의 동일한 horizontal inset과 7등분 좌표계를 공유한다.
 - Calendar header는 작은 이전/다음 chevron과 큰 월 제목만 유지하고 보조 오늘 버튼은 두지 않는다. 월 제목은 선택 가능한 control로 처리하되 별도 큰 버튼처럼 보이지 않게 한다.
 - 정리할 항목의 즉시 action은 큰 채움 버튼보다 compact ghost action을 사용한다.
-- 정리할 항목의 미완료·추천·기록은 같은 Task row를 사용하고 `+ 오늘` 텍스트 action으로 한 화면에서 처리한다.
+- 정리할 항목의 미완료·추천·기록은 같은 Task row를 사용하고 `오늘로 ›`, `추가 ›`, `열기 ›`처럼 낮은 강조의 텍스트 action으로 처리한다.
 - planner section은 공통 `SectionHeader`의 8px 의미 marker, 굵은 제목, 우측 count·action 문법을 사용한다.
 - 목표 화면은 개별 목표를 낮은 outline row로 표시하고 생성·메뉴 action은 ghost 수준으로 유지한다.
-- 완료 기록은 주 이동과 날짜 선택을 한 compact surface로 묶고 `다시 열기`를 overflow 메뉴 없이 직접 제공한다.
+- 완료 기록은 주 이동과 날짜 선택을 한 compact surface로 묶고 완료 checkbox로 다시 열기 동작을 처리해 중복 버튼을 줄인다.
 - Task 작성은 하나의 flat sheet 안에서 제목·유형·일정 날짜·시간·선택 정보를 나누고 입력 배경과 취소 action의 대비를 낮춘다.
 - Task 상세는 hero·날짜·정보·목표를 낮은 outline section으로 구분하고 metadata 행에는 얇은 rule을 사용한다.
 - 과거 기록 검색은 프로필의 보조 목적지로 두고 날짜·키워드·상태를 함께 탐색할 수 있게 한다.

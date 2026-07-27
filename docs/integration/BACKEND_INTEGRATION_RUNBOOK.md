@@ -178,7 +178,7 @@ type ApiEnvelope<T> = {
    - 빠른 기록 추가, 완료, 다시 열기
    - 정리할 항목 이동
 6. Calendar
-   - 월간 grid, 당일 일정 bar, 여러 날 일정 bar
+   - 3주 grid, 당일 일정 bar, 여러 날 일정 bar
    - 선택 날짜 목록과 Today 목록의 날짜 기준 일치
 7. Search
    - 검색어, filter, pagination, 빈 상태

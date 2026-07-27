@@ -40,7 +40,7 @@ ToDoLab 모바일의 성능 목표는 “빠른 앱”처럼 보이는 것이 �
 
 ## 캘린더 렌더링 기준
 
-- 월간 grid 날짜 계산은 `selectedDate`가 바뀔 때만 수행한다.
+- Calendar 3주 grid 날짜 계산은 `selectedDate`가 바뀔 때만 수행한다.
 - 기간 bar layout은 입력 `tasks`, `dates`가 바뀔 때만 다시 계산한다.
 - 같은 일정 ID가 범위 조회에서 중복되어도 한 번만 표시한다.
 - 월 이동 button을 연속 탭해도 이전 layout이 깜빡이며 남지 않아야 한다.

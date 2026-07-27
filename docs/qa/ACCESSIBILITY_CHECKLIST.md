@@ -36,7 +36,7 @@
 
 1. 페이지 제목
 2. 월 이동 controls
-3. 월간 grid 날짜
+3. Calendar 3주 grid 날짜
 4. 일정 label 또는 기간 bar
 5. 선택 날짜의 목록과 filter
 
