@@ -1,8 +1,8 @@
 # UX Review Log
 
-ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 모바일 앱 같은 단정함” 기준으로 점검하고, 수정 결정과 보류 이유를 기록한다.
+ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 모바일 앱 같은 단정함” 기준으로 점검하고, 다음 UI/UX 수정 단위를 고르기 위한 문서다.
 
-이 문서는 구현 히스토리를 길게 남기기보다 다음 UI/UX 수정 단위를 고르는 데 집중한다.
+구현 날짜별 히스토리는 남기지 않는다. 오래된 결정 과정은 git history에 맡기고, 이 문서에는 현재 화면 판단과 앞으로 확인할 항목만 유지한다.
 
 ## 리뷰 기준
 
@@ -13,196 +13,113 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - 320px, 375pt, 430dp, font scale 1.5, light/dark에서 깨지지 않는가
 - 터치 영역, focus outline, screen reader label이 시각 단순화 뒤에도 유지되는가
 
-## 2026-07-14 소스 기준 리뷰
-
-검토 범위:
-
-- Today: `today-overview.tsx`, `today-week-strip.tsx`, `quick-capture.tsx`
-- Calendar: `week-calendar.tsx`, `calendar-period-bars.tsx`
-- 정리할 항목: `today-review-screen.tsx`
-- Profile: `profile-overview.tsx`
-
-실제 화면 캡쳐 비교는 다음 smoke test 때 추가한다.
+## 현재 화면 판단
 
 ### Today
 
-좋은 점:
+현재 방향:
 
-- 정보 순서가 `일정 → 오늘 할 일 → 정리할 항목 → 완료`로 정리되어 있다.
-- 일정, 오늘 할 일, 완료 section marker가 서로 다른 색으로 구분된다.
-- 완료 목록은 기본 접힘 상태라 첫 화면을 크게 차지하지 않는다.
-- 정리할 항목은 Today 안에 모든 카드를 펼치지 않고 별도 화면으로 이동한다.
+- Today는 주간 strip, 일정, 오늘 할 일, 정리할 항목, 접힌 완료 목록 순서로 유지한다.
+- 큰 page title이나 과한 안내 문구보다 첫 viewport에서 실제 일정과 할 일을 빨리 보여 준다.
+- 일정과 오늘 할 일의 row 문법은 분리하되 checkbox, title, meta의 시작선과 밀도는 같은 리듬으로 맞춘다.
+- 빠른 입력은 “할 일 입력”처럼 짧고 가벼운 copy를 쓴다.
 
-확인할 점:
+다음 확인:
 
-- 주간 strip의 외부 border와 내부 세로 rule이 충분히 달력처럼 보이는지 실제 화면에서 확인한다.
-- 주간 strip 안의 single-day label과 period bar가 날짜 column을 넘어가지 않는지 320px에서 확인한다.
-- 일정 section과 오늘 할 일 section 사이 색 대비가 paper background에서 충분히 보이는지 확인한다.
-- 완료 feedback `InlineNotice`가 목록 사이에 나타날 때 레이아웃을 밀어 사용자의 시선을 과하게 끊지 않는지 확인한다.
-
-결정:
-
-- Today는 큰 구조 변경보다 미니 달력의 선, label 정렬, section 색 대비를 먼저 다듬는다.
-- 일정과 오늘 할 일의 row 문법은 계속 분리하되, 높이와 title 시작선은 같은 리듬으로 맞춘다.
-
-다음 작업 후보:
-
-1. Today 주간 strip의 border, column rule, label clipping을 실제 화면 기준으로 점검한다.
-2. section marker의 파스텔 색과 outline 대비를 light/dark에서 재확인한다.
-3. feedback notice가 너무 큰 경우 toast 또는 더 작은 inline 상태로 낮춘다.
+- Today 주간 strip의 border, column rule, label clipping이 실제 기기에서 깔끔한지 확인
+- 일정 label과 여러 날 bar가 320px와 font scale 1.5에서 너무 빨리 잘리지 않는지 확인
+- 완료 feedback notice가 목록 흐름을 과하게 밀지 않는지 확인
 
 ### Calendar
 
-좋은 점:
+현재 방향:
 
-- 월간 planner 전용 구조라 주/월 toggle이 없어졌다.
-- 이전/다음 달 navigation만 남아 조작이 단순하다.
-- 6주 grid, 요일 row, 일 단위 column rule, 주간 horizontal rule이 코드상 분리되어 있다.
-- 오늘 dot은 현재 날짜 표시로 역할이 제한되어 일정 표시와 겹치지 않는다.
+- Calendar는 선택일 기준 이전 1주, 현재 주, 다음 1주의 3주 planner grid를 기본으로 한다.
+- 좌우 이동은 선택 날짜 기준 1주 이동이다.
+- 월 제목을 누르면 같은 폭의 월 선택 panel을 열 수 있고, panel은 달력과 목록을 과하게 밀지 않게 compact하게 유지한다.
+- 일정이 많은 날짜는 칸 안에 모두 넣기보다 축약 label과 아래 선택 날짜 목록으로 넘긴다.
 
-확인할 점:
+다음 확인:
 
-- `monthWeek` 내부 `marginHorizontal`과 column rule의 `left: 14.2857%`가 실제 날짜 cell의 좌우 경계와 정확히 맞는지 확인한다.
-- 하루 일정 label과 여러 날 bar가 day column 밖으로 overflow하지 않는지 확인한다.
-- 선택 날짜 outline, 오늘 dot, 일정 label, 기간 bar가 동시에 있을 때 과하게 복잡해지지 않는지 확인한다.
-- 6주 row의 `minHeight: 120`이 작은 기기에서 아래 상세 목록을 너무 밀어내지 않는지 확인한다.
-
-결정:
-
-- Calendar는 디자인 변경보다 grid alignment와 overflow 검증을 우선한다.
-- 일정이 많은 날짜는 더 화려하게 만들기보다 `+N`과 아래 상세 목록으로 넘긴다.
-
-다음 작업 후보:
-
-1. Calendar grid의 column rule과 date button width 기준을 하나의 상수/계산으로 묶는다.
-2. day label과 period bar에 안전한 horizontal inset을 적용해 cell 밖 침범을 막는다.
-3. 320px, font scale 1.5에서 row height와 상세 목록 진입성을 점검한다.
+- column rule과 날짜 cell 경계가 실제 날짜 touch target과 정확히 맞는지 확인
+- 하루 일정 label과 여러 날 bar가 day column 밖으로 overflow하지 않는지 확인
+- 선택 날짜 outline, 오늘 dot, 일정 label, 기간 bar가 동시에 있을 때 과하게 복잡하지 않은지 확인
+- 작은 화면에서 월 선택 panel이 주요 목록 진입성을 방해하지 않는지 확인
 
 ### 정리할 항목
 
-좋은 점:
+현재 방향:
 
-- `지난 미완료`, `추천`, `기록함`이 section으로 나뉘어 있다.
-- 각 항목은 공통 `TaskCard`를 사용해 Today row와 문법이 이어진다.
-- action label은 `+ 오늘`로 짧고 목적이 명확하다.
+- `지난 미완료`, `추천`, `기록함`을 section/list 중심으로 보여 준다.
+- 버튼을 크게 나열하지 않고 `오늘로 ›`, `추가 ›`, `열기 ›`처럼 낮은 강조의 텍스트 action을 쓴다.
+- 각 row는 Today Task row와 같은 radius, border, padding 체계를 따른다.
 
-확인할 점:
+다음 확인:
 
-- `+ 오늘` action이 모든 section에서 같은 의미로 읽히는지 확인한다. 지난 미완료는 “이동”, 추천/기록함은 “추가”에 가까워 문맥 차이가 있다.
-- trailing action이 row 높이를 늘리거나 좁은 화면에서 제목 영역을 과하게 줄이지 않는지 확인한다.
-- 뒤로 가기 icon이 PageHeader 안에서 다른 화면과 같은 무게로 보이는지 확인한다.
+- `오늘로`와 `추가`가 실제 동작 차이를 충분히 설명하는지 확인
+- 좁은 화면에서 trailing action 때문에 제목 영역이 지나치게 줄지 않는지 확인
+- 빈 상태와 완료 상태 문구가 Today와 중복되거나 어색하지 않은지 확인
 
-결정:
+### Search
 
-- 정리할 항목은 버튼을 크게 키우지 않고 compact action을 유지한다.
-- 다만 action label은 실제 의미에 맞게 `오늘로`, `추가` 등 더 자연스러운 문구를 검토한다.
+현재 방향:
 
-다음 작업 후보:
+- 기본 filter는 먼저 보이고, 기간·D-Day·카테고리·정렬은 `상세 필터`로 접어 첫 화면 밀도를 낮춘다.
+- 검색 화면은 안내 card보다 결과, 빈 상태, 필터 상태가 중심이 되게 한다.
+- 과거에 어떤 일을 언제 했는지 찾는 기능은 Profile에서 접근 가능한 전역 탐색으로 유지한다.
 
-1. section별 action copy를 사용자가 이해하기 쉬운 한국어로 다듬는다.
-2. 좁은 화면에서 trailing action 때문에 제목이 지나치게 줄지 않는지 확인한다.
-3. 빈 상태와 완료 상태의 문구가 Today와 중복되거나 어색하지 않은지 확인한다.
+다음 확인:
+
+- 상세 필터가 접힌 상태에서도 사용자가 필터 기능을 발견할 수 있는지 확인
+- real API 결과, 빈 상태, pagination 문구와 CTA가 자연스럽게 이어지는지 확인
+- 기간 filter와 timezone 경계가 실제 데이터에서 의도대로 보이는지 확인
+
+### Completed
+
+현재 방향:
+
+- 완료 Task는 Today compact card와 같은 밀도로 표시한다.
+- 별도 `다시 열기` 버튼보다 완료 checkbox 자체가 다시 열기 역할을 하게 해 중복 action을 줄인다.
+- 완료 목록은 기본적으로 성취 확인을 위한 로그이므로 Today의 실행 목록보다 시각적 무게를 낮춘다.
+
+다음 확인:
+
+- checkbox 다시 열기 동작이 사용자가 예상 가능한지 확인
+- 긴 완료 title과 meta가 좁은 화면에서 과하게 답답하지 않은지 확인
+
+### D-Day
+
+현재 방향:
+
+- 목표 목록과 연결된 할 일은 카드 안에서 너무 많은 액션을 한 줄에 넣지 않는다.
+- 목표 메뉴는 작은 화면에서 읽기 쉬운 세로 액션을 기본으로 한다.
+- 반복 일정과 D-Day는 기능 목적이 다르므로 copy와 badge를 혼동되지 않게 유지한다.
+
+다음 확인:
+
+- 목표 메뉴가 펼쳐질 때 card 높이가 과하게 길어 보이지 않는지 확인
+- 목표 연결 label이 Today, Calendar, Search에서 같은 의미로 읽히는지 확인
 
 ### Profile
 
-좋은 점:
+현재 방향:
 
-- `목표`, `검색`, `완료 기록`, `설정`이 세로 row로 정리되어 있다.
-- icon background에 파스텔 accent를 사용해 기능을 구분한다.
-- 로그인 상태와 목적지 목록이 분리되어 있다.
+- Profile은 dashboard card보다 네이버 홈 shortcut 같은 가벼운 destination list로 유지한다.
+- `목표`, `검색`, `완료 기록`, `설정`은 row 높이, icon treatment, radius를 같은 토큰으로 맞춘다.
+- 로그인 상태와 목적지 목록은 분리해 인증 UI가 기능 shortcut보다 과하게 강해 보이지 않게 한다.
 
-확인할 점:
+다음 확인:
 
-- Profile row의 `minHeight: 64`, icon 32, gap 12가 Today/정리할 항목 row와 같은 리듬으로 보이는지 확인한다.
-- 로그인 버튼이 목적지 row보다 시각적으로 너무 강해 보이지 않는지 확인한다.
-- 검색이 “과거 Task와 일정 찾기”를 약속하는 만큼 real API enum, 빈 상태, pagination이 실제 화면에서 자연스럽게 이어지는지 확인한다.
-
-결정:
-
-- Profile은 dashboard card보다 네이버 홈 shortcut처럼 가벼운 destination list로 유지한다.
-- 로그인 버튼은 기능적으로 필요하지만, 로그인 상태에서는 secondary로 낮춘 현재 방향을 유지한다.
-
-다음 작업 후보:
-
-1. Profile row와 Today review row의 radius, border, padding을 같은 토큰 기준으로 맞춘다.
-2. 검색 진입 후 real API 결과, 빈 상태, pagination 문구와 CTA를 다시 확인한다.
-3. 설정/프로필 확장 전까지 불필요한 통계나 feed 진입점은 추가하지 않는다.
+- Profile row가 320px에서 description 생략 뒤에도 목적을 충분히 전달하는지 확인
+- 설정/프로필 확장 전까지 불필요한 통계나 feed 진입점을 추가하지 않는다.
 
 ## 우선순위
 
-1. Calendar grid alignment와 event bar overflow
-2. Today 주간 strip의 경계, 내부 rule, 일정 label 정렬
-3. 빠른 입력 placeholder와 feedback notice 밀도
-4. 정리할 항목 action copy와 좁은 화면 제목 영역
-5. Profile shortcut row의 spacing/radius 통일
-
-## 진행 메모
-
-### 2026-07-14 Calendar/Today grid alignment 1차 정리
-
-- Calendar와 Today 주간 strip이 같은 7열 기준을 쓰도록 `calendar-layout.ts`에 column width와 boundary helper를 분리했다.
-- 하루 일정 label cell에 horizontal inset과 overflow clipping을 추가했다.
-- 기간 일정 bar container와 bar에 clipping/inset을 적용해 날짜 구간 밖으로 시각적으로 튀는 현상을 줄였다.
-- `npm run validate` 통과.
-
-남은 확인:
-
-- 실제 화면에서 column rule과 날짜 button 경계가 정확히 맞는지 확인한다.
-- 320px, font scale 1.5에서 label이 너무 빨리 잘리지 않는지 확인한다.
-- 기간 bar가 주 시작/끝 날짜에서 어색하게 잘려 보이지 않는지 확인한다.
-
-### 2026-07-14 빠른 입력과 Profile row 밀도 정리
-
-- 빠른 입력 placeholder를 `할 일을 입력하세요`에서 `할 일 입력`으로 줄여 입력창 첫 인상을 가볍게 했다.
-- 빠른 기록 저장 성공 문구를 실제 동작에 맞춰 `기록함에 추가했어요.`로 정리했다.
-- Profile destination row를 64px에서 60px 리듬으로 낮추고 description을 한 줄로 제한했다.
-- Profile 화면의 section gap을 줄여 네이버식 shortcut list처럼 더 촘촘하고 단정하게 보이도록 했다.
-
-남은 확인:
-
-- 로그인 버튼이 목적지 row보다 지나치게 강해 보이지 않는지 실제 화면에서 확인한다.
-- Profile row가 320px에서 설명 한 줄 생략 뒤에도 목적을 충분히 전달하는지 확인한다.
-- 빠른 입력 composer가 keyboard, safe area, 하단 탭과 겹치지 않는지 실제 기기에서 확인한다.
-
-### 2026-07-15 정리할 항목 action copy 정리
-
-- 지난 미완료 action은 `+ 오늘` 대신 `오늘로`로 바꿔 “옮긴다”는 의미를 더 직접적으로 표현했다.
-- 추천과 기록함 action은 `추가`로 바꿔 “오늘 할 일에 더한다”는 의미를 짧게 유지했다.
-- trailing action 최소 폭을 64px에서 52px로 줄여 좁은 화면에서 Task 제목 영역을 더 확보했다.
-
-남은 확인:
-
-- `오늘로`와 `추가`가 실제 화면에서 너무 짧거나 딱딱하게 보이지 않는지 확인한다.
-- loading spinner 상태에서도 action 폭이 흔들리지 않는지 확인한다.
-- 320px에서 제목 두 줄, 긴 category, D-Day metadata가 같이 있을 때 제목 영역이 충분한지 확인한다.
-
-### 2026-07-15 Section marker 가독성 보강
-
-- section marker를 10px dot에서 8×14px 세로 pill로 변경했다.
-- 일정, 오늘 할 일, 완료처럼 section 의미색이 있는 영역이 더 잘 구분되도록 하되, 큰 badge나 진한 배경색은 추가하지 않았다.
-
-남은 확인:
-
-- Today, D-Day, Completed, Task 상세의 section marker가 모두 과하지 않게 보이는지 실제 화면에서 확인한다.
-- dark mode에서 marker border와 fill 대비가 충분한지 확인한다.
-
-### 2026-07-26 보조 화면 밀도와 액션 톤 정리
-
-- Search 화면은 기본 상태 filter만 먼저 보이고, 기간·D-Day·카테고리·정렬은 `상세 필터`로 접었다.
-- Search 화면의 백엔드 준비 안내성 card는 제거하고, 실제 검색 결과와 빈 상태가 화면의 중심이 되게 했다.
-- 정리할 항목 화면은 section마다 한 줄 설명을 추가해 `지난 미완료`, `추천`, `기록함`의 판단 기준이 바로 보이게 했다.
-- 정리할 항목 action은 `+` 장식을 제거하고 `오늘로 ›`, `추가 ›`처럼 낮은 강조의 텍스트 action으로 정리했다.
-- Completed 화면은 완료 Task를 compact card로 맞추고 별도 `다시 열기` 버튼을 제거했다. 완료 checkbox 자체가 다시 열기 역할을 하므로 중복 action을 줄였다.
-- D-Day 목표 메뉴는 가로 버튼 나열에서 세로 action으로 바꿔 작은 화면에서 버튼 간 의미가 더 분명하게 보이도록 했다.
-- Calendar 3주 grid는 compact 폭 또는 짧은 viewport에서 week 높이와 label lane을 낮춰 선택 날짜 목록 진입성을 높였다.
-- Task 상세 Hero card는 `수정` action을 상태 row 오른쪽으로 올려 제목과 정보 section이 더 빨리 보이게 했다.
-
-남은 확인:
-
-- Search 상세 필터가 접힌 상태에서도 사용자가 필터 기능을 발견할 수 있는지 실제 화면에서 확인한다.
-- Completed의 checkbox 다시 열기 동작이 사용자가 예상 가능한지, 별도 텍스트 action이 없어도 충분한지 확인한다.
-- D-Day 목표 메뉴가 세로로 펼쳐질 때 card 높이가 과하게 길어 보이지 않는지 확인한다.
-- Calendar compact grid에서 일정 label이 너무 빨리 잘리지 않는지 320px와 font scale 1.5로 확인한다.
+1. 실제 기기 기준 Today와 Calendar의 320px, 375pt, 430dp, font scale 1.5 확인
+2. Calendar grid alignment와 event bar overflow 확인
+3. Today 주간 strip의 경계, 내부 rule, 일정 label 정렬 확인
+4. 정리할 항목 action copy와 좁은 화면 제목 영역 확인
+5. Search 상세 필터 discoverability와 real API pagination 화면 확인
 
 ## 다음 리뷰 때 추가할 것
 
