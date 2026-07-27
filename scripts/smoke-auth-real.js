@@ -7,23 +7,57 @@ const password = `M-auth-${runId}`;
 const displayName = `모바일 인증 스모크 ${runId.slice(-6)}`;
 
 async function request(path, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10_000);
+
   const response = await fetch(`${apiUrl}${path}`, {
     ...options,
+    signal: controller.signal,
     headers: {
       Accept: 'application/json',
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...options.headers,
     },
-  });
-  const text = await response.text();
-  const body = text ? JSON.parse(text) : null;
+  }).finally(() => clearTimeout(timeoutId));
+  const body = await readJsonBody(response);
 
   if (!response.ok || body?.status === 'fail') {
     const message = body?.error?.message ?? `HTTP ${response.status}`;
-    throw new Error(`${path} failed: ${message}`);
+    const error = new Error(`${path} failed: ${message}`);
+    error.status = response.status;
+    error.code = body?.error?.code;
+    throw error;
   }
 
   return body?.data ?? null;
+}
+
+async function expectHttpFailure(path, expectedStatus, options = {}) {
+  try {
+    await request(path, options);
+  } catch (error) {
+    if (error.status === expectedStatus) {
+      return;
+    }
+
+    throw error;
+  }
+
+  throw new Error(`${path} unexpectedly succeeded`);
+}
+
+async function readJsonBody(response) {
+  const text = await response.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Invalid JSON response from ${apiUrl}. HTTP ${response.status}`);
+  }
 }
 
 async function main() {
@@ -56,19 +90,22 @@ async function main() {
   }
   console.log('✓ me');
 
-  try {
-    await request('/api/v1/auth/me');
-    throw new Error('unauthorized me unexpectedly succeeded');
-  } catch (error) {
-    if (!String(error.message).includes('/api/v1/auth/me failed')) {
-      throw error;
-    }
-  }
+  await expectHttpFailure('/api/v1/auth/me', 401);
   console.log('✓ unauthenticated me rejected');
+
+  await expectHttpFailure('/api/v1/auth/me', 401, {
+    headers: { Authorization: 'Bearer invalid-auth-smoke-token' },
+  });
+  console.log('✓ invalid token rejected');
+
   console.log('Auth smoke passed. Token and password were not printed.');
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
+  if (error?.name === 'AbortError') {
+    console.error(`Auth smoke timed out while connecting to ${apiUrl}`);
+  } else {
+    console.error(error instanceof Error ? error.message : error);
+  }
   process.exitCode = 1;
 });
