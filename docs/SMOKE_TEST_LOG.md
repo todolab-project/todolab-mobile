@@ -1,5 +1,36 @@
 # Smoke Test Log
 
+## 2026-07-28 local real API full smoke test
+
+커밋 기준: `3b61d46` 이후 로컬 변경 포함
+
+환경:
+
+- API 모드: `real`
+- API URL: `http://localhost:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 방식: Node `fetch` 기반 API smoke. access token과 비밀번호는 출력하지 않음.
+- 테스트 데이터: `mobile-smoke-{runId}@example.com`, `M{runId}` prefix로 생성 후 cleanup
+
+통과:
+
+- Auth: 회원가입, 로그인, 내 정보 조회
+- Task: 기록함 TODO 생성, 단건 조회, 수정, 기록함 조회
+- Today: 오늘로 이동, 순서 변경, Today 조회, 추천 조회
+- 미룬 이유: `WAITING_OTHER` 저장과 해제
+- Done: 완료, 완료 목록 조회, 다시 열기
+- Schedule: 당일 일정 생성, Today 조회, Calendar 월간 조회, Search 조회
+- 여러 날 일정: 2026-07-28–2026-07-30 Today 포함, 2026-07-27·2026-07-31 Today 미포함, Calendar 월간 조회에서 원본 ID 1회 반환
+- Search: 검색어, 상태 filter, 종류 filter, cursor pagination, 빈 결과
+- D-Day: 목표 생성, 상세 조회, 목록 조회, 목표 Task 생성, 연결 Task 조회, Task와 목표 연결·해제, 목표 삭제
+- Stale: 지난 미완료 조회 응답 배열 계약
+
+발견 및 조치:
+
+- 모바일 `DeferReason` enum이 백엔드 v1 계약과 달라 `NO_TIME` 요청이 HTTP 400을 반환했다.
+- 모바일 enum과 label을 백엔드 `TOO_BIG | NOT_NEEDED_NOW | AVOIDING | NO_DEADLINE | WAITING_OTHER | ETC` 기준으로 수정했다.
+- 재실행 결과 전체 smoke 10개 묶음이 모두 통과했다.
+
 ## 2026-07-27 사전 포트 점검
 
 - `8081`: Expo/Node listen 확인

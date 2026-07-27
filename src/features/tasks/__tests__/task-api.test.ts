@@ -181,10 +181,10 @@ describe('Task API', () => {
   });
 
   test('Task 미룬 이유를 저장한다', async () => {
-    await taskApi.setDeferReason(42, 'NEED_INFO');
+    await taskApi.setDeferReason(42, 'WAITING_OTHER');
 
     expect(patchMock).toHaveBeenCalledWith('/api/v1/tasks/42/defer-reason', undefined, {
-      query: { reason: 'NEED_INFO' },
+      query: { reason: 'WAITING_OTHER' },
       signal: undefined,
     });
   });

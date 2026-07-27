@@ -27,13 +27,20 @@ export type TaskSearchDateSource =
 export type TodayOrderDirection = 'UP' | 'DOWN';
 export type RecurrenceEditScope = 'THIS' | 'THIS_AND_FUTURE' | 'ALL';
 export type RecurrenceException = 'SKIPPED' | 'MOVED' | 'MODIFIED';
-export type DeferReason = 'TOO_BIG' | 'NOT_IMPORTANT' | 'NEED_INFO' | 'NO_TIME' | 'ETC';
+export type DeferReason =
+  | 'TOO_BIG'
+  | 'NOT_NEEDED_NOW'
+  | 'AVOIDING'
+  | 'NO_DEADLINE'
+  | 'WAITING_OTHER'
+  | 'ETC';
 
 export const deferReasonLabels: Record<DeferReason, string> = {
   TOO_BIG: '너무 큼',
-  NOT_IMPORTANT: '중요하지 않음',
-  NEED_INFO: '정보 필요',
-  NO_TIME: '시간 부족',
+  NOT_NEEDED_NOW: '지금 필요 없음',
+  AVOIDING: '하기 싫음',
+  NO_DEADLINE: '마감 없음',
+  WAITING_OTHER: '다른 사람 대기',
   ETC: '기타',
 };
 
