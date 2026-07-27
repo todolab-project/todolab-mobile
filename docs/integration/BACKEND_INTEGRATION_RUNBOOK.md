@@ -133,29 +133,34 @@ type ApiEnvelope<T> = {
 
 ## 6. 백엔드에서 우선 확인해야 할 항목
 
-1. 인증
+1. 실사용 환경
+   - staging, production API URL과 CORS origin이 확정되어 있는지
+   - Android Emulator, iOS Simulator, 실제 기기에서 접근 가능한 local/staging 주소가 분리되어 있는지
+2. 인증
    - 회원가입, 로그인, 내 정보 조회가 envelope으로 응답하는지
    - 로그인 token이 `Authorization: Bearer`로 정상 인증되는지
    - 401 응답에서 모바일이 세션 만료로 전환되는지
-2. Today
+3. Today
    - `GET /api/v1/tasks/today?date=...`가 오늘의 `SCHEDULE`을 먼저, 이후 오늘 할 일을 안정적으로 내려주는지
    - 시간이 있는 당일 일정과 여러 날 일정이 모두 포함되는지
    - 완료, 다시 열기, 오늘로 이동 뒤 관련 목록이 일관되게 갱신되는지
-3. Calendar
+4. Calendar
    - `GET /api/v1/tasks?type=MONTH&date=...`가 해당 월 grid에 필요한 일정 범위를 내려주는지
    - 당일 일정도 하루짜리 bar로 표현할 수 있게 `startAt`/`endAt`이 안정적인지
    - 여러 날 일정이 구간 내 날짜별로 중복·누락 없이 표현되는지
-4. Search
+5. Search
    - `statuses`, `taskTypes`는 comma-separated query string으로 받는지
    - `cursor`, `limit`, `nextCursor` pagination이 동작하는지
    - 날짜 filter의 timezone 기준이 `Asia/Seoul`과 어긋나지 않는지
-5. D-Day
+6. D-Day
    - 목표 상세 조회와 목표 Task 생성에서 500이 발생하지 않는지
    - Task와 D-Day 연결/해제가 양쪽 화면에 일관되게 반영되는지
-6. 반복 일정
+7. 반복 일정
    - 백엔드 `RECURRENCE_MODEL.md` 기준으로 occurrence 조회 표시는 가능하지만, 반복 생성/수정 API 제공 전까지 작성·수정 저장 기능은 제한한다.
-7. 알림
+8. 알림
    - 백엔드 `NOTIFICATION_CONTRACT.md` 기준으로 서버 push API는 아직 없고, 모바일 로컬 알림은 가까운 미래 occurrence에 대한 best-effort 예약으로만 다룬다.
+9. 중복 요청 방지
+   - 빠른 기록, 일정 생성, 반복 occurrence 생성처럼 사용자가 여러 번 누를 수 있는 요청에 idempotency 또는 client request id 정책이 필요한지 결정한다.
 
 ## 7. real 모드 smoke test 순서
 
@@ -187,8 +192,8 @@ type ApiEnvelope<T> = {
 ## 8. 현재 보류 또는 추가 확정이 필요한 계약
 
 - 반복 Task·일정의 생성/수정 API와 모바일 저장 UI 노출 시점
-- Calendar 월간 범위 조회가 앞뒤 빈칸 날짜까지 포함해야 하는지
-- 검색 결과의 relevance 기준과 cursor 정렬 안정성 real-mode 검증
+- 검색 결과의 relevance 기준, 기간 filter, timezone 경계
 - D-Day 목표 삭제 시 연결된 Task 처리 방식
 - refresh token 또는 silent re-auth 도입 여부
 - idempotency 또는 client request id 정책
+- Today 순서 일괄 저장 API는 drag and drop 고도화 시점까지 후순위로 둔다.

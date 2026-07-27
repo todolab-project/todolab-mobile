@@ -1,6 +1,8 @@
-# Today Task 재정렬 API 요구사항
+# Today Task 재정렬 API 후순위 개선안
 
-이 문서는 ToDoLab 모바일의 drag and drop 재정렬 결과를 한 번의 요청으로 저장하기 위해 백엔드에 필요한 계약을 정의한다. 백엔드 구현과 데이터베이스 변경은 `todolab-backend` 저장소에서 별도로 진행한다.
+이 문서는 ToDoLab 모바일의 drag and drop 재정렬 결과를 한 번의 요청으로 저장하기 위한 후순위 API 개선안을 정의한다.
+
+현재 실사용 준비 단계에서는 필수 요구사항으로 보지 않는다. 모바일은 기존 `UP`/`DOWN` 순서 변경 API로 동작하며, drag and drop 고도화가 실제 우선순위에 올라올 때 이 계약을 다시 검토한다. 백엔드 구현과 데이터베이스 변경은 `todolab-backend` 저장소에서 별도로 진행한다.
 
 ## 1. 현재 계약과 문제
 
@@ -12,7 +14,9 @@ PATCH /api/v1/tasks/{taskId}/today-order?date=YYYY-MM-DD&direction=UP|DOWN
 
 drag and drop으로 여러 칸 이동하면 이동 거리만큼 요청을 순차 호출해야 한다. 중간 요청이 실패하면 화면 순서와 서버 순서가 어긋날 수 있고 요청마다 조회 무효화가 발생한다.
 
-## 2. 권장 API
+다만 현재 UI/UX 방향에서는 카드에 위/아래 버튼을 노출하지 않고, drag and drop도 필수 조작으로 두지 않는다. 따라서 이 API는 “실사용을 막는 백엔드 요청”이 아니라 “정렬 경험을 더 자연스럽게 만들 때의 성능·일관성 개선안”으로 관리한다.
+
+## 2. 제안 API
 
 ```http
 PUT /api/v1/tasks/today-order
@@ -99,6 +103,8 @@ mutation 진행 중에는 추가 drop을 막되 Task 완료와 상세 보기는 
 - 기존 API 제거 시점은 백엔드 OpenAPI와 배포 기록에 명시한다.
 
 ## 8. 백엔드 구현 확인 항목
+
+이 항목은 drag and drop 정렬을 실제 작업 범위로 올릴 때 확인한다.
 
 - [ ] OpenAPI에 request, response, 오류 schema가 등록되어 있다.
 - [ ] 전체 순서가 하나의 transaction에서 저장된다.
