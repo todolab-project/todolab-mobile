@@ -32,6 +32,28 @@
 - 모바일 enum과 label을 백엔드 `TOO_BIG | NOT_NEEDED_NOW | AVOIDING | NO_DEADLINE | WAITING_OTHER | ETC` 기준으로 수정했다.
 - 재실행 결과 전체 smoke 묶음이 통과했다.
 
+## 2026-07-28 local real API auth smoke
+
+환경:
+
+- API URL: `http://127.0.0.1:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 명령: `EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:auth:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 회원가입
+- 로그인과 `Bearer` access token 응답 계약
+- `Authorization: Bearer <token>` 기반 내 정보 조회
+- 비인증 `/api/v1/auth/me` 401 거부
+- 잘못된 token 401 거부
+
+메모:
+
+- 샌드박스 내부 기본 권한에서는 로컬 포트 연결이 `EPERM`으로 차단되어 권한 승인 후 실행했다.
+- `localhost`보다 `127.0.0.1`을 명시하는 편이 smoke 실행 결과를 재현하기 쉽다.
+
 ## 최근 화면 QA 기준선
 
 Mock Web 화면에서 확인한 항목:
