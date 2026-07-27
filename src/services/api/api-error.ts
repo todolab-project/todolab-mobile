@@ -47,6 +47,10 @@ export function getUserFacingApiErrorMessage(error: unknown) {
     case 'cancelled':
       return '요청이 취소되었어요.';
     case 'http':
+      if (error.status === 403) {
+        return '접근 권한이 없어요.';
+      }
+
       if ((error.status ?? 0) >= 500) {
         return '서버가 잠시 불안정해요. 잠시 후 다시 시도해 주세요.';
       }

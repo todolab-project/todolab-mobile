@@ -65,6 +65,30 @@ describe('api client authorization', () => {
     expect(listener).toHaveBeenCalledTimes(1);
     unsubscribe();
   });
+
+  it('403 응답은 access token을 유지하고 세션 만료로 처리하지 않는다', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 403,
+      text: async () =>
+        JSON.stringify({
+          status: 'fail',
+          data: null,
+          error: { code: 11003, message: '접근 권한이 없습니다.' },
+          timestamp: '2026-07-14T10:00:00',
+        }),
+    });
+
+    const listener = jest.fn();
+    const unsubscribe = subscribeSessionExpired(listener);
+    await setAccessToken('valid-token');
+
+    await expect(request('/api/v1/tasks/999')).rejects.toThrow('접근 권한이 없습니다.');
+
+    expect(getAccessToken()).toBe('valid-token');
+    expect(listener).not.toHaveBeenCalled();
+    unsubscribe();
+  });
 });
 
 function installLocalStorage() {

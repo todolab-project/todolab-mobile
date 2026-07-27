@@ -22,6 +22,7 @@ describe('getUserFacingApiErrorMessage', () => {
       new ApiClientError('서버 내부 오류', { kind: 'http', status: 503 }),
       '서버가 잠시 불안정해요. 잠시 후 다시 시도해 주세요.',
     ],
+    [new ApiClientError('서버 권한 오류', { kind: 'http', status: 403 }), '접근 권한이 없어요.'],
   ] as const)('공통 API 오류를 사용자용 문구로 변환한다', (error, expected) => {
     expect(getUserFacingApiErrorMessage(error)).toBe(expected);
   });
