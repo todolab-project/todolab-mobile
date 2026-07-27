@@ -4,14 +4,14 @@
 
 백엔드 원본 계약은 다음 문서를 기준으로 한다.
 
-- [`API_V1_FRONTEND.md`](../../backend/docs/API_V1_FRONTEND.md)
-- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ENVIRONMENT_INTEGRATION.md)
-- [`AUTH_CONTRACT.md`](../../backend/docs/AUTH_CONTRACT.md)
-- [`API_ERROR_CODES.md`](../../backend/docs/API_ERROR_CODES.md)
-- [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md)
-- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md)
-- [`TIMEZONE_CONTRACT.md`](../../backend/docs/TIMEZONE_CONTRACT.md)
-- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/MOBILE_API_BACKEND_STATUS.md)
+- [`API_V1_FRONTEND.md`](../../backend/docs/api/API_V1_FRONTEND.md)
+- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ops/ENVIRONMENT_INTEGRATION.md)
+- [`AUTH_CONTRACT.md`](../../backend/docs/api/AUTH_CONTRACT.md)
+- [`API_ERROR_CODES.md`](../../backend/docs/api/API_ERROR_CODES.md)
+- [`RECURRENCE_MODEL.md`](../../backend/docs/api/RECURRENCE_MODEL.md)
+- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/api/NOTIFICATION_CONTRACT.md)
+- [`TIMEZONE_CONTRACT.md`](../../backend/docs/api/TIMEZONE_CONTRACT.md)
+- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md)
 
 ## 1. 환경 모드
 

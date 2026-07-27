@@ -118,16 +118,16 @@ type ApiResponse<T> = {
 
 백엔드 최신 원본 계약은 `todolab-backend`의 다음 문서를 기준으로 대조한다.
 
-- [`API_V1_FRONTEND.md`](../../backend/docs/API_V1_FRONTEND.md): 모바일 v1 API endpoint와 응답 envelope
-- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ENVIRONMENT_INTEGRATION.md): local, staging, production API URL과 CORS origin
-- [`AUTH_CONTRACT.md`](../../backend/docs/AUTH_CONTRACT.md): JWT access token, 401/403, refresh token 미도입 정책
-- [`API_ERROR_CODES.md`](../../backend/docs/API_ERROR_CODES.md): 오류 코드, retry 가능 여부, 안전한 사용자 문구
-- [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md): 반복 series/occurrence 저장 모델과 현재 API 상태
-- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md): 로컬 알림과 향후 server push 책임 분리
-- [`TIMEZONE_CONTRACT.md`](../../backend/docs/TIMEZONE_CONTRACT.md): `Asia/Seoul` 기준과 사용자 timezone 도입 조건
-- [`DATA_MODEL_GLOSSARY.md`](../../backend/docs/DATA_MODEL_GLOSSARY.md): Task 상태, 날짜 필드, owner scope 의미
-- [`MOBILE_INTEGRATION_RUNBOOK.md`](../../backend/docs/MOBILE_INTEGRATION_RUNBOOK.md): 백엔드 기준 real-mode smoke test 절차
-- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/MOBILE_API_BACKEND_STATUS.md): 모바일 요구 항목의 백엔드 구현/확인 상태
+- [`API_V1_FRONTEND.md`](../../backend/docs/api/API_V1_FRONTEND.md): 모바일 v1 API endpoint와 응답 envelope
+- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ops/ENVIRONMENT_INTEGRATION.md): local, staging, production API URL과 CORS origin
+- [`AUTH_CONTRACT.md`](../../backend/docs/api/AUTH_CONTRACT.md): JWT access token, 401/403, refresh token 미도입 정책
+- [`API_ERROR_CODES.md`](../../backend/docs/api/API_ERROR_CODES.md): 오류 코드, retry 가능 여부, 안전한 사용자 문구
+- [`RECURRENCE_MODEL.md`](../../backend/docs/api/RECURRENCE_MODEL.md): 반복 series/occurrence 저장 모델과 현재 API 상태
+- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/api/NOTIFICATION_CONTRACT.md): 로컬 알림과 향후 server push 책임 분리
+- [`TIMEZONE_CONTRACT.md`](../../backend/docs/api/TIMEZONE_CONTRACT.md): `Asia/Seoul` 기준과 사용자 timezone 도입 조건
+- [`DATA_MODEL_GLOSSARY.md`](../../backend/docs/api/DATA_MODEL_GLOSSARY.md): Task 상태, 날짜 필드, owner scope 의미
+- [`MOBILE_INTEGRATION_RUNBOOK.md`](../../backend/docs/mobile/MOBILE_INTEGRATION_RUNBOOK.md): 백엔드 기준 real-mode smoke test 절차
+- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md): 모바일 요구 항목의 백엔드 구현/확인 상태
 
 연동 통과 항목:
 
@@ -153,8 +153,8 @@ type ApiResponse<T> = {
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
 - D-Day 삭제 성공 응답은 백엔드 v1 기준 `data: null`이다.
 - 통합 검색 real API를 실제 모바일 화면에서 smoke test하고 cursor 정렬 안정성을 재검증
-- 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](./API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../backend/docs/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
-- 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../backend/docs/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
+- 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](./API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../backend/docs/api/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
+- 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../backend/docs/api/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
 
 백엔드 연동을 다시 진행할 때는 [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)를 기준으로 mock 검증 → real API 검증 → smoke log 기록 순서로 진행한다. 이 저장소에는 필요한 계약과 모바일 변경만 문서화하고 백엔드 코드는 추가하지 않는다.
 

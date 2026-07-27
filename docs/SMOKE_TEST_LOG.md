@@ -78,9 +78,9 @@
 - Expo dev server: `http://localhost:8081` 또는 대체 포트 `http://localhost:8090`
 - API URL: `http://localhost:8080`
 - 백엔드 기준 문서:
-  - `todolab-backend/docs/API_V1_FRONTEND.md`
-  - `todolab-backend/docs/MOBILE_INTEGRATION_RUNBOOK.md`
-  - `todolab-backend/docs/MOBILE_API_BACKEND_STATUS.md`
+  - `todolab-backend/docs/api/API_V1_FRONTEND.md`
+  - `todolab-backend/docs/mobile/MOBILE_INTEGRATION_RUNBOOK.md`
+  - `todolab-backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md`
 
 사전 확인:
 
