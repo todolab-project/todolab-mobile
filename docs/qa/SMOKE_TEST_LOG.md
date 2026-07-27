@@ -1,15 +1,16 @@
 # Smoke Test Log
 
-## 2026-07-28 local real API full smoke test
+이 문서는 모바일 앱이 실제 사용 가능한 상태인지 확인한 최신 smoke test 기준선만 남긴다. 오래된 조사 과정과 해결된 원인 분석은 git history와 각 커밋에 맡기고, 재실행에 필요한 사실과 남은 확인 항목만 관리한다.
 
-커밋 기준: `3b61d46` 이후 로컬 변경 포함
+## 현재 기준선: 2026-07-28 local real API full smoke
 
 환경:
 
 - API 모드: `real`
 - API URL: `http://localhost:8080`
 - 백엔드: local server `8080` listen 확인
-- 실행 방식: Node `fetch` 기반 API smoke. access token과 비밀번호는 출력하지 않음.
+- 실행 방식: Node `fetch` 기반 API smoke
+- 보안: access token, 비밀번호, 실제 secret은 출력하지 않음
 - 테스트 데이터: `mobile-smoke-{runId}@example.com`, `M{runId}` prefix로 생성 후 cleanup
 
 통과:
@@ -29,279 +30,33 @@
 
 - 모바일 `DeferReason` enum이 백엔드 v1 계약과 달라 `NO_TIME` 요청이 HTTP 400을 반환했다.
 - 모바일 enum과 label을 백엔드 `TOO_BIG | NOT_NEEDED_NOW | AVOIDING | NO_DEADLINE | WAITING_OTHER | ETC` 기준으로 수정했다.
-- 재실행 결과 전체 smoke 10개 묶음이 모두 통과했다.
+- 재실행 결과 전체 smoke 묶음이 통과했다.
 
-## 2026-07-27 사전 포트 점검
+## 최근 화면 QA 기준선
 
-- `8081`: Expo/Node listen 확인
-- `8080`: 백엔드 listen 없음
-- 결론: real API smoke test는 백엔드 local server 기동 후 진행한다.
-- 모바일 쪽은 세션 만료 안내, retry 정책, Calendar/Search 조회 전환 중 기존 데이터 유지까지 반영했다.
-
-## 2026-07-27 local real API smoke test
-
-커밋 기준: `2ea9257` 이후 push 완료, 이후 로컬 변경 포함 전
-
-환경:
-
-- API 모드: `real`
-- API URL: `http://127.0.0.1:8080`
-- 백엔드: local server `8080` listen 확인
-- 실행 방식: Node `fetch` 기반 API smoke. access token은 출력하지 않음.
-
-통과:
-
-- Auth: 회원가입, 로그인, 내 정보 조회
-- Task: 기록함 TODO 생성, 기록함 조회
-- Today: 오늘로 이동, Today 조회, 완료, 완료 목록 조회, 다시 열기
-- Search: `/api/v1/tasks/search` 키워드 검색 결과에서 생성 Task 확인
-- D-Day: 목표 생성, 목록 조회, 상세 조회, 목표 연결 Today Task 생성, 연결 Task 조회, 삭제
-- D-Day 삭제 성공 응답 `data: null` 확인
-
-보류/확인 필요:
-
-- Calendar 월간 일정 조회는 이번 자동 smoke에서 완료 처리하지 않았다. 현재 모바일의 새 Task 작성 화면은 날짜/시간 입력 UI가 없어 실제 앱 흐름만으로 `SCHEDULE` 테스트 데이터를 만들 수 없다.
-- Today로 이동한 일반 TODO는 Today 조회에는 포함되지만 Calendar 월간 조회에는 포함되지 않았다. Calendar는 시간이 있는 일정 또는 날짜 기준이 있는 항목 중심으로 별도 smoke data가 필요하다.
-- 새 일정 날짜/시간 생성 UI 또는 백엔드 seed data가 준비되면 Calendar 하루 일정 label, 여러 날 일정 bar, Today/Calendar 일정 일관성을 재검증한다.
-
-### 2026-07-27 일정 생성 계약 재검증
-
-커밋 기준: `1811f4e`
-
-통과:
-
-- 짧은 제목과 `type=SCHEDULE`, `startAt`, `endAt`, `allDay=false`로 일정 생성 성공
-- 생성된 일정은 `status=TODAY`로 반환됨
-- `GET /api/v1/tasks/today?date=2026-07-27`에서 생성 일정 확인
-- `GET /api/v1/tasks?type=MONTH&date=2026-07`에서 생성 일정 확인
-- `/api/v1/tasks/search?q=...&taskTypes=SCHEDULE`에서 생성 일정 확인
-
-메모:
-
-- 이전 일정 생성 400은 백엔드 일정 계약 문제가 아니라 smoke title이 30자 제한을 초과한 것이 원인이었다.
-- 새 Task 작성 화면에 일정 날짜와 시작·종료 시간 입력을 추가했으므로, 이후 Calendar real smoke data는 앱 흐름으로 만들 수 있다.
-
-### 2026-07-27 Search cursor smoke test
-
-통과:
-
-- `/api/v1/tasks/search?q=...&limit=2` 첫 페이지에서 2개와 `nextCursor` 반환 확인
-- 같은 검색어와 `cursor`로 두 번째 페이지 조회 시 남은 1개와 `nextCursor=null` 확인
-- 없는 검색어는 `items=[]`, `nextCursor=null` 반환
-- `statuses=INBOX&taskTypes=TODO` filter로 생성한 TODO 3개만 조회됨
-
-메모:
-
-- Search 응답의 `items`, `nextCursor`, `limit` 계약은 모바일 타입과 real API가 일치한다.
-
-### 2026-07-27 여러 날 일정 smoke 보류
-
-- 여러 날 일정 overlap과 Calendar 원본 ID 1회 반환을 추가 확인하려 했으나, 테스트 도중 local backend `8080` 연결이 종료되어 `ECONNREFUSED`가 발생했다.
-- 다음 재개 시 `type=SCHEDULE`, `startAt=2026-07-27T09:00:00`, `endAt=2026-07-30T18:00:00`, 짧은 제목으로 기간 일정을 생성한 뒤 7월 27일–30일 Today 포함 여부와 7월 Calendar 원본 ID 1회 반환을 확인한다.
-
-## 2026-07-26 예정: local real API 재검증
-
-커밋 기준: `main` 현재 HEAD
-
-환경:
-
-- API 모드: `real`
-- Expo dev server: `http://localhost:8081` 또는 대체 포트 `http://localhost:8090`
-- API URL: `http://localhost:8080`
-- 백엔드 기준 문서:
-  - `todolab-backend/docs/api/API_V1_FRONTEND.md`
-  - `todolab-backend/docs/mobile/MOBILE_INTEGRATION_RUNBOOK.md`
-  - `todolab-backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md`
-
-사전 확인:
-
-- [ ] `npm run validate` 통과
-- [ ] 백엔드 local server 기동
-- [ ] Expo Web CORS origin이 백엔드 허용 목록에 포함됨
-- [ ] `Authorization` preflight가 성공함
-- [ ] `.env.local`에 실제 secret, token, password가 없음
-
-실행할 smoke test:
-
-- [ ] Auth: 회원가입, 로그인, 내 정보 조회, 로그아웃
-- [ ] 401: access token 없음/만료 시 안전한 오류 문구와 로그인 동선
-- [ ] Today: 일정, 오늘 할 일, 완료한 일, 빠른 기록, 완료, 다시 열기
-- [ ] 정리할 항목: 지난 미완료, 추천, 기록함에서 오늘로 이동 또는 추가
-- [ ] Calendar: 선택 날짜 기준 3주 grid, 당일 일정 bar, 여러 날 일정 bar, 선택 날짜 목록
-- [ ] Search: `/api/v1/tasks/search` 검색어, 상태 filter, 상세 filter, 빈 상태, cursor pagination
-- [ ] D-Day: 목표 생성, 목표 상세, 목표 Task 생성, Task 연결/해제, 삭제 성공 응답
-- [ ] Completed: 주 이동, 완료 목록, 다시 열기
-- [ ] 오류 상태: network, timeout, 5xx에서 기존 데이터 유지와 retry
-
-기록할 특이사항:
-
-- 검색 결과의 `relevantDate`, `dateSource`, cursor 정렬 안정성
-- Calendar 여러 날 일정의 원본 Task ID 중복/누락 여부
-- D-Day 삭제 성공 응답이 백엔드 v1 표준인 `data: null`인지
-- 401 이후 token 삭제와 화면 전환이 자연스러운지
-- 반복 occurrence는 조회 표시만 확인하고 생성/수정 UI는 열지 않음
-
-### 2026-07-26 사전 포트 점검
-
-- `8081`: Expo/Node listen 확인
-- `8080`: 백엔드 listen 없음
-- 결론: real API smoke test는 백엔드 local server 기동 후 진행한다.
-- real smoke 전에 모바일 쪽 검색 enum, 검색 응답 타입, D-Day 삭제 응답 타입은 백엔드 v1 문서 기준으로 먼저 정리했다.
-
-## 2026-07-22
-
-커밋 기준: `da64884` 이후 로컬 변경 없음
-
-환경:
-
-- API 모드: `mock`
-- Expo dev server: `http://localhost:8081`
-- 확인 대상: Today, Calendar의 320px, 375pt, 430dp, font scale 1.5, light/dark 화면 QA
-
-실행:
-
-```bash
-npx expo start --web --localhost
-```
-
-결과:
-
-- sandbox 네트워크 제한 상태에서는 Expo가 버전 확인 이후 dev server URL까지 진행하지 못했다.
-- 네트워크 허용 상태로 재실행하자 `http://localhost:8081` dev server는 정상 기동했다.
-- 현재 Codex 세션에서 연결 가능한 in-app browser 목록이 비어 있어 실제 viewport별 화면 확인은 완료하지 못했다.
-
-남은 확인:
-
-- 320px, 375px, 430px, 720px 폭에서 Today 주간 strip과 Calendar grid의 horizontal overflow 여부
-- font scale 1.5 또는 browser zoom 150%에서 섹션 제목, row action, 빠른 입력 composer label 유지 여부
-- light/dark에서 section marker, hairline, calendar rule 대비
-- Calendar의 하루 일정 label과 기간 bar가 날짜 cell 밖으로 튀지 않는지
-
-메모:
-
-- 실제 화면 확인 전용 항목이므로 [`ROADMAP.md`](../product/ROADMAP.md)의 화면 크기별 확인 항목은 완료 처리하지 않았다.
-- 브라우저 또는 실제 기기 연결이 가능해지면 같은 dev server 기준으로 재확인한다.
-
-### Web mock viewport 재확인
-
-환경:
-
-- API 모드: `mock`
-- 브라우저: Chrome extension 연결
-- Expo dev server: `http://localhost:8081`
-
-통과:
+Mock Web 화면에서 확인한 항목:
 
 - Today: 320px, 375px, 430px, 720px에서 horizontal overflow 없음
 - Calendar: 320px, 375px, 430px, 720px에서 horizontal overflow 없음
 - Today 첫 viewport에서 주간 일정, 일정 목록, 오늘 할 일이 노출됨
-- Calendar 320px에서 월간 grid와 선택 날짜 목록이 같은 화면 흐름 안에 표시됨
+- Calendar 320px에서 3주 grid와 선택 날짜 목록이 같은 화면 흐름 안에 표시됨
+- 213px stress viewport에서 Today와 Calendar의 개별 element overflow 없음
 
-남은 확인:
+아직 실제 기기로 다시 볼 항목:
 
-- font scale 1.5 또는 browser zoom 150%에서 섹션 제목과 row action 유지 여부
-- dark mode에서 section marker, calendar rule, hairline 대비
 - 실제 iOS 375pt, Android 430dp 기기 또는 simulator에서 safe area와 하단 tab 겹침 여부
+- OS font scale 1.5 또는 browser zoom 150%에서 section 제목, row action, 빠른 입력 composer 유지 여부
+- light/dark에서 section 색상, calendar rule, hairline 대비
+- 일정 label과 여러 날 일정 bar가 날짜 cell 밖으로 튀지 않는지
 
-메모:
+## 다음 smoke test 순서
 
-- 320px 스크린샷 기준으로 Today 미니 달력의 일정 label은 깨지지는 않지만 다소 조밀하게 보인다.
-- Calendar의 월간 grid는 overflow 없이 들어오지만, 320px에서는 일정 label이 빠르게 축약되므로 긴 일정이 많은 달에는 추가 밀도 조정이 필요할 수 있다.
+백엔드가 켜져 있을 때:
 
-### Web mock font-scale stress 재확인
+1. `npm run validate`
+2. `EXPO_PUBLIC_API_MODE=real`과 `EXPO_PUBLIC_API_URL=http://localhost:8080` 설정 확인
+3. Auth, Today, Calendar, Search, D-Day, 정리할 항목, 완료 목록을 실제 화면에서 순서대로 확인
+4. 실패 시 사용자에게 보이는 문구, 기존 데이터 유지 여부, retry 가능 여부 기록
+5. 새로 발견한 API 계약 차이는 모바일 문서에 먼저 적고 백엔드 저장소에서 별도 처리
 
-환경:
-
-- API 모드: `mock`
-- 브라우저: Chrome extension 연결
-- Expo dev server: `http://localhost:8081`
-- 조건: 320px 폭에서 150% 확대를 보수적으로 근사한 213px viewport
-
-결과:
-
-- 최초 확인에서 Calendar 완료 Task metadata 안의 D-Day 목표명 span이 카드 오른쪽을 살짝 넘쳤다.
-- `TaskCard` metadata를 중첩 Text 구조에서 단일 문자열 label로 변경했다.
-- 재확인 결과 Today와 Calendar 모두 213px viewport에서 horizontal overflow와 개별 element overflow가 없다.
-
-남은 확인:
-
-- 실제 browser zoom 150% 또는 OS font scale 1.5에서 같은 결과가 유지되는지 확인한다.
-- dark mode 대비는 별도 확인이 필요하다.
-
-## 2026-07-14
-
-커밋 기준: `199c6b8` 이후 로컬 변경 포함
-
-환경:
-
-- API 모드: `mock`
-- Web export: `/private/tmp/todolab-mobile-web-export`
-
-실행:
-
-```bash
-npm run validate
-npx expo export --platform web --output-dir /private/tmp/todolab-mobile-web-export
-```
-
-결과:
-
-- `npm run validate` 통과
-- Web static export 통과
-- static route 17개 생성 확인
-
-메모:
-
-- `npx expo start --web`는 기존 `node` 프로세스가 8081 포트를 잡고 있어 새 dev server를 띄우지 못했다.
-- 8081 포트는 listen 상태였지만 `curl http://localhost:8081`에는 응답하지 않았다.
-- 다음 수동 smoke test 전에는 기존 Expo/Node 프로세스를 정리한 뒤 dev server를 다시 시작한다.
-
-### Web mock 수동 smoke test
-
-환경:
-
-- API 모드: `mock`
-- 브라우저: Codex 인앱 브라우저
-- Expo dev server: `http://localhost:8090`
-
-통과:
-
-- Today 완료 처리와 다시 열기
-- 빠른 기록 후 기록함 개수 반영
-- Calendar 월간 grid와 선택 날짜 목록 표시
-- 통합 검색어 입력과 결과 필터링
-- mock 로그인, 프로필 email 표시, 로그아웃
-- 320px, 375px, 430px, 720px에서 horizontal overflow 없음
-
-메모:
-
-- 기존 8081 Node 프로세스는 응답하지 않으면서 포트만 점유했고 현재 실행 권한으로 종료할 수 없어 8090을 사용했다.
-- Web console에서 Task/D-Day barrel import 순환 경고 2건과 native animation fallback 경고 1건을 확인했다.
-
-### Web real API 연동 smoke test
-
-환경:
-
-- API 모드: `real`
-- 모바일 기준 커밋: `7b0dc7f`
-- 백엔드 기준 커밋: `a0d58ff`와 CORS 로컬 수정
-- API: `http://localhost:8080`
-- MySQL: Homebrew MySQL 9.6, `localhost:3307`
-
-통과:
-
-- 회원가입, 로그인, 내 정보 조회
-- Task 생성, Today 이동과 조회, 완료, 다시 열기
-- D-Day 생성, 상세 조회, 목표 연결 Today Task 생성
-- 모바일 로그인 후 Today 실제 데이터 표시
-- 모바일 완료 처리와 다시 열기
-- Today와 Calendar에서 같은 실제 Task 표시
-- D-Day 연결 label 표시
-- 당시 기준 검색 API 미연결 안내 표시. 2026-07-26 현재 백엔드 문서상 `/api/v1/tasks/search` 계약이 준비되어 다음 real smoke test에서 실제 검색 결과와 pagination을 재검증한다.
-
-이슈와 조치:
-
-- 로컬 MySQL 실제 포트 3307과 `application-local.yml`의 3306이 달라 백엔드 기동이 실패했다. 로컬 설정을 3307로 맞췄다.
-- 로컬 MySQL에 테스트 DB 계정과 권한이 없어 설정값에 맞게 생성했다.
-- 백엔드 CORS가 `Authorization` request header를 허용하지 않아 Web API preflight가 403이었다. 허용 헤더와 회귀 테스트를 추가한 뒤 preflight와 실제 화면 연동이 통과했다.
-- 모바일 Calendar가 `MONTH` 조회에도 `YYYY-MM-DD`를 보내 백엔드가 400을 반환했다. 월간 조회를 `YYYY-MM`으로 직렬화하고 회귀 테스트를 추가했다.
+반복 Task·일정은 백엔드 생성/수정 API가 제공되기 전까지 실제 저장 UI smoke 범위에 넣지 않는다. 조회 표시와 문서 계약만 확인한다.
