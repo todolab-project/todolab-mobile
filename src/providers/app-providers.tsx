@@ -7,9 +7,9 @@ import { SessionExpiryRedirect } from './session-expiry-redirect';
 export function AppProviders({ children }: PropsWithChildren) {
   return (
     <QueryProvider>
-      <AuthTokenBootstrap>
-        <SessionExpiryRedirect>{children}</SessionExpiryRedirect>
-      </AuthTokenBootstrap>
+      <SessionExpiryRedirect>
+        <AuthTokenBootstrap>{children}</AuthTokenBootstrap>
+      </SessionExpiryRedirect>
     </QueryProvider>
   );
 }

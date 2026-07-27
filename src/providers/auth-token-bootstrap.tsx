@@ -1,7 +1,9 @@
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 
-import { initializeAccessToken } from '@/services/api';
+import { authApi, initializeAccessToken } from '@/services/api';
+
+import { queryClient } from './query-provider';
 
 export function AuthTokenBootstrap({ children }: PropsWithChildren) {
   const [ready, setReady] = useState(false);
@@ -10,8 +12,17 @@ export function AuthTokenBootstrap({ children }: PropsWithChildren) {
     let mounted = true;
 
     initializeAccessToken()
+      .then(async (token) => {
+        if (!token) {
+          return;
+        }
+
+        const user = await authApi.me();
+        queryClient.setQueryData(['auth', 'me'], user);
+      })
       .catch(() => {
-        // 저장소 접근 실패는 로그인 화면이나 API 오류 흐름에서 다시 안내한다.
+        // 401은 API client가 token 삭제와 로그인 유도를 처리한다.
+        // 네트워크 오류는 저장된 token을 유지하고 다음 사용자 동작에서 다시 확인한다.
       })
       .finally(() => {
         if (mounted) {
