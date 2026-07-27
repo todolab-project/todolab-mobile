@@ -114,7 +114,7 @@ type ApiResponse<T> = {
 };
 ```
 
-최근 Web real API 연동 smoke test 결과는 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록한다.
+최신 real API smoke test 결과는 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 최신 기준선만 유지한다.
 
 백엔드 최신 원본 계약은 `todolab-backend`의 다음 문서를 기준으로 대조한다.
 
@@ -129,32 +129,22 @@ type ApiResponse<T> = {
 - [`MOBILE_INTEGRATION_RUNBOOK.md`](../../../backend/docs/mobile/MOBILE_INTEGRATION_RUNBOOK.md): 백엔드 기준 real-mode smoke test 절차
 - [`MOBILE_API_BACKEND_STATUS.md`](../../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md): 모바일 요구 항목의 백엔드 구현/확인 상태
 
-연동 통과 항목:
+현재 통과 기준:
 
-- 회원가입, 로그인, 내 정보 조회
-- Task 생성, Today 이동과 조회, 완료, 다시 열기
-- D-Day 생성, 상세 조회, 목표 연결 Today Task 생성
-- 모바일 로그인 후 Today 실제 데이터 표시
-- Today와 Calendar에서 같은 실제 Task 표시
-- D-Day 연결 label 표시
-- 통합 검색 API 계약 구현 확인. 모바일은 `/api/v1/tasks/search` 실제 요청으로 검색어, 상태, 종류, 기간, cursor 흐름을 검증한다.
-- Web real API Authorization CORS preflight 통과
+- Auth, Task, Today, Done, Schedule, Search, D-Day, Stale 주요 API smoke test 통과
+- Today와 Calendar의 여러 날 일정 포함 범위, Calendar 원본 ID 1회 반환 확인
+- Search의 검색어, 상태 filter, 종류 filter, cursor pagination, 빈 결과 확인
+- D-Day 목표 생성, 조회, 연결, 해제, 삭제 응답 확인
+- 401 세션 만료, network/timeout/5xx retry, Calendar/Search 조회 전환 중 기존 데이터 유지 기준 반영
 - 서비스 기준 시간대 `Asia/Seoul` 계약 확인
-
-연동 중 발견해 조치한 항목:
-
-- Web API preflight가 `Authorization` request header 미허용으로 403을 반환했다. 백엔드 CORS 허용 헤더를 보강한 뒤 통과했다.
-- Calendar 월간 조회가 `YYYY-MM-DD`를 보내 백엔드가 400을 반환했다. 모바일에서 `MONTH` 조회 시 `YYYY-MM`으로 직렬화하도록 수정하고 회귀 테스트를 추가했다.
-- 로컬 MySQL 실제 포트와 백엔드 local 설정이 달라 기동이 실패했다. 로컬 설정과 테스트 DB 계정/권한을 맞춘 뒤 통과했다.
 
 백엔드에서 계속 확인하거나 보완할 항목:
 
 - staging, production API URL 확정
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
-- D-Day 삭제 성공 응답은 백엔드 v1 기준 `data: null`이다.
-- 통합 검색 real API를 실제 모바일 화면에서 smoke test하고 cursor 정렬 안정성을 재검증
 - 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](../api/API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../../backend/docs/api/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
 - 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../../backend/docs/api/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
+- real API 화면 smoke에서 검색 cursor 정렬, 기간 filter, timezone 경계는 계속 회귀 확인
 
 백엔드 연동을 다시 진행할 때는 [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)를 기준으로 mock 검증 → real API 검증 → smoke log 기록 순서로 진행한다. 이 저장소에는 필요한 계약과 모바일 변경만 문서화하고 백엔드 코드는 추가하지 않는다.
 
@@ -271,14 +261,14 @@ ToDoLab 적용 방향:
 - Today, Calendar, Profile 3탭 구조를 기준으로 한다.
 - Today는 주간 strip, 일정, 오늘 할 일, 정리할 항목, 접힌 완료 목록을 중심으로 구성한다.
 - Calendar는 선택일 기준 3주 planner grid와 일정 bar 중심으로 구성한다.
-- 인증, Task, D-Day, 검색 mock 흐름은 모바일에서 동작한다.
+- 인증, Task, 일정, D-Day, 검색 mock/real 주요 흐름은 모바일 계약 기준으로 동작한다.
 - real API smoke test는 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록하고, 반복 실행 기준은 [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)를 따른다.
 
 ### A. 네이버 모바일 앱 수준의 UI/UX 마감
 
 목표: 기능은 이미 어느 정도 연결되었으므로, 이제 매일 열어도 부담 없는 가볍고 단정한 모바일 앱으로 다듬는다.
 
-- [x] [`UX_REVIEW_LOG.md`](../design/UX_REVIEW_LOG.md)를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
+- [x] [`UX_REVIEW_LOG.md`](../design/UX_REVIEW_LOG.md)를 만들고 현재 화면별 결정과 다음 검토 항목을 기록한다.
 - [x] Today 미니 달력은 외부 card를 제거하고 grid 자체의 얇은 경계, 내부 세로선, 조용한 일정 label로 정리한다.
 - [x] 일정, 오늘 할 일, 오늘 완료한 일 section 색을 파스텔톤으로 유지하되 배경과 대비를 다시 맞춘다.
 - [x] 빠른 입력 placeholder와 input inset을 더 짧고 자연스럽게 정리한다.
@@ -418,23 +408,23 @@ Today 작업 목록 표시
 
 모바일 프론트는 기능 구현만으로 완료하지 않고, 설계 의도와 검증 결과가 남아야 한다. 작성하면 좋은 산출물은 다음과 같다.
 
-| 산출물                            | 목적                                      | 현재 상태 |
-| --------------------------------- | ----------------------------------------- | --------- |
-| Roadmap                           | 제품 방향, 작업 우선순위, 완료 기준       | 작성 중   |
-| Design system                     | 색상, typography, spacing, component 원칙 | 작성 중   |
-| Screen guide                      | 실제 화면 캡쳐와 사용 흐름 설명           | 초안 작성 |
-| App store / marketing asset guide | 마켓 이미지, 소개 문구, 캡쳐 구성         | 초안 작성 |
-| Backend integration runbook       | real API 환경 설정, endpoint, smoke 순서  | 작성 완료 |
-| Smoke test checklist / log        | mock/real 검증 시나리오와 결과            | 작성 중   |
-| Accessibility checklist           | screen reader, 명암, touch target 기준    | 작성 완료 |
-| Performance checklist             | 긴 목록, Calendar, 초기 로딩 성능 기준    | 작성 완료 |
-| Platform quality checklist        | Android/iOS/Web safe area, icon, keyboard | 작성 완료 |
-| API contract notes                | 검색, 반복, 일정 범위, 날짜/시간 계약     | 작성 중   |
-| Release checklist                 | 배포 전 계정, 빌드, 환경, QA 확인         | 작성 완료 |
-| UX review log                     | 화면별 불편점, 결정 이유, 보류 사유       | 작성 중   |
-| Component inventory               | 공통 컴포넌트 사용처와 변형 정리          | 작성 완료 |
+| 산출물                            | 목적                                      | 관리 기준             |
+| --------------------------------- | ----------------------------------------- | --------------------- |
+| Roadmap                           | 제품 방향, 작업 우선순위, 완료 기준       | 앞으로 할 일 중심     |
+| Design system                     | 색상, typography, spacing, component 원칙 | 현재 토큰 중심        |
+| Screen guide                      | 실제 화면 캡쳐와 사용 흐름 설명           | 캡쳐 갱신 시 수정     |
+| App store / marketing asset guide | 마켓 이미지, 소개 문구, 캡쳐 구성         | 출시 준비 시 갱신     |
+| Backend integration runbook       | real API 환경 설정, endpoint, smoke 순서  | 계약 변경 시 수정     |
+| Smoke test checklist / log        | mock/real 검증 시나리오와 최신 결과       | 최신 기준선만 유지    |
+| Accessibility checklist           | screen reader, 명암, touch target 기준    | 배포 전 재점검        |
+| Performance checklist             | 긴 목록, Calendar, 초기 로딩 성능 기준    | 실기기 QA 때 갱신     |
+| Platform quality checklist        | Android/iOS/Web safe area, icon, keyboard | 식별자 확정 시 수정   |
+| API contract notes                | 검색, 반복, 일정 범위, 날짜/시간 계약     | 백엔드 변경 시 수정   |
+| Release checklist                 | 배포 전 계정, 빌드, 환경, QA 확인         | 출시 전 사용          |
+| UX review log                     | 화면별 결정, 다음 UX 검토 항목            | 최신 판단만 유지      |
+| Component inventory               | 공통 컴포넌트 사용처와 변형 정리          | 컴포넌트 변경 시 수정 |
 
-우선 작성하면 좋은 산출물은 작성 완료했다. 이후 새 패턴이 생기면 `DESIGN.md`, `UX_REVIEW_LOG.md`, `COMPONENT_INVENTORY.md` 중 적절한 문서에 반영한다.
+이미 지나간 작업 내역은 각 문서에서 길게 보관하지 않는다. 이후 새 패턴이 생기면 `DESIGN.md`, `UX_REVIEW_LOG.md`, `COMPONENT_INVENTORY.md` 중 적절한 문서에 현재 기준으로 반영한다.
 
 ## 12. 바로 다음 작업
 
