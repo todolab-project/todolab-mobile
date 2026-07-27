@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { taskQueryKeys } from '@/features/tasks';
 import type { TaskResponse } from '@/types';
 
 import { ddayQueryKeys } from './dday-query-keys';
 import { createDdayTodayTask, type CreateDdayTodayTaskVariables } from './dday-today-task-workflow';
+import { taskQueryKeys } from '../tasks/task-query-keys';
 
 export function useCreateDdayTodayTask() {
   const queryClient = useQueryClient();

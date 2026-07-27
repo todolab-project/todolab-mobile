@@ -2,9 +2,9 @@ import { useRouter } from 'expo-router';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, EmptyState, InlineNotice, SectionHeader } from '@/components/ui';
-import { TaskCard } from '@/features/tasks';
 import { spacing, useAppTheme } from '@/theme';
 
+import { TaskCard } from '../tasks/task-card';
 import { useDdayGoalTasks } from './use-dday-goal-tasks';
 
 type DdayGoalTasksProps = {

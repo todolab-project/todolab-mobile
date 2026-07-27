@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { ddayQueryKeys } from '@/features/dday';
 import type { TaskResponse } from '@/types';
 
+import { ddayQueryKeys } from '../dday/dday-query-keys';
 import { taskApi } from './task-api';
 import { taskQueryKeys } from './task-query-keys';
 
