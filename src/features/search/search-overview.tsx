@@ -282,12 +282,16 @@ export function SearchOverview() {
           accessibilityLabel={`상세 검색 필터 ${showAdvancedFilters ? '접기' : '펼치기'}`}
           accessibilityRole="button"
           accessibilityState={{ expanded: showAdvancedFilters }}
+          onBlur={() => setFocusedElement(null)}
+          onFocus={() => setFocusedElement('advanced-toggle')}
           onPress={() => setShowAdvancedFilters((current) => !current)}
           style={({ pressed }) => [
             styles.advancedToggle,
             {
               backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-              borderColor: theme.colors.border,
+              borderColor:
+                focusedElement === 'advanced-toggle' ? theme.colors.primary : theme.colors.border,
+              borderWidth: focusedElement === 'advanced-toggle' ? 2 : StyleSheet.hairlineWidth,
             },
           ]}
         >
