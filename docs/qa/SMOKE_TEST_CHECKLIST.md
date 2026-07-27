@@ -5,11 +5,11 @@
 ## 공통 준비
 
 - mock 모드:
-  - `EXPO_PUBLIC_API_MODE=mock`
+  - `EXPO_PUBLIC_API_MODE=mock` 또는 `npm run web:mock`
   - 백엔드 없이 UI, navigation, 상태 변화 확인
 - real 모드:
-  - `EXPO_PUBLIC_API_MODE=real`
-  - `EXPO_PUBLIC_API_URL`이 로컬 또는 테스트 백엔드를 가리키는지 확인
+  - `npm run web:real -- --port 8090 --clear`
+  - `EXPO_PUBLIC_API_URL_OVERRIDE`가 로컬 또는 테스트 백엔드를 가리키는지 확인
 - 테스트 전 확인:
   - `npm run validate`
   - 앱 재기동

@@ -15,18 +15,17 @@
 
 ## 1. 환경 모드
 
-로컬 UI 개발과 실제 연동 테스트는 `EXPO_PUBLIC_API_MODE`로 분리한다.
+로컬 UI 개발과 실제 연동 테스트는 `EXPO_PUBLIC_API_MODE`로 분리한다. `.env.local`은 평소 mock 개발 기준으로 둘 수 있고, 실제 백엔드 연동 확인처럼 일시적으로 값을 바꿔야 할 때는 `EXPO_PUBLIC_API_MODE_OVERRIDE`, `EXPO_PUBLIC_API_URL_OVERRIDE`를 우선 사용한다.
 
-| 모드   | 설정                        | 목적                                         |
-| ------ | --------------------------- | -------------------------------------------- |
-| `mock` | `EXPO_PUBLIC_API_MODE=mock` | 백엔드 없이 in-memory dummy data로 화면 확인 |
-| `real` | `EXPO_PUBLIC_API_MODE=real` | `EXPO_PUBLIC_API_URL`의 실제 API와 연동      |
+| 모드   | 설정                                                                  | 목적                                             |
+| ------ | --------------------------------------------------------------------- | ------------------------------------------------ |
+| `mock` | `EXPO_PUBLIC_API_MODE=mock` 또는 `EXPO_PUBLIC_API_MODE_OVERRIDE=mock` | 백엔드 없이 in-memory dummy data로 화면 확인     |
+| `real` | `EXPO_PUBLIC_API_MODE_OVERRIDE=real`                                  | `EXPO_PUBLIC_API_URL_OVERRIDE`의 실제 API와 연동 |
 
-`EXPO_PUBLIC_API_MODE`를 생략하면 모바일은 `mock`으로 동작한다. real API smoke test를 할 때만 명시적으로 `real`을 설정한다.
+`EXPO_PUBLIC_API_MODE`를 생략하면 모바일은 `mock`으로 동작한다. `.env.local`에 mock 값이 남아 있을 수 있으므로 real API 화면 smoke test는 아래 npm script로 실행한다.
 
-```dotenv
-EXPO_PUBLIC_API_MODE=real
-EXPO_PUBLIC_API_URL=http://localhost:8080
+```bash
+npm run web:real -- --port 8090 --clear
 ```
 
 플랫폼별 로컬 API 주소는 다음 기준을 따른다.
@@ -37,7 +36,7 @@ EXPO_PUBLIC_API_URL=http://localhost:8080
 | Android Emulator      | `http://10.0.2.2:8080`           |
 | 실제 Android/iOS 기기 | `http://<개발 PC의 LAN IP>:8080` |
 
-`EXPO_PUBLIC_*` 값은 앱 번들에 포함되므로 토큰, 비밀번호, 서버 secret, API key를 넣지 않는다.
+`EXPO_PUBLIC_*` 값은 앱 번들에 포함되므로 토큰, 비밀번호, 서버 secret, API key를 넣지 않는다. `*_OVERRIDE` 값도 동일하게 public 값으로 취급한다.
 
 ## 2. 공통 API 응답 계약
 

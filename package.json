@@ -45,6 +45,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "web:mock": "EXPO_PUBLIC_API_MODE_OVERRIDE=mock expo start --web",
+    "web:real": "EXPO_PUBLIC_API_MODE_OVERRIDE=real EXPO_PUBLIC_API_URL_OVERRIDE=http://127.0.0.1:8080 expo start --web --localhost",
     "typecheck": "tsc --noEmit",
     "lint": "expo lint --max-warnings=0",
     "format": "prettier --write .",

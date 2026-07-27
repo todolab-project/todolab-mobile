@@ -54,6 +54,33 @@
 - 샌드박스 내부 기본 권한에서는 로컬 포트 연결이 `EPERM`으로 차단되어 권한 승인 후 실행했다.
 - `localhost`보다 `127.0.0.1`을 명시하는 편이 smoke 실행 결과를 재현하기 쉽다.
 
+## 2026-07-28 local real Web UI auth smoke
+
+환경:
+
+- API 모드: `real`
+- API URL: `http://127.0.0.1:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 명령: `npm run web:real -- --port 8090 --clear`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 기존 mock token이 real `/api/v1/auth/me`에서 401 처리되고 로그인 화면으로 이동
+- 세션 만료 안내 문구 노출
+- 회원가입 화면 진입
+- 임시 계정 회원가입 후 로그인 화면 복귀
+- 로그인 후 Today로 복귀
+- Profile 탭에 실제 가입 이메일 표시
+- 브라우저 reload 후 저장된 access token으로 세션 복원
+- 로그아웃 후 로그인 필요 상태로 복귀
+
+발견 및 조치:
+
+- `.env.local`의 mock 값이 real 화면 smoke와 섞여 실제 모드 확인이 헷갈릴 수 있었다.
+- `EXPO_PUBLIC_API_MODE_OVERRIDE`, `EXPO_PUBLIC_API_URL_OVERRIDE`를 일반 환경 값보다 우선 적용하고 `npm run web:real`을 추가했다.
+- Expo Web 실행 중 `src/features/tasks/index.ts`와 D-Day feature 사이 require cycle warning이 반복된다. 기능 실패는 아니지만 다음 refactor 후보로 남긴다.
+
 ## 최근 화면 QA 기준선
 
 Mock Web 화면에서 확인한 항목:
@@ -76,7 +103,7 @@ Mock Web 화면에서 확인한 항목:
 백엔드가 켜져 있을 때:
 
 1. `npm run validate`
-2. `EXPO_PUBLIC_API_MODE=real`과 `EXPO_PUBLIC_API_URL=http://localhost:8080` 설정 확인
+2. `npm run web:real -- --port 8090 --clear`로 real 모드 화면 실행
 3. Auth, Today, Calendar, Search, D-Day, 정리할 항목, 완료 목록을 실제 화면에서 순서대로 확인
 4. 실패 시 사용자에게 보이는 문구, 기존 데이터 유지 여부, retry 가능 여부 기록
 5. 새로 발견한 API 계약 차이는 모바일 문서에 먼저 적고 백엔드 저장소에서 별도 처리
