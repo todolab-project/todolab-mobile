@@ -438,11 +438,11 @@ Today 작업 목록 표시
 
 ## 12. 바로 다음 작업
 
-다음 작업은 실제 화면 품질과 real API 잔여 계약을 우선한다.
+다음 작업은 실제 화면 품질과 기기별 QA를 우선한다. 2026-07-28 기준 local real API full smoke test는 통과했으므로, 이후 real API 검증은 화면 QA와 배포 전 회귀 테스트로 반복한다.
 
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
-3. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 real API smoke test를 반복하고, 검색 API는 실제 응답으로 검증한다. 반복 occurrence는 조회 표시는 허용하되 생성/수정 UI는 백엔드 API 제공 후 연다.
+3. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
 4. 반복 Task와 일정의 작성·수정 UI는 백엔드 반복 생성/수정 API가 제공되기 전까지 실제 저장 기능처럼 노출하지 않는다.
 5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
