@@ -213,7 +213,11 @@ export function TaskForm({
               <TextInput
                 accessibilityHint="YYYY-MM-DD 형식으로 입력해 주세요."
                 accessibilityLabel="일정 날짜"
+                autoCapitalize="none"
+                autoCorrect={false}
                 editable={!isSubmitting}
+                keyboardType="numbers-and-punctuation"
+                maxLength={10}
                 onBlur={() => setFocusedField(null)}
                 onChangeText={(value) => updateField('scheduleDate', value)}
                 onFocus={() => setFocusedField('scheduleDate')}
@@ -262,7 +266,11 @@ export function TaskForm({
                   <TextInput
                     accessibilityHint="HH:mm 형식으로 입력해 주세요."
                     accessibilityLabel="일정 시작 시간"
+                    autoCapitalize="none"
+                    autoCorrect={false}
                     editable={!isSubmitting}
+                    keyboardType="numbers-and-punctuation"
+                    maxLength={5}
                     onBlur={() => setFocusedField(null)}
                     onChangeText={(value) => updateField('startTime', value)}
                     onFocus={() => setFocusedField('startTime')}
@@ -295,7 +303,11 @@ export function TaskForm({
                   <TextInput
                     accessibilityHint="비워두면 시작 시간만 있는 일정으로 저장됩니다."
                     accessibilityLabel="일정 종료 시간"
+                    autoCapitalize="none"
+                    autoCorrect={false}
                     editable={!isSubmitting}
+                    keyboardType="numbers-and-punctuation"
+                    maxLength={5}
                     onBlur={() => setFocusedField(null)}
                     onChangeText={(value) => updateField('endTime', value)}
                     onFocus={() => setFocusedField('endTime')}
