@@ -122,22 +122,12 @@ export function CalendarPeriodBars({
         const segmentKey = `${segment.task.id}-${segment.lane}`;
 
         return (
-          <Pressable
-            accessibilityHint="일정 상세 화면을 엽니다."
-            accessibilityLabel={`${getCalendarScheduleAccessibilityLabel(segment.task, '기간 일정')}, 상세 보기`}
-            accessibilityRole="button"
-            hitSlop={12}
+          <View
             key={segmentKey}
-            onBlur={() => setFocusedItem(null)}
-            onFocus={() => setFocusedItem(segmentKey)}
-            onPress={() => onOpen(segment.task.id)}
-            style={({ pressed }) => [
-              styles.bar,
+            style={[
+              styles.segmentSlot,
               {
-                backgroundColor: theme.colors.highlightSage,
-                borderColor: focusedItem === segmentKey ? theme.colors.primary : 'transparent',
                 left: getCalendarSegmentLeftPercent(segment.startIndex, dates.length),
-                opacity: pressed ? 0.7 : 1,
                 top: segment.lane * 24,
                 width: getCalendarSegmentWidthPercent(
                   segment.startIndex,
@@ -147,12 +137,30 @@ export function CalendarPeriodBars({
               },
             ]}
           >
-            <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
-              {segment.continuesBefore ? '‹ ' : ''}
-              {segment.task.title}
-              {segment.continuesAfter ? ' ›' : ''}
-            </AppText>
-          </Pressable>
+            <Pressable
+              accessibilityHint="일정 상세 화면을 엽니다."
+              accessibilityLabel={`${getCalendarScheduleAccessibilityLabel(segment.task, '기간 일정')}, 상세 보기`}
+              accessibilityRole="button"
+              hitSlop={12}
+              onBlur={() => setFocusedItem(null)}
+              onFocus={() => setFocusedItem(segmentKey)}
+              onPress={() => onOpen(segment.task.id)}
+              style={({ pressed }) => [
+                styles.bar,
+                {
+                  backgroundColor: theme.colors.highlightSage,
+                  borderColor: focusedItem === segmentKey ? theme.colors.primary : 'transparent',
+                  opacity: pressed ? 0.7 : 1,
+                },
+              ]}
+            >
+              <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
+                {segment.continuesBefore ? '‹ ' : ''}
+                {segment.task.title}
+                {segment.continuesAfter ? ' ›' : ''}
+              </AppText>
+            </Pressable>
+          </View>
         );
       })}
       {layout.overflowCount > 0 ? (
@@ -321,15 +329,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
+  segmentSlot: {
+    height: 20,
+    paddingHorizontal: 2,
+    position: 'absolute',
+  },
   bar: {
     borderRadius: radii.sm,
     borderWidth: 1,
+    flex: 1,
     height: 20,
     justifyContent: 'center',
-    marginHorizontal: 2,
     overflow: 'hidden',
     paddingHorizontal: spacing[1],
-    position: 'absolute',
   },
   overflow: {
     borderRadius: radii.sm,
