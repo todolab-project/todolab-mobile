@@ -2,8 +2,15 @@ import { useMutation } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { AppText, Button, IconButton, InlineNotice, PageHeader, Screen } from '@/components/ui';
 import { authApi, getUserFacingApiErrorMessage } from '@/services/api';
@@ -12,9 +19,12 @@ import { radii, spacing, typography, useAppTheme } from '@/theme';
 export function RegisterOverview() {
   const router = useRouter();
   const theme = useAppTheme();
+  const displayNameInputRef = useRef<TextInput>(null);
+  const passwordInputRef = useRef<TextInput>(null);
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const register = useMutation({
     mutationFn: () =>
@@ -82,8 +92,10 @@ export function RegisterOverview() {
               editable={!register.isPending}
               inputMode="email"
               onChangeText={setEmail}
+              onSubmitEditing={() => displayNameInputRef.current?.focus()}
               placeholder="you@example.com"
               placeholderTextColor={theme.colors.textMuted}
+              returnKeyType="next"
               style={[
                 styles.input,
                 {
@@ -102,14 +114,17 @@ export function RegisterOverview() {
               이름
             </AppText>
             <TextInput
+              ref={displayNameInputRef}
               accessibilityLabel="표시 이름"
               autoCapitalize="none"
               autoComplete="name"
               editable={!register.isPending}
               maxLength={50}
               onChangeText={setDisplayName}
+              onSubmitEditing={() => passwordInputRef.current?.focus()}
               placeholder="나의 플래너"
               placeholderTextColor={theme.colors.textMuted}
+              returnKeyType="next"
               style={[
                 styles.input,
                 {
@@ -127,26 +142,45 @@ export function RegisterOverview() {
             <AppText variant="label" weight="bold">
               비밀번호
             </AppText>
-            <TextInput
-              accessibilityLabel="회원가입 비밀번호"
-              autoCapitalize="none"
-              autoComplete="password-new"
-              editable={!register.isPending}
-              onChangeText={setPassword}
-              placeholder="8자 이상"
-              placeholderTextColor={theme.colors.textMuted}
-              secureTextEntry
+            <View
               style={[
-                styles.input,
+                styles.passwordField,
                 {
                   backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
-                  color: theme.colors.text,
                 },
               ]}
-              textContentType="newPassword"
-              value={password}
-            />
+            >
+              <TextInput
+                ref={passwordInputRef}
+                accessibilityLabel="회원가입 비밀번호"
+                autoCapitalize="none"
+                autoComplete="password-new"
+                editable={!register.isPending}
+                onChangeText={setPassword}
+                onSubmitEditing={submit}
+                placeholder="8자 이상"
+                placeholderTextColor={theme.colors.textMuted}
+                returnKeyType="done"
+                secureTextEntry={!passwordVisible}
+                style={[styles.passwordInput, { color: theme.colors.text }]}
+                textContentType="newPassword"
+                value={password}
+              />
+              <Pressable
+                accessibilityLabel={
+                  passwordVisible ? '회원가입 비밀번호 숨기기' : '회원가입 비밀번호 보기'
+                }
+                accessibilityRole="button"
+                disabled={register.isPending}
+                onPress={() => setPasswordVisible((visible) => !visible)}
+                style={styles.passwordToggle}
+              >
+                <AppText tone="secondary" variant="caption" weight="bold">
+                  {passwordVisible ? '숨김' : '보기'}
+                </AppText>
+              </Pressable>
+            </View>
           </View>
         </View>
 
@@ -185,5 +219,24 @@ const styles = StyleSheet.create({
     minHeight: 48,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  passwordField: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    minHeight: 48,
+    paddingLeft: spacing[3],
+    paddingRight: spacing[2],
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: typography.size.body,
+    paddingVertical: spacing[2],
+  },
+  passwordToggle: {
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: spacing[2],
   },
 });

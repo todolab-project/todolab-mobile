@@ -2,8 +2,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { AppText, Button, IconButton, InlineNotice, PageHeader, Screen } from '@/components/ui';
 import { authApi, getUserFacingApiErrorMessage } from '@/services/api';
@@ -14,8 +21,10 @@ export function LoginOverview() {
   const params = useLocalSearchParams<{ email?: string; expired?: string; registered?: string }>();
   const queryClient = useQueryClient();
   const theme = useAppTheme();
+  const passwordInputRef = useRef<TextInput>(null);
   const [email, setEmail] = useState(() => params.email ?? '');
   const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const login = useMutation({
     mutationFn: () => authApi.login({ email: email.trim(), password }),
@@ -67,10 +76,13 @@ export function LoginOverview() {
               accessibilityLabel="이메일"
               autoCapitalize="none"
               autoComplete="email"
+              editable={!login.isPending}
               inputMode="email"
               onChangeText={setEmail}
+              onSubmitEditing={() => passwordInputRef.current?.focus()}
               placeholder="you@example.com"
               placeholderTextColor={theme.colors.textMuted}
+              returnKeyType="next"
               style={[
                 styles.input,
                 {
@@ -88,25 +100,43 @@ export function LoginOverview() {
             <AppText variant="label" weight="bold">
               비밀번호
             </AppText>
-            <TextInput
-              accessibilityLabel="비밀번호"
-              autoCapitalize="none"
-              autoComplete="password"
-              onChangeText={setPassword}
-              placeholder="비밀번호"
-              placeholderTextColor={theme.colors.textMuted}
-              secureTextEntry
+            <View
               style={[
-                styles.input,
+                styles.passwordField,
                 {
                   backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
-                  color: theme.colors.text,
                 },
               ]}
-              textContentType="password"
-              value={password}
-            />
+            >
+              <TextInput
+                ref={passwordInputRef}
+                accessibilityLabel="비밀번호"
+                autoCapitalize="none"
+                autoComplete="password"
+                editable={!login.isPending}
+                onChangeText={setPassword}
+                onSubmitEditing={submit}
+                placeholder="비밀번호"
+                placeholderTextColor={theme.colors.textMuted}
+                returnKeyType="done"
+                secureTextEntry={!passwordVisible}
+                style={[styles.passwordInput, { color: theme.colors.text }]}
+                textContentType="password"
+                value={password}
+              />
+              <Pressable
+                accessibilityLabel={passwordVisible ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityRole="button"
+                disabled={login.isPending}
+                onPress={() => setPasswordVisible((visible) => !visible)}
+                style={styles.passwordToggle}
+              >
+                <AppText tone="secondary" variant="caption" weight="bold">
+                  {passwordVisible ? '숨김' : '보기'}
+                </AppText>
+              </Pressable>
+            </View>
           </View>
         </View>
 
@@ -156,5 +186,24 @@ const styles = StyleSheet.create({
     minHeight: 48,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  passwordField: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    minHeight: 48,
+    paddingLeft: spacing[3],
+    paddingRight: spacing[2],
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: typography.size.body,
+    paddingVertical: spacing[2],
+  },
+  passwordToggle: {
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: spacing[2],
   },
 });
