@@ -9,7 +9,7 @@ export { taskQueryKeys } from './task-query-keys';
 export { useClearDeferReason } from './use-clear-defer-reason';
 export { useChangeTaskDate } from './use-change-task-date';
 export { useCompleteTask } from './use-complete-task';
-export { useCreateInboxTask, useCreateTask } from './use-create-inbox-task';
+export { useCreateInboxTask, useCreateTask } from './use-create-task';
 export { useDeleteTask } from './use-delete-task';
 export { useMoveTaskToInbox } from './use-move-task-to-inbox';
 export { useMoveTaskToToday } from './use-move-task-to-today';
