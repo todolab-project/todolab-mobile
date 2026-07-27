@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
@@ -6,7 +6,7 @@ import { SymbolView } from 'expo-symbols';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Button, Screen } from '@/components/ui';
+import { AppText, Button, InlineNotice, Screen } from '@/components/ui';
 import { authApi, getAccessToken, subscribeAccessToken } from '@/services/api';
 import { radii, spacing, useAppTheme } from '@/theme';
 
@@ -55,6 +55,7 @@ export function ProfileOverview() {
   const theme = useAppTheme();
   const [focusedItem, setFocusedItem] = useState<ProfileItem['href'] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getAccessToken()));
+  const [logoutWarning, setLogoutWarning] = useState(false);
 
   useEffect(() => subscribeAccessToken((token) => setIsLoggedIn(Boolean(token))), []);
 
@@ -72,11 +73,19 @@ export function ProfileOverview() {
       : '목표와 기록, 개인 설정을 관리하세요.'
     : '로그인하면 서버와 동기화돼요.';
 
-  const logout = () => {
-    authApi.logout();
-    queryClient.clear();
-    setIsLoggedIn(false);
-  };
+  const logout = useMutation({
+    mutationFn: () => authApi.logout(),
+    onMutate: () => {
+      setLogoutWarning(false);
+    },
+    onError: () => {
+      setLogoutWarning(true);
+    },
+    onSettled: () => {
+      queryClient.clear();
+      setIsLoggedIn(false);
+    },
+  });
 
   return (
     <Screen scroll contentContainerStyle={styles.screen}>
@@ -102,13 +111,21 @@ export function ProfileOverview() {
           </View>
         </View>
         <Button
-          onPress={isLoggedIn ? logout : () => router.push('/login' as Href)}
+          loading={logout.isPending}
+          onPress={isLoggedIn ? () => logout.mutate() : () => router.push('/login' as Href)}
           size="compact"
           variant={isLoggedIn ? 'ghost' : 'secondary'}
         >
           {isLoggedIn ? '로그아웃' : '로그인'}
         </Button>
       </View>
+
+      {logoutWarning ? (
+        <InlineNotice
+          tone="warning"
+          message="로그아웃은 처리했지만 기기 저장소 정리가 완전히 끝났는지 확인이 필요해요. 앱을 다시 열어 로그인 상태를 확인해 주세요."
+        />
+      ) : null}
 
       <View accessibilityRole="list" style={styles.menu}>
         {profileItems.map((item) => {
