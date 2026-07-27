@@ -28,31 +28,31 @@ src/
 
 ## 제품 및 디자인 문서
 
-백엔드의 기존 기능과 UI/UX를 기준으로 정리한 모바일 정보 구조, 단계별 구현 계획, 완료 기준은 [모바일 로드맵](./docs/ROADMAP.md)에서 관리합니다.
+백엔드의 기존 기능과 UI/UX를 기준으로 정리한 모바일 정보 구조, 단계별 구현 계획, 완료 기준은 [모바일 로드맵](./docs/product/ROADMAP.md)에서 관리합니다.
 
-색상, 타이포그래피, 간격, 공통 컴포넌트와 상호작용 원칙은 [모바일 디자인 시스템](./docs/DESIGN.md)에서 관리합니다.
+색상, 타이포그래피, 간격, 공통 컴포넌트와 상호작용 원칙은 [모바일 디자인 시스템](./docs/design/DESIGN.md)에서 관리합니다.
 
-세부 기준 문서는 다음 위치에서 확인합니다.
+문서 전체 구조는 [문서 패키지 인덱스](./docs/README.md)에서 확인합니다. 세부 기준 문서는 다음 위치에서 확인합니다.
 
-| 문서                                                            | 용도                                               |
-| --------------------------------------------------------------- | -------------------------------------------------- |
-| [접근성 체크리스트](./docs/ACCESSIBILITY_CHECKLIST.md)          | 읽기 순서, 글꼴 확대, 명암, screen reader 점검     |
-| [성능 점검 기준](./docs/PERFORMANCE_CHECKLIST.md)               | 초기 진입, 긴 목록, Calendar 렌더링 성능 기준      |
-| [플랫폼 품질 점검표](./docs/PLATFORM_QUALITY_CHECKLIST.md)      | icon, splash, safe area, 키보드, 햅틱, 식별자 기준 |
-| [릴리즈 체크리스트](./docs/RELEASE_CHECKLIST.md)                | 실제 사용·배포 후보 전 최종 확인 항목              |
-| [Smoke test 체크리스트](./docs/SMOKE_TEST_CHECKLIST.md)         | Android, iOS, Web mock/real 모드 검증 시나리오     |
-| [화면 가이드](./docs/SCREEN_GUIDE.md)                           | 실제 화면 캡쳐와 화면별 사용 흐름 문서화           |
-| [마켓·소개 이미지 준비](./docs/APP_STORE_ASSETS.md)             | 앱 마켓, 소개 페이지용 이미지와 문구 초안          |
-| [컴포넌트 인벤토리](./docs/COMPONENT_INVENTORY.md)              | 공통 UI와 주요 도메인 컴포넌트 사용 기준           |
-| [UX 리뷰 로그](./docs/UX_REVIEW_LOG.md)                         | 화면별 불편점, 결정 이유, 다음 UI/UX 수정 후보     |
-| [백엔드 연동 Runbook](./docs/BACKEND_INTEGRATION_RUNBOOK.md)    | real API 연결 전 환경, endpoint, smoke test 순서   |
-| [오류 로깅과 개인정보 기준](./docs/ERROR_LOGGING_PRIVACY.md)    | 오류 로깅 수집 범위와 원문 데이터 비수집 기준      |
-| [반복 Task·일정 API 요구사항](./docs/API_RECURRENCE.md)         | 반복 series, occurrence, exception 백엔드 계약     |
-| [로컬 알림 요구사항과 백엔드 책임](./docs/API_NOTIFICATIONS.md) | 반복 일정과 로컬 알림 책임 분리                    |
-| [검색 filter API 요구사항](./docs/API_SEARCH_FILTER.md)         | 통합 검색 filter, pagination, timezone 계약        |
-| [일정 범위 API 요구사항](./docs/API_SCHEDULE_RANGE.md)          | 여러 날 일정과 Calendar 겹침 기준                  |
-| [Today 순서 변경 API 요구사항](./docs/API_TODAY_REORDER.md)     | Today 실행 순서 변경 계약                          |
-| [날짜·시간 API 요구사항](./docs/API_DATE_TIME.md)               | LocalDate, LocalDateTime, timezone 기준            |
+| 문서                                                                     | 용도                                               |
+| ------------------------------------------------------------------------ | -------------------------------------------------- |
+| [접근성 체크리스트](./docs/qa/ACCESSIBILITY_CHECKLIST.md)                | 읽기 순서, 글꼴 확대, 명암, screen reader 점검     |
+| [성능 점검 기준](./docs/qa/PERFORMANCE_CHECKLIST.md)                     | 초기 진입, 긴 목록, Calendar 렌더링 성능 기준      |
+| [플랫폼 품질 점검표](./docs/qa/PLATFORM_QUALITY_CHECKLIST.md)            | icon, splash, safe area, 키보드, 햅틱, 식별자 기준 |
+| [릴리즈 체크리스트](./docs/qa/RELEASE_CHECKLIST.md)                      | 실제 사용·배포 후보 전 최종 확인 항목              |
+| [Smoke test 체크리스트](./docs/qa/SMOKE_TEST_CHECKLIST.md)               | Android, iOS, Web mock/real 모드 검증 시나리오     |
+| [화면 가이드](./docs/design/SCREEN_GUIDE.md)                             | 실제 화면 캡쳐와 화면별 사용 흐름 문서화           |
+| [마켓·소개 이미지 준비](./docs/marketing/APP_STORE_ASSETS.md)            | 앱 마켓, 소개 페이지용 이미지와 문구 초안          |
+| [컴포넌트 인벤토리](./docs/design/COMPONENT_INVENTORY.md)                | 공통 UI와 주요 도메인 컴포넌트 사용 기준           |
+| [UX 리뷰 로그](./docs/design/UX_REVIEW_LOG.md)                           | 화면별 불편점, 결정 이유, 다음 UI/UX 수정 후보     |
+| [백엔드 연동 Runbook](./docs/integration/BACKEND_INTEGRATION_RUNBOOK.md) | real API 연결 전 환경, endpoint, smoke test 순서   |
+| [오류 로깅과 개인정보 기준](./docs/qa/ERROR_LOGGING_PRIVACY.md)          | 오류 로깅 수집 범위와 원문 데이터 비수집 기준      |
+| [반복 Task·일정 API 요구사항](./docs/api/API_RECURRENCE.md)              | 반복 series, occurrence, exception 백엔드 계약     |
+| [로컬 알림 요구사항과 백엔드 책임](./docs/api/API_NOTIFICATIONS.md)      | 반복 일정과 로컬 알림 책임 분리                    |
+| [검색 filter API 요구사항](./docs/api/API_SEARCH_FILTER.md)              | 통합 검색 filter, pagination, timezone 계약        |
+| [일정 범위 API 요구사항](./docs/api/API_SCHEDULE_RANGE.md)               | 여러 날 일정과 Calendar 겹침 기준                  |
+| [Today 순서 변경 API 요구사항](./docs/api/API_TODAY_REORDER.md)          | Today 실행 순서 변경 계약                          |
+| [날짜·시간 API 요구사항](./docs/api/API_DATE_TIME.md)                    | LocalDate, LocalDateTime, timezone 기준            |
 
 ## 로컬 개발
 
@@ -131,7 +131,7 @@ EXPO_PUBLIC_API_MODE=real
 EXPO_PUBLIC_API_URL=http://localhost:8080
 ```
 
-화면별 확인 순서는 [Smoke test 체크리스트](./docs/SMOKE_TEST_CHECKLIST.md)를 따릅니다.
+화면별 확인 순서는 [Smoke test 체크리스트](./docs/qa/SMOKE_TEST_CHECKLIST.md)를 따릅니다.
 
 ### 검증
 

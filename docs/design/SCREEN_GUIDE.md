@@ -29,7 +29,7 @@ docs/screenshots/
 
 ## Today
 
-![Today 화면](./screenshots/today.png)
+![Today 화면](../screenshots/today.png)
 
 목적:
 
@@ -61,7 +61,7 @@ docs/screenshots/
 
 ## 빠른 기록
 
-![빠른 기록](./screenshots/quick-capture.png)
+![빠른 기록](../screenshots/quick-capture.png)
 
 목적:
 
@@ -89,7 +89,7 @@ docs/screenshots/
 
 ## Calendar
 
-![Calendar 화면](./screenshots/calendar.png)
+![Calendar 화면](../screenshots/calendar.png)
 
 목적:
 
@@ -120,7 +120,7 @@ docs/screenshots/
 
 ## Search
 
-![Search 화면](./screenshots/search.png)
+![Search 화면](../screenshots/search.png)
 
 목적:
 
@@ -150,7 +150,7 @@ docs/screenshots/
 
 ## Completed
 
-![Completed 화면](./screenshots/completed.png)
+![Completed 화면](../screenshots/completed.png)
 
 목적:
 
@@ -175,7 +175,7 @@ docs/screenshots/
 
 ## Profile
 
-![Profile 화면](./screenshots/profile.png)
+![Profile 화면](../screenshots/profile.png)
 
 목적:
 
@@ -199,7 +199,7 @@ docs/screenshots/
 
 ## Task 상세
 
-![Task 상세](./screenshots/task-detail.png)
+![Task 상세](../screenshots/task-detail.png)
 
 목적:
 
@@ -227,7 +227,7 @@ docs/screenshots/
 
 ## D-Day
 
-![D-Day 화면](./screenshots/dday.png)
+![D-Day 화면](../screenshots/dday.png)
 
 목적:
 
@@ -257,4 +257,4 @@ docs/screenshots/
 - [ ] 스크린샷이 mock 데이터 기준인지 real 데이터 기준인지 명시한다.
 - [ ] 개인정보, 실제 일정, 실제 검색어가 이미지에 포함되지 않는다.
 - [ ] README의 문서 링크가 최신 상태다.
-- [ ] 마켓용 이미지는 [`APP_STORE_ASSETS.md`](./APP_STORE_ASSETS.md)에 별도로 정리한다.
+- [ ] 마켓용 이미지는 [`APP_STORE_ASSETS.md`](../marketing/APP_STORE_ASSETS.md)에 별도로 정리한다.

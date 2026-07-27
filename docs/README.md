@@ -1,0 +1,23 @@
+# ToDoLab Mobile Docs
+
+이 폴더는 모바일 클라이언트 문서를 관심사별로 나눠 관리한다. 새 문서를 추가할 때는 먼저 아래 분류 중 어디에 속하는지 확인한다.
+
+## 문서 패키지
+
+| 디렉터리                                                      | 역할                                               | 대표 문서                                                            |
+| ------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------- |
+| [`product`](./product/ROADMAP.md)                             | 제품 방향, 로드맵, 우선순위                        | `ROADMAP.md`                                                         |
+| [`design`](./design/DESIGN.md)                                | 디자인 시스템, UX 리뷰, 화면 가이드, 컴포넌트 기준 | `DESIGN.md`, `SCREEN_GUIDE.md`, `UX_REVIEW_LOG.md`                   |
+| [`api`](./api/API_DATE_TIME.md)                               | 모바일이 요구하거나 참조하는 API 계약              | `API_SEARCH_FILTER.md`, `API_RECURRENCE.md`, `API_SCHEDULE_RANGE.md` |
+| [`integration`](./integration/BACKEND_INTEGRATION_RUNBOOK.md) | 실제 백엔드 연동 절차와 환경 기준                  | `BACKEND_INTEGRATION_RUNBOOK.md`                                     |
+| [`qa`](./qa/RELEASE_CHECKLIST.md)                             | smoke test, release, 접근성, 성능, 플랫폼 품질     | `SMOKE_TEST_LOG.md`, `RELEASE_CHECKLIST.md`                          |
+| [`marketing`](./marketing/APP_STORE_ASSETS.md)                | 앱 마켓, 소개 이미지, 문구 산출물                  | `APP_STORE_ASSETS.md`                                                |
+| [`screenshots`](./screenshots/.gitkeep)                       | 실제 앱 화면 캡쳐                                  | 화면별 PNG                                                           |
+
+## 관리 기준
+
+- 앞으로 할 일과 우선순위는 `product/ROADMAP.md`에 둔다.
+- 색, 타이포그래피, 컴포넌트, 화면 밀도 결정은 `design/`에 둔다.
+- 백엔드 구현이 필요한 요구사항은 모바일 저장소에서는 `api/`나 `integration/`에 계약만 기록한다.
+- 실제 검증 결과와 출시 전 체크리스트는 `qa/`에 둔다.
+- 화면 캡쳐와 마켓 이미지는 `screenshots/`, `marketing/`에 분리한다.

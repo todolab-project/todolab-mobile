@@ -31,7 +31,7 @@ docs/marketing/
 
 이미지:
 
-![Today 마켓 이미지](./marketing/01_today.png)
+![Today 마켓 이미지](./01_today.png)
 
 카피:
 
@@ -52,7 +52,7 @@ docs/marketing/
 
 이미지:
 
-![빠른 기록 마켓 이미지](./marketing/02_quick_capture.png)
+![빠른 기록 마켓 이미지](./02_quick_capture.png)
 
 카피:
 
@@ -72,7 +72,7 @@ docs/marketing/
 
 이미지:
 
-![Calendar 마켓 이미지](./marketing/03_calendar.png)
+![Calendar 마켓 이미지](./03_calendar.png)
 
 카피:
 
@@ -92,7 +92,7 @@ docs/marketing/
 
 이미지:
 
-![Search 마켓 이미지](./marketing/04_search.png)
+![Search 마켓 이미지](./04_search.png)
 
 카피:
 
@@ -112,7 +112,7 @@ docs/marketing/
 
 이미지:
 
-![Completed 마켓 이미지](./marketing/05_completed.png)
+![Completed 마켓 이미지](./05_completed.png)
 
 카피:
 

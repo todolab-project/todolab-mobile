@@ -48,7 +48,7 @@ type ErrorLogEvent = {
 
 ## 사용자에게 보이는 오류와 로깅의 분리
 
-- 화면에는 [`getUserFacingApiErrorMessage`](../src/services/api/api-error.ts)를 통해 정규화된 문구를 표시한다.
+- 화면에는 [`getUserFacingApiErrorMessage`](../../src/services/api/api-error.ts)를 통해 정규화된 문구를 표시한다.
 - 로깅에는 사용자용 문구보다 `errorKind`, `httpStatus`, `apiCode`처럼 재현에 필요한 구조화 정보를 남긴다.
 - 4xx/API 검증 오류는 사용자 입력 문제일 수 있으므로 빈도를 보되 원문 payload는 남기지 않는다.
 - network, timeout, 5xx는 재시도 정책과 함께 묶어 빈도를 본다.

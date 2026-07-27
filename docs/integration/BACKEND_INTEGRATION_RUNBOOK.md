@@ -4,14 +4,14 @@
 
 백엔드 원본 계약은 다음 문서를 기준으로 한다.
 
-- [`API_V1_FRONTEND.md`](../../backend/docs/api/API_V1_FRONTEND.md)
-- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ops/ENVIRONMENT_INTEGRATION.md)
-- [`AUTH_CONTRACT.md`](../../backend/docs/api/AUTH_CONTRACT.md)
-- [`API_ERROR_CODES.md`](../../backend/docs/api/API_ERROR_CODES.md)
-- [`RECURRENCE_MODEL.md`](../../backend/docs/api/RECURRENCE_MODEL.md)
-- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/api/NOTIFICATION_CONTRACT.md)
-- [`TIMEZONE_CONTRACT.md`](../../backend/docs/api/TIMEZONE_CONTRACT.md)
-- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md)
+- [`API_V1_FRONTEND.md`](../../../backend/docs/api/API_V1_FRONTEND.md)
+- [`ENVIRONMENT_INTEGRATION.md`](../../../backend/docs/ops/ENVIRONMENT_INTEGRATION.md)
+- [`AUTH_CONTRACT.md`](../../../backend/docs/api/AUTH_CONTRACT.md)
+- [`API_ERROR_CODES.md`](../../../backend/docs/api/API_ERROR_CODES.md)
+- [`RECURRENCE_MODEL.md`](../../../backend/docs/api/RECURRENCE_MODEL.md)
+- [`NOTIFICATION_CONTRACT.md`](../../../backend/docs/api/NOTIFICATION_CONTRACT.md)
+- [`TIMEZONE_CONTRACT.md`](../../../backend/docs/api/TIMEZONE_CONTRACT.md)
+- [`MOBILE_API_BACKEND_STATUS.md`](../../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md)
 
 ## 1. 환경 모드
 
@@ -182,7 +182,7 @@ type ApiEnvelope<T> = {
 9. 오류 상태
    - network, timeout, 401, 5xx에서 공통 오류 문구와 retry 확인
 
-자세한 화면별 확인 항목은 [`SMOKE_TEST_CHECKLIST.md`](./SMOKE_TEST_CHECKLIST.md)를 따른다.
+자세한 화면별 확인 항목은 [`SMOKE_TEST_CHECKLIST.md`](../qa/SMOKE_TEST_CHECKLIST.md)를 따른다.
 
 ## 8. 현재 보류 또는 추가 확정이 필요한 계약
 

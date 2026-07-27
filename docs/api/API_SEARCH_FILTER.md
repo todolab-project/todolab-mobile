@@ -2,7 +2,7 @@
 
 이 문서는 “과거에 어떤 일을 언제 했는가”를 포함한 ToDoLab 모바일의 통합 검색 화면을 구현하기 위해 백엔드에 필요한 계약을 정의한다. 백엔드 구현과 데이터베이스 변경은 `todolab-backend` 저장소에서 별도로 진행한다.
 
-현재 백엔드 원본 계약은 [`API_V1_FRONTEND.md`](../../backend/docs/api/API_V1_FRONTEND.md)와 [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md)를 기준으로 확인한다. 2026년 7월 기준 백엔드는 검색어, 상태, 종류, 카테고리, D-Day, 날짜 범위, cursor pagination 계약을 제공하는 상태이며, 모바일에서는 실제 화면 smoke test와 pagination 안정성 확인을 남은 작업으로 관리한다.
+현재 백엔드 원본 계약은 [`API_V1_FRONTEND.md`](../../../backend/docs/api/API_V1_FRONTEND.md)와 [`MOBILE_API_BACKEND_STATUS.md`](../../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md)를 기준으로 확인한다. 2026년 7월 기준 백엔드는 검색어, 상태, 종류, 카테고리, D-Day, 날짜 범위, cursor pagination 계약을 제공하는 상태이며, 모바일에서는 실제 화면 smoke test와 pagination 안정성 확인을 남은 작업으로 관리한다.
 
 ## 1. 사용자 흐름
 
@@ -39,7 +39,7 @@ GET /api/v1/tasks/search
 
 `q`와 문자열 필터는 앞뒤 공백을 제거한다. `q`는 한 글자부터 허용하고 한글·영문 대소문자를 사용자 관점에서 동일하게 검색한다. 빈 `q`는 검색 조건에서 제외한다.
 
-날짜 문자열과 범위 의미는 백엔드 [`TIMEZONE_CONTRACT.md`](../../backend/docs/api/TIMEZONE_CONTRACT.md)를 따른다. `dateFrom > dateTo`, 알 수 없는 enum, 유효하지 않은 커서에는 보정된 빈 목록이 아니라 HTTP 400을 반환한다.
+날짜 문자열과 범위 의미는 백엔드 [`TIMEZONE_CONTRACT.md`](../../../backend/docs/api/TIMEZONE_CONTRACT.md)를 따른다. `dateFrom > dateTo`, 알 수 없는 enum, 유효하지 않은 커서에는 보정된 빈 목록이 아니라 HTTP 400을 반환한다.
 
 ### 관련 날짜
 

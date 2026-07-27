@@ -114,20 +114,20 @@ type ApiResponse<T> = {
 };
 ```
 
-최근 Web real API 연동 smoke test 결과는 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록한다.
+최근 Web real API 연동 smoke test 결과는 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록한다.
 
 백엔드 최신 원본 계약은 `todolab-backend`의 다음 문서를 기준으로 대조한다.
 
-- [`API_V1_FRONTEND.md`](../../backend/docs/api/API_V1_FRONTEND.md): 모바일 v1 API endpoint와 응답 envelope
-- [`ENVIRONMENT_INTEGRATION.md`](../../backend/docs/ops/ENVIRONMENT_INTEGRATION.md): local, staging, production API URL과 CORS origin
-- [`AUTH_CONTRACT.md`](../../backend/docs/api/AUTH_CONTRACT.md): JWT access token, 401/403, refresh token 미도입 정책
-- [`API_ERROR_CODES.md`](../../backend/docs/api/API_ERROR_CODES.md): 오류 코드, retry 가능 여부, 안전한 사용자 문구
-- [`RECURRENCE_MODEL.md`](../../backend/docs/api/RECURRENCE_MODEL.md): 반복 series/occurrence 저장 모델과 현재 API 상태
-- [`NOTIFICATION_CONTRACT.md`](../../backend/docs/api/NOTIFICATION_CONTRACT.md): 로컬 알림과 향후 server push 책임 분리
-- [`TIMEZONE_CONTRACT.md`](../../backend/docs/api/TIMEZONE_CONTRACT.md): `Asia/Seoul` 기준과 사용자 timezone 도입 조건
-- [`DATA_MODEL_GLOSSARY.md`](../../backend/docs/api/DATA_MODEL_GLOSSARY.md): Task 상태, 날짜 필드, owner scope 의미
-- [`MOBILE_INTEGRATION_RUNBOOK.md`](../../backend/docs/mobile/MOBILE_INTEGRATION_RUNBOOK.md): 백엔드 기준 real-mode smoke test 절차
-- [`MOBILE_API_BACKEND_STATUS.md`](../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md): 모바일 요구 항목의 백엔드 구현/확인 상태
+- [`API_V1_FRONTEND.md`](../../../backend/docs/api/API_V1_FRONTEND.md): 모바일 v1 API endpoint와 응답 envelope
+- [`ENVIRONMENT_INTEGRATION.md`](../../../backend/docs/ops/ENVIRONMENT_INTEGRATION.md): local, staging, production API URL과 CORS origin
+- [`AUTH_CONTRACT.md`](../../../backend/docs/api/AUTH_CONTRACT.md): JWT access token, 401/403, refresh token 미도입 정책
+- [`API_ERROR_CODES.md`](../../../backend/docs/api/API_ERROR_CODES.md): 오류 코드, retry 가능 여부, 안전한 사용자 문구
+- [`RECURRENCE_MODEL.md`](../../../backend/docs/api/RECURRENCE_MODEL.md): 반복 series/occurrence 저장 모델과 현재 API 상태
+- [`NOTIFICATION_CONTRACT.md`](../../../backend/docs/api/NOTIFICATION_CONTRACT.md): 로컬 알림과 향후 server push 책임 분리
+- [`TIMEZONE_CONTRACT.md`](../../../backend/docs/api/TIMEZONE_CONTRACT.md): `Asia/Seoul` 기준과 사용자 timezone 도입 조건
+- [`DATA_MODEL_GLOSSARY.md`](../../../backend/docs/api/DATA_MODEL_GLOSSARY.md): Task 상태, 날짜 필드, owner scope 의미
+- [`MOBILE_INTEGRATION_RUNBOOK.md`](../../../backend/docs/mobile/MOBILE_INTEGRATION_RUNBOOK.md): 백엔드 기준 real-mode smoke test 절차
+- [`MOBILE_API_BACKEND_STATUS.md`](../../../backend/docs/mobile/MOBILE_API_BACKEND_STATUS.md): 모바일 요구 항목의 백엔드 구현/확인 상태
 
 연동 통과 항목:
 
@@ -153,10 +153,10 @@ type ApiResponse<T> = {
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
 - D-Day 삭제 성공 응답은 백엔드 v1 기준 `data: null`이다.
 - 통합 검색 real API를 실제 모바일 화면에서 smoke test하고 cursor 정렬 안정성을 재검증
-- 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](./API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../backend/docs/api/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
-- 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../backend/docs/api/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
+- 반복 Task·일정의 생성/수정 API는 아직 제공되지 않으므로, [`API_RECURRENCE.md`](../api/API_RECURRENCE.md)와 백엔드 [`RECURRENCE_MODEL.md`](../../../backend/docs/api/RECURRENCE_MODEL.md)를 맞춰 UI 노출 시점을 결정
+- 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../../backend/docs/api/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
 
-백엔드 연동을 다시 진행할 때는 [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)를 기준으로 mock 검증 → real API 검증 → smoke log 기록 순서로 진행한다. 이 저장소에는 필요한 계약과 모바일 변경만 문서화하고 백엔드 코드는 추가하지 않는다.
+백엔드 연동을 다시 진행할 때는 [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)를 기준으로 mock 검증 → real API 검증 → smoke log 기록 순서로 진행한다. 이 저장소에는 필요한 계약과 모바일 변경만 문서화하고 백엔드 코드는 추가하지 않는다.
 
 ## 5. 모바일 정보 구조
 
@@ -211,7 +211,7 @@ type ApiResponse<T> = {
 
 백엔드의 기능 구조는 유지하되 모바일은 네이버 모바일 앱처럼 사용자가 매일 열어도 피로하지 않은 가볍고 단정한 화면을 지향한다. 특정 서비스를 그대로 복제하지 않고, 한국 사용자가 익숙하게 느끼는 정보 밀도, 검색/탐색 진입점, 카드 간 간격, 읽기 쉬운 한글 위계를 ToDoLab의 실행 흐름에 맞게 적용한다.
 
-색상 토큰, 타이포그래피, 간격, 컴포넌트와 상호작용의 상세 규칙은 [DESIGN.md](./DESIGN.md)에서 관리한다. 이 절은 제품 로드맵에 영향을 주는 상위 방향만 요약한다.
+색상 토큰, 타이포그래피, 간격, 컴포넌트와 상호작용의 상세 규칙은 [DESIGN.md](../design/DESIGN.md)에서 관리한다. 이 절은 제품 로드맵에 영향을 주는 상위 방향만 요약한다.
 
 ### 시각 체계
 
@@ -272,13 +272,13 @@ ToDoLab 적용 방향:
 - Today는 주간 strip, 일정, 오늘 할 일, 정리할 항목, 접힌 완료 목록을 중심으로 구성한다.
 - Calendar는 선택일 기준 3주 planner grid와 일정 bar 중심으로 구성한다.
 - 인증, Task, D-Day, 검색 mock 흐름은 모바일에서 동작한다.
-- real API smoke test는 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록하고, 반복 실행 기준은 [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)를 따른다.
+- real API smoke test는 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록하고, 반복 실행 기준은 [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)를 따른다.
 
 ### A. 네이버 모바일 앱 수준의 UI/UX 마감
 
 목표: 기능은 이미 어느 정도 연결되었으므로, 이제 매일 열어도 부담 없는 가볍고 단정한 모바일 앱으로 다듬는다.
 
-- [x] [`UX_REVIEW_LOG.md`](./UX_REVIEW_LOG.md)를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
+- [x] [`UX_REVIEW_LOG.md`](../design/UX_REVIEW_LOG.md)를 만들고 Today, Calendar, 정리할 항목, Profile의 화면별 불편점과 결정 이유를 기록한다.
 - [x] Today 미니 달력은 외부 card를 제거하고 grid 자체의 얇은 경계, 내부 세로선, 조용한 일정 label로 정리한다.
 - [x] 일정, 오늘 할 일, 오늘 완료한 일 section 색을 파스텔톤으로 유지하되 배경과 대비를 다시 맞춘다.
 - [x] 빠른 입력 placeholder와 input inset을 더 짧고 자연스럽게 정리한다.
@@ -311,7 +311,7 @@ ToDoLab 적용 방향:
 
 목표: mock에서 예쁜 화면이 아니라 실제 데이터로 매일 사용할 수 있는 상태를 만든다.
 
-- [x] 검색 API의 키워드, 상태 filter, 종류 filter, 빈 상태, cursor pagination을 real API로 smoke test하고 [`SMOKE_TEST_LOG.md`](./SMOKE_TEST_LOG.md)에 기록했다. 기간 filter와 timezone은 실제 화면 회귀에서 계속 확인한다.
+- [x] 검색 API의 키워드, 상태 filter, 종류 filter, 빈 상태, cursor pagination을 real API로 smoke test하고 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다. 기간 filter와 timezone은 실제 화면 회귀에서 계속 확인한다.
 - [x] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증했다. 2026-07-28 real API smoke에서 2026-07-28–2026-07-30 기간 일정이 해당 날짜 Today에만 포함되고 Calendar 월간 조회에는 원본 ID 1회로 반환됨을 확인했다.
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
 - [x] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약을 정리했고, 반복 생성/수정 API 제공 전까지 실제 저장 UI를 열지 않는 기준을 확정했다.
@@ -344,9 +344,9 @@ ToDoLab 적용 방향:
 
 목표: 개발용 데모가 아니라 Android, iOS, Web에서 실제 사용 가능한 앱으로 마감한다.
 
-- [x] [`RELEASE_CHECKLIST.md`](./RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
+- [x] [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
 - [x] 앱 아이콘, splash, 상태바, safe area의 현재 설정과 남은 실기기 확인 항목을 문서화한다.
-- [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
+- [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [ ] 실제 Android, iOS, Web에서 mock/real smoke test를 반복한다.
 - [ ] 접근성 label, 읽기 순서, 명암, keyboard focus, screen reader 동선을 최종 점검한다.
 - [ ] 초기 진입, 긴 목록, Calendar 렌더링 성능을 실제 기기 기준으로 점검한다.
@@ -442,8 +442,8 @@ Today 작업 목록 표시
 
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
-3. [`BACKEND_INTEGRATION_RUNBOOK.md`](./BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
+3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
 4. 반복 Task와 일정의 작성·수정 UI는 백엔드 반복 생성/수정 API가 제공되기 전까지 실제 저장 기능처럼 노출하지 않는다.
-5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](./PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
+5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

@@ -179,7 +179,7 @@ npx expo start --web --localhost
 
 메모:
 
-- 실제 화면 확인 전용 항목이므로 [`ROADMAP.md`](./ROADMAP.md)의 화면 크기별 확인 항목은 완료 처리하지 않았다.
+- 실제 화면 확인 전용 항목이므로 [`ROADMAP.md`](../product/ROADMAP.md)의 화면 크기별 확인 항목은 완료 처리하지 않았다.
 - 브라우저 또는 실제 기기 연결이 가능해지면 같은 dev server 기준으로 재확인한다.
 
 ### Web mock viewport 재확인
