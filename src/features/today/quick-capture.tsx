@@ -24,6 +24,7 @@ export function QuickCapture() {
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [didSave, setDidSave] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const canSubmit = title.trim().length > 0 && !createTask.isPending;
 
   const handleChange = (value: string) => {
     setTitle(value);
@@ -79,6 +80,7 @@ export function QuickCapture() {
           <View style={styles.composerRow}>
             <IconButton
               accessibilityLabel="빠른 기록 닫기"
+              disabled={createTask.isPending}
               onPress={closeComposer}
               style={styles.closeButton}
             >
@@ -116,6 +118,7 @@ export function QuickCapture() {
               value={title}
             />
             <Button
+              disabled={!canSubmit}
               loading={createTask.isPending}
               size="compact"
               onPress={handleSubmit}
