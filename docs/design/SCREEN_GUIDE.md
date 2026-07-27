@@ -93,20 +93,21 @@ docs/screenshots/
 
 목적:
 
-- 월간 달력에서 하루 일정과 여러 날에 걸친 일정을 확인한다.
+- 선택 날짜 기준 3주 달력에서 하루 일정과 여러 날에 걸친 일정을 확인한다.
 - 특정 날짜를 선택해 예정·완료 항목을 확인한다.
 
 사용 흐름:
 
-1. 월간 grid에서 날짜를 훑는다.
+1. 3주 planner grid에서 앞뒤 일정을 훑는다.
 2. 하루 일정 label과 여러 날 일정 bar를 확인한다.
 3. 날짜를 선택해 하단 목록을 확인한다.
 4. 일정 또는 Task를 눌러 상세로 이동한다.
 
 주요 UI:
 
-- 월 이동 controls
-- 월간 calendar grid
+- 주 단위 이동 controls
+- 월 선택 panel
+- 3주 calendar grid
 - 하루 일정 label
 - 여러 날 일정 bar
 - `+N` overflow
