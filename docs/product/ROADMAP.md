@@ -375,7 +375,7 @@ ToDoLab 적용 방향:
 - 백엔드 변경은 모바일 커밋에 섞지 않는다.
 - API 변경이 필요하면 모바일 요구 계약을 먼저 문서화하고 백엔드 저장소에서 별도 브랜치와 커밋으로 처리한다.
 - 커밋 메시지는 `feat:`, `fix:`, `chore:` 같은 prefix 없이 변경 결과를 나타내는 짧은 한국어 명사형으로 작성한다.
-- 변경 후와 커밋 전에는 `npm run validate`로 typecheck, lint, format, test를 모두 확인한다.
+- 변경 후와 커밋 전에는 `npm run validate`로 typecheck, lint, format, docs link, test를 모두 확인한다.
 - 플랫폼별 코드 변경은 사용자 전달 내용에 영향을 받는 Android, iOS, Web 범위를 명시한다.
 - 코드와 문서 변경 및 검증까지만 먼저 진행하고, 사용자가 명시적으로 승인한 경우에만 커밋과 푸시를 실행한다.
 - 실제 비밀 값과 `.env.local` 같은 로컬 환경 파일은 커밋하지 않는다.
@@ -402,7 +402,7 @@ Today 작업 목록 표시
 - 색상만으로 완료, 위험, 선택 상태를 전달하지 않는다.
 - API 성공 뒤 관련 화면의 데이터가 일관되게 갱신된다.
 - 날짜와 시간은 Android, iOS, Web에서 같은 의미로 표시된다.
-- `npm run validate`의 typecheck, lint, format, test가 모두 통과한다.
+- `npm run validate`의 typecheck, lint, format, docs link, test가 모두 통과한다.
 
 ## 10. 현재 제품 결정
 
