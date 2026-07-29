@@ -53,6 +53,7 @@
     "format:check": "prettier --check .",
     "docs:check": "node scripts/check-doc-links.js",
     "smoke:auth:real": "node scripts/smoke-auth-real.js",
+    "smoke:recurrence:real": "node scripts/smoke-recurrence-real.js",
     "test": "jest --runInBand",
     "validate": "npm run typecheck && npm run lint && npm run format:check && npm run docs:check && npm test"
   },

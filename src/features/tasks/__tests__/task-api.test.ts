@@ -43,6 +43,26 @@ describe('Task API', () => {
     expect(postMock).toHaveBeenCalledWith('/api/v1/tasks', request, { signal: undefined });
   });
 
+  test('반복 Task 생성 payload를 그대로 전달한다', async () => {
+    const request = {
+      title: '주간 회의',
+      type: 'SCHEDULE' as const,
+      allDay: false,
+      startAt: '2026-07-07T09:00:00' as const,
+      endAt: '2026-07-07T10:00:00' as const,
+      recurrence: {
+        frequency: 'WEEKLY' as const,
+        interval: 1,
+        byDays: ['TU'],
+        recurrenceCount: 10,
+      },
+    };
+
+    await taskApi.create(request);
+
+    expect(postMock).toHaveBeenCalledWith('/api/v1/tasks', request, { signal: undefined });
+  });
+
   test('Task 상세를 id로 조회한다', async () => {
     await taskApi.get(42);
 
@@ -71,13 +91,45 @@ describe('Task API', () => {
 
     await taskApi.update(42, request);
 
-    expect(putMock).toHaveBeenCalledWith('/api/v1/tasks/42', request, { signal: undefined });
+    expect(putMock).toHaveBeenCalledWith('/api/v1/tasks/42', request, {
+      query: { recurrenceScope: undefined },
+      signal: undefined,
+    });
+  });
+
+  test('반복 Task 수정 scope를 query로 전달한다', async () => {
+    const request = {
+      title: '회의 시간 변경',
+      type: 'SCHEDULE' as const,
+      allDay: false,
+      startAt: '2026-07-14T10:00:00' as const,
+      endAt: '2026-07-14T11:00:00' as const,
+    };
+
+    await taskApi.update(42, request, 'THIS_AND_FUTURE');
+
+    expect(putMock).toHaveBeenCalledWith('/api/v1/tasks/42', request, {
+      query: { recurrenceScope: 'THIS_AND_FUTURE' },
+      signal: undefined,
+    });
   });
 
   test('Task를 삭제한다', async () => {
     await taskApi.delete(42);
 
-    expect(deleteMock).toHaveBeenCalledWith('/api/v1/tasks/42', { signal: undefined });
+    expect(deleteMock).toHaveBeenCalledWith('/api/v1/tasks/42', {
+      query: { recurrenceScope: undefined },
+      signal: undefined,
+    });
+  });
+
+  test('반복 Task 삭제 scope를 query로 전달한다', async () => {
+    await taskApi.delete(42, 'ALL');
+
+    expect(deleteMock).toHaveBeenCalledWith('/api/v1/tasks/42', {
+      query: { recurrenceScope: 'ALL' },
+      signal: undefined,
+    });
   });
 
   test('Today 조회에 서울 기준 날짜를 전달한다', async () => {

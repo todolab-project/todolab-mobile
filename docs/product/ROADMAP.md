@@ -308,6 +308,7 @@ ToDoLab 적용 방향:
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 - [x] `.env.local` mock 기본값과 real smoke 실행값이 섞이지 않도록 `EXPO_PUBLIC_API_MODE_OVERRIDE` / `EXPO_PUBLIC_API_URL_OVERRIDE`와 `npm run web:real`을 추가한다.
+- [ ] 반복 일정은 생성 응답까지 real smoke가 통과했지만 Today occurrence 조회에서 HTTP 500/code `99999`가 발생한다. 백엔드 수정 후 `npm run smoke:recurrence:real`을 재실행한다.
 
 완료 기준:
 
@@ -319,6 +320,7 @@ ToDoLab 적용 방향:
 목표: 매주 화요일 09:00 회의처럼 반복되는 실행 항목과 일정을 occurrence별로 계획하고 완료한다.
 
 - [ ] 백엔드 반복 생성 계약, 상태 문서, real smoke 결과를 재확인한다.
+- [x] 모바일 타입/API는 nested `recurrence` 응답, `TaskUpsertRequest.recurrence`, `recurrenceScope` 수정·삭제 query를 받을 수 있게 맞춘다.
 - [ ] 백엔드 반복 생성이 real smoke를 통과하면 Task 작성 화면에 반복 없음, 매일, 매주, 매월, 사용자 지정 선택을 추가한다.
 - [x] Task 작성 화면에서 일정 날짜와 시작·종료 시간을 입력할 수 있게 해 Calendar real smoke data를 앱 흐름으로 만들 수 있게 한다.
 - [ ] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.

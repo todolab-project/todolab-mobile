@@ -1,6 +1,6 @@
 import type { RecurrenceException, TaskResponse } from '@/types';
 
-type RecurringTask = Pick<TaskResponse, 'recurrenceException' | 'recurrenceRule'>;
+type RecurringTask = Pick<TaskResponse, 'recurrence' | 'recurrenceException' | 'recurrenceRule'>;
 
 const frequencyLabels: Record<string, string> = {
   DAILY: '매일',
@@ -26,11 +26,13 @@ const exceptionLabels: Record<RecurrenceException, string> = {
 };
 
 export function getRecurrenceLabel(task: RecurringTask) {
-  if (!task.recurrenceRule) {
+  const recurrenceRule = task.recurrence?.recurrenceRule ?? task.recurrenceRule;
+
+  if (!recurrenceRule) {
     return null;
   }
 
-  const rule = parseRecurrenceRule(task.recurrenceRule);
+  const rule = parseRecurrenceRule(recurrenceRule);
   const baseLabel = getBaseRecurrenceLabel(rule);
   const exceptionLabel = task.recurrenceException
     ? exceptionLabels[task.recurrenceException]

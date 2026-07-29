@@ -7,8 +7,9 @@
 반복 규칙과 실제 occurrence를 분리한다.
 
 - `recurrenceSeriesId`: 반복 묶음의 ID
-- `recurrenceRule`: RFC 5545 RRULE 호환 문자열
-- `recurrenceTimeZone`: 초기에는 `Asia/Seoul`
+- `recurrence`: 반복 series 상세 객체
+- `recurrence.recurrenceRule`: RFC 5545 RRULE 호환 문자열
+- `recurrence.timeZone`: 초기에는 `Asia/Seoul`
 - `recurrenceStartAt`: 첫 발생 시각
 - `durationMinutes` 또는 시작·종료 시각 차이
 - `recurrenceUntil` 또는 `recurrenceCount`: 선택적 종료 조건
@@ -24,8 +25,11 @@
   "type": "SCHEDULE",
   "startAt": "2026-07-07T09:00:00",
   "endAt": "2026-07-07T10:00:00",
-  "recurrenceRule": "FREQ=WEEKLY;BYDAY=TU",
-  "recurrenceTimeZone": "Asia/Seoul"
+  "recurrence": {
+    "frequency": "WEEKLY",
+    "interval": 1,
+    "byDays": ["TU"]
+  }
 }
 ```
 
@@ -52,16 +56,23 @@ PUT    /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 DELETE /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 ```
 
-백엔드 `RECURRENCE_MODEL.md`와 `API_V1_FRONTEND.md`에는 `POST /api/v1/tasks`의 `recurrence` 생성 계약과 `recurrenceScope` 수정·삭제 계약이 추가되어 있다. 다만 백엔드 상태 문서에는 아직 예전 보류 문구가 남아 있어, 모바일은 조회된 occurrence label 표시까지만 유지하고 반복 생성/수정/삭제 UI는 문서 정합성과 real smoke를 재확인한 뒤 연다.
+백엔드 `RECURRENCE_MODEL.md`, `API_V1_FRONTEND.md`, `MOBILE_API_BACKEND_STATUS.md` 기준으로 `POST /api/v1/tasks`의 `recurrence` 생성 계약과 `recurrenceScope` 수정·삭제 계약이 구현 상태로 정리되었다. 모바일은 nested `recurrence` 응답과 `recurrenceScope` query를 받을 수 있게 기반 타입/API를 맞춘 뒤, real smoke로 생성·조회·scope 수정·삭제를 확인하고 UI를 연다.
+
+2026-07-29 local real smoke 결과:
+
+- `POST /api/v1/tasks` 반복 일정 생성과 nested `recurrence` 응답은 통과했다.
+- `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup은 통과했다.
+- `GET /api/v1/tasks/today?date=2026-08-04`에서 HTTP 500, error code `99999`가 발생했다.
+- 따라서 반복 생성 UI는 아직 열지 않고, 백엔드 Today/Calendar occurrence 조회 path가 수정된 뒤 `npm run smoke:recurrence:real`을 재실행한다.
 
 ## 백엔드 확인 항목
 
 - RRULE parser와 validation 범위
 - 월말, 윤년, 공휴일을 건너뛰는 규칙 지원 여부
 - `POST /api/v1/tasks`의 `recurrence` 생성 계약이 실제 local/staging API에서 통과하는지
-- 백엔드 상태 문서의 “반복 생성/수정 API 미제공” 문구가 최신 계약과 정리되었는지
-- `PUT /api/v1/tasks/{id}?recurrenceScope=...`를 모바일 수정 UI에서 사용해도 되는 시점
-- `DELETE /api/v1/tasks/{id}?recurrenceScope=...`를 모바일 삭제 UI에서 사용해도 되는 시점
+- 모바일 `TaskUpsertRequest.recurrence`가 `frequency`, `interval`, `byDays`, `byMonthDays`, `recurrenceUntil`, `recurrenceCount`를 올바르게 보내는지
+- `PUT /api/v1/tasks/{id}?recurrenceScope=...`의 `THIS`, `THIS_AND_FUTURE`, `ALL` 결과가 화면 cache와 맞는지
+- `DELETE /api/v1/tasks/{id}?recurrenceScope=...`의 `SKIPPED` marker와 Today/Calendar 재조회 결과가 맞는지
 - occurrence 완료·미룸·건너뛰기 저장 방식
 - 반복 전체 수정 후 기존 완료 기록 보존 방식
 - 서울 시간대와 향후 사용자 time zone migration

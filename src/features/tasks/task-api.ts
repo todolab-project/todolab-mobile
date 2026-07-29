@@ -2,6 +2,7 @@ import { apiClient } from '@/services/api';
 import type {
   DeferReason,
   LocalDateString,
+  RecurrenceEditScope,
   TaskRecommendationResponse,
   TaskResponse,
   TaskListQuery,
@@ -46,12 +47,23 @@ export const taskApi = {
     return apiClient.post<TaskResponse>(TASKS_PATH, request, { signal });
   },
 
-  update(taskId: number, request: TaskUpsertRequest, signal?: AbortSignal) {
-    return apiClient.put<TaskResponse>(`${TASKS_PATH}/${taskId}`, request, { signal });
+  update(
+    taskId: number,
+    request: TaskUpsertRequest,
+    recurrenceScope?: RecurrenceEditScope,
+    signal?: AbortSignal,
+  ) {
+    return apiClient.put<TaskResponse>(`${TASKS_PATH}/${taskId}`, request, {
+      query: { recurrenceScope },
+      signal,
+    });
   },
 
-  delete(taskId: number, signal?: AbortSignal) {
-    return apiClient.delete<null>(`${TASKS_PATH}/${taskId}`, { signal });
+  delete(taskId: number, recurrenceScope?: RecurrenceEditScope, signal?: AbortSignal) {
+    return apiClient.delete<null>(`${TASKS_PATH}/${taskId}`, {
+      query: { recurrenceScope },
+      signal,
+    });
   },
 
   getToday(date: LocalDateString, signal?: AbortSignal) {

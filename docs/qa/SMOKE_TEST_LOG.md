@@ -109,3 +109,32 @@ Mock Web 화면에서 확인한 항목:
 5. 새로 발견한 API 계약 차이는 모바일 문서에 먼저 적고 백엔드 저장소에서 별도 처리
 
 반복 Task·일정은 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 UI smoke 범위에 넣지 않는다. 조회 표시와 문서 계약만 확인한다.
+
+## 2026-07-29 local real API recurrence smoke
+
+환경:
+
+- API URL: `http://127.0.0.1:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 명령: `EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:recurrence:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 회원가입
+- 로그인
+- `POST /api/v1/tasks` 반복 일정 생성
+- 생성 응답의 `recurrenceSeriesId`, `occurrenceDate`, nested `recurrence.frequency`, `recurrence.recurrenceRule`
+- 실패 후 `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup
+
+실패:
+
+- `GET /api/v1/tasks/today?date=2026-08-04`
+- 결과: HTTP 500, error code `99999`
+- 의미: 반복 생성 계약은 동작하지만 Today 조회에서 첫 occurrence materialize 또는 반복 포함 조회 path 확인이 필요하다.
+
+모바일 조치:
+
+- nested `recurrence` 응답 타입과 `TaskUpsertRequest.recurrence` 타입을 추가한다.
+- `PUT/DELETE /api/v1/tasks/{id}?recurrenceScope=...` 호출 기반을 추가한다.
+- 반복 생성 UI는 Today/Calendar occurrence 조회 smoke가 통과할 때까지 열지 않는다.

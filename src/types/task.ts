@@ -27,6 +27,7 @@ export type TaskSearchDateSource =
 export type TodayOrderDirection = 'UP' | 'DOWN';
 export type RecurrenceEditScope = 'THIS' | 'THIS_AND_FUTURE' | 'ALL';
 export type RecurrenceException = 'SKIPPED' | 'MOVED' | 'MODIFIED';
+export type RecurrenceFrequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
 export type DeferReason =
   | 'TOO_BIG'
   | 'NOT_NEEDED_NOW'
@@ -58,6 +59,29 @@ export type TaskUpsertRequest = {
   endAt?: LocalDateTimeString | null;
   category?: string | null;
   allDay: boolean;
+  recurrence?: TaskRecurrenceRequest | null;
+};
+
+export type TaskRecurrenceRequest = {
+  frequency: RecurrenceFrequency;
+  interval?: number | null;
+  recurrenceRule?: string | null;
+  timeZone?: string | null;
+  recurrenceUntil?: LocalDateString | null;
+  recurrenceCount?: number | null;
+  byDays?: string[] | null;
+  byMonthDays?: number[] | null;
+};
+
+export type TaskRecurrenceResponse = {
+  id: number;
+  frequency: RecurrenceFrequency;
+  interval: number;
+  recurrenceRule: string;
+  timeZone: string;
+  recurrenceStartAt: LocalDateTimeString;
+  recurrenceUntil: LocalDateString | null;
+  recurrenceCount: number | null;
 };
 
 export type TaskResponse = {
@@ -92,6 +116,7 @@ export type TaskResponse = {
   occurrenceDate?: LocalDateString | null;
   originalOccurrenceDate?: LocalDateString | null;
   recurrenceException?: RecurrenceException | null;
+  recurrence?: TaskRecurrenceResponse | null;
   createdAt: LocalDateTimeString;
   updatedAt: LocalDateTimeString | null;
 };

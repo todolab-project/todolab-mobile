@@ -2,7 +2,7 @@ import type { TaskResponse } from '@/types';
 
 import { getRecurrenceLabel } from '../recurrence-presentation';
 
-type RecurringTask = Pick<TaskResponse, 'recurrenceException' | 'recurrenceRule'>;
+type RecurringTask = Pick<TaskResponse, 'recurrence' | 'recurrenceException' | 'recurrenceRule'>;
 
 function makeTask(overrides: RecurringTask): RecurringTask {
   return overrides;
@@ -10,9 +10,11 @@ function makeTask(overrides: RecurringTask): RecurringTask {
 
 describe('getRecurrenceLabel', () => {
   it('반복 규칙이 없으면 표시하지 않는다', () => {
-    expect(getRecurrenceLabel(makeTask({ recurrenceException: null, recurrenceRule: null }))).toBe(
-      null,
-    );
+    expect(
+      getRecurrenceLabel(
+        makeTask({ recurrence: null, recurrenceException: null, recurrenceRule: null }),
+      ),
+    ).toBe(null);
   });
 
   it.each([
@@ -23,15 +25,42 @@ describe('getRecurrenceLabel', () => {
     ['FREQ=MONTHLY;INTERVAL=3', '3개월마다'],
     ['FREQ=HOURLY', '반복'],
   ] as const)('%s 규칙을 %s로 요약한다', (rule, expected) => {
-    expect(getRecurrenceLabel(makeTask({ recurrenceException: null, recurrenceRule: rule }))).toBe(
-      expected,
-    );
+    expect(
+      getRecurrenceLabel(
+        makeTask({ recurrence: null, recurrenceException: null, recurrenceRule: rule }),
+      ),
+    ).toBe(expected);
+  });
+
+  it('nested recurrence 응답의 규칙을 우선 사용한다', () => {
+    expect(
+      getRecurrenceLabel(
+        makeTask({
+          recurrence: {
+            id: 1,
+            frequency: 'WEEKLY',
+            interval: 1,
+            recurrenceRule: 'FREQ=WEEKLY;BYDAY=TH',
+            timeZone: 'Asia/Seoul',
+            recurrenceStartAt: '2026-07-09T09:00:00',
+            recurrenceUntil: null,
+            recurrenceCount: null,
+          },
+          recurrenceException: null,
+          recurrenceRule: 'FREQ=DAILY',
+        }),
+      ),
+    ).toBe('매주 목');
   });
 
   it('occurrence 예외 상태를 반복 label 뒤에 덧붙인다', () => {
     expect(
       getRecurrenceLabel(
-        makeTask({ recurrenceException: 'MODIFIED', recurrenceRule: 'FREQ=WEEKLY;BYDAY=TU' }),
+        makeTask({
+          recurrence: null,
+          recurrenceException: 'MODIFIED',
+          recurrenceRule: 'FREQ=WEEKLY;BYDAY=TU',
+        }),
       ),
     ).toBe('매주 화 · 수정됨');
   });

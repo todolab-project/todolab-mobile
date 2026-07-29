@@ -199,6 +199,7 @@ function createTask(
     occurrenceDate: overrides.occurrenceDate ?? null,
     originalOccurrenceDate: overrides.originalOccurrenceDate ?? null,
     recurrenceException: overrides.recurrenceException ?? null,
+    recurrence: overrides.recurrence ?? null,
     createdAt: overrides.createdAt ?? now,
     updatedAt: overrides.updatedAt ?? null,
   };
