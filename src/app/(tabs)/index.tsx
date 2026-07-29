@@ -1,4 +1,5 @@
 import { KeyboardAvoidingView, Platform, RefreshControl, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
 
 import { Screen } from '@/components/ui';
 import { QuickCapture, TodayOverview, TodayWeekStrip, useTodayOverview } from '@/features/today';
@@ -10,6 +11,7 @@ export default function TodayScreen() {
   const now = new Date();
   const today = toApiLocalDate(now);
   const overview = useTodayOverview(today);
+  const [isQuickCaptureExpanded, setIsQuickCaptureExpanded] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -30,13 +32,20 @@ export default function TodayScreen() {
         }}
       >
         <TodayWeekStrip today={today} />
-        <TodayOverview date={today} overview={overview} />
+        <TodayOverview
+          date={today}
+          overview={overview}
+          onOpenQuickCapture={() => setIsQuickCaptureExpanded(true)}
+        />
       </Screen>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.quickCaptureLayer}
       >
-        <QuickCapture />
+        <QuickCapture
+          isExpanded={isQuickCaptureExpanded}
+          onExpandedChange={setIsQuickCaptureExpanded}
+        />
       </KeyboardAvoidingView>
     </View>
   );

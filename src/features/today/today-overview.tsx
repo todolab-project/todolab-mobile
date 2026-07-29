@@ -22,6 +22,7 @@ import { useTodayOverview } from './use-today-overview';
 
 type TodayOverviewProps = {
   date: LocalDateString;
+  onOpenQuickCapture?: () => void;
   overview: ReturnType<typeof useTodayOverview>;
 };
 
@@ -30,7 +31,7 @@ type FeedbackMessage = {
   message: string;
 };
 
-export function TodayOverview({ date, overview }: TodayOverviewProps) {
+export function TodayOverview({ date, onOpenQuickCapture, overview }: TodayOverviewProps) {
   const router = useRouter();
   const theme = useAppTheme();
   const {
@@ -139,7 +140,19 @@ export function TodayOverview({ date, overview }: TodayOverviewProps) {
         {executionTasks.length === 0 ? (
           <EmptyState
             title="오늘 할 일이 없어요"
-            description="하단의 추가 버튼으로 오늘 할 일을 기록해 보세요."
+            description="생각난 일을 바로 적어두면 기록함에 저장돼요. 오늘 할 일로 옮길지는 나중에 정리하면 됩니다."
+            action={
+              onOpenQuickCapture ? (
+                <Button
+                  accessibilityLabel="오늘 할 일 빠르게 기록하기"
+                  size="compact"
+                  variant="secondary"
+                  onPress={onOpenQuickCapture}
+                >
+                  바로 기록하기
+                </Button>
+              ) : null
+            }
           />
         ) : (
           <TodayTaskList

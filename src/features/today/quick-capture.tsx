@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,7 +7,12 @@ import { useCreateInboxTask } from '@/features/tasks';
 import { radii, sizes, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import { taskLimits } from '@/types';
 
-export function QuickCapture() {
+type QuickCaptureProps = {
+  isExpanded: boolean;
+  onExpandedChange: (isExpanded: boolean) => void;
+};
+
+export function QuickCapture({ isExpanded, onExpandedChange }: QuickCaptureProps) {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const { screenPadding } = useMobileLayout();
@@ -19,7 +24,6 @@ export function QuickCapture() {
   };
   const inputRef = useRef<TextInput>(null);
   const createTask = useCreateInboxTask();
-  const [isExpanded, setIsExpanded] = useState(false);
   const [title, setTitle] = useState('');
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [didSave, setDidSave] = useState(false);
@@ -63,15 +67,21 @@ export function QuickCapture() {
   };
 
   const openComposer = () => {
-    setIsExpanded(true);
+    onExpandedChange(true);
     requestAnimationFrame(() => inputRef.current?.focus());
   };
   const closeComposer = () => {
-    setIsExpanded(false);
+    onExpandedChange(false);
     setValidationMessage(null);
     setDidSave(false);
     Keyboard.dismiss();
   };
+
+  useEffect(() => {
+    if (isExpanded) {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [isExpanded]);
 
   return (
     <View style={[styles.container, containerInsets]}>
