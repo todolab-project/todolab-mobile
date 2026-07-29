@@ -3,6 +3,7 @@ import type {
   DeferReason,
   LocalDateString,
   RecurrenceEditScope,
+  TaskNotificationCandidateResponse,
   TaskRecommendationResponse,
   TaskResponse,
   TaskListQuery,
@@ -78,6 +79,16 @@ export const taskApi = {
       query: { date },
       signal,
     });
+  },
+
+  getNotificationCandidates(from: LocalDateString, to: LocalDateString, signal?: AbortSignal) {
+    return apiClient.get<TaskNotificationCandidateResponse[]>(
+      `${TASKS_PATH}/notification-candidates`,
+      {
+        query: { from, to },
+        signal,
+      },
+    );
   },
 
   getDone(date: LocalDateString, signal?: AbortSignal) {

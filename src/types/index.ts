@@ -26,6 +26,7 @@ export type {
   TaskCategoryGroupResponse,
   TaskDateQuery,
   TaskListQuery,
+  TaskNotificationCandidateResponse,
   TaskQueryType,
   TaskRecommendationResponse,
   TaskRecurrenceRequest,

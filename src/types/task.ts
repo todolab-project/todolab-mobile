@@ -126,6 +126,15 @@ export type TaskRecommendationResponse = {
   reason: string;
 };
 
+export type TaskNotificationCandidateResponse = {
+  notificationKey: string;
+  taskId: number;
+  scheduledAt: LocalDateTimeString;
+  recurrenceSeriesId: number | null;
+  occurrenceDate: LocalDateString | null;
+  task: TaskResponse;
+};
+
 export type TaskCategoryGroupResponse = {
   category: string;
   tasks: TaskResponse[];

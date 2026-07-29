@@ -150,6 +150,15 @@ describe('Task API', () => {
     });
   });
 
+  test('로컬 알림 후보 조회 기간을 전달한다', async () => {
+    await taskApi.getNotificationCandidates('2026-07-29', '2026-08-11');
+
+    expect(getMock).toHaveBeenCalledWith('/api/v1/tasks/notification-candidates', {
+      query: { from: '2026-07-29', to: '2026-08-11' },
+      signal: undefined,
+    });
+  });
+
   test('완료 조회에 날짜를 전달한다', async () => {
     await taskApi.getDone('2026-06-24');
 

@@ -89,28 +89,29 @@ type ApiEnvelope<T> = {
 
 ## 4. 현재 모바일이 호출하는 Task API
 
-| Method   | Path                                  | Query / Body 핵심                   | 사용 화면                 |
-| -------- | ------------------------------------- | ----------------------------------- | ------------------------- |
-| `GET`    | `/api/v1/tasks`                       | `type`, `taskType?`, `date`         | Calendar 범위 조회        |
-| `GET`    | `/api/v1/tasks/search`                | 검색어, 상태, 유형, 기간, cursor 등 | Search                    |
-| `GET`    | `/api/v1/tasks/{taskId}`              | -                                   | 상세                      |
-| `POST`   | `/api/v1/tasks`                       | `TaskUpsertRequest`                 | 빠른 기록, Task 작성      |
-| `PUT`    | `/api/v1/tasks/{taskId}`              | `TaskUpsertRequest`                 | Task 수정                 |
-| `DELETE` | `/api/v1/tasks/{taskId}`              | -                                   | Task 삭제                 |
-| `GET`    | `/api/v1/tasks/today`                 | `date=YYYY-MM-DD`                   | Today                     |
-| `GET`    | `/api/v1/tasks/today/recommendations` | `date=YYYY-MM-DD`                   | 정리할 항목 추천          |
-| `GET`    | `/api/v1/tasks/done`                  | `date=YYYY-MM-DD`                   | 오늘 완료한 일, Completed |
-| `GET`    | `/api/v1/tasks/stale`                 | -                                   | 정리할 항목, 지난 미완료  |
-| `GET`    | `/api/v1/tasks/inbox`                 | -                                   | 정리할 항목, 기록함       |
-| `PATCH`  | `/api/v1/tasks/{taskId}/done`         | -                                   | 완료 처리                 |
-| `PATCH`  | `/api/v1/tasks/{taskId}/today`        | `date=YYYY-MM-DD`                   | 오늘로 이동               |
-| `PATCH`  | `/api/v1/tasks/{taskId}/inbox`        | -                                   | 기록함으로 이동           |
-| `PATCH`  | `/api/v1/tasks/{taskId}/today-order`  | `date`, `direction=UP\|DOWN`        | Today 순서 변경           |
-| `PATCH`  | `/api/v1/tasks/{taskId}/defer-reason` | `reason`                            | 미루는 이유               |
-| `DELETE` | `/api/v1/tasks/{taskId}/defer-reason` | -                                   | 미루는 이유 해제          |
-| `PATCH`  | `/api/v1/tasks/{taskId}/dday-goal`    | `ddayGoalId`                        | D-Day 연결                |
-| `DELETE` | `/api/v1/tasks/{taskId}/dday-goal`    | -                                   | D-Day 연결 해제           |
-| `PATCH`  | `/api/v1/tasks/{taskId}/done/cancel`  | `date=YYYY-MM-DD`                   | 완료 다시 열기            |
+| Method   | Path                                    | Query / Body 핵심                   | 사용 화면                 |
+| -------- | --------------------------------------- | ----------------------------------- | ------------------------- |
+| `GET`    | `/api/v1/tasks`                         | `type`, `taskType?`, `date`         | Calendar 범위 조회        |
+| `GET`    | `/api/v1/tasks/search`                  | 검색어, 상태, 유형, 기간, cursor 등 | Search                    |
+| `GET`    | `/api/v1/tasks/{taskId}`                | -                                   | 상세                      |
+| `POST`   | `/api/v1/tasks`                         | `TaskUpsertRequest`                 | 빠른 기록, Task 작성      |
+| `PUT`    | `/api/v1/tasks/{taskId}`                | `TaskUpsertRequest`                 | Task 수정                 |
+| `DELETE` | `/api/v1/tasks/{taskId}`                | -                                   | Task 삭제                 |
+| `GET`    | `/api/v1/tasks/today`                   | `date=YYYY-MM-DD`                   | Today                     |
+| `GET`    | `/api/v1/tasks/today/recommendations`   | `date=YYYY-MM-DD`                   | 정리할 항목 추천          |
+| `GET`    | `/api/v1/tasks/notification-candidates` | `from`, `to`                        | 로컬 알림 후보            |
+| `GET`    | `/api/v1/tasks/done`                    | `date=YYYY-MM-DD`                   | 오늘 완료한 일, Completed |
+| `GET`    | `/api/v1/tasks/stale`                   | -                                   | 정리할 항목, 지난 미완료  |
+| `GET`    | `/api/v1/tasks/inbox`                   | -                                   | 정리할 항목, 기록함       |
+| `PATCH`  | `/api/v1/tasks/{taskId}/done`           | -                                   | 완료 처리                 |
+| `PATCH`  | `/api/v1/tasks/{taskId}/today`          | `date=YYYY-MM-DD`                   | 오늘로 이동               |
+| `PATCH`  | `/api/v1/tasks/{taskId}/inbox`          | -                                   | 기록함으로 이동           |
+| `PATCH`  | `/api/v1/tasks/{taskId}/today-order`    | `date`, `direction=UP\|DOWN`        | Today 순서 변경           |
+| `PATCH`  | `/api/v1/tasks/{taskId}/defer-reason`   | `reason`                            | 미루는 이유               |
+| `DELETE` | `/api/v1/tasks/{taskId}/defer-reason`   | -                                   | 미루는 이유 해제          |
+| `PATCH`  | `/api/v1/tasks/{taskId}/dday-goal`      | `ddayGoalId`                        | D-Day 연결                |
+| `DELETE` | `/api/v1/tasks/{taskId}/dday-goal`      | -                                   | D-Day 연결 해제           |
+| `PATCH`  | `/api/v1/tasks/{taskId}/done/cancel`    | `date=YYYY-MM-DD`                   | 완료 다시 열기            |
 
 `TaskResponse`는 `src/types/task.ts`를 기준으로 맞춘다. 특히 다음 필드는 Today와 Calendar UI에서 중요하다.
 
@@ -119,7 +120,8 @@ type ApiEnvelope<T> = {
 - `startAt`, `endAt`, `allDay`, `plannedDate`, `targetDate`, `completedAt`
 - `todayOrder`
 - `ddayGoalId`, `ddayGoalTitle`, `ddayGoalTargetDate`, `ddayDaysLeft`
-- 반복 일정 필드: `recurrenceSeriesId`, `recurrenceRule`, `occurrenceDate`, `recurrenceException`
+- 반복 일정 필드: `recurrenceSeriesId`, nested `recurrence`, `occurrenceDate`, `recurrenceException`
+- 알림 후보 필드: `notificationKey`, `scheduledAt`, `recurrenceSeriesId`, `occurrenceDate`, `task`
 
 ## 5. 현재 모바일이 호출하는 D-Day API
 

@@ -326,6 +326,7 @@ ToDoLab 적용 방향:
 - [ ] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.
 - [ ] Today와 Calendar 범위 조회에 occurrence를 표시한다.
 - [ ] occurrence별 완료, 미룸, 건너뛰기와 완료 기록을 연결한다.
+- [x] 모바일 API client는 `GET /api/v1/tasks/notification-candidates` 응답 타입과 조회 method를 제공한다.
 - [ ] 반복 일정과 로컬 알림의 예약·취소 책임을 실제 구현 기준으로 검증한다.
 
 완료 기준:
