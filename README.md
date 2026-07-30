@@ -83,7 +83,7 @@ EXPO_PUBLIC_API_MODE=mock
 
 `EXPO_PUBLIC_*` 값은 앱 번들에 포함되므로 API 주소처럼 공개 가능한 값만 사용하고, 토큰·비밀번호·서버 비밀 키는 넣지 않습니다.
 
-`EXPO_PUBLIC_API_MODE`를 생략하면 기본값은 `mock`입니다. 로컬 UI 개발은 백엔드 없이 mock으로 먼저 확인하고, 실제 백엔드 연동 테스트 때만 `real`로 바꿉니다.
+`EXPO_PUBLIC_API_MODE`를 생략하면 기본값은 `mock`입니다. 로컬 UI 개발은 백엔드 없이 mock으로 먼저 확인하고, 실제 백엔드 연동 테스트 때는 `.env.local`을 고치기보다 override script를 사용합니다.
 
 API 모드:
 
@@ -114,6 +114,15 @@ npm run ios
 npm run web
 ```
 
+로컬 Web에서 모드를 명확히 나눠 확인할 때는 다음 script를 사용합니다.
+
+```bash
+npm run web:mock
+npm run web:real -- --port 8090 --clear
+```
+
+`web:real`은 `EXPO_PUBLIC_API_MODE_OVERRIDE=real`과 `EXPO_PUBLIC_API_URL_OVERRIDE=http://127.0.0.1:8080`을 사용하므로 `.env.local`이 mock이어도 실제 백엔드에 연결됩니다.
+
 ### Smoke test 실행
 
 백엔드 없이 앱 흐름을 먼저 확인하려면 `.env.local`을 mock 모드로 둡니다.
@@ -124,14 +133,22 @@ EXPO_PUBLIC_API_MODE=mock
 
 mock 모드에서는 임의 이메일과 8자 이상 비밀번호로 회원가입·로그인 흐름을 확인할 수 있습니다.
 
-백엔드 연동을 확인할 때는 real 모드와 플랫폼별 API URL을 함께 설정합니다.
+백엔드 연동 화면을 확인할 때는 real 모드 script와 플랫폼별 API URL 기준을 함께 확인합니다.
 
-```dotenv
-EXPO_PUBLIC_API_MODE=real
-EXPO_PUBLIC_API_URL=http://localhost:8080
+```bash
+npm run web:real -- --port 8090 --clear
 ```
 
 화면별 확인 순서는 [Smoke test 체크리스트](./docs/qa/SMOKE_TEST_CHECKLIST.md)를 따릅니다.
+
+API 단독 smoke는 다음 script를 사용합니다.
+
+```bash
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:auth:real
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:recurrence:real
+```
+
+반복 일정 smoke는 2026-07-30 기준 생성과 cleanup은 통과하지만 Today occurrence 조회에서 백엔드 HTTP 500/code `99999`가 재현되어 UI 노출은 보류 중입니다. 최신 상태는 [Smoke test 로그](./docs/qa/SMOKE_TEST_LOG.md)를 확인합니다.
 
 ### 검증
 
