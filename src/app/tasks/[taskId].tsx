@@ -24,7 +24,13 @@ import {
   useUpdateTask,
 } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { TaskResponse, TaskStatus, TaskType, TaskUpsertRequest } from '@/types';
+import type {
+  RecurrenceEditScope,
+  TaskResponse,
+  TaskStatus,
+  TaskType,
+  TaskUpsertRequest,
+} from '@/types';
 import { formatDateLabel, formatTimeLabel } from '@/utils';
 
 export default function TaskDetailScreen() {
@@ -38,14 +44,19 @@ export default function TaskDetailScreen() {
   const taskDdayGoal = useTaskDdayGoal();
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [editScope, setEditScope] = useState<RecurrenceEditScope>('THIS');
+  const [deleteScope, setDeleteScope] = useState<RecurrenceEditScope>('THIS');
 
   const handleSubmit = (request: TaskUpsertRequest) => {
     if (parsedTaskId === null) {
       return;
     }
 
+    const recurrenceScope =
+      taskQuery.data && isRecurringTask(taskQuery.data) ? editScope : undefined;
+
     updateTask.mutate(
-      { taskId: parsedTaskId, request },
+      { taskId: parsedTaskId, request, recurrenceScope },
       {
         onSuccess: () => {
           setIsEditing(false);
@@ -59,11 +70,17 @@ export default function TaskDetailScreen() {
       return;
     }
 
-    deleteTask.mutate(parsedTaskId, {
-      onSuccess: () => {
-        router.replace('/');
+    const recurrenceScope =
+      taskQuery.data && isRecurringTask(taskQuery.data) ? deleteScope : undefined;
+
+    deleteTask.mutate(
+      { taskId: parsedTaskId, recurrenceScope },
+      {
+        onSuccess: () => {
+          router.replace('/');
+        },
       },
-    });
+    );
   };
 
   return (
@@ -111,6 +128,14 @@ export default function TaskDetailScreen() {
         />
       ) : taskQuery.data && isEditing ? (
         <View style={styles.editing}>
+          {isRecurringTask(taskQuery.data) ? (
+            <RecurrenceScopePicker
+              title="반복 수정 범위"
+              description="어느 반복 항목까지 수정할지 먼저 선택해 주세요."
+              value={editScope}
+              onChange={setEditScope}
+            />
+          ) : null}
           <TaskForm
             errorMessage={updateTask.error?.message}
             initialTask={taskQuery.data}
@@ -126,6 +151,7 @@ export default function TaskDetailScreen() {
       ) : taskQuery.data ? (
         <TaskDetail
           deleteErrorMessage={deleteTask.error?.message}
+          deleteScope={deleteScope}
           isConfirmingDelete={isConfirmingDelete}
           isDeleting={deleteTask.isPending}
           taskDdayGoal={taskDdayGoal}
@@ -135,8 +161,15 @@ export default function TaskDetailScreen() {
             setIsConfirmingDelete(false);
           }}
           onConfirmDelete={handleDelete}
-          onEdit={() => setIsEditing(true)}
-          onRequestDelete={() => setIsConfirmingDelete(true)}
+          onDeleteScopeChange={setDeleteScope}
+          onEdit={() => {
+            setEditScope('THIS');
+            setIsEditing(true);
+          }}
+          onRequestDelete={() => {
+            setDeleteScope('THIS');
+            setIsConfirmingDelete(true);
+          }}
         />
       ) : null}
     </Screen>
@@ -146,21 +179,25 @@ export default function TaskDetailScreen() {
 function TaskDetail({
   task,
   deleteErrorMessage,
+  deleteScope,
   isConfirmingDelete,
   isDeleting,
   taskDdayGoal,
   onCancelDelete,
   onConfirmDelete,
+  onDeleteScopeChange,
   onEdit,
   onRequestDelete,
 }: {
   task: TaskResponse;
   deleteErrorMessage?: string | null;
+  deleteScope: RecurrenceEditScope;
   isConfirmingDelete: boolean;
   isDeleting: boolean;
   taskDdayGoal: ReturnType<typeof useTaskDdayGoal>;
   onCancelDelete: () => void;
   onConfirmDelete: () => void;
+  onDeleteScopeChange: (scope: RecurrenceEditScope) => void;
   onEdit: () => void;
   onRequestDelete: () => void;
 }) {
@@ -365,6 +402,15 @@ function TaskDetail({
             </AppText>
           </View>
 
+          {isRecurringTask(task) ? (
+            <RecurrenceScopePicker
+              title="반복 삭제 범위"
+              description="반복 일정 중 삭제할 범위를 선택해 주세요."
+              value={deleteScope}
+              onChange={onDeleteScopeChange}
+            />
+          ) : null}
+
           {deleteErrorMessage ? (
             <AppText accessibilityLiveRegion="polite" tone="danger" variant="caption">
               {deleteErrorMessage}
@@ -386,6 +432,50 @@ function TaskDetail({
         </Button>
       )}
     </View>
+  );
+}
+
+type RecurrenceScopePickerProps = {
+  title: string;
+  description: string;
+  value: RecurrenceEditScope;
+  onChange: (scope: RecurrenceEditScope) => void;
+};
+
+function RecurrenceScopePicker({
+  title,
+  description,
+  value,
+  onChange,
+}: RecurrenceScopePickerProps) {
+  return (
+    <Card variant="outlined" style={styles.scopeCard}>
+      <View style={styles.stateCopy}>
+        <AppText variant="label" weight="bold">
+          {title}
+        </AppText>
+        <AppText tone="secondary" variant="caption">
+          {description}
+        </AppText>
+      </View>
+      <View style={styles.scopeActions}>
+        {recurrenceScopeOptions.map((option) => (
+          <Button
+            key={option.value}
+            accessibilityState={{ selected: option.value === value }}
+            size="compact"
+            variant={option.value === value ? 'primary' : 'secondary'}
+            onPress={() => onChange(option.value)}
+            style={styles.scopeButton}
+          >
+            {option.label}
+          </Button>
+        ))}
+      </View>
+      <AppText tone="muted" variant="caption">
+        {recurrenceScopeOptions.find((option) => option.value === value)?.description}
+      </AppText>
+    </Card>
   );
 }
 
@@ -456,6 +546,32 @@ function getDdayLabel(task: TaskResponse) {
   return `${task.ddayGoalTitle} · ${dayLabel}`;
 }
 
+function isRecurringTask(task: TaskResponse) {
+  return Boolean(task.recurrence ?? task.recurrenceRule ?? task.recurrenceSeriesId);
+}
+
+const recurrenceScopeOptions: {
+  value: RecurrenceEditScope;
+  label: string;
+  description: string;
+}[] = [
+  {
+    value: 'THIS',
+    label: '이번만',
+    description: '선택한 발생 항목 하나에만 적용합니다.',
+  },
+  {
+    value: 'THIS_AND_FUTURE',
+    label: '이후 모두',
+    description: '선택한 날짜와 이후 반복 항목에 적용합니다.',
+  },
+  {
+    value: 'ALL',
+    label: '전체',
+    description: '반복 묶음 전체에 적용합니다.',
+  },
+];
+
 const statusLabels: Record<TaskStatus, string> = {
   DONE: '완료',
   INBOX: '기록함',
@@ -499,6 +615,17 @@ const styles = StyleSheet.create({
     gap: spacing[4],
   },
   deleteActions: {
+    gap: spacing[2],
+  },
+  scopeActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing[2],
+  },
+  scopeButton: {
+    flexGrow: 1,
+  },
+  scopeCard: {
     gap: spacing[2],
   },
   goalActions: {
