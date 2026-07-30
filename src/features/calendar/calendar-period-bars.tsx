@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   singleDayLabelCompact: {
     flex: 1,
     minWidth: 0,
-    paddingHorizontal: 5,
+    paddingHorizontal: 3,
   },
   singleDayLabelMinimal: {
     alignItems: 'center',
@@ -353,8 +353,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[1],
   },
   compactSingleDayLabelText: {
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 10,
+    lineHeight: 14,
   },
   minimalSingleDayLabelText: {
     fontSize: 11,

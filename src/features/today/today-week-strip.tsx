@@ -110,8 +110,8 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
           })}
         </View>
         <CalendarSingleDayLabels
+          compact
           dates={dates}
-          minimal
           tasks={schedules}
           onOpen={(taskId) =>
             router.push({
