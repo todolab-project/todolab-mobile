@@ -17,6 +17,7 @@ type ProfileItem = {
   description: string;
   href: '/dday' | '/search' | '/completed' | '/settings';
   icon: SymbolViewProps['name'];
+  webIcon: 'flag' | 'search' | 'task_alt' | 'settings';
 };
 
 const profileItems: ProfileItem[] = [
@@ -26,6 +27,7 @@ const profileItems: ProfileItem[] = [
     description: 'D-Day와 연결된 실행 항목',
     href: '/dday',
     icon: { ios: 'flag.fill', android: 'flag', web: 'flag' },
+    webIcon: 'flag',
   },
   {
     accent: 'blue',
@@ -33,6 +35,7 @@ const profileItems: ProfileItem[] = [
     description: '과거 Task와 일정 찾기',
     href: '/search',
     icon: { ios: 'magnifyingglass', android: 'search', web: 'search' },
+    webIcon: 'search',
   },
   {
     accent: 'sage',
@@ -40,6 +43,7 @@ const profileItems: ProfileItem[] = [
     description: '끝낸 일과 주간 흐름',
     href: '/completed',
     icon: { ios: 'checkmark.circle.fill', android: 'task_alt', web: 'task_alt' },
+    webIcon: 'task_alt',
   },
   {
     accent: 'blue',
@@ -47,6 +51,7 @@ const profileItems: ProfileItem[] = [
     description: '테마, 알림, 개인 설정',
     href: '/settings',
     icon: { ios: 'gearshape.fill', android: 'settings', web: 'settings' },
+    webIcon: 'settings',
   },
 ];
 
@@ -167,7 +172,7 @@ export function ProfileOverview() {
             >
               <View style={[styles.icon, { backgroundColor: accent.backgroundColor }]}>
                 {Platform.OS === 'web' ? (
-                  <WebShortcutIcon color={accent.color} />
+                  <WebShortcutIcon color={accent.color} name={item.webIcon} />
                 ) : (
                   <SymbolView name={item.icon} size={18} tintColor={accent.color} />
                 )}
@@ -189,19 +194,49 @@ export function ProfileOverview() {
   );
 }
 
-function WebShortcutIcon({ color }: { color: ColorValue }) {
+function WebShortcutIcon({ color, name }: { color: ColorValue; name: ProfileItem['webIcon'] }) {
+  if (name === 'flag') {
+    return (
+      <View accessible={false} style={styles.webShortcutIcon}>
+        <View style={[styles.webFlagPole, { backgroundColor: color }]} />
+        <View style={[styles.webFlagBody, { borderColor: color }]} />
+      </View>
+    );
+  }
+
+  if (name === 'search') {
+    return (
+      <View accessible={false} style={styles.webShortcutIcon}>
+        <View style={[styles.webSearchCircle, { borderColor: color }]} />
+        <View style={[styles.webSearchHandle, { backgroundColor: color }]} />
+      </View>
+    );
+  }
+
+  if (name === 'task_alt') {
+    return (
+      <View accessible={false} style={styles.webShortcutIcon}>
+        <View style={[styles.webDoneCircle, { borderColor: color }]} />
+        <View style={[styles.webDoneCheckShort, { backgroundColor: color }]} />
+        <View style={[styles.webDoneCheckLong, { backgroundColor: color }]} />
+      </View>
+    );
+  }
+
   return (
     <View accessible={false} style={styles.webShortcutIcon}>
-      <View style={[styles.webShortcutDot, { backgroundColor: color }]} />
-      <View style={[styles.webShortcutLine, { backgroundColor: color }]} />
+      <View style={[styles.webSliderLineTop, { backgroundColor: color }]} />
+      <View style={[styles.webSliderLineBottom, { backgroundColor: color }]} />
+      <View style={[styles.webSliderKnobTop, { borderColor: color }]} />
+      <View style={[styles.webSliderKnobBottom, { borderColor: color }]} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[3],
-    paddingTop: spacing[4],
+    gap: spacing[4],
+    paddingTop: spacing[6],
   },
   identityCard: {
     alignItems: 'center',
@@ -210,7 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[3],
     paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
+    paddingVertical: spacing[3],
   },
   identity: {
     alignItems: 'center',
@@ -232,17 +267,17 @@ const styles = StyleSheet.create({
   },
   menu: {
     backgroundColor: 'transparent',
-    gap: spacing[1],
+    gap: spacing[2],
   },
   row: {
     alignItems: 'center',
     borderRadius: radii.lg,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
-    gap: spacing[2],
-    minHeight: 58,
+    gap: spacing[3],
+    minHeight: 68,
     paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
+    paddingVertical: spacing[3],
   },
   icon: {
     alignItems: 'center',
@@ -251,19 +286,106 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 32,
   },
-  webShortcutDot: {
-    borderRadius: radii.full,
-    height: 7,
-    width: 7,
-  },
   webShortcutIcon: {
     alignItems: 'center',
-    gap: 3,
+    height: 20,
     justifyContent: 'center',
+    position: 'relative',
+    width: 20,
   },
-  webShortcutLine: {
+  webFlagBody: {
+    borderBottomRightRadius: 3,
+    borderTopRightRadius: 5,
+    borderWidth: 2,
+    height: 10,
+    left: 8,
+    position: 'absolute',
+    top: 3,
+    width: 9,
+  },
+  webFlagPole: {
     borderRadius: radii.full,
-    height: 3,
+    height: 16,
+    left: 4,
+    position: 'absolute',
+    top: 2,
+    width: 2,
+  },
+  webSearchCircle: {
+    borderRadius: radii.full,
+    borderWidth: 2,
+    height: 12,
+    left: 2,
+    position: 'absolute',
+    top: 2,
+    width: 12,
+  },
+  webSearchHandle: {
+    borderRadius: radii.full,
+    height: 2,
+    position: 'absolute',
+    right: 3,
+    top: 14,
+    transform: [{ rotate: '45deg' }],
+    width: 7,
+  },
+  webDoneCircle: {
+    borderRadius: radii.full,
+    borderWidth: 2,
+    height: 17,
+    position: 'absolute',
+    width: 17,
+  },
+  webDoneCheckShort: {
+    borderRadius: radii.full,
+    height: 2,
+    left: 5,
+    position: 'absolute',
+    top: 10,
+    transform: [{ rotate: '45deg' }],
+    width: 5,
+  },
+  webDoneCheckLong: {
+    borderRadius: radii.full,
+    height: 2,
+    left: 8,
+    position: 'absolute',
+    top: 8,
+    transform: [{ rotate: '-45deg' }],
+    width: 8,
+  },
+  webSliderKnobBottom: {
+    backgroundColor: 'transparent',
+    borderRadius: radii.full,
+    borderWidth: 2,
+    height: 7,
+    left: 4,
+    position: 'absolute',
+    top: 11,
+    width: 7,
+  },
+  webSliderKnobTop: {
+    backgroundColor: 'transparent',
+    borderRadius: radii.full,
+    borderWidth: 2,
+    height: 7,
+    position: 'absolute',
+    right: 4,
+    top: 2,
+    width: 7,
+  },
+  webSliderLineBottom: {
+    borderRadius: radii.full,
+    height: 2,
+    position: 'absolute',
+    top: 14,
+    width: 16,
+  },
+  webSliderLineTop: {
+    borderRadius: radii.full,
+    height: 2,
+    position: 'absolute',
+    top: 5,
     width: 16,
   },
   copy: {

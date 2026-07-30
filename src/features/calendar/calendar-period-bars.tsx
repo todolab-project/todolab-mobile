@@ -71,7 +71,13 @@ export function CalendarSingleDayLabels({
                   tone="secondary"
                   variant="caption"
                   weight="medium"
-                  style={compact ? styles.compactSingleDayLabelText : undefined}
+                  style={
+                    minimal
+                      ? styles.minimalSingleDayLabelText
+                      : compact
+                        ? styles.compactSingleDayLabelText
+                        : undefined
+                  }
                 >
                   {getCalendarSingleDayLabel(task, compact, minimal)}
                 </AppText>
@@ -160,15 +166,9 @@ export function CalendarPeriodBars({
               ]}
             >
               <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
-                {minimal ? (
-                  '기간'
-                ) : (
-                  <>
-                    {segment.continuesBefore ? '‹ ' : ''}
-                    {segment.task.title}
-                    {segment.continuesAfter ? ' ›' : ''}
-                  </>
-                )}
+                {segment.continuesBefore ? '‹ ' : ''}
+                {segment.task.title}
+                {segment.continuesAfter ? ' ›' : ''}
               </AppText>
             </Pressable>
           </View>
@@ -338,10 +338,14 @@ const styles = StyleSheet.create({
   singleDayLabelMinimal: {
     alignItems: 'center',
     flex: 0,
-    minWidth: 34,
+    minWidth: 44,
     paddingHorizontal: spacing[1],
   },
   compactSingleDayLabelText: {
+    fontSize: 10,
+    lineHeight: 14,
+  },
+  minimalSingleDayLabelText: {
     fontSize: 10,
     lineHeight: 14,
   },
@@ -369,7 +373,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[1],
   },
   barMinimal: {
-    alignItems: 'center',
     paddingHorizontal: spacing[1],
   },
   overflow: {

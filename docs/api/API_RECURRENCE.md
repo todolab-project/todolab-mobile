@@ -56,9 +56,9 @@ PUT    /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 DELETE /api/v1/tasks/{id}?recurrenceScope=THIS|THIS_AND_FUTURE|ALL
 ```
 
-백엔드 `RECURRENCE_MODEL.md`, `API_V1_FRONTEND.md`, `MOBILE_API_BACKEND_STATUS.md` 기준으로 `POST /api/v1/tasks`의 `recurrence` 생성 계약과 `recurrenceScope` 수정·삭제 계약이 구현 상태로 정리되었다. 모바일은 nested `recurrence` 응답과 `recurrenceScope` query를 받을 수 있게 기반 타입/API를 맞춘 뒤, real smoke로 생성·조회·scope 수정·삭제를 확인하고 UI를 연다.
+백엔드 `RECURRENCE_MODEL.md`, `API_V1_FRONTEND.md`, `MOBILE_API_BACKEND_STATUS.md` 기준으로 `POST /api/v1/tasks`의 `recurrence` 생성 계약과 `recurrenceScope` 수정·삭제 계약이 구현 상태로 정리되었다. 모바일은 nested `recurrence` 응답, `TaskUpsertRequest.recurrence`, `recurrenceScope` 수정·삭제 query 기반 타입/API를 맞췄다. 반복 생성 UI는 real smoke에서 생성·조회·scope 수정·삭제가 모두 통과한 뒤 연다.
 
-2026-07-29 local real smoke 결과:
+2026-07-30 local real smoke 결과:
 
 - `POST /api/v1/tasks` 반복 일정 생성과 nested `recurrence` 응답은 통과했다.
 - `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup은 통과했다.

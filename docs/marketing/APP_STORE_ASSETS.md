@@ -2,6 +2,13 @@
 
 ToDoLab Mobile을 앱 마켓, 소개 페이지, 발표 자료에 보여주기 위한 이미지와 문구 초안이다. 실제 스토어 제출 전에는 Google Play와 App Store의 최신 이미지 규격을 별도로 확인한다.
 
+현재 상태:
+
+- 마켓 이미지 구성과 문구 초안은 최신 Today, Calendar, Search, Completed 흐름을 기준으로 정리되어 있다.
+- `docs/screenshots/`에 mock Web 390×844 기준 원본 화면 캡쳐를 생성했다.
+- 실제 `01_today.png` 같은 마켓용 편집 이미지 파일은 아직 생성하지 않았다.
+- 이 문서의 구성에 맞춰 `docs/marketing/` 편집본을 별도로 만든다.
+
 ## 기본 메시지
 
 한 줄 설명:
@@ -29,9 +36,7 @@ docs/marketing/
 
 ## 1. Today
 
-이미지:
-
-![Today 마켓 이미지](./01_today.png)
+이미지 파일: `docs/marketing/01_today.png` 예정
 
 카피:
 
@@ -50,9 +55,7 @@ docs/marketing/
 
 ## 2. 빠른 기록
 
-이미지:
-
-![빠른 기록 마켓 이미지](./02_quick_capture.png)
+이미지 파일: `docs/marketing/02_quick_capture.png` 예정
 
 카피:
 
@@ -70,9 +73,7 @@ docs/marketing/
 
 ## 3. Calendar
 
-이미지:
-
-![Calendar 마켓 이미지](./03_calendar.png)
+이미지 파일: `docs/marketing/03_calendar.png` 예정
 
 카피:
 
@@ -90,9 +91,7 @@ docs/marketing/
 
 ## 4. Search
 
-이미지:
-
-![Search 마켓 이미지](./04_search.png)
+이미지 파일: `docs/marketing/04_search.png` 예정
 
 카피:
 
@@ -110,9 +109,7 @@ docs/marketing/
 
 ## 5. Completed
 
-이미지:
-
-![Completed 마켓 이미지](./05_completed.png)
+이미지 파일: `docs/marketing/05_completed.png` 예정
 
 카피:
 

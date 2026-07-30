@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText, Button, Card, IconButton, InlineNotice } from '@/components/ui';
@@ -159,16 +159,27 @@ export function QuickCapture({ isExpanded, onExpandedChange }: QuickCaptureProps
           {didSave ? <InlineNotice message="기록함에 추가했어요." tone="success" /> : null}
         </Card>
       ) : (
-        <Button
+        <Pressable
           accessibilityHint="하단 입력창을 열어 기록함에 할 일을 추가합니다."
           accessibilityLabel="빠르게 기록 열기"
+          accessibilityRole="button"
           onPress={openComposer}
-          style={styles.fab}
+          style={({ pressed }) => [
+            styles.quickBar,
+            {
+              backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
+              borderColor: theme.colors.borderStrong,
+              shadowColor: theme.colors.shadow,
+            },
+          ]}
         >
-          <AppText style={{ color: theme.colors.textOnPrimary }} variant="title" weight="medium">
-            +
-          </AppText>
-        </Button>
+          <View style={[styles.quickBarIcon, { backgroundColor: theme.colors.primarySoft }]}>
+            <AppText tone="primary" variant="bodyLarge" weight="bold">
+              +
+            </AppText>
+          </View>
+          <AppText weight="semibold">기록</AppText>
+        </Pressable>
       )}
     </View>
   );
@@ -218,10 +229,29 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     minWidth: 52,
   },
-  fab: {
+  quickBar: {
+    alignItems: 'center',
     borderRadius: radii.full,
-    height: 48,
-    paddingHorizontal: 0,
-    width: 48,
+    borderWidth: 1,
+    elevation: 8,
+    flexDirection: 'row',
+    gap: spacing[2],
+    minHeight: 50,
+    paddingLeft: spacing[2],
+    paddingRight: spacing[4],
+    paddingVertical: spacing[1],
+    shadowOffset: {
+      height: 8,
+      width: 0,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+  },
+  quickBarIcon: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
   },
 });

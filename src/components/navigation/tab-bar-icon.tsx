@@ -40,6 +40,18 @@ type WebTabIconProps = {
 };
 
 function WebTabIcon({ color, name, size }: WebTabIconProps) {
+  if (name === 'today') {
+    return (
+      <View accessible={false} style={[styles.webTodayIcon, { height: size, width: size }]}>
+        <View style={[styles.webTodaySun, { borderColor: color }]} />
+        <View style={[styles.webTodayRayTop, { backgroundColor: color }]} />
+        <View style={[styles.webTodayRayRight, { backgroundColor: color }]} />
+        <View style={[styles.webTodayRayBottom, { backgroundColor: color }]} />
+        <View style={[styles.webTodayRayLeft, { backgroundColor: color }]} />
+      </View>
+    );
+  }
+
   if (name === 'person') {
     return (
       <View accessible={false} style={[styles.webPersonIcon, { height: size, width: size }]}>
@@ -55,7 +67,6 @@ function WebTabIcon({ color, name, size }: WebTabIconProps) {
       style={[styles.webCalendarIcon, { borderColor: color, height: size, width: size }]}
     >
       <View style={[styles.webCalendarBar, { backgroundColor: color }]} />
-      {name === 'today' ? <View style={[styles.webTodayDot, { backgroundColor: color }]} /> : null}
     </View>
   );
 }
@@ -78,6 +89,53 @@ const styles = StyleSheet.create({
     height: 4,
     width: '100%',
   },
+  webTodayIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  webTodaySun: {
+    borderRadius: radii.full,
+    borderWidth: 2,
+    height: 11,
+    width: 11,
+  },
+  webTodayRayTop: {
+    borderRadius: radii.full,
+    height: 4,
+    left: '50%',
+    marginLeft: -1,
+    position: 'absolute',
+    top: 1,
+    width: 2,
+  },
+  webTodayRayRight: {
+    borderRadius: radii.full,
+    height: 2,
+    position: 'absolute',
+    right: 1,
+    top: '50%',
+    marginTop: -1,
+    width: 4,
+  },
+  webTodayRayBottom: {
+    borderRadius: radii.full,
+    bottom: 1,
+    height: 4,
+    left: '50%',
+    marginLeft: -1,
+    position: 'absolute',
+    width: 2,
+  },
+  webTodayRayLeft: {
+    borderRadius: radii.full,
+    height: 2,
+    left: 1,
+    marginTop: -1,
+    position: 'absolute',
+    top: '50%',
+    width: 4,
+  },
   webPersonIcon: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -95,13 +153,5 @@ const styles = StyleSheet.create({
     height: 8,
     marginTop: 2,
     width: 16,
-  },
-  webTodayDot: {
-    borderRadius: radii.full,
-    height: 5,
-    left: '50%',
-    marginLeft: -2.5,
-    marginTop: 4,
-    width: 5,
   },
 });

@@ -432,6 +432,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing[2],
+    minHeight: 44,
     justifyContent: 'center',
     paddingBottom: spacing[1],
   },
@@ -450,7 +451,8 @@ const styles = StyleSheet.create({
   monthTitleButton: {
     alignItems: 'center',
     borderRadius: radii.full,
-    minHeight: 44,
+    height: 44,
+    justifyContent: 'center',
     paddingHorizontal: spacing[2],
   },
   monthPickerSurface: {

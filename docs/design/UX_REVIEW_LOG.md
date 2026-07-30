@@ -15,6 +15,41 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 
 ## 현재 화면 판단
 
+## 2026-07-30 Product Design audit 요약
+
+Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다시 확인했다. 실시간 browser capture는 로컬 Expo 포트 연결 거절로 완료하지 못했으므로, 이 섹션은 `docs/screenshots/*.png` 기준의 visual audit이다.
+
+전반 판단:
+
+- 현재 화면은 이전보다 구조가 많이 정리되었지만, 아직 “완성된 상용 앱”보다는 “좋아지고 있는 MVP”에 가깝다.
+- 네이버 모바일 앱이나 Figma 커뮤니티의 깔끔한 생산성 앱처럼 보이려면 기능 추가보다 visual polish와 interaction affordance를 먼저 마감해야 한다.
+- 가장 큰 체감 개선 영역은 Calendar 일정 bar, Today/Calendar의 카드·선 무게, Quick Capture composer, 하단 tab active state, Profile 개인화 톤이다.
+
+우선 수정 후보:
+
+1. Calendar 이벤트 bar
+   - 하루 일정 pill과 여러 날 일정 bar의 높이, 최소 너비, 텍스트 생략 규칙, column overflow 방지 기준을 다시 잡는다.
+   - Calendar 안에서는 제목 전체를 보여 주려 하기보다 시간·존재감·기간 흐름을 안정적으로 전달하고, 상세 제목은 선택 날짜 목록에서 담당한다.
+2. Today 카드 위계
+   - 일정, 오늘 할 일, 정리할 항목, 완료한 일이 모두 같은 border/card처럼 보이지 않게 section별 역할 차이를 만든다.
+   - border를 많이 반복하기보다 여백, hairline, 아주 약한 tint로 정보 그룹을 분리한다.
+3. Quick Capture
+   - 열린 상태의 파란 기본 focus border는 앱의 차분한 톤과 맞지 않으므로 primary soft border, subtle shadow, bottom sheet형 composer 느낌으로 바꾼다.
+   - keyboard, safe area, tab bar와 충돌하지 않는지 실제 기기에서 확인한다.
+4. 하단 tab
+   - active icon과 label 상태가 더 명확해야 한다.
+   - 아이콘은 Today=sun/day, Calendar=calendar, Profile=person/settings destination 계열처럼 의미가 겹치지 않게 유지한다.
+5. Profile
+   - 단순 설정 목록이 아니라 “나의 플래너 공간”처럼 보이게 로그인 card의 여백, 동기화 상태, shortcut icon 리듬을 다듬는다.
+   - 단, 불필요한 통계 카드나 feed 진입점은 추가하지 않는다.
+
+접근성 확인 필요:
+
+- Calendar 이벤트 텍스트가 너무 작거나 빨리 잘려 저시력 사용자가 의미를 놓칠 수 있다.
+- icon-only 또는 축약 label이 screen reader에서 충분히 설명되는지 확인한다.
+- Quick Capture와 하단 tab이 작은 화면에서 터치 충돌을 만들지 않는지 확인한다.
+- 색상만으로 일정/완료/카테고리를 구분하지 않고 텍스트, 위치, icon을 함께 사용한다.
+
 ### Today
 
 현재 방향:

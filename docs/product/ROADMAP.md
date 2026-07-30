@@ -295,6 +295,11 @@ ToDoLab 적용 방향:
 - [x] Calendar grid의 테두리와 내부 rule 대비를 낮추고 선택 날짜 중심으로 시선을 정리한다.
 - [x] 정리할 항목 section별 성격 차이를 낮은 강조의 tint, icon, copy로 보강한다.
 - [x] 하단 tab과 shortcut icon의 Web glyph 중복 노출 흔적을 점검하고 필요하면 정리한다.
+- [ ] Product Design audit 기준 Calendar 일정 bar의 최소 크기, 텍스트 생략, column overflow, touch target을 다시 마감한다.
+- [ ] Today section별 카드·border 무게를 낮추고 일정/오늘 할 일/정리할 항목/완료의 역할 차이를 더 명확히 만든다.
+- [ ] Quick Capture 열린 상태의 기본 파란 focus border를 앱 primary soft border와 bottom sheet형 composer visual로 교체한다.
+- [ ] 하단 tab active icon·label의 선택 상태와 실제 스크린샷을 갱신해 Today/Calendar/Profile의 현재 위치가 분명히 보이는지 확인한다.
+- [ ] Profile 상단 로그인 card와 shortcut row를 “나의 플래너 공간”처럼 보이도록 여백, 동기화 상태 copy, icon 리듬을 다듬는다.
 - [ ] iOS/Android font scale 1.5, safe area, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 
 완료 기준:
@@ -347,6 +352,7 @@ ToDoLab 적용 방향:
 
 - [x] [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
 - [x] 앱 아이콘, splash, 상태바, safe area의 현재 설정과 남은 실기기 확인 항목을 문서화한다.
+- [x] 화면 가이드와 마켓 이미지 구성 문서는 최신 화면 구조 기준으로 정리했고, mock Web 390×844 기준 실제 PNG 캡쳐를 `docs/screenshots/`에 생성했다.
 - [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [x] Web mock responsive smoke와 real auth API smoke를 반복 실행하고 결과를 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
 - [ ] Android/iOS에서 mock/real 화면 smoke test를 반복한다. 반복 occurrence smoke는 백엔드 500으로 보류 중이다.
@@ -457,7 +463,8 @@ Today 작업 목록 표시
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
-4. 반복 Task와 일정의 작성·수정 UI는 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 기능처럼 노출하지 않는다.
-5. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
+4. 마켓·소개용 편집 이미지는 실제 화면 캡쳐를 기반으로 `docs/marketing/`에 분리해 만든다.
+5. 반복 Task와 일정의 작성·수정 UI는 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 기능처럼 노출하지 않는다.
+6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

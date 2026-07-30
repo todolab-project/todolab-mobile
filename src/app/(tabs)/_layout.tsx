@@ -33,7 +33,11 @@ export default function TabLayout() {
               color={color}
               focused={focused}
               size={size}
-              name={{ ios: 'sun.max.fill', android: 'today', web: 'today' }}
+              name={{
+                ios: focused ? 'sun.max.fill' : 'sun.max',
+                android: 'wb_sunny',
+                web: 'today',
+              }}
             />
           ),
         }}

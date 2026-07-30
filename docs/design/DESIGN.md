@@ -551,6 +551,10 @@ Don't:
 - system font를 대체할 브랜드 typography 필요 여부
 - 아이콘 크기, stroke, filled/outlined 사용 규칙
 - modal, bottom sheet, toast의 세부 visual specification
+- Quick Capture composer의 collapsed/expanded/focus 상태 visual specification
+- Calendar 일정 pill/bar의 최소 크기, overflow, touch target, 접근성 label 규칙
+- 하단 tab active/inactive icon tone과 label contrast 규칙
+- Profile shortcut icon set의 플랫폼별 fallback과 web glyph 렌더링 규칙
 - 햅틱과 motion의 상황별 매핑
 - 빈 상태 illustration의 사용 여부와 스타일
 - dark mode의 실제 기기별 시각 검증
