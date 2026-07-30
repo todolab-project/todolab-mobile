@@ -3,7 +3,6 @@ import type { TaskResponse } from '@/types';
 import {
   buildCalendarPeriodSegments,
   buildCalendarSingleDayLabels,
-  getCalendarCompactTitle,
   getCalendarScheduleAccessibilityLabel,
   getCalendarSingleDayLabel,
   layoutCalendarPeriodSegments,
@@ -141,16 +140,10 @@ describe('buildCalendarSingleDayLabels', () => {
     } satisfies TaskResponse;
 
     expect(getCalendarSingleDayLabel(timed)).toBe('14:00 백엔드 회의');
-    expect(getCalendarSingleDayLabel(timed, false, true)).toBe('백엔드');
-    expect(getCalendarSingleDayLabel(timed, true)).toBe('백엔드');
+    expect(getCalendarSingleDayLabel(timed, false, true)).toBe('백엔드 회의');
+    expect(getCalendarSingleDayLabel(timed, true)).toBe('백엔드 회의');
     expect(getCalendarSingleDayLabel({ ...timed, allDay: true })).toBe('백엔드 회의');
-    expect(getCalendarSingleDayLabel({ ...timed, allDay: true }, false, true)).toBe('백엔드');
-  });
-
-  it('좁은 달력 cell에서는 제목 첫 키워드로 일정을 식별한다', () => {
-    expect(getCalendarCompactTitle('백엔드 계약 확인 미팅')).toBe('백엔드');
-    expect(getCalendarCompactTitle('검색필터개선')).toBe('검색필터');
-    expect(getCalendarCompactTitle('회의')).toBe('회의');
+    expect(getCalendarSingleDayLabel({ ...timed, allDay: true }, false, true)).toBe('백엔드 회의');
   });
 
   it('반복 일정은 달력 접근성 label에 반복 정보를 포함한다', () => {

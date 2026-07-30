@@ -223,19 +223,13 @@ export function buildCalendarSingleDayLabels(
 
 export function getCalendarSingleDayLabel(task: TaskResponse, compact = false, minimal = false) {
   if (minimal) {
-    return getCalendarCompactTitle(task.title);
+    return task.title;
   }
 
   if (task.allDay || !task.startAt) return task.title;
-  if (compact) return getCalendarCompactTitle(task.title);
+  if (compact) return task.title;
 
   return `${formatTimeLabel(task.startAt)} ${task.title}`;
-}
-
-export function getCalendarCompactTitle(title: string) {
-  const firstWord = title.trim().split(/\s+/)[0] ?? title;
-
-  return firstWord.length > 4 ? firstWord.slice(0, 4) : firstWord;
 }
 
 export function getCalendarScheduleAccessibilityLabel(task: TaskResponse, kind: string) {
@@ -331,10 +325,9 @@ const styles = StyleSheet.create({
   singleDayCell: {
     alignItems: 'flex-start',
     flexDirection: 'row',
-    justifyContent: 'center',
     minWidth: 0,
     overflow: 'hidden',
-    paddingHorizontal: 2,
+    paddingHorizontal: 3,
     width: CALENDAR_DAY_WIDTH,
   },
   singleDayLabel: {
@@ -349,10 +342,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   singleDayLabelCompact: {
-    flex: 0,
-    maxWidth: '92%',
-    minWidth: 42,
-    paddingHorizontal: 4,
+    flex: 1,
+    minWidth: 0,
+    paddingHorizontal: 5,
   },
   singleDayLabelMinimal: {
     alignItems: 'center',

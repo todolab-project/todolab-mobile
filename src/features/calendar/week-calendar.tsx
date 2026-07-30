@@ -512,11 +512,11 @@ const styles = StyleSheet.create({
   },
   monthWeek: {
     marginHorizontal: spacing[2],
-    minHeight: 120,
+    minHeight: 128,
     position: 'relative',
   },
   monthWeekDense: {
-    minHeight: 104,
+    minHeight: 112,
   },
   dayColumnRules: {
     bottom: 0,
@@ -542,10 +542,10 @@ const styles = StyleSheet.create({
     minHeight: 42,
   },
   singleDayLane: {
-    minHeight: 24,
+    minHeight: 28,
   },
   singleDayLaneDense: {
-    minHeight: 20,
+    minHeight: 24,
   },
   periodLanes: {
     minHeight: 48,
