@@ -294,7 +294,7 @@ ToDoLab 적용 방향:
 - [x] 빠른 기록 composer를 하단 tab과 분리된 bottom sheet형 입력 surface로 정리한다.
 - [x] Calendar grid의 테두리와 내부 rule 대비를 낮추고 선택 날짜 중심으로 시선을 정리한다.
 - [x] 정리할 항목 section별 성격 차이를 낮은 강조의 tint, icon, copy로 보강한다.
-- [ ] 하단 tab과 shortcut icon의 Web glyph 중복 노출 흔적을 점검하고 필요하면 정리한다.
+- [x] 하단 tab과 shortcut icon의 Web glyph 중복 노출 흔적을 점검하고 필요하면 정리한다.
 - [ ] iOS/Android font scale 1.5, safe area, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 
 완료 기준:

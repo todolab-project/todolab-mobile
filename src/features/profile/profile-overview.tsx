@@ -4,7 +4,8 @@ import { useRouter } from 'expo-router';
 import type { SymbolViewProps } from 'expo-symbols';
 import { SymbolView } from 'expo-symbols';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import type { ColorValue } from 'react-native';
 
 import { AppText, Button, InlineNotice, Screen } from '@/components/ui';
 import { authApi, getAccessToken, subscribeAccessToken } from '@/services/api';
@@ -165,7 +166,11 @@ export function ProfileOverview() {
               ]}
             >
               <View style={[styles.icon, { backgroundColor: accent.backgroundColor }]}>
-                <SymbolView name={item.icon} size={18} tintColor={accent.color} />
+                {Platform.OS === 'web' ? (
+                  <WebShortcutIcon color={accent.color} />
+                ) : (
+                  <SymbolView name={item.icon} size={18} tintColor={accent.color} />
+                )}
               </View>
               <View style={styles.copy}>
                 <AppText weight="medium">{item.title}</AppText>
@@ -181,6 +186,15 @@ export function ProfileOverview() {
         })}
       </View>
     </Screen>
+  );
+}
+
+function WebShortcutIcon({ color }: { color: ColorValue }) {
+  return (
+    <View accessible={false} style={styles.webShortcutIcon}>
+      <View style={[styles.webShortcutDot, { backgroundColor: color }]} />
+      <View style={[styles.webShortcutLine, { backgroundColor: color }]} />
+    </View>
   );
 }
 
@@ -236,6 +250,21 @@ const styles = StyleSheet.create({
     height: 32,
     justifyContent: 'center',
     width: 32,
+  },
+  webShortcutDot: {
+    borderRadius: radii.full,
+    height: 7,
+    width: 7,
+  },
+  webShortcutIcon: {
+    alignItems: 'center',
+    gap: 3,
+    justifyContent: 'center',
+  },
+  webShortcutLine: {
+    borderRadius: radii.full,
+    height: 3,
+    width: 16,
   },
   copy: {
     flex: 1,
