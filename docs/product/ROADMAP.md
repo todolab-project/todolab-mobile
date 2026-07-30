@@ -289,7 +289,8 @@ ToDoLab 적용 방향:
 - [x] Completed 화면은 완료 Task를 compact card로 맞추고 중복 `다시 열기` 버튼을 줄인다.
 - [x] D-Day 목표 메뉴는 작은 화면에서 읽기 쉬운 세로 액션으로 정리한다.
 - [x] Calendar 3주 grid는 compact 폭과 짧은 화면에서 주 높이와 label lane을 줄인다.
-- [ ] 320px, 375pt, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
+- [x] mock Web 320px, 375px, 430px, 720px에서 Today와 Calendar horizontal overflow와 첫 viewport 노출을 실제 화면으로 확인했다.
+- [ ] iOS/Android font scale 1.5, safe area, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 
 완료 기준:
 

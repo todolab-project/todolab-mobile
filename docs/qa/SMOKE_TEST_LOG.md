@@ -98,6 +98,27 @@ Mock Web 화면에서 확인한 항목:
 - light/dark에서 section 색상, calendar rule, hairline 대비
 - 일정 label과 여러 날 일정 bar가 날짜 cell 밖으로 튀지 않는지
 
+## 2026-07-30 mock Web responsive smoke
+
+환경:
+
+- API 모드: `mock`
+- 실행 명령: `npm run web:mock -- --localhost --port 8091 --clear`
+- 확인 방식: Browser viewport override + DOM overflow check
+- Viewport: 320×760, 375×760, 430×760, 720×760
+
+통과:
+
+- Today와 Calendar 모두 `documentElement.scrollWidth === clientWidth`로 페이지 단위 horizontal overflow 없음
+- Today 첫 viewport에서 주간 strip, 일정, 오늘 할 일 section 노출
+- Calendar 3주 grid가 320px, 375px, 430px, 720px에서 화면 폭을 밀지 않음
+- 하단 탭이 viewport 폭 밖으로 밀리지 않음
+
+메모:
+
+- 긴 일정 label, 긴 Task 설명, tab icon glyph 일부는 element 내부 `scrollWidth > clientWidth`로 감지되지만 페이지 전체 overflow는 만들지 않는다. 현재 UI 의도상 말줄임/clip 대상이다.
+- OS font scale 1.5, iOS/Android safe area, light/dark 대비는 실제 기기 또는 simulator에서 별도 확인해야 한다.
+
 ## 다음 smoke test 순서
 
 백엔드가 켜져 있을 때:
