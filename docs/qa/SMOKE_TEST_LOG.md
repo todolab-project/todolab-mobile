@@ -221,3 +221,26 @@ Mock Web 화면에서 확인한 항목:
 수정/확인 필요:
 
 - Calendar와 Today의 일정 bar는 시각적으로 얇은 label로 유지하고 `hitSlop`으로 터치 영역을 보강한다. iOS/Android 실기기에서 실제 터치 영역과 VoiceOver/TalkBack 탐색성을 최종 확인한다.
+
+## 2026-07-30 mock Web render performance smoke
+
+환경:
+
+- API 모드: mock
+- 실행 명령: `npm run web:mock -- --localhost --port 8091 --clear`
+- 화면: Today `/`, Calendar `/calendar`
+- viewport: 375×760, 720×760
+
+결과:
+
+| 화면     | viewport | network idle | DOM node | horizontal overflow |
+| -------- | -------- | -----------: | -------: | ------------------- |
+| Today    | 375×760  |        323ms |      218 | 없음                |
+| Calendar | 375×760  |        379ms |      286 | 없음                |
+| Today    | 720×760  |        314ms |      218 | 없음                |
+| Calendar | 720×760  |        336ms |      286 | 없음                |
+
+판정:
+
+- mock Web 기준 초기 진입과 Calendar 렌더링은 현재 UI 밀도에서 큰 병목이 보이지 않는다.
+- Android/iOS 실기기에서는 네이티브 렌더링, 저사양 기기, 큰 글꼴, 실제 API 지연을 별도로 확인한다.
