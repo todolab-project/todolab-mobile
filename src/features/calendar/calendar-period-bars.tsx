@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui';
-import { getRecurrenceLabel } from '@/features/tasks';
+import { getOccurrenceLabel, getRecurrenceLabel } from '@/features/tasks';
 import { radii, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 import { doesScheduleOverlapDate, formatTimeLabel, shiftLocalDate } from '@/utils';
@@ -229,7 +229,9 @@ export function getCalendarSingleDayLabel(task: TaskResponse, compact = false, m
 }
 
 export function getCalendarScheduleAccessibilityLabel(task: TaskResponse, kind: string) {
-  return [task.title, kind, getRecurrenceLabel(task)].filter(Boolean).join(', ');
+  return [task.title, kind, getRecurrenceLabel(task), getOccurrenceLabel(task)]
+    .filter(Boolean)
+    .join(', ');
 }
 
 export function layoutCalendarPeriodSegments(

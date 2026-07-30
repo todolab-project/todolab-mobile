@@ -1,8 +1,15 @@
 import type { TaskResponse } from '@/types';
 
-import { getRecurrenceLabel } from '../recurrence-presentation';
+import { getOccurrenceLabel, getRecurrenceLabel } from '../recurrence-presentation';
 
-type RecurringTask = Pick<TaskResponse, 'recurrence' | 'recurrenceException' | 'recurrenceRule'>;
+type RecurringTask = Pick<
+  TaskResponse,
+  | 'occurrenceDate'
+  | 'originalOccurrenceDate'
+  | 'recurrence'
+  | 'recurrenceException'
+  | 'recurrenceRule'
+>;
 
 function makeTask(overrides: RecurringTask): RecurringTask {
   return overrides;
@@ -63,5 +70,32 @@ describe('getRecurrenceLabel', () => {
         }),
       ),
     ).toBe('매주 화 · 수정됨');
+  });
+
+  it('occurrence 날짜가 있으면 이번 발생 날짜를 표시한다', () => {
+    expect(
+      getOccurrenceLabel(
+        makeTask({
+          recurrence: null,
+          recurrenceException: null,
+          recurrenceRule: 'FREQ=WEEKLY;BYDAY=TU',
+          occurrenceDate: '2026-08-04',
+        }),
+      ),
+    ).toBe('발생 8월 4일');
+  });
+
+  it('이동된 occurrence는 원래 날짜와 변경 날짜를 함께 표시한다', () => {
+    expect(
+      getOccurrenceLabel(
+        makeTask({
+          recurrence: null,
+          recurrenceException: 'MOVED',
+          recurrenceRule: 'FREQ=WEEKLY;BYDAY=TU',
+          occurrenceDate: '2026-08-05',
+          originalOccurrenceDate: '2026-08-04',
+        }),
+      ),
+    ).toBe('이동 8월 4일→8월 5일');
   });
 });

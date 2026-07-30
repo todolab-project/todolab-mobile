@@ -6,7 +6,7 @@ import { motion, radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { TaskResponse } from '@/types';
 import { formatTimeLabel } from '@/utils';
 
-import { getRecurrenceLabel } from './recurrence-presentation';
+import { getOccurrenceLabel, getRecurrenceLabel } from './recurrence-presentation';
 
 type TaskCardProps = {
   task: TaskResponse;
@@ -51,10 +51,11 @@ export function TaskCard({
       ? formatTimeLabel(task.startAt)
       : null;
   const recurrenceLabel = getRecurrenceLabel(task);
+  const occurrenceLabel = getOccurrenceLabel(task);
   const metadata = (
     isDone
-      ? [timeLabel, recurrenceLabel, task.category]
-      : [timeLabel, task.allDay ? '종일' : null, recurrenceLabel, task.category]
+      ? [timeLabel, recurrenceLabel, occurrenceLabel, task.category]
+      : [timeLabel, task.allDay ? '종일' : null, recurrenceLabel, occurrenceLabel, task.category]
   ).filter((value): value is string => Boolean(value));
   const metadataLabel = [...metadata, task.ddayGoalTitle].filter(Boolean).join(' · ');
   const detailAccessibilityLabel = `${task.title}${metadataLabel ? `, ${metadataLabel}` : ''} 상세 보기`;

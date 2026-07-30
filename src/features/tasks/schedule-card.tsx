@@ -5,7 +5,7 @@ import { AppText } from '@/components/ui';
 import { radii, sizes, spacing, useAppTheme } from '@/theme';
 import type { LocalDateString, TaskResponse } from '@/types';
 
-import { getRecurrenceLabel } from './recurrence-presentation';
+import { getOccurrenceLabel, getRecurrenceLabel } from './recurrence-presentation';
 import { getSchedulePresentation } from './schedule-presentation';
 
 type ScheduleCardProps = {
@@ -29,9 +29,11 @@ export function ScheduleCard({
   const [focusedControl, setFocusedControl] = useState<'checkbox' | 'content' | null>(null);
   const presentation = getSchedulePresentation(task, referenceDate);
   const recurrenceLabel = getRecurrenceLabel(task);
+  const occurrenceLabel = getOccurrenceLabel(task);
   const secondaryMetadata = [
     presentation.rangeLabel,
     recurrenceLabel,
+    occurrenceLabel,
     task.category,
     task.ddayGoalTitle,
   ]
@@ -39,7 +41,7 @@ export function ScheduleCard({
     .join(' · ');
   const scheduleAccessibilityLabel = `${task.title}, 일정, ${presentation.primaryLabel}${
     presentation.rangeLabel ? `, ${presentation.rangeLabel}` : ''
-  }${recurrenceLabel ? `, ${recurrenceLabel}` : ''}`;
+  }${recurrenceLabel ? `, ${recurrenceLabel}` : ''}${occurrenceLabel ? `, ${occurrenceLabel}` : ''}`;
 
   return (
     <View

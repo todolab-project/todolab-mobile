@@ -1,6 +1,14 @@
 import type { RecurrenceException, TaskResponse } from '@/types';
+import { formatDateLabel } from '@/utils';
 
-type RecurringTask = Pick<TaskResponse, 'recurrence' | 'recurrenceException' | 'recurrenceRule'>;
+type RecurringTask = Pick<
+  TaskResponse,
+  | 'occurrenceDate'
+  | 'originalOccurrenceDate'
+  | 'recurrence'
+  | 'recurrenceException'
+  | 'recurrenceRule'
+>;
 
 const frequencyLabels: Record<string, string> = {
   DAILY: '매일',
@@ -39,6 +47,22 @@ export function getRecurrenceLabel(task: RecurringTask) {
     : null;
 
   return [baseLabel, exceptionLabel].filter(Boolean).join(' · ');
+}
+
+export function getOccurrenceLabel(task: RecurringTask) {
+  const recurrenceRule = task.recurrence?.recurrenceRule ?? task.recurrenceRule;
+
+  if (!recurrenceRule || !task.occurrenceDate) {
+    return null;
+  }
+
+  const occurrenceDate = formatShortDateLabel(task.occurrenceDate);
+
+  if (task.originalOccurrenceDate && task.originalOccurrenceDate !== task.occurrenceDate) {
+    return `이동 ${formatShortDateLabel(task.originalOccurrenceDate)}→${occurrenceDate}`;
+  }
+
+  return `발생 ${occurrenceDate}`;
 }
 
 function getBaseRecurrenceLabel(rule: Record<string, string>) {
@@ -90,4 +114,8 @@ function parseRecurrenceRule(value: string) {
 
     return rules;
   }, {});
+}
+
+function formatShortDateLabel(value: NonNullable<RecurringTask['occurrenceDate']>) {
+  return formatDateLabel(value, { month: 'long', day: 'numeric' });
 }
