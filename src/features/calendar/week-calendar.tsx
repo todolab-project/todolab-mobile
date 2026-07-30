@@ -259,7 +259,7 @@ function MonthDateGrid({
     <View
       style={[
         styles.monthGridSurface,
-        { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+        { backgroundColor: theme.colors.surface, borderColor: theme.colors.rule },
       ]}
     >
       <View style={styles.monthWeekdays}>
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
   dayColumnRules: {
     bottom: 0,
     left: 0,
-    opacity: 0.35,
+    opacity: 0.24,
     pointerEvents: 'none',
     position: 'absolute',
     right: 0,
