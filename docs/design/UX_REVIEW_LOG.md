@@ -24,11 +24,21 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - 일정과 오늘 할 일의 row 문법은 분리하되 checkbox, title, meta의 시작선과 밀도는 같은 리듬으로 맞춘다.
 - 빠른 입력은 “할 일 입력”처럼 짧고 가벼운 copy를 쓴다.
 
+2026-07-30 Web mock 점검 메모:
+
+- 첫 viewport 안에 주간 strip, 일정 2개, 오늘 할 일 3개, 정리할 항목 진입점이 들어와 정보 구조는 이전보다 훨씬 좋아졌다.
+- 다만 주간 strip 안의 일정 label이 `14:...`, `여러 날에 걸친 일정 UX...`처럼 빨리 잘려 “좁은 칸에 억지로 넣은” 느낌이 남아 있다.
+- 네이버 모바일 앱처럼 가볍게 보이려면 미니 달력은 날짜 맥락과 일정 존재감만 전달하고, 정확한 제목/시간은 아래 일정 section이 담당하는 편이 좋다.
+- 빠른 기록 composer는 손이 닿는 위치는 맞지만 하단 tab bar와 너무 가까워 “떠 있는 입력 bar”라기보다 화면 끝에 끼어 있는 느낌이 있다.
+- composer가 열릴 때는 bottom sheet처럼 탭바 위에서 살짝 분리된 surface, 안정적인 여백, 은은한 shadow 또는 border를 사용한다.
+
 다음 확인:
 
 - Today 주간 strip의 border, column rule, label clipping이 실제 기기에서 깔끔한지 확인
 - 일정 label과 여러 날 bar가 320px와 font scale 1.5에서 너무 빨리 잘리지 않는지 확인
 - 완료 feedback notice가 목록 흐름을 과하게 밀지 않는지 확인
+- 미니 달력 일정 bar를 더 추상적인 pill/dot/short marker로 바꿀 때 아래 일정 section과 정보가 중복되지 않는지 확인
+- 빠른 기록 composer가 keyboard, safe area, tab bar와 충돌하지 않는지 확인
 
 ### Calendar
 
@@ -39,12 +49,21 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - 월 제목을 누르면 같은 폭의 월 선택 panel을 열 수 있고, panel은 달력과 목록을 과하게 밀지 않게 compact하게 유지한다.
 - 일정이 많은 날짜는 칸 안에 모두 넣기보다 축약 label과 아래 선택 날짜 목록으로 넘긴다.
 
+2026-07-30 Web mock 점검 메모:
+
+- 3주 grid와 월 선택 panel은 기능적으로 이해하기 쉽지만, 카드 테두리, 내부 선, 날짜 숫자, 선택 outline, 일정 label이 동시에 보여 Calendar 영역의 시각 밀도가 아직 조금 높다.
+- 네이버 앱 같은 단정함을 내려면 모든 선을 선명하게 보이게 하기보다, 날짜 grid는 배경에 가까운 hairline으로 낮추고 선택 날짜와 현재 달 title만 또렷하게 두는 편이 좋다.
+- 하루 일정 label은 현재 compact 모드에서 시간만 보여 주는 방향이 맞지만, 40×16 시각 영역이라 실제 터치 가능 영역은 `hitSlop`에 의존한다. 실기기에서 누르기 쉬운지 확인해야 한다.
+- 월 선택 panel은 3열 버튼으로 명확하지만, 열린 상태에서 Calendar grid가 아래로 많이 밀리므로 “달 선택 중”이라는 시각적 집중 상태를 더 분명히 주는 것이 좋다.
+
 다음 확인:
 
 - column rule과 날짜 cell 경계가 실제 날짜 touch target과 정확히 맞는지 확인
 - 하루 일정 label과 여러 날 bar가 day column 밖으로 overflow하지 않는지 확인
 - 선택 날짜 outline, 오늘 dot, 일정 label, 기간 bar가 동시에 있을 때 과하게 복잡하지 않은지 확인
 - 작은 화면에서 월 선택 panel이 주요 목록 진입성을 방해하지 않는지 확인
+- Calendar grid의 테두리/내부 rule 대비를 더 낮춰도 날짜 구분성이 유지되는지 확인
+- 월 선택 panel의 연도 이동 button도 최소 터치 영역 또는 충분한 hitSlop을 유지하는지 확인
 
 ### 정리할 항목
 
@@ -54,11 +73,19 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - 버튼을 크게 나열하지 않고 `오늘로 ›`, `추가 ›`, `열기 ›`처럼 낮은 강조의 텍스트 action을 쓴다.
 - 각 row는 Today Task row와 같은 radius, border, padding 체계를 따른다.
 
+2026-07-30 Web mock 점검 메모:
+
+- 실제 진입 경로(`/today/review`)는 정상이고, 화면은 이전보다 훨씬 담백하다.
+- 다만 세 section이 모두 비슷한 흰 카드라 우선순위와 성격 차이가 약하게 느껴진다.
+- `지난 미완료`, `추천`, `기록함`은 각각 의미가 다르므로 아주 약한 pastel icon, section tint, 또는 helper copy 차이로 “왜 이 항목을 봐야 하는지”가 더 빨리 이해되게 한다.
+- trailing action(`오늘로 ›`, `추가 ›`)은 가볍고 좋지만 제목 영역을 잡아먹지 않게 긴 제목에서 줄바꿈과 터치 영역을 계속 확인한다.
+
 다음 확인:
 
 - `오늘로`와 `추가`가 실제 동작 차이를 충분히 설명하는지 확인
 - 좁은 화면에서 trailing action 때문에 제목 영역이 지나치게 줄지 않는지 확인
 - 빈 상태와 완료 상태 문구가 Today와 중복되거나 어색하지 않은지 확인
+- section별 시각 차이를 넣더라도 Today의 실행 목록보다 강해지지 않는지 확인
 
 ### Search
 
@@ -108,18 +135,26 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - `목표`, `검색`, `완료 기록`, `설정`은 row 높이, icon treatment, radius를 같은 토큰으로 맞춘다.
 - 로그인 상태와 목적지 목록은 분리해 인증 UI가 기능 shortcut보다 과하게 강해 보이지 않게 한다.
 
+2026-07-30 Web mock 점검 메모:
+
+- 현재 주요 화면 중 Profile이 가장 안정적으로 보인다. 로그인 card와 shortcut row의 구조가 명확하고, 불필요한 통계가 없어 가볍다.
+- 아이콘 pastel surface도 앱의 전체 방향과 잘 맞는다.
+- 단, Web DOM에서는 Symbol icon이 텍스트 glyph처럼 중복 노출되는 흔적이 있어 접근성/웹 렌더링 품질 관점에서 점검한다.
+
 다음 확인:
 
 - Profile row가 320px에서 description 생략 뒤에도 목적을 충분히 전달하는지 확인
 - 설정/프로필 확장 전까지 불필요한 통계나 feed 진입점을 추가하지 않는다.
+- 하단 tab과 Profile shortcut icon의 색·크기 리듬이 같은 제품처럼 보이는지 확인
 
 ## 우선순위
 
-1. 실제 기기 기준 Today와 Calendar의 320px, 375pt, 430dp, font scale 1.5 확인
-2. Calendar grid alignment와 event bar overflow 확인
-3. Today 주간 strip의 경계, 내부 rule, 일정 label 정렬 확인
-4. 정리할 항목 action copy와 좁은 화면 제목 영역 확인
-5. Search 상세 필터 discoverability와 real API pagination 화면 확인
+1. Today 미니 달력의 일정 label을 더 가볍고 덜 잘리는 marker/pill 형태로 조정
+2. 빠른 기록 composer를 하단 tab과 분리된 bottom sheet형 입력 surface로 정리
+3. Calendar grid의 테두리·내부 rule 대비를 낮추고 선택 날짜 중심으로 시선 정리
+4. 정리할 항목 section별 성격 차이를 낮은 강조의 tint/icon/copy로 보강
+5. 실제 기기 기준 Today와 Calendar의 320px, 375pt, 430dp, font scale 1.5 확인
+6. Search 상세 필터 discoverability와 real API pagination 화면 확인
 
 ## 다음 리뷰 때 추가할 것
 
