@@ -159,3 +159,24 @@ Mock Web 화면에서 확인한 항목:
 - nested `recurrence` 응답 타입과 `TaskUpsertRequest.recurrence` 타입을 추가한다.
 - `PUT/DELETE /api/v1/tasks/{id}?recurrenceScope=...` 호출 기반을 추가한다.
 - 반복 생성 UI는 Today/Calendar occurrence 조회 smoke가 통과할 때까지 열지 않는다.
+
+## 2026-07-30 local real API recurrence smoke 재확인
+
+환경:
+
+- API URL: `http://127.0.0.1:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 명령: `EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:recurrence:real`
+
+결과:
+
+- 회원가입, 로그인, `POST /api/v1/tasks` 반복 일정 생성 통과
+- `GET /api/v1/tasks/today?date=2026-08-04` 실패
+- HTTP status: `500`
+- error code: `99999`
+- 실패 후 `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup 통과
+
+판정:
+
+- 2026-07-29와 같은 실패가 재현된다.
+- 모바일 반복 생성 UI는 백엔드 Today/Calendar occurrence materialize path가 수정될 때까지 열지 않는다.
