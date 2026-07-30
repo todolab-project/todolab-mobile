@@ -17,7 +17,7 @@ export function QuickCapture({ isExpanded, onExpandedChange }: QuickCaptureProps
   const insets = useSafeAreaInsets();
   const { screenPadding } = useMobileLayout();
   const containerInsets = {
-    paddingBottom: screenPadding,
+    paddingBottom: screenPadding + spacing[3],
     paddingLeft: Math.max(screenPadding, insets.left),
     paddingRight: Math.max(screenPadding, insets.right),
     paddingTop: screenPadding,
@@ -86,7 +86,15 @@ export function QuickCapture({ isExpanded, onExpandedChange }: QuickCaptureProps
   return (
     <View style={[styles.container, containerInsets]}>
       {isExpanded ? (
-        <Card style={styles.composerCard}>
+        <Card
+          style={[
+            styles.composerCard,
+            {
+              borderColor: theme.colors.borderStrong,
+              shadowColor: theme.colors.shadow,
+            },
+          ]}
+        >
           <View style={styles.composerRow}>
             <IconButton
               accessibilityLabel="빠른 기록 닫기"
@@ -177,6 +185,14 @@ const styles = StyleSheet.create({
     gap: spacing[1],
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[2],
+    borderRadius: radii.xl,
+    elevation: 10,
+    shadowOffset: {
+      height: 8,
+      width: 0,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
     width: '100%',
   },
   composerRow: {
@@ -196,7 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[1],
   },
   closeButton: {
-    backgroundColor: 'transparent',
+    borderRadius: radii.full,
   },
   submitButton: {
     borderRadius: radii.full,

@@ -291,7 +291,7 @@ ToDoLab 적용 방향:
 - [x] Calendar 3주 grid는 compact 폭과 짧은 화면에서 주 높이와 label lane을 줄인다.
 - [x] mock Web 320px, 375px, 430px, 720px에서 Today와 Calendar horizontal overflow와 첫 viewport 노출을 실제 화면으로 확인했다.
 - [x] Today 미니 달력의 일정 label을 더 가볍고 덜 잘리는 marker/pill 형태로 정리한다.
-- [ ] 빠른 기록 composer를 하단 tab과 분리된 bottom sheet형 입력 surface로 정리한다.
+- [x] 빠른 기록 composer를 하단 tab과 분리된 bottom sheet형 입력 surface로 정리한다.
 - [ ] Calendar grid의 테두리와 내부 rule 대비를 낮추고 선택 날짜 중심으로 시선을 정리한다.
 - [ ] 정리할 항목 section별 성격 차이를 낮은 강조의 tint, icon, copy로 보강한다.
 - [ ] 하단 tab과 shortcut icon의 Web glyph 중복 노출 흔적을 점검하고 필요하면 정리한다.
