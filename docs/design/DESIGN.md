@@ -381,7 +381,7 @@ compact header
 - 독립 Inbox 화면은 유지하지 않고 날짜 없는 기록의 조회·정리는 Today 흐름에 포함한다.
 - 3주 달력은 주 높이를 동일하게 유지하고 주 경계에 얇은 neutral rule을 사용한다.
 - 날짜 열 경계에도 같은 rule을 더 낮은 대비로 사용해 일 단위 칸을 구분한다.
-- 시간이 있는 하루 일정은 Today 주간 strip에서는 `HH:mm 제목`, Calendar 3주 grid의 좁은 cell에서는 `HH:mm` 중심의 compact label로 표시한다.
+- 시간이 있는 하루 일정은 Today 주간 strip과 Calendar 3주 grid 모두에서 제목 첫 키워드 중심의 compact label로 표시한다. 시간은 상세 목록 meta와 accessibility label에서 보완한다.
 - Today 주간 strip은 하루 일정을 점으로만 축약하지 않고 한 줄 label을 함께 제공한다.
 - Task 사이에는 4px 안팎의 작은 간격만 두고, 임의 색상은 쓰지 않는다. 색은 일정·완료·경고처럼 의미가 정해진 상태에만 사용한다.
 - Task와 일정은 개별적인 낮은 radius outline row로 구분하되 떠 있는 큰 카드처럼 보이는 그림자는 사용하지 않는다.

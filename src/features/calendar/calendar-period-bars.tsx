@@ -223,19 +223,25 @@ export function buildCalendarSingleDayLabels(
 
 export function getCalendarSingleDayLabel(task: TaskResponse, compact = false, minimal = false) {
   if (minimal) {
-    if (task.allDay || !task.startAt) return '일정';
-
-    return formatTimeLabel(task.startAt);
+    return getCalendarCompactTitle(task.title);
   }
 
   if (task.allDay || !task.startAt) return task.title;
-  if (compact) return formatTimeLabel(task.startAt);
+  if (compact) return getCalendarCompactTitle(task.title);
 
   return `${formatTimeLabel(task.startAt)} ${task.title}`;
 }
 
+export function getCalendarCompactTitle(title: string) {
+  const firstWord = title.trim().split(/\s+/)[0] ?? title;
+
+  return firstWord.length > 4 ? firstWord.slice(0, 4) : firstWord;
+}
+
 export function getCalendarScheduleAccessibilityLabel(task: TaskResponse, kind: string) {
-  return [task.title, kind, getRecurrenceLabel(task), getOccurrenceLabel(task)]
+  const timeLabel = task.startAt && !task.allDay ? formatTimeLabel(task.startAt) : null;
+
+  return [task.title, kind, timeLabel, getRecurrenceLabel(task), getOccurrenceLabel(task)]
     .filter(Boolean)
     .join(', ');
 }
