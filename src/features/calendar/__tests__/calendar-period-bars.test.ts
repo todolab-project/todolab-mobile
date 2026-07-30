@@ -140,7 +140,9 @@ describe('buildCalendarSingleDayLabels', () => {
     } satisfies TaskResponse;
 
     expect(getCalendarSingleDayLabel(timed)).toBe('14:00 백엔드 회의');
+    expect(getCalendarSingleDayLabel(timed, false, true)).toBe('14:00');
     expect(getCalendarSingleDayLabel({ ...timed, allDay: true })).toBe('백엔드 회의');
+    expect(getCalendarSingleDayLabel({ ...timed, allDay: true }, false, true)).toBe('일정');
   });
 
   it('반복 일정은 달력 접근성 label에 반복 정보를 포함한다', () => {

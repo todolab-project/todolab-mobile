@@ -16,6 +16,7 @@ import {
 type CalendarPeriodBarsProps = {
   compact?: boolean;
   dates: LocalDateString[];
+  minimal?: boolean;
   tasks: TaskResponse[];
   onOpen: (taskId: number) => void;
   onSelectDate?: (date: LocalDateString) => void;
@@ -24,6 +25,7 @@ type CalendarPeriodBarsProps = {
 export function CalendarSingleDayLabels({
   compact = false,
   dates,
+  minimal = false,
   tasks,
   onOpen,
   onSelectDate,
@@ -54,6 +56,7 @@ export function CalendarSingleDayLabels({
                 style={({ pressed }) => [
                   styles.singleDayLabel,
                   compact && styles.singleDayLabelCompact,
+                  minimal && styles.singleDayLabelMinimal,
                   {
                     backgroundColor: theme.colors.highlightAmber,
                     borderColor:
@@ -70,7 +73,7 @@ export function CalendarSingleDayLabels({
                   weight="medium"
                   style={compact ? styles.compactSingleDayLabelText : undefined}
                 >
-                  {getCalendarSingleDayLabel(task, compact)}
+                  {getCalendarSingleDayLabel(task, compact, minimal)}
                 </AppText>
               </Pressable>
             ) : null}
@@ -105,6 +108,7 @@ export function CalendarSingleDayLabels({
 
 export function CalendarPeriodBars({
   dates,
+  minimal = false,
   tasks,
   onOpen,
   onSelectDate,
@@ -147,6 +151,7 @@ export function CalendarPeriodBars({
               onPress={() => onOpen(segment.task.id)}
               style={({ pressed }) => [
                 styles.bar,
+                minimal && styles.barMinimal,
                 {
                   backgroundColor: theme.colors.highlightSage,
                   borderColor: focusedItem === segmentKey ? theme.colors.primary : 'transparent',
@@ -155,9 +160,15 @@ export function CalendarPeriodBars({
               ]}
             >
               <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
-                {segment.continuesBefore ? '‹ ' : ''}
-                {segment.task.title}
-                {segment.continuesAfter ? ' ›' : ''}
+                {minimal ? (
+                  '기간'
+                ) : (
+                  <>
+                    {segment.continuesBefore ? '‹ ' : ''}
+                    {segment.task.title}
+                    {segment.continuesAfter ? ' ›' : ''}
+                  </>
+                )}
               </AppText>
             </Pressable>
           </View>
@@ -204,7 +215,13 @@ export function buildCalendarSingleDayLabels(
   );
 }
 
-export function getCalendarSingleDayLabel(task: TaskResponse, compact = false) {
+export function getCalendarSingleDayLabel(task: TaskResponse, compact = false, minimal = false) {
+  if (minimal) {
+    if (task.allDay || !task.startAt) return '일정';
+
+    return formatTimeLabel(task.startAt);
+  }
+
   if (task.allDay || !task.startAt) return task.title;
   if (compact) return formatTimeLabel(task.startAt);
 
@@ -316,6 +333,12 @@ const styles = StyleSheet.create({
   singleDayLabelCompact: {
     paddingHorizontal: 1,
   },
+  singleDayLabelMinimal: {
+    alignItems: 'center',
+    flex: 0,
+    minWidth: 34,
+    paddingHorizontal: spacing[1],
+  },
   compactSingleDayLabelText: {
     fontSize: 10,
     lineHeight: 14,
@@ -341,6 +364,10 @@ const styles = StyleSheet.create({
     height: 20,
     justifyContent: 'center',
     overflow: 'hidden',
+    paddingHorizontal: spacing[1],
+  },
+  barMinimal: {
+    alignItems: 'center',
     paddingHorizontal: spacing[1],
   },
   overflow: {
