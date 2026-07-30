@@ -180,3 +180,24 @@ Mock Web 화면에서 확인한 항목:
 
 - 2026-07-29와 같은 실패가 재현된다.
 - 모바일 반복 생성 UI는 백엔드 Today/Calendar occurrence materialize path가 수정될 때까지 열지 않는다.
+
+## 2026-07-30 local real API auth smoke 재확인
+
+환경:
+
+- API URL: `http://localhost:8080`
+- 백엔드: local server `8080` listen 확인
+- 실행 명령: `npm run smoke:auth:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 회원가입
+- 로그인과 `Bearer` access token 응답 계약
+- `Authorization: Bearer <token>` 기반 내 정보 조회
+- 비인증 `/api/v1/auth/me` 401 거부
+- 잘못된 token 401 거부
+
+추가 검증:
+
+- 같은 작업 단위에서 `npm run validate` 통과
