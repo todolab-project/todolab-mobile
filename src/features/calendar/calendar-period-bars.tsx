@@ -165,7 +165,13 @@ export function CalendarPeriodBars({
                 },
               ]}
             >
-              <AppText numberOfLines={1} tone="secondary" variant="caption" weight="medium">
+              <AppText
+                numberOfLines={1}
+                tone="secondary"
+                variant="caption"
+                weight="medium"
+                style={styles.periodBarText}
+              >
                 {segment.continuesBefore ? '‹ ' : ''}
                 {segment.task.title}
                 {segment.continuesAfter ? ' ›' : ''}
@@ -314,26 +320,33 @@ function formatOverflowDate(date: LocalDateString) {
 const styles = StyleSheet.create({
   singleDayRow: {
     flexDirection: 'row',
-    minHeight: 24,
+    minHeight: 26,
   },
   singleDayCell: {
     alignItems: 'flex-start',
     flexDirection: 'row',
+    justifyContent: 'center',
     minWidth: 0,
     overflow: 'hidden',
     paddingHorizontal: 2,
     width: CALENDAR_DAY_WIDTH,
   },
   singleDayLabel: {
+    alignItems: 'center',
     borderRadius: radii.sm,
     borderWidth: 1,
     flex: 1,
+    height: 22,
+    justifyContent: 'center',
     minWidth: 0,
     overflow: 'hidden',
     paddingHorizontal: 3,
   },
   singleDayLabelCompact: {
-    paddingHorizontal: 1,
+    flex: 0,
+    maxWidth: '92%',
+    minWidth: 42,
+    paddingHorizontal: 4,
   },
   singleDayLabelMinimal: {
     alignItems: 'center',
@@ -342,38 +355,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[1],
   },
   compactSingleDayLabelText: {
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: 11,
+    lineHeight: 15,
   },
   minimalSingleDayLabelText: {
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: 11,
+    lineHeight: 15,
   },
   singleDayOverflow: {
     borderRadius: radii.sm,
     borderWidth: 1,
   },
   container: {
-    height: 48,
+    height: 52,
     overflow: 'hidden',
     position: 'relative',
   },
   segmentSlot: {
-    height: 20,
-    paddingHorizontal: 2,
+    height: 22,
+    paddingHorizontal: 4,
     position: 'absolute',
   },
   bar: {
-    borderRadius: radii.sm,
+    borderRadius: radii.full,
     borderWidth: 1,
     flex: 1,
-    height: 20,
+    height: 22,
     justifyContent: 'center',
     overflow: 'hidden',
-    paddingHorizontal: spacing[1],
+    paddingHorizontal: spacing[2],
   },
   barMinimal: {
     paddingHorizontal: spacing[1],
+  },
+  periodBarText: {
+    fontSize: 11,
+    lineHeight: 15,
   },
   overflow: {
     borderRadius: radii.sm,

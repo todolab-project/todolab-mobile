@@ -91,6 +91,13 @@ Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다�
 - 하루 일정 label은 현재 compact 모드에서 시간만 보여 주는 방향이 맞지만, 40×16 시각 영역이라 실제 터치 가능 영역은 `hitSlop`에 의존한다. 실기기에서 누르기 쉬운지 확인해야 한다.
 - 월 선택 panel은 3열 버튼으로 명확하지만, 열린 상태에서 Calendar grid가 아래로 많이 밀리므로 “달 선택 중”이라는 시각적 집중 상태를 더 분명히 주는 것이 좋다.
 
+2026-07-31 Product Design audit 메모:
+
+- Web static export 390×844 캡처 기준으로 하루 일정 `14:00` pill은 더 이상 지나치게 작지 않고 선택 날짜 column 안에서 안정적으로 보인다.
+- 여러 날 일정 bar는 7월 30일–8월 1일 구간 안에 머물며 column 밖으로 넘치지 않는다.
+- Calendar 안의 일정 label은 제목 전체 전달보다 “해당 날짜에 일정이 있다”는 존재감을 우선하고, 상세 제목과 시간은 아래 `예정` 목록에서 읽게 하는 현재 방향을 유지한다.
+- 다음 polish는 bar 자체보다 Calendar 전체의 선 대비, 선택 날짜 outline, 일정 label이 동시에 있을 때의 시각 밀도를 낮추는 쪽이 더 효과적이다.
+
 다음 확인:
 
 - column rule과 날짜 cell 경계가 실제 날짜 touch target과 정확히 맞는지 확인
