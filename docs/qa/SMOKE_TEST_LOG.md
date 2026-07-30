@@ -181,6 +181,11 @@ Mock Web 화면에서 확인한 항목:
 - 2026-07-29와 같은 실패가 재현된다.
 - 모바일 반복 생성 UI는 백엔드 Today/Calendar occurrence materialize path가 수정될 때까지 열지 않는다.
 
+추가 재확인:
+
+- 2026-07-30 후속 실행에서도 회원가입, 로그인, 반복 생성, `recurrenceScope=ALL` cleanup은 통과했다.
+- `GET /api/v1/tasks/today?date=2026-08-04`는 동일하게 HTTP 500, error code `99999`로 실패했다.
+
 ## 2026-07-30 local real API auth smoke 재확인
 
 환경:

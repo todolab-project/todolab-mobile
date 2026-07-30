@@ -309,7 +309,7 @@ ToDoLab 적용 방향:
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 - [x] `.env.local` mock 기본값과 real smoke 실행값이 섞이지 않도록 `EXPO_PUBLIC_API_MODE_OVERRIDE` / `EXPO_PUBLIC_API_URL_OVERRIDE`와 `npm run web:real`을 추가한다.
-- [x] 반복 일정 real smoke를 2026-07-30 재실행했고, 생성 응답까지 통과하나 Today occurrence 조회에서 HTTP 500/code `99999`가 재현됨을 확인했다.
+- [x] 반복 일정 real smoke를 2026-07-30 재실행했고, 생성 응답까지 통과하나 Today occurrence 조회에서 HTTP 500/code `99999`가 반복 재현됨을 확인했다.
 - [ ] 백엔드에서 반복 occurrence Today/Calendar materialize 500을 수정하면 `npm run smoke:recurrence:real`을 재실행한다.
 
 완료 기준:
