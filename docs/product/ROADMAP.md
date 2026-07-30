@@ -356,6 +356,16 @@ ToDoLab 적용 방향:
 - 배포 환경별 API 설정과 앱 식별자가 분리되어 있다.
 - 비밀 값이 앱 번들이나 저장소에 포함되지 않는다.
 
+### 현재 미완료 항목의 보류 조건
+
+모바일 저장소에서 바로 끝낼 수 있는 Web mock/real 검증과 문서 정리는 완료했다. 남은 체크박스는 아래 조건이 충족되면 커밋 단위로 이어서 진행한다.
+
+| 보류 조건                                           | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                               |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 백엔드 반복 occurrence Today/Calendar 조회 500 수정 | 반복 UI, occurrence 표시, occurrence별 완료·미룸·건너뛰기, 로컬 알림 연동 검증             | `npm run smoke:recurrence:real` 통과 후 반복 작성/수정 UI를 연다.                                                                                                                                                       |
+| Android/iOS simulator 또는 실기기 실행 가능         | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
+| 출시 계정과 앱 식별자 결정                          | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                        |
+
 ## 8. 커밋 운영 기준
 
 브랜치 이름:
