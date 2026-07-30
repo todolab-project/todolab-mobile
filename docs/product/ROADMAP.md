@@ -344,7 +344,8 @@ ToDoLab 적용 방향:
 - [x] 앱 아이콘, splash, 상태바, safe area의 현재 설정과 남은 실기기 확인 항목을 문서화한다.
 - [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [ ] 실제 Android, iOS, Web에서 mock/real smoke test를 반복한다. 2026-07-30 기준 Web mock responsive smoke와 real auth API smoke는 통과했고, 반복 occurrence smoke는 백엔드 500으로 보류 중이다.
-- [ ] 접근성 label, 읽기 순서, 명암, keyboard focus, screen reader 동선을 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md)의 최소 smoke 순서와 기록 양식으로 최종 점검한다.
+- [x] Web mock에서 Today와 Calendar의 focusable label, 읽기 순서, keyboard focus smoke를 점검하고 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
+- [ ] iOS VoiceOver와 Android TalkBack에서 일정 bar, checkbox, tab, 빠른 기록 동선을 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md)의 최소 smoke 순서와 기록 양식으로 최종 점검한다.
 - [ ] 초기 진입, 긴 목록, Calendar 렌더링 성능을 실제 기기 기준으로 점검한다.
 
 완료 기준:

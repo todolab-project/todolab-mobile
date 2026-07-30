@@ -443,14 +443,14 @@ const styles = StyleSheet.create({
   calendarNavButton: {
     alignItems: 'center',
     borderRadius: radii.full,
-    height: 32,
+    height: 44,
     justifyContent: 'center',
-    width: 32,
+    width: 44,
   },
   monthTitleButton: {
     alignItems: 'center',
     borderRadius: radii.full,
-    minHeight: 36,
+    minHeight: 44,
     paddingHorizontal: spacing[2],
   },
   monthPickerSurface: {

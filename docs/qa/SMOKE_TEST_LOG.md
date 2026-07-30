@@ -201,3 +201,23 @@ Mock Web 화면에서 확인한 항목:
 추가 검증:
 
 - 같은 작업 단위에서 `npm run validate` 통과
+
+## 2026-07-30 mock Web accessibility focus smoke
+
+환경:
+
+- API 모드: mock
+- 실행 명령: `npm run web:mock -- --localhost --port 8091 --clear`
+- 화면: Today `/`, Calendar `/calendar`
+- viewport: 375×760
+
+통과:
+
+- Today와 Calendar의 focusable control에 접근성 label 누락 없음
+- Today 주간 날짜, 일정 checkbox, Task 상세, 정리할 항목, 하단 tab 순서가 시각 흐름과 크게 어긋나지 않음
+- Calendar 이전/다음 주 이동 button은 44×44 target으로 보정
+- Calendar 날짜 cell은 선택 상태와 오늘 정보를 label/state로 전달
+
+수정/확인 필요:
+
+- Calendar와 Today의 일정 bar는 시각적으로 얇은 label로 유지하고 `hitSlop`으로 터치 영역을 보강한다. iOS/Android 실기기에서 실제 터치 영역과 VoiceOver/TalkBack 탐색성을 최종 확인한다.
