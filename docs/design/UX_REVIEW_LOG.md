@@ -103,6 +103,8 @@ Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다�
 - Today 일정 row는 처음 적용한 highlighter amber가 390px 화면에서 과하게 노랗게 보여, schedule 전용 surface로 한 단계 낮췄다. 최종 캡처 기준 일정은 시간 제약 항목으로 구분되지만 오늘 할 일 목록보다 더 강하게 튀지 않는다.
 - Today, Calendar, Profile mock Web 390×844 캡처를 최신 UI로 갱신했다. 하단 tab은 각 화면에서 해당 icon pill과 label tone이 active 상태로 보이며, 현재 위치를 구분하는 데 충분하다.
 - 다음 polish는 bar 자체보다 Calendar 전체의 선 대비, 선택 날짜 outline, 일정 label이 동시에 있을 때의 시각 밀도를 낮추는 쪽이 더 효과적이다.
+- 2026-08-01 mock Web 390×844 캡처를 최신 상태로 다시 갱신했다. Today와 Calendar의 하루 일정 pill은 시간만 덩그러니 보이지 않고 제목 일부를 보여 주며, 기간 bar는 3주 grid column 안에 머문다.
+- 1080×1920 마켓 이미지 초안은 `marketing-frame.html` 기반으로 생성했다. 카피 위계와 여백은 안정적이고 실제 UI를 과장하지 않는 장점이 있다. 다만 스토어 제출 전에는 폰 목업 안 화면을 더 크게 보이는 버전과 현재처럼 여백이 넓은 버전을 A/B로 비교한다.
 
 다음 확인:
 
@@ -199,12 +201,11 @@ Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다�
 
 ## 우선순위
 
-1. Today 미니 달력의 일정 label을 더 가볍고 덜 잘리는 marker/pill 형태로 조정
-2. 빠른 기록 composer를 하단 tab과 분리된 bottom sheet형 입력 surface로 정리
-3. Calendar grid의 테두리·내부 rule 대비를 낮추고 선택 날짜 중심으로 시선 정리
-4. 정리할 항목 section별 성격 차이를 낮은 강조의 tint/icon/copy로 보강
-5. 실제 기기 기준 Today와 Calendar의 320px, 375pt, 430dp, font scale 1.5 확인
-6. Search 상세 필터 discoverability와 real API pagination 화면 확인
+1. 실제 기기 기준 Today와 Calendar의 320px, 375pt, 430dp, font scale 1.5 확인
+2. iOS VoiceOver와 Android TalkBack에서 Calendar 일정 bar, checkbox, tab, 빠른 기록 동선 확인
+3. Search 상세 필터 discoverability와 real API pagination 화면 확인
+4. 마켓 이미지의 폰 목업 크기와 카피 줄바꿈 A/B 비교
+5. 반복 occurrence 조회 500이 해소되면 반복 작성·수정 UI audit 재개
 
 ## 다음 리뷰 때 추가할 것
 

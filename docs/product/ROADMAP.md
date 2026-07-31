@@ -354,6 +354,7 @@ ToDoLab 적용 방향:
 - [x] [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)를 만들고 배포 전 확인 항목을 한 곳에서 관리한다.
 - [x] 앱 아이콘, splash, 상태바, safe area의 현재 설정과 남은 실기기 확인 항목을 문서화한다.
 - [x] 화면 가이드와 마켓 이미지 구성 문서는 최신 화면 구조 기준으로 정리했고, mock Web 390×844 기준 실제 PNG 캡쳐를 `docs/screenshots/`에 생성했다.
+- [x] 마켓·소개용 1080×1920 편집 PNG 초안을 실제 화면 캡쳐 기반으로 `docs/marketing/`에 생성했다.
 - [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [x] Web mock responsive smoke와 real auth API smoke를 반복 실행하고 결과를 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
 - [ ] Android/iOS에서 mock/real 화면 smoke test를 반복한다. 반복 occurrence smoke는 백엔드 500으로 보류 중이다.
@@ -464,7 +465,7 @@ Today 작업 목록 표시
 1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
-4. 마켓·소개용 편집 이미지는 실제 화면 캡쳐를 기반으로 `docs/marketing/`에 분리해 만든다.
+4. 마켓·소개용 편집 이미지는 폰 목업 크기와 카피 줄바꿈 A/B를 비교한 뒤 스토어 규격에 맞춰 최종화한다.
 5. 반복 Task와 일정의 작성·수정 UI는 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 기능처럼 노출하지 않는다.
 6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 

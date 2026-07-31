@@ -6,8 +6,8 @@ ToDoLab Mobile을 앱 마켓, 소개 페이지, 발표 자료에 보여주기 �
 
 - 마켓 이미지 구성과 문구 초안은 최신 Today, Calendar, Search, Completed 흐름을 기준으로 정리되어 있다.
 - `docs/screenshots/`에 mock Web 390×844 기준 원본 화면 캡쳐를 생성했다.
-- 실제 `01_today.png` 같은 마켓용 편집 이미지 파일은 아직 생성하지 않았다.
-- 이 문서의 구성에 맞춰 `docs/marketing/` 편집본을 별도로 만든다.
+- 실제 `01_today.png` 같은 마켓용 편집 이미지 파일을 1080×1920 PNG로 생성했다.
+- 편집본은 `docs/marketing/marketing-frame.html` 템플릿에서 다시 렌더링할 수 있다.
 
 ## 기본 메시지
 
@@ -32,11 +32,12 @@ docs/marketing/
   03_calendar.png
   04_search.png
   05_completed.png
+  marketing-frame.html
 ```
 
 ## 1. Today
 
-이미지 파일: `docs/marketing/01_today.png` 예정
+이미지 파일: `docs/marketing/01_today.png`
 
 카피:
 
@@ -55,7 +56,7 @@ docs/marketing/
 
 ## 2. 빠른 기록
 
-이미지 파일: `docs/marketing/02_quick_capture.png` 예정
+이미지 파일: `docs/marketing/02_quick_capture.png`
 
 카피:
 
@@ -73,7 +74,7 @@ docs/marketing/
 
 ## 3. Calendar
 
-이미지 파일: `docs/marketing/03_calendar.png` 예정
+이미지 파일: `docs/marketing/03_calendar.png`
 
 카피:
 
@@ -91,7 +92,7 @@ docs/marketing/
 
 ## 4. Search
 
-이미지 파일: `docs/marketing/04_search.png` 예정
+이미지 파일: `docs/marketing/04_search.png`
 
 카피:
 
@@ -109,7 +110,7 @@ docs/marketing/
 
 ## 5. Completed
 
-이미지 파일: `docs/marketing/05_completed.png` 예정
+이미지 파일: `docs/marketing/05_completed.png`
 
 카피:
 
@@ -142,8 +143,8 @@ docs/marketing/         # 문구와 배경을 얹은 소개 이미지
 
 ## 실제 제작 전 확인
 
-- [ ] 앱 화면이 mock smoke test를 통과했다.
-- [ ] 캡쳐에 실제 개인정보가 없다.
-- [ ] light theme 기준 이미지가 준비됐다.
+- [x] 앱 화면이 mock smoke test를 통과했다.
+- [x] 캡쳐에 실제 개인정보가 없다.
+- [x] light theme 기준 이미지가 준비됐다.
 - [ ] 필요 시 dark theme 이미지를 별도 준비한다.
 - [ ] Google Play, App Store 이미지 규격을 최신 기준으로 확인했다.

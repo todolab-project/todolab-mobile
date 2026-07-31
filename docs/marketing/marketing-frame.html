@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToDoLab marketing frames</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI',
+          sans-serif;
+        --ink: #1f2a32;
+        --muted: #5c6b74;
+        --paper: #f6fbfb;
+        --blue: #2f6f89;
+        --green: #dcebd7;
+        --amber: #ffe9a8;
+        --line: rgba(54, 75, 88, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #ffffff;
+      }
+
+      .frame {
+        align-items: center;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(220, 235, 215, 0.9), transparent 28%),
+          radial-gradient(circle at 85% 18%, rgba(212, 233, 241, 0.9), transparent 30%),
+          linear-gradient(180deg, #ffffff 0%, var(--paper) 100%);
+        display: none;
+        height: 1920px;
+        overflow: hidden;
+        padding: 124px 88px 96px;
+        position: relative;
+        width: 1080px;
+      }
+
+      .frame.active {
+        display: flex;
+      }
+
+      .copy {
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+        margin-bottom: 62px;
+      }
+
+      .eyebrow {
+        align-items: center;
+        color: var(--blue);
+        display: flex;
+        font-size: 30px;
+        font-weight: 800;
+        gap: 14px;
+        letter-spacing: -0.02em;
+      }
+
+      .eyebrow::before {
+        background: var(--blue);
+        border-radius: 999px;
+        content: '';
+        display: block;
+        height: 14px;
+        width: 14px;
+      }
+
+      h1 {
+        color: var(--ink);
+        font-size: 78px;
+        letter-spacing: -0.08em;
+        line-height: 1.08;
+        margin: 0;
+      }
+
+      p {
+        color: var(--muted);
+        font-size: 34px;
+        letter-spacing: -0.045em;
+        line-height: 1.42;
+        margin: 0;
+        max-width: 820px;
+      }
+
+      .device {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 64px;
+        box-shadow: 0 34px 90px rgba(30, 47, 58, 0.14);
+        height: 1180px;
+        overflow: hidden;
+        padding: 22px;
+        position: relative;
+        width: 562px;
+      }
+
+      .device::before {
+        background: #eef4f6;
+        border-radius: 999px;
+        content: '';
+        height: 8px;
+        left: 50%;
+        position: absolute;
+        top: 12px;
+        transform: translateX(-50%);
+        width: 86px;
+        z-index: 2;
+      }
+
+      .device img {
+        border-radius: 44px;
+        display: block;
+        height: 100%;
+        object-fit: contain;
+        object-position: top center;
+        width: 100%;
+      }
+
+      .accent {
+        border-radius: 999px;
+        bottom: 120px;
+        height: 24px;
+        left: 96px;
+        position: absolute;
+        width: 200px;
+      }
+
+      .accent.green {
+        background: var(--green);
+      }
+
+      .accent.amber {
+        background: var(--amber);
+      }
+
+      .accent.blue {
+        background: #d4e9f1;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame" data-frame="today">
+      <section class="copy">
+        <div class="eyebrow">Today</div>
+        <h1>오늘 할 일과 일정을 한눈에</h1>
+        <p>일정은 위에, 실행할 일은 바로 아래에. 오늘 해야 할 일에 집중하세요.</p>
+      </section>
+      <figure class="device">
+        <img alt="Today screen" src="../screenshots/today.png" />
+      </figure>
+      <div class="accent green"></div>
+    </main>
+
+    <main class="frame" data-frame="quick-capture">
+      <section class="copy">
+        <div class="eyebrow">Quick Capture</div>
+        <h1>생각난 일은 바로 기록</h1>
+        <p>지금 정리하지 않아도 괜찮아요. 먼저 기록하고 나중에 Today로 옮기세요.</p>
+      </section>
+      <figure class="device">
+        <img alt="Quick capture screen" src="../screenshots/quick-capture.png" />
+      </figure>
+      <div class="accent blue"></div>
+    </main>
+
+    <main class="frame" data-frame="calendar">
+      <section class="copy">
+        <div class="eyebrow">Calendar</div>
+        <h1>앞뒤 일정도 깔끔하게</h1>
+        <p>선택한 날을 중심으로 앞뒤 일정을 훑고, 여러 날 일정은 이어지는 bar로 확인하세요.</p>
+      </section>
+      <figure class="device">
+        <img alt="Calendar screen" src="../screenshots/calendar.png" />
+      </figure>
+      <div class="accent green"></div>
+    </main>
+
+    <main class="frame" data-frame="search">
+      <section class="copy">
+        <div class="eyebrow">Search</div>
+        <h1>언제 무엇을 했는지 빠르게 검색</h1>
+        <p>완료 기록, 일정, Task를 키워드와 필터로 다시 찾을 수 있어요.</p>
+      </section>
+      <figure class="device">
+        <img alt="Search screen" src="../screenshots/search.png" />
+      </figure>
+      <div class="accent amber"></div>
+    </main>
+
+    <main class="frame" data-frame="completed">
+      <section class="copy">
+        <div class="eyebrow">Completed</div>
+        <h1>끝낸 일을 날짜별 기록으로</h1>
+        <p>오늘 끝낸 일과 지난 완료 기록을 확인하고, 필요하면 다시 열 수 있어요.</p>
+      </section>
+      <figure class="device">
+        <img alt="Completed screen" src="../screenshots/completed.png" />
+      </figure>
+      <div class="accent blue"></div>
+    </main>
+
+    <script>
+      const fallback = document.querySelector("[data-frame='today']");
+
+      function activateFrame() {
+        const requested = location.hash.replace('#', '') || 'today';
+        const selected = document.querySelector(`[data-frame='${requested}']`) || fallback;
+
+        document.querySelectorAll('[data-frame]').forEach((frame) => {
+          frame.classList.toggle('active', frame === selected);
+        });
+        document.title = `ToDoLab ${requested} marketing frame`;
+      }
+
+      window.addEventListener('hashchange', activateFrame);
+      activateFrame();
+    </script>
+  </body>
+</html>
