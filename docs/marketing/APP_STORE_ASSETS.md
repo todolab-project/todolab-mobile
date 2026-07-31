@@ -8,6 +8,7 @@ ToDoLab Mobile을 앱 마켓, 소개 페이지, 발표 자료에 보여주기 �
 - `docs/screenshots/`에 mock Web 390×844 기준 원본 화면 캡쳐를 생성했다.
 - 실제 `01_today.png` 같은 마켓용 편집 이미지 파일을 1080×1920 PNG로 생성했다.
 - 편집본은 `docs/marketing/marketing-frame.html` 템플릿에서 다시 렌더링할 수 있다.
+- 2026-08-01 기준 공식 문서 확인 결과, 현재 1080×1920 편집본은 Google Play phone screenshot 초안으로 사용할 수 있지만 App Store Connect 제출용 최종 이미지는 Apple의 기기별 screenshot size로 별도 export해야 한다.
 
 ## 기본 메시지
 
@@ -134,6 +135,21 @@ docs/marketing/
 - 배경은 앱의 warm paper tone 또는 중립 배경을 사용한다.
 - 스토어 규격 이미지를 만들기 전 원본 캡쳐와 편집본을 분리한다.
 
+## 스토어 규격 기준
+
+2026-08-01 확인한 공식 문서 기준:
+
+- Google Play phone screenshot: PNG 또는 JPEG, 지원 기기 유형별 최대 8장, portrait는 9:16 비율, 해상도는 1,080px 이상 범위를 사용한다. 현재 1080×1920 편집본은 이 기준의 초안으로 적합하다.
+- Google Play feature graphic: PNG 또는 JPEG, 1024×500 별도 asset이 필요하다.
+- App Store Connect iPhone screenshot: PNG/JPG/JPEG, alpha channel 불가, 기기 그룹별 지정 크기가 필요하다. 예: 6.9형 1260×2736 또는 1290×2796 또는 1320×2868, 6.5형 1284×2778 또는 1242×2688, 6.1형 1170×2532 또는 1125×2436 또는 1080×2340.
+- App Store는 최소 1장, 최대 10장의 screenshot을 업로드할 수 있고, 가장 높은 해상도 screenshot이 작은 기기 크기로 자동 scale될 수 있다.
+
+공식 문서:
+
+- [Google Play preview assets](https://support.google.com/googleplay/android-developer/answer/9866151)
+- [Apple App Store Connect screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
+- [Apple upload app previews and screenshots](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/)
+
 권장 원본 구조:
 
 ```text
@@ -147,4 +163,6 @@ docs/marketing/         # 문구와 배경을 얹은 소개 이미지
 - [x] 캡쳐에 실제 개인정보가 없다.
 - [x] light theme 기준 이미지가 준비됐다.
 - [ ] 필요 시 dark theme 이미지를 별도 준비한다.
-- [ ] Google Play, App Store 이미지 규격을 최신 기준으로 확인했다.
+- [x] Google Play, App Store 이미지 규격을 최신 공식 문서 기준으로 확인했다.
+- [ ] App Store Connect용 6.9형 또는 6.5형 iPhone screenshot 크기로 최종 export한다.
+- [ ] Google Play feature graphic 1024×500을 별도로 만든다.
