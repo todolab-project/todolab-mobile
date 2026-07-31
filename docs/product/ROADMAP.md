@@ -320,8 +320,7 @@ ToDoLab 적용 방향:
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 - [x] `.env.local` mock 기본값과 real smoke 실행값이 섞이지 않도록 `EXPO_PUBLIC_API_MODE_OVERRIDE` / `EXPO_PUBLIC_API_URL_OVERRIDE`와 `npm run web:real`을 추가한다.
-- [x] 반복 일정 real smoke를 2026-08-01 재실행했고, 생성 응답까지 통과하나 Today occurrence 조회에서 HTTP 500/code `99999`가 반복 재현됨을 확인했다.
-- [ ] 백엔드에서 반복 occurrence Today/Calendar materialize 500을 수정하면 `npm run smoke:recurrence:real`을 재실행한다.
+- [x] 반복 일정 real smoke를 2026-08-01 재실행했고, 백엔드 수정 후 Today/Calendar occurrence materialize 조회와 cleanup까지 통과했다.
 
 완료 기준:
 
@@ -332,9 +331,9 @@ ToDoLab 적용 방향:
 
 목표: 매주 화요일 09:00 회의처럼 반복되는 실행 항목과 일정을 occurrence별로 계획하고 완료한다.
 
-- [x] 백엔드 반복 생성 계약, 상태 문서, real smoke 결과를 2026-08-01 재확인했다. 생성/cleanup은 통과, Today occurrence 조회는 백엔드 500으로 보류한다.
+- [x] 백엔드 반복 생성 계약, 상태 문서, real smoke 결과를 2026-08-01 재확인했다. 생성, Today/Calendar occurrence materialize, cleanup이 통과했다.
 - [x] 모바일 타입/API는 nested `recurrence` 응답, `TaskUpsertRequest.recurrence`, `recurrenceScope` 수정·삭제 query를 받을 수 있게 맞춘다.
-- [ ] 백엔드 반복 occurrence 조회 smoke가 통과하면 Task 작성 화면에 반복 없음, 매일, 매주, 매월, 사용자 지정 선택을 추가한다.
+- [x] Task 작성 화면에 반복 없음, 매일, 매주, 매월, 사용자 지정 선택을 추가한다.
 - [x] Task 작성 화면에서 일정 날짜와 시작·종료 시간을 입력할 수 있게 해 Calendar real smoke data를 앱 흐름으로 만들 수 있게 한다.
 - [x] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.
 - [x] Today와 Calendar 범위 조회에 occurrence를 표시한다.
@@ -374,11 +373,11 @@ ToDoLab 적용 방향:
 
 모바일 저장소에서 바로 끝낼 수 있는 Web mock/real 검증과 문서 정리는 완료했다. 남은 체크박스는 아래 조건이 충족되면 커밋 단위로 이어서 진행한다.
 
-| 보류 조건                                           | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                                                                                                           |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 백엔드 반복 occurrence Today/Calendar 조회 500 수정 | 반복 UI, occurrence 표시, occurrence별 완료·미룸·건너뛰기, 로컬 알림 연동 검증             | `npm run smoke:recurrence:real` 통과 후 반복 작성/수정 UI를 연다.                                                                                                                                                                                                                                                                                                                                                   |
-| Android/iOS simulator 또는 실기기 실행 가능         | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-01 현재 작업 환경에는 `xcrun`은 있으나 `simctl` utility를 찾을 수 없고 `adb`도 없어 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다. 도구 또는 실제 기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
-| 출시 계정과 앱 식별자 결정                          | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                                                                                                                                                                                                                    |
+| 보류 조건                                   | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| occurrence별 완료·미룸·건너뛰기 계약 확인   | occurrence별 상태 변경, 완료 기록, 로컬 알림 연동 검증                                     | 반복 조회 smoke는 통과했다. 다음에는 occurrence 하나만 완료/미룸/건너뛰기 했을 때 원본 series와 다른 occurrence가 안전한지 real smoke로 확인한다.                                                                                                                                                                                                                                                                   |
+| Android/iOS simulator 또는 실기기 실행 가능 | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-01 현재 작업 환경에는 `xcrun`은 있으나 `simctl` utility를 찾을 수 없고 `adb`도 없어 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다. 도구 또는 실제 기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
+| 출시 계정과 앱 식별자 결정                  | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## 8. 커밋 운영 기준
 

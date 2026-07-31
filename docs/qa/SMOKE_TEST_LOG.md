@@ -237,6 +237,32 @@ Mock Web 화면에서 확인한 항목:
 - 2026-08-01 후속 실행에서 register, login, 반복 생성, `recurrenceScope=ALL` cleanup은 다시 통과했고 같은 Today 조회 500/code `99999`가 재현됐다.
 - smoke 스크립트는 이후 네트워크·런타임 실패와 API 실패를 구분할 수 있도록 `error.cause` 진단 출력을 추가했다.
 
+## 2026-08-01 local real API recurrence smoke 통과
+
+환경:
+
+- API URL: `http://localhost:8080`
+- 백엔드: local server `8080` 접근 가능
+- 실행 명령: `npm run smoke:recurrence:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 회원가입
+- 로그인
+- `POST /api/v1/tasks` 주간 반복 일정 생성
+- 생성 응답의 `recurrenceSeriesId`, `occurrenceDate`, `originalOccurrenceDate`, nested `recurrence`
+- `GET /api/v1/tasks/today?date=2026-08-04` 첫 occurrence 조회
+- `GET /api/v1/tasks/today?date=2026-08-11` 다음 occurrence materialize 조회
+- `GET /api/v1/tasks?type=MONTH&taskType=SCHEDULE&date=2026-08` 월간 범위 occurrence 포함
+- `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup
+
+판정:
+
+- 반복 occurrence Today/Calendar materialize 500은 백엔드 수정 후 모바일 smoke 기준으로 해소됐다.
+- 모바일은 반복 작성 UI를 다시 열 수 있다.
+- 다음 확인은 occurrence별 완료, 미룸, 건너뛰기, 로컬 알림 후보 예약·취소 흐름이다.
+
 ## 2026-07-30 local real API auth smoke 재확인
 
 환경:
