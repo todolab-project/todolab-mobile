@@ -123,13 +123,15 @@ export function QuickCapture({ isExpanded, onExpandedChange }: QuickCaptureProps
               style={[
                 styles.input,
                 {
-                  backgroundColor: theme.colors.surfaceMuted,
+                  backgroundColor: isInputFocused
+                    ? theme.colors.surface
+                    : theme.colors.surfaceMuted,
                   borderColor: validationMessage
                     ? theme.colors.danger
                     : isInputFocused
-                      ? theme.colors.primary
+                      ? theme.colors.primarySoft
                       : theme.colors.border,
-                  borderWidth: isInputFocused ? 2 : StyleSheet.hairlineWidth,
+                  borderWidth: 1,
                   color: theme.colors.text,
                 },
               ]}
@@ -218,6 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     minHeight: 40,
     minWidth: 0,
+    outlineColor: 'transparent',
     outlineWidth: 0,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],

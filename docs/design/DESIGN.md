@@ -395,6 +395,7 @@ compact header
 - 목표 화면은 개별 목표를 낮은 outline row로 표시하고 생성·메뉴 action은 ghost 수준으로 유지한다.
 - 완료 기록은 주 이동과 날짜 선택을 한 compact surface로 묶고 완료 checkbox로 다시 열기 동작을 처리해 중복 버튼을 줄인다.
 - Task 작성은 하나의 flat sheet 안에서 제목·유형·일정 날짜·시간·선택 정보를 나누고 입력 배경과 취소 action의 대비를 낮춘다.
+- Quick Capture와 sheet형 입력의 focus 상태는 브라우저 기본 파란 outline처럼 튀지 않게 한다. focus는 primary-soft border와 흰 surface 전환으로 표시하고, 오류 상태만 danger border를 사용한다.
 - Task 상세는 hero·날짜·정보·목표를 낮은 outline section으로 구분하고 metadata 행에는 얇은 rule을 사용한다.
 - 과거 기록 검색은 프로필의 보조 목적지로 두고 날짜·키워드·상태를 함께 탐색할 수 있게 한다.
 - active tab은 테마 primary 색과 옅은 pill 배경을 사용하고, inactive tab은 text-muted를 사용해 선택된 탭이 즉시 구분되게 한다.
