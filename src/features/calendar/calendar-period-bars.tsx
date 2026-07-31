@@ -113,6 +113,7 @@ export function CalendarSingleDayLabels({
 }
 
 export function CalendarPeriodBars({
+  compact = false,
   dates,
   minimal = false,
   tasks,
@@ -127,7 +128,7 @@ export function CalendarPeriodBars({
   if (layout.segments.length === 0) return null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, compact && styles.containerCompact]}>
       {layout.segments.map((segment) => {
         const segmentKey = `${segment.task.id}-${segment.lane}`;
 
@@ -136,9 +137,10 @@ export function CalendarPeriodBars({
             key={segmentKey}
             style={[
               styles.segmentSlot,
+              compact && styles.segmentSlotCompact,
               {
                 left: getCalendarSegmentLeftPercent(segment.startIndex, dates.length),
-                top: segment.lane * 24,
+                top: segment.lane * (compact ? 20 : 24),
                 width: getCalendarSegmentWidthPercent(
                   segment.startIndex,
                   segment.endIndex,
@@ -157,6 +159,7 @@ export function CalendarPeriodBars({
               onPress={() => onOpen(segment.task.id)}
               style={({ pressed }) => [
                 styles.bar,
+                compact && styles.barCompact,
                 minimal && styles.barMinimal,
                 {
                   backgroundColor: theme.colors.highlightSage,
@@ -369,10 +372,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
+  containerCompact: {
+    height: 44,
+  },
   segmentSlot: {
     height: 22,
     paddingHorizontal: 4,
     position: 'absolute',
+  },
+  segmentSlotCompact: {
+    height: 20,
+    paddingHorizontal: 3,
   },
   bar: {
     borderRadius: radii.full,
@@ -382,6 +392,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     paddingHorizontal: spacing[2],
+  },
+  barCompact: {
+    height: 20,
+    paddingHorizontal: spacing[1],
   },
   barMinimal: {
     paddingHorizontal: spacing[1],

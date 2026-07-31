@@ -328,6 +328,7 @@ function MonthDateGrid({
           </View>
           <View style={[styles.periodLanes, isDenseCalendar && styles.periodLanesDense]}>
             <CalendarPeriodBars
+              compact={isDenseCalendar}
               dates={weekDates}
               tasks={tasks}
               onOpen={onOpenTask}
