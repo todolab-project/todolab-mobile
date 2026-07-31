@@ -55,6 +55,11 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 - Task detail, Search, Completed처럼 뒤로 가기 icon button이 있는 화면은 notch와 겹치지 않는다.
 - Web 320px 폭에서도 content max width와 safe inset이 이상하게 중첩되지 않는다.
 
+현재 실행 환경 메모:
+
+- 2026-08-01 현재 Codex 작업 환경에서는 `xcrun simctl`이 PATH에 없고 `adb`도 설치되어 있지 않아 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다.
+- 네이티브 safe area, OS font scale 1.5, VoiceOver/TalkBack, Android navigation bar 겹침은 Xcode Command Line Tools와 Android Platform Tools가 준비된 로컬 환경 또는 실제 기기에서 별도 확인한다.
+
 ## 키보드 동작
 
 현재 기준:
