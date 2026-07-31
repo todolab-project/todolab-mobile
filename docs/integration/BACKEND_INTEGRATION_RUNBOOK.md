@@ -193,6 +193,7 @@ type ApiEnvelope<T> = {
    - 선택 날짜 목록과 Today 목록의 날짜 기준 일치
 7. Search
    - 검색어, filter, pagination, 빈 상태
+   - 자동 재확인은 `npm run smoke:search:real`로 실행한다.
 8. D-Day
    - 목표 생성, 목표 상세, 목표 Task 생성, Task 연결/해제
 9. 오류 상태

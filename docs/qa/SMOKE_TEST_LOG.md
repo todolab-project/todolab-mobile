@@ -131,6 +131,33 @@ Mock Web 화면에서 확인한 항목:
 
 반복 Task·일정은 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 UI smoke 범위에 넣지 않는다. 조회 표시와 문서 계약만 확인한다.
 
+## 2026-08-01 local real API search smoke
+
+환경:
+
+- API URL: `http://localhost:8080`
+- 백엔드: local server `8080` 접근 가능
+- 실행 명령: `npm run smoke:search:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+- 테스트 데이터: `mobile-search-smoke-{runId}@example.com` 계정에 짧은 smoke title로 생성 후 cleanup
+
+통과:
+
+- 회원가입
+- 로그인
+- 검색용 TODO, SCHEDULE, DONE Task 생성
+- `GET /api/v1/tasks/search?q=...&limit=2` 첫 페이지와 `nextCursor`
+- cursor 기반 다음 페이지 조회
+- `taskTypes=SCHEDULE`, `dateField=START`, `dateFrom`, `dateTo` filter
+- `statuses=DONE` filter
+- 빈 검색 결과와 `nextCursor: null`
+- 생성 Task cleanup
+
+판정:
+
+- Search real API의 keyword, type filter, status filter, date range, cursor pagination, empty state 계약은 모바일 smoke 기준으로 통과한다.
+- 앞으로 Search 화면 regression은 `npm run smoke:search:real`과 Web real 화면 확인을 함께 사용한다.
+
 ## 2026-07-29 local real API recurrence smoke
 
 환경:
