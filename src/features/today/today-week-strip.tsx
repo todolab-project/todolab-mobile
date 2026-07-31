@@ -10,7 +10,7 @@ import {
   CalendarSingleDayLabels,
 } from '@/features/calendar/calendar-period-bars';
 import { useCalendarRangeTasks } from '@/features/calendar/use-calendar-range-tasks';
-import { radii, spacing, useAppTheme } from '@/theme';
+import { radii, spacing, useAppTheme, useMobileLayout } from '@/theme';
 import type { LocalDateString } from '@/types';
 import { formatDateLabel } from '@/utils';
 
@@ -23,6 +23,7 @@ type TodayWeekStripProps = {
 export function TodayWeekStrip({ today }: TodayWeekStripProps) {
   const router = useRouter();
   const theme = useAppTheme();
+  const { isDenseCalendar } = useMobileLayout();
   const dates = getWeekDates(today);
   const query = useCalendarRangeTasks('WEEK', today);
   const schedules = query.data ?? [];
@@ -42,6 +43,7 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
       <View
         style={[
           styles.calendarGrid,
+          isDenseCalendar && styles.calendarGridDense,
           {
             borderColor: theme.colors.border,
             backgroundColor: theme.colors.surfaceElevated,
@@ -81,6 +83,7 @@ export function TodayWeekStrip({ today }: TodayWeekStripProps) {
                 onPress={() => openCalendarDate(date)}
                 style={({ pressed }) => [
                   styles.day,
+                  isDenseCalendar && styles.dayDense,
                   {
                     backgroundColor: pressed ? theme.colors.highlightBlue : 'transparent',
                     borderColor: focusedDate === date ? theme.colors.primary : 'transparent',
@@ -148,6 +151,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
+  calendarGridDense: {
+    minHeight: 86,
+  },
   dayColumnRules: {
     bottom: 0,
     left: 0,
@@ -175,6 +181,10 @@ const styles = StyleSheet.create({
     minHeight: 56,
     paddingBottom: spacing[1],
     paddingTop: spacing[1],
+  },
+  dayDense: {
+    gap: 0,
+    minHeight: 50,
   },
   date: {
     alignItems: 'center',

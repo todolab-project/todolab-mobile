@@ -16,13 +16,20 @@ export function shouldUseDesktopLayout(width: number, height: number) {
   return getViewportWidthClass(width) === 'desktop' && height >= 600;
 }
 
+export function shouldUseDenseCalendarGrid(width: number, height: number, fontScale = 1) {
+  return width < 360 || height < 600 || fontScale >= 1.3;
+}
+
 export function useMobileLayout() {
-  const { height, width } = useWindowDimensions();
+  const { fontScale, height, width } = useWindowDimensions();
   const widthClass = getViewportWidthClass(width);
   const isShortViewport = height < 600;
 
   return {
+    fontScale,
     isCompact: widthClass === 'compact',
+    isLargeFont: fontScale >= 1.3,
+    isDenseCalendar: shouldUseDenseCalendarGrid(width, height, fontScale),
     isDesktop: shouldUseDesktopLayout(width, height),
     isLandscape: width > height,
     isShortViewport,

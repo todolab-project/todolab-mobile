@@ -251,9 +251,8 @@ function MonthDateGrid({
   onOpenTask = () => undefined,
 }: DatePickerProps) {
   const theme = useAppTheme();
-  const { isCompact, isShortViewport } = useMobileLayout();
+  const { isDenseCalendar } = useMobileLayout();
   const selectedMonth = selectedDate.slice(0, 7);
-  const shouldUseDenseGrid = isCompact || isShortViewport;
 
   return (
     <View
@@ -283,7 +282,7 @@ function MonthDateGrid({
           key={weekDates[0]}
           style={[
             styles.monthWeek,
-            shouldUseDenseGrid && styles.monthWeekDense,
+            isDenseCalendar && styles.monthWeekDense,
             {
               borderBottomColor: theme.colors.rule,
               borderBottomWidth: weekIndex < weeks.length - 1 ? StyleSheet.hairlineWidth : 0,
@@ -313,12 +312,12 @@ function MonthDateGrid({
                 key={date}
                 selected={date === selectedDate}
                 onPress={() => onSelect(date)}
-                style={[styles.monthDayButton, shouldUseDenseGrid && styles.monthDayButtonDense]}
+                style={[styles.monthDayButton, isDenseCalendar && styles.monthDayButtonDense]}
                 theme={theme}
               />
             ))}
           </View>
-          <View style={[styles.singleDayLane, shouldUseDenseGrid && styles.singleDayLaneDense]}>
+          <View style={[styles.singleDayLane, isDenseCalendar && styles.singleDayLaneDense]}>
             <CalendarSingleDayLabels
               compact
               dates={weekDates}
@@ -327,7 +326,7 @@ function MonthDateGrid({
               onSelectDate={onSelect}
             />
           </View>
-          <View style={[styles.periodLanes, shouldUseDenseGrid && styles.periodLanesDense]}>
+          <View style={[styles.periodLanes, isDenseCalendar && styles.periodLanesDense]}>
             <CalendarPeriodBars
               dates={weekDates}
               tasks={tasks}

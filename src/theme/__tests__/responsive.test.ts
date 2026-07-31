@@ -1,4 +1,8 @@
-import { getViewportWidthClass, shouldUseDesktopLayout } from '../responsive';
+import {
+  getViewportWidthClass,
+  shouldUseDenseCalendarGrid,
+  shouldUseDesktopLayout,
+} from '../responsive';
 
 describe('getViewportWidthClass', () => {
   it.each([
@@ -23,5 +27,19 @@ describe('shouldUseDesktopLayout', () => {
 
   it('충분히 넓고 높은 Web viewport에는 desktop layout을 쓴다', () => {
     expect(shouldUseDesktopLayout(1024, 768)).toBe(true);
+  });
+});
+
+describe('shouldUseDenseCalendarGrid', () => {
+  it('320px compact 폭에서는 dense calendar를 사용한다', () => {
+    expect(shouldUseDenseCalendarGrid(320, 844, 1)).toBe(true);
+  });
+
+  it('430dp라도 font scale 1.5에서는 dense calendar를 사용한다', () => {
+    expect(shouldUseDenseCalendarGrid(430, 844, 1.5)).toBe(true);
+  });
+
+  it('충분한 폭과 기본 글자 크기에서는 일반 calendar 밀도를 유지한다', () => {
+    expect(shouldUseDenseCalendarGrid(430, 844, 1)).toBe(false);
   });
 });
