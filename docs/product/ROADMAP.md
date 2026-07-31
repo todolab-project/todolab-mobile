@@ -300,6 +300,7 @@ ToDoLab 적용 방향:
 - [x] Quick Capture 열린 상태의 기본 파란 focus border를 앱 primary soft border와 bottom sheet형 composer visual로 교체한다.
 - [x] 하단 tab active icon·label의 선택 상태와 실제 스크린샷을 갱신해 Today/Calendar/Profile의 현재 위치가 분명히 보이는지 확인한다.
 - [x] Profile 상단 로그인 card와 shortcut row를 “나의 플래너 공간”처럼 보이도록 여백, 동기화 상태 copy, icon 리듬을 다듬는다.
+- [x] 320px, 짧은 viewport, font scale 1.5에서는 Today와 Calendar 달력이 dense grid로 전환되도록 공통 responsive 기준을 추가했다.
 - [ ] iOS/Android font scale 1.5, safe area, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 
 완료 기준:
@@ -371,11 +372,11 @@ ToDoLab 적용 방향:
 
 모바일 저장소에서 바로 끝낼 수 있는 Web mock/real 검증과 문서 정리는 완료했다. 남은 체크박스는 아래 조건이 충족되면 커밋 단위로 이어서 진행한다.
 
-| 보류 조건                                           | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                     |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 백엔드 반복 occurrence Today/Calendar 조회 500 수정 | 반복 UI, occurrence 표시, occurrence별 완료·미룸·건너뛰기, 로컬 알림 연동 검증             | `npm run smoke:recurrence:real` 통과 후 반복 작성/수정 UI를 연다.                                                                                                                                                                                                                                                             |
-| Android/iOS simulator 또는 실기기 실행 가능         | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-01 현재 작업 환경에는 `xcrun simctl`과 `adb`가 없어 실행 불가. 도구 또는 실제 기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
-| 출시 계정과 앱 식별자 결정                          | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                                                                                                                              |
+| 보류 조건                                           | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 백엔드 반복 occurrence Today/Calendar 조회 500 수정 | 반복 UI, occurrence 표시, occurrence별 완료·미룸·건너뛰기, 로컬 알림 연동 검증             | `npm run smoke:recurrence:real` 통과 후 반복 작성/수정 UI를 연다.                                                                                                                                                                                                                                                                                                                                                   |
+| Android/iOS simulator 또는 실기기 실행 가능         | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-01 현재 작업 환경에는 `xcrun`은 있으나 `simctl` utility를 찾을 수 없고 `adb`도 없어 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다. 도구 또는 실제 기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
+| 출시 계정과 앱 식별자 결정                          | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## 8. 커밋 운영 기준
 
@@ -460,7 +461,7 @@ Today 작업 목록 표시
 
 다음 작업은 실제 화면 품질과 기기별 QA를 우선한다. 2026-07-28 기준 local real API full smoke test는 통과했으므로, 이후 real API 검증은 화면 QA와 배포 전 회귀 테스트로 반복한다.
 
-1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 화면으로 확인한다.
+1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
 4. 마켓·소개용 편집 이미지는 실제 화면 캡쳐를 기반으로 `docs/marketing/`에 분리해 만든다.
