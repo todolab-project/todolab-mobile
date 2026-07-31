@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     width: 28,
   },
   monthPickerGrid: {
-    columnGap: spacing[2],
+    columnGap: spacing[1],
     flexDirection: 'row',
     flexWrap: 'wrap',
     rowGap: spacing[1],
@@ -484,11 +484,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
-    flexBasis: '30%',
+    flexBasis: '23%',
     flexGrow: 1,
     justifyContent: 'center',
-    maxWidth: '32%',
-    minHeight: 36,
+    maxWidth: '24%',
+    minHeight: 34,
   },
   dayButton: {
     alignItems: 'center',
