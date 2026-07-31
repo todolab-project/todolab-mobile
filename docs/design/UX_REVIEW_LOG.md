@@ -100,6 +100,7 @@ Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다�
 - 추가 확인 결과 하루 일정은 작은 badge가 아니라 해당 날짜 column 폭을 가능한 만큼 쓰는 편이 더 좋다. `백엔드 계약 확...`처럼 제목 일부가 보이면 사용자는 아래 `예정` 목록을 보지 않아도 무엇이 있는지 먼저 이해할 수 있다.
 - Today 미니 달력도 같은 원칙을 따른다. 작은 시간 badge처럼 보이게 줄이지 않고 하루 column 폭 안에서 제목을 보여 주며, 정확한 시간은 아래 일정 목록과 accessibility label에서 보완한다.
 - Quick Capture 열린 상태는 Web 390×844 캡처 기준 브라우저 기본 파란 focus ring 없이 흰 input surface와 1px primary-soft border로 보인다. composer 자체가 하단 sheet처럼 열리므로 focus 표시는 조용하게 유지하되, 오류 상태만 danger border로 강하게 구분한다.
+- Today 일정 row는 처음 적용한 highlighter amber가 390px 화면에서 과하게 노랗게 보여, schedule 전용 surface로 한 단계 낮췄다. 최종 캡처 기준 일정은 시간 제약 항목으로 구분되지만 오늘 할 일 목록보다 더 강하게 튀지 않는다.
 - 다음 polish는 bar 자체보다 Calendar 전체의 선 대비, 선택 날짜 outline, 일정 label이 동시에 있을 때의 시각 밀도를 낮추는 쪽이 더 효과적이다.
 
 다음 확인:

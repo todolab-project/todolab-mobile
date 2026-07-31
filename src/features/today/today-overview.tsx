@@ -110,6 +110,7 @@ export function TodayOverview({ date, onOpenQuickCapture, overview }: TodayOverv
                 isCompleting={completeTask.isPending && completeTask.variables === task.id}
                 key={task.id}
                 referenceDate={date}
+                surfaceTone="tinted"
                 task={task}
                 onComplete={() =>
                   completeTask.mutate(task.id, {
@@ -201,8 +202,7 @@ export function TodayOverview({ date, onOpenQuickCapture, overview }: TodayOverv
               styles.reviewRow,
               {
                 backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
-                borderColor: isReviewFocused ? theme.colors.primary : theme.colors.border,
-                borderWidth: isReviewFocused ? 2 : 1,
+                borderColor: isReviewFocused ? theme.colors.primarySoft : theme.colors.border,
               },
             ]}
           >

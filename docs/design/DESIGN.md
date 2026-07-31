@@ -385,6 +385,7 @@ compact header
 - Today 주간 strip은 하루 일정을 점으로만 축약하지 않고 한 줄 label을 함께 제공한다.
 - Task 사이에는 4px 안팎의 작은 간격만 두고, 임의 색상은 쓰지 않는다. 색은 일정·완료·경고처럼 의미가 정해진 상태에만 사용한다.
 - Task와 일정은 개별적인 낮은 radius outline row로 구분하되 떠 있는 큰 카드처럼 보이는 그림자는 사용하지 않는다.
+- Today의 일정 row는 시간 제약을 빠르게 알아볼 수 있도록 아주 옅은 amber tint를 사용할 수 있다. 실행 Task는 흰 row를 유지해 오늘 실제 할 일을 가장 담백하게 읽히게 한다.
 - 둥근 row는 내부 배경을 같은 radius로 clip해 모서리에 다른 surface 색이 비치지 않게 한다.
 - 실행 Task는 수동 순서 변경 UI를 기본 노출하지 않으며 서버가 제공하는 실행 순서를 그대로 사용한다.
 - Calendar의 날짜·하루 일정·기간 bar는 하나의 동일한 horizontal inset과 7등분 좌표계를 공유한다.

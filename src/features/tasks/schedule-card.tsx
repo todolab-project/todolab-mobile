@@ -10,6 +10,7 @@ import { getSchedulePresentation } from './schedule-presentation';
 
 type ScheduleCardProps = {
   task: TaskResponse;
+  surfaceTone?: 'default' | 'tinted';
   onOpen?: () => void;
   onComplete?: () => void;
   completionDisabled?: boolean;
@@ -19,6 +20,7 @@ type ScheduleCardProps = {
 
 export function ScheduleCard({
   task,
+  surfaceTone = 'default',
   onOpen,
   onComplete,
   completionDisabled = false,
@@ -27,6 +29,8 @@ export function ScheduleCard({
 }: ScheduleCardProps) {
   const theme = useAppTheme();
   const [focusedControl, setFocusedControl] = useState<'checkbox' | 'content' | null>(null);
+  const cardBackground =
+    surfaceTone === 'tinted' ? theme.colors.scheduleSurface : theme.colors.surface;
   const presentation = getSchedulePresentation(task, referenceDate);
   const recurrenceLabel = getRecurrenceLabel(task);
   const occurrenceLabel = getOccurrenceLabel(task);
@@ -48,7 +52,7 @@ export function ScheduleCard({
       style={[
         styles.card,
         {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: cardBackground,
           borderColor: focusedControl ? theme.colors.primary : theme.colors.border,
           borderRadius: radii.md,
           borderWidth: focusedControl ? 1 : StyleSheet.hairlineWidth,
@@ -87,7 +91,10 @@ export function ScheduleCard({
         onPress={onOpen}
         style={({ pressed }) => [
           styles.content,
-          pressed && { backgroundColor: theme.colors.surfaceMuted },
+          pressed && {
+            backgroundColor:
+              surfaceTone === 'tinted' ? theme.colors.warningSoft : theme.colors.surfaceMuted,
+          },
         ]}
       >
         <View style={styles.copy}>
