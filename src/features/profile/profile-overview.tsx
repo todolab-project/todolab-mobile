@@ -108,6 +108,9 @@ export function ProfileOverview() {
             </AppText>
           </View>
           <View style={styles.identityCopy}>
+            <AppText tone="primary" variant="caption" weight="bold">
+              나의 플래너 공간
+            </AppText>
             <AppText numberOfLines={1} variant="bodyLarge" weight="bold">
               {identityTitle}
             </AppText>
@@ -165,8 +168,7 @@ export function ProfileOverview() {
                 {
                   backgroundColor: pressed ? theme.colors.surfaceMuted : theme.colors.surface,
                   borderColor:
-                    focusedItem === item.href ? theme.colors.primary : theme.colors.border,
-                  borderWidth: focusedItem === item.href ? 2 : StyleSheet.hairlineWidth,
+                    focusedItem === item.href ? theme.colors.primarySoft : theme.colors.border,
                 },
               ]}
             >
@@ -235,17 +237,17 @@ function WebShortcutIcon({ color, name }: { color: ColorValue; name: ProfileItem
 
 const styles = StyleSheet.create({
   screen: {
-    gap: spacing[4],
-    paddingTop: spacing[6],
+    gap: spacing[5],
+    paddingTop: spacing[8],
   },
   identityCard: {
     alignItems: 'center',
     borderRadius: radii.lg,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
-    gap: spacing[3],
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[3],
+    gap: spacing[4],
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[4],
   },
   identity: {
     alignItems: 'center',
@@ -267,16 +269,16 @@ const styles = StyleSheet.create({
   },
   menu: {
     backgroundColor: 'transparent',
-    gap: spacing[2],
+    gap: spacing[3],
   },
   row: {
     alignItems: 'center',
     borderRadius: radii.lg,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
-    gap: spacing[3],
+    gap: spacing[4],
     minHeight: 68,
-    paddingHorizontal: spacing[3],
+    paddingHorizontal: spacing[4],
     paddingVertical: spacing[3],
   },
   icon: {

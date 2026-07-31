@@ -182,6 +182,8 @@ Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다�
 - Profile은 dashboard card보다 네이버 홈 shortcut 같은 가벼운 destination list로 유지한다.
 - `목표`, `검색`, `완료 기록`, `설정`은 row 높이, icon treatment, radius를 같은 토큰으로 맞춘다.
 - 로그인 상태와 목적지 목록은 분리해 인증 UI가 기능 shortcut보다 과하게 강해 보이지 않게 한다.
+- 상단 로그인 card에는 큰 페이지 제목을 되살리지 않고 `나의 플래너 공간` eyebrow만 추가한다. 하단 탭의 `프로필` label과 중복하지 않으면서, 설정 목록이 아니라 개인 공간이라는 맥락을 준다.
+- Profile은 첫 콘텐츠가 너무 위에 붙지 않게 상단 여백을 조금 더 주고, shortcut row 간격과 focus border를 Today row 리듬에 맞춘다.
 
 2026-07-30 Web mock 점검 메모:
 
