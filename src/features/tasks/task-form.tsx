@@ -3,10 +3,18 @@ import { Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
 
 import { AppText, Button, Card, InlineNotice } from '@/components/ui';
 import { radii, spacing, useAppTheme } from '@/theme';
-import type { TaskResponse, TaskType, TaskUpsertRequest } from '@/types';
+import type { RecurrenceFrequency, TaskResponse, TaskType, TaskUpsertRequest } from '@/types';
 import { taskLimits } from '@/types';
-import { toApiLocalDate } from '@/utils';
+import { isLocalDateString, toApiLocalDate } from '@/utils';
 
+import {
+  buildTaskRecurrenceRequest,
+  getInitialRecurrenceValues,
+  isValidRecurrenceInterval,
+  recurrenceFrequencyOptions,
+  recurrenceModeOptions,
+  type RecurrenceMode,
+} from './task-form-recurrence';
 import { normalizeScheduleFormInput } from './task-form-schedule';
 
 type TaskFormValues = {
@@ -18,6 +26,9 @@ type TaskFormValues = {
   scheduleDate: string;
   startTime: string;
   endTime: string;
+  recurrenceMode: RecurrenceMode;
+  recurrenceFrequency: RecurrenceFrequency;
+  recurrenceInterval: string;
 };
 
 type TaskFormField =
@@ -26,7 +37,8 @@ type TaskFormField =
   | 'category'
   | 'scheduleDate'
   | 'startTime'
-  | 'endTime';
+  | 'endTime'
+  | 'recurrenceInterval';
 
 type TaskFormProps = {
   initialTask?: TaskResponse;
@@ -52,23 +64,32 @@ export function TaskForm({
   onSubmit,
 }: TaskFormProps) {
   const theme = useAppTheme();
-  const [values, setValues] = useState<TaskFormValues>(() => ({
-    title: initialTask?.title ?? '',
-    description: initialTask?.description ?? '',
-    category: initialTask?.category ?? '',
-    type: initialTask?.type ?? 'TODO',
-    allDay: initialTask?.allDay ?? false,
-    scheduleDate:
-      initialTask?.startAt?.slice(0, 10) ??
-      initialTask?.targetDate ??
-      initialTask?.plannedDate ??
-      toApiLocalDate(),
-    startTime: initialTask?.startAt?.slice(11, 16) ?? '09:00',
-    endTime: initialTask?.endAt?.slice(11, 16) ?? '',
-  }));
+  const [values, setValues] = useState<TaskFormValues>(() => {
+    const recurrence = getInitialRecurrenceValues(initialTask);
+
+    return {
+      title: initialTask?.title ?? '',
+      description: initialTask?.description ?? '',
+      category: initialTask?.category ?? '',
+      type: initialTask?.type ?? 'TODO',
+      allDay: initialTask?.allDay ?? false,
+      scheduleDate:
+        initialTask?.startAt?.slice(0, 10) ??
+        initialTask?.targetDate ??
+        initialTask?.plannedDate ??
+        toApiLocalDate(),
+      startTime: initialTask?.startAt?.slice(11, 16) ?? '09:00',
+      endTime: initialTask?.endAt?.slice(11, 16) ?? '',
+      recurrenceMode: recurrence.mode,
+      recurrenceFrequency: recurrence.customFrequency,
+      recurrenceInterval: recurrence.customInterval,
+    };
+  });
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<TaskFormField | null>(null);
   const [focusedType, setFocusedType] = useState<TaskType | null>(null);
+  const [focusedRecurrenceMode, setFocusedRecurrenceMode] = useState<string | null>(null);
+  const [focusedRecurrenceFrequency, setFocusedRecurrenceFrequency] = useState<string | null>(null);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(
     initialTask
       ? Boolean(
@@ -112,6 +133,33 @@ export function TaskForm({
       return;
     }
 
+    if (isSchedule && values.recurrenceMode !== 'NONE') {
+      if (!isLocalDateString(values.scheduleDate)) {
+        setValidationMessage('반복 기준 날짜를 YYYY-MM-DD 형식으로 입력해 주세요.');
+        return;
+      }
+
+      if (
+        values.recurrenceMode === 'CUSTOM' &&
+        !isValidRecurrenceInterval(values.recurrenceInterval)
+      ) {
+        setValidationMessage('반복 간격은 1부터 99 사이의 숫자로 입력해 주세요.');
+        return;
+      }
+    }
+
+    const recurrence =
+      isSchedule && isLocalDateString(values.scheduleDate)
+        ? buildTaskRecurrenceRequest(
+            {
+              mode: values.recurrenceMode,
+              customFrequency: values.recurrenceFrequency,
+              customInterval: values.recurrenceInterval,
+            },
+            values.scheduleDate,
+          )
+        : null;
+
     onSubmit({
       title,
       description: description || null,
@@ -120,6 +168,7 @@ export function TaskForm({
       allDay: schedule?.allDay ?? false,
       startAt: schedule?.startAt ?? null,
       endAt: schedule?.endAt ?? null,
+      recurrence,
     });
   };
 
@@ -329,6 +378,134 @@ export function TaskForm({
                 </View>
               </View>
             ) : null}
+
+            <View style={styles.field}>
+              <View style={styles.labelRow}>
+                <AppText variant="label" weight="bold">
+                  반복
+                </AppText>
+                <AppText tone="muted" variant="caption">
+                  선택
+                </AppText>
+              </View>
+              <View style={styles.recurrenceGrid}>
+                {recurrenceModeOptions.map((option) => {
+                  const selected = values.recurrenceMode === option.value;
+
+                  return (
+                    <Pressable
+                      accessibilityLabel={`${option.label} 선택`}
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: selected, disabled: isSubmitting }}
+                      disabled={isSubmitting}
+                      key={option.value}
+                      onBlur={() => setFocusedRecurrenceMode(null)}
+                      onFocus={() => setFocusedRecurrenceMode(option.value)}
+                      onPress={() => updateField('recurrenceMode', option.value)}
+                      style={[
+                        styles.recurrenceOption,
+                        {
+                          backgroundColor: selected ? theme.colors.highlightSage : 'transparent',
+                          borderColor:
+                            focusedRecurrenceMode === option.value || selected
+                              ? theme.colors.primary
+                              : theme.colors.border,
+                          borderWidth: focusedRecurrenceMode === option.value ? 2 : 1,
+                        },
+                      ]}
+                    >
+                      <AppText
+                        align="center"
+                        tone={selected ? 'primary' : 'default'}
+                        variant="caption"
+                        weight="bold"
+                      >
+                        {option.label}
+                      </AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              {values.recurrenceMode === 'CUSTOM' ? (
+                <View style={styles.customRecurrence}>
+                  <View style={styles.recurrenceFrequencyGrid}>
+                    {recurrenceFrequencyOptions.map((option) => {
+                      const selected = values.recurrenceFrequency === option.value;
+
+                      return (
+                        <Pressable
+                          accessibilityLabel={`${option.label} 단위 반복 선택`}
+                          accessibilityRole="radio"
+                          accessibilityState={{ checked: selected, disabled: isSubmitting }}
+                          disabled={isSubmitting}
+                          key={option.value}
+                          onBlur={() => setFocusedRecurrenceFrequency(null)}
+                          onFocus={() => setFocusedRecurrenceFrequency(option.value)}
+                          onPress={() => updateField('recurrenceFrequency', option.value)}
+                          style={[
+                            styles.frequencyOption,
+                            {
+                              backgroundColor: selected
+                                ? theme.colors.highlightBlue
+                                : 'transparent',
+                              borderColor:
+                                focusedRecurrenceFrequency === option.value || selected
+                                  ? theme.colors.primary
+                                  : theme.colors.border,
+                              borderWidth: focusedRecurrenceFrequency === option.value ? 2 : 1,
+                            },
+                          ]}
+                        >
+                          <AppText
+                            align="center"
+                            tone={selected ? 'primary' : 'default'}
+                            variant="caption"
+                            weight="bold"
+                          >
+                            {option.label}
+                          </AppText>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <View style={styles.intervalRow}>
+                    <TextInput
+                      accessibilityHint="1부터 99 사이의 숫자로 입력해 주세요."
+                      accessibilityLabel="반복 간격"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      editable={!isSubmitting}
+                      keyboardType="number-pad"
+                      maxLength={2}
+                      onBlur={() => setFocusedField(null)}
+                      onChangeText={(value) => updateField('recurrenceInterval', value)}
+                      onFocus={() => setFocusedField('recurrenceInterval')}
+                      placeholder="2"
+                      placeholderTextColor={theme.colors.textMuted}
+                      returnKeyType="done"
+                      style={[
+                        styles.input,
+                        styles.intervalInput,
+                        {
+                          backgroundColor: theme.colors.surface,
+                          borderColor:
+                            focusedField === 'recurrenceInterval'
+                              ? theme.colors.primary
+                              : theme.colors.border,
+                          borderWidth: focusedField === 'recurrenceInterval' ? 2 : 1,
+                          color: theme.colors.text,
+                        },
+                      ]}
+                      value={values.recurrenceInterval}
+                    />
+                    <AppText tone="secondary" variant="label">
+                      {getCustomRecurrenceUnitLabel(values.recurrenceFrequency)}마다 반복
+                    </AppText>
+                  </View>
+                </View>
+              ) : null}
+            </View>
           </View>
         ) : null}
 
@@ -442,6 +619,13 @@ export function TaskForm({
   );
 }
 
+function getCustomRecurrenceUnitLabel(frequency: RecurrenceFrequency) {
+  if (frequency === 'DAILY') return '일';
+  if (frequency === 'MONTHLY') return '개월';
+
+  return '주';
+}
+
 const styles = StyleSheet.create({
   container: {
     gap: spacing[4],
@@ -493,6 +677,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 44,
     paddingHorizontal: spacing[2],
+  },
+  recurrenceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing[2],
+  },
+  recurrenceOption: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minHeight: 38,
+    paddingHorizontal: spacing[3],
+  },
+  customRecurrence: {
+    gap: spacing[2],
+  },
+  recurrenceFrequencyGrid: {
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  frequencyOption: {
+    alignItems: 'center',
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 38,
+  },
+  intervalRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  intervalInput: {
+    minWidth: 72,
+    textAlign: 'center',
   },
   switchRow: {
     alignItems: 'center',
