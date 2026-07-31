@@ -298,7 +298,7 @@ ToDoLab 적용 방향:
 - [x] Product Design audit 기준 Calendar 일정 bar의 최소 크기, 텍스트 생략, column overflow, touch target을 다시 마감한다.
 - [x] Today section별 카드·border 무게를 낮추고 일정/오늘 할 일/정리할 항목/완료의 역할 차이를 더 명확히 만든다.
 - [x] Quick Capture 열린 상태의 기본 파란 focus border를 앱 primary soft border와 bottom sheet형 composer visual로 교체한다.
-- [ ] 하단 tab active icon·label의 선택 상태와 실제 스크린샷을 갱신해 Today/Calendar/Profile의 현재 위치가 분명히 보이는지 확인한다.
+- [x] 하단 tab active icon·label의 선택 상태와 실제 스크린샷을 갱신해 Today/Calendar/Profile의 현재 위치가 분명히 보이는지 확인한다.
 - [ ] Profile 상단 로그인 card와 shortcut row를 “나의 플래너 공간”처럼 보이도록 여백, 동기화 상태 copy, icon 리듬을 다듬는다.
 - [ ] iOS/Android font scale 1.5, safe area, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
 
