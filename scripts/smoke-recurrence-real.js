@@ -168,6 +168,12 @@ main().catch((error) => {
     console.error(`Recurrence smoke timed out while connecting to ${apiUrl}`);
   } else {
     console.error(error instanceof Error ? error.message : error);
+    const causeDetail = formatErrorCause(error?.cause);
+
+    if (causeDetail) {
+      console.error(`Failure cause: ${causeDetail}`);
+    }
+
     if (error?.status || error?.code) {
       console.error(`Failure detail: status=${error.status ?? 'n/a'}, code=${error.code ?? 'n/a'}`);
     }
@@ -176,3 +182,11 @@ main().catch((error) => {
     process.exitCode = 1;
   });
 });
+
+function formatErrorCause(cause) {
+  if (!cause || typeof cause !== 'object') {
+    return null;
+  }
+
+  return [cause.code, cause.address, cause.port, cause.message].filter(Boolean).join(', ');
+}
