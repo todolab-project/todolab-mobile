@@ -186,6 +186,28 @@ Mock Web 화면에서 확인한 항목:
 - 2026-07-30 후속 실행에서도 회원가입, 로그인, 반복 생성, `recurrenceScope=ALL` cleanup은 통과했다.
 - `GET /api/v1/tasks/today?date=2026-08-04`는 동일하게 HTTP 500, error code `99999`로 실패했다.
 
+## 2026-08-01 local real API recurrence smoke 재확인
+
+환경:
+
+- API URL: `http://127.0.0.1:8080`
+- 백엔드: local server `8080` 접근 가능
+- 실행 명령: `EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:recurrence:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+결과:
+
+- 회원가입, 로그인, `POST /api/v1/tasks` 반복 일정 생성 통과
+- `GET /api/v1/tasks/today?date=2026-08-04` 실패
+- HTTP status: `500`
+- error code: `99999`
+- 실패 후 `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup 통과
+
+판정:
+
+- 2026-07-29, 2026-07-30과 같은 실패가 계속 재현된다.
+- 모바일 반복 생성 UI, occurrence별 완료·미룸·건너뛰기, 반복 알림 예약 검증은 백엔드 Today/Calendar occurrence materialize path가 수정된 뒤 다시 진행한다.
+
 ## 2026-07-30 local real API auth smoke 재확인
 
 환경:
