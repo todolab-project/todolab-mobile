@@ -113,11 +113,13 @@ API URL:
 - [x] iOS bundle identifier: `com.todolab.mobile`
 - [x] EAS profile 뼈대: `development`, `preview`, `production`
 - [ ] scheme 유지 여부: `todolab`
-- [ ] API 환경별 빌드 설정
-- [ ] Android signing credential 소유 방식과 복구 절차
+- [x] API mode별 빌드 설정: mock development, real preview/production
+- [x] Android signing credential 운영 기준과 비밀 값 제외 원칙
+- [ ] EAS project 연결 후 Android signing credential 생성과 접근 권한 확인
+- [ ] EAS preview/production `EXPO_PUBLIC_API_URL` 등록
 - [ ] 앱 아이콘, splash, favicon 최종 asset
 
-식별자가 확정되기 전에는 store 제출용 build를 만들지 않는다.
+Expo project owner, project id, signing credential이 연결되기 전에는 실제 배포용 build를 만들지 않는다.
 
 ## 10. 릴리즈 판정
 

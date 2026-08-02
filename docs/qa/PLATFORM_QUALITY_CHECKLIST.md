@@ -159,14 +159,14 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 
 후보 형식:
 
-| 항목                  | 후보 또는 기준       | 확정 필요      |
-| --------------------- | -------------------- | -------------- |
-| Android package       | `com.todolab.mobile` | 출시 전 재검토 |
-| iOS bundle identifier | `com.todolab.mobile` | 출시 전 재검토 |
-| EAS project owner     | Expo 계정/조직       | 예             |
-| scheme                | `todolab` 유지       | 필요 시        |
+| 항목                  | 후보 또는 기준       | 확정 필요                                |
+| --------------------- | -------------------- | ---------------------------------------- |
+| Android package       | `com.todolab.mobile` | 개인 APK 기준 확정, store 전 재검토      |
+| iOS bundle identifier | `com.todolab.mobile` | 개인 APK 기준 확정, Apple Team 전 재검토 |
+| EAS project owner     | Expo 계정/조직       | 예                                       |
+| scheme                | `todolab` 유지       | 필요 시                                  |
 
-식별자를 확정하면 같은 커밋에서 확인할 항목:
+식별자 또는 EAS project를 변경하면 같은 커밋에서 확인할 항목:
 
 - `app.json` 식별자
 - `eas.json`
