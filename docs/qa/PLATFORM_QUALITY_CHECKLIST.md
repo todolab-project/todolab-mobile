@@ -130,6 +130,8 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 - Android package는 `com.todolab.mobile`로 설정했다.
 - iOS bundle identifier는 `com.todolab.mobile`로 설정했다.
 - Android versionCode는 `1`로 시작한다.
+- 앱 표시 이름은 `ToDoLab`, scheme은 `todolab`으로 유지한다.
+- `npm run check:release-assets`로 앱 이름, slug, scheme, icon/splash/favicon 경로와 PNG 크기를 자동 점검한다.
 - `eas.json`에 `development`, `preview`, `production` profile을 추가했다.
 - Expo project `owner`, `runtimeVersion`, OTA `updates` 정책도 아직 정하지 않았다.
 

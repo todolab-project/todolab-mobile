@@ -108,16 +108,18 @@ API URL:
 
 출시 빌드 전 확정해야 한다.
 
-- [ ] 앱 표시 이름
+- [x] 앱 표시 이름: `ToDoLab`
 - [x] Android package: `com.todolab.mobile`
 - [x] iOS bundle identifier: `com.todolab.mobile`
 - [x] EAS profile 뼈대: `development`, `preview`, `production`
-- [ ] scheme 유지 여부: `todolab`
+- [x] scheme 유지 여부: `todolab`
 - [x] API mode별 빌드 설정: mock development, real preview/production
 - [x] Android signing credential 운영 기준과 비밀 값 제외 원칙
 - [ ] EAS project 연결 후 Android signing credential 생성과 접근 권한 확인
 - [ ] EAS preview/production `EXPO_PUBLIC_API_URL` 등록
 - [ ] 앱 아이콘, splash, favicon 최종 asset
+
+`npm run check:release-assets`로 앱 이름, slug, scheme, icon/splash/favicon 파일 존재와 PNG 크기를 확인한다.
 
 Expo project owner, project id, signing credential이 연결되기 전에는 실제 배포용 build를 만들지 않는다.
 

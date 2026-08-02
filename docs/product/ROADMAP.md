@@ -391,6 +391,7 @@ ToDoLab 적용 방향:
 - [x] Android APK 빌드 전 공개 환경값과 local URL 혼입을 확인하는 `npm run check:android-apk`를 추가한다.
 - [x] EAS CLI와 project id 연결 여부를 확인하는 `npm run check:eas-setup` preflight를 추가한다.
 - [x] Android signing credential은 EAS managed를 기본으로 사용하고, keystore/password는 저장소에 넣지 않는 운영 기준을 문서화한다.
+- [x] 앱 이름, scheme, icon/splash/favicon 파일 존재와 PNG 크기를 확인하는 `npm run check:release-assets`를 추가한다.
 - [ ] EAS project 연결 후 실제 Android signing credential 생성과 접근 권한을 확인한다.
 - [ ] 생성한 APK를 실제 기기에 설치하고 Expo Go와 Metro 없이 cold start 되는지 확인한다.
 
