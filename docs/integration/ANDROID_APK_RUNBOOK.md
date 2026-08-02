@@ -89,10 +89,50 @@ eas build --platform android --profile preview
 
 ## 7. 업데이트 운영
 
+### APK 보관과 전달
+
+- APK 파일은 Git 저장소에 커밋하지 않는다.
+- 개인 사용 단계의 APK는 EAS build artifact link 또는 로컬 `~/Downloads/todolab-apk/` 같은 개인 보관 위치에 둔다.
+- 파일명은 `todolab-android-preview-v<version>-<versionCode>-<shortCommit>.apk` 형식으로 남긴다.
+- Android 기기로 전달할 때는 EAS QR/link, USB 파일 전송, 또는 본인만 접근 가능한 cloud storage를 사용한다.
+- 공유 link를 만들면 설치 완료 후 만료하거나 접근 권한을 회수한다.
+
+### 설치 권한
+
+- Android의 “출처를 알 수 없는 앱 설치” 권한은 APK를 설치할 때만 임시로 켠다.
+- 설치가 끝나면 사용한 앱, 예: Chrome, Files, Drive의 설치 권한을 다시 끈다.
+- 권한을 계속 켜 두는 방식은 개인 APK 단계에서도 기본값으로 두지 않는다.
+
+### 업데이트와 release note
+
 - 같은 package로 update install하려면 `android.versionCode`를 증가시킨다.
-- signing keystore는 EAS managed credential 또는 별도 보관 위치를 정하되 저장소에 넣지 않는다.
 - release 후보마다 앱 commit, 백엔드 commit/image, API URL, 기기, 검증 결과를 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록한다.
+- release note에는 version, versionCode, frontend commit, backend commit 또는 image tag, API base URL, migration 필요 여부, rollback 가능 여부를 남긴다.
+- 백엔드 API breaking change가 있으면 호환 APK 설치와 smoke test가 끝나기 전까지 기존 API를 제거하지 않는다.
 - Play Store 배포는 개인 APK 사용이 안정된 뒤 별도로 결정한다.
+
+Release note 최소 형식:
+
+```text
+ToDoLab Android APK
+Version:
+VersionCode:
+Frontend commit:
+Backend commit/image:
+API URL:
+Required backend migration: yes/no
+Breaking API dependency:
+Smoke result:
+Rollback target:
+Notes:
+```
+
+### Rollback 기준
+
+- rollback은 같은 signing credential과 낮지 않은 데이터 호환성을 전제로 한다.
+- Android는 낮은 `versionCode` APK로 바로 downgrade 설치가 제한될 수 있으므로, 이전 버전으로 되돌릴 가능성이 있으면 데이터 삭제 또는 재설치 필요 여부를 먼저 확인한다.
+- SecureStore token, local cache, 백엔드 schema가 이전 APK와 호환되는지 확인한다.
+- signing keystore는 EAS managed credential 또는 별도 보관 위치를 정하되 저장소에 넣지 않는다.
 
 ## 8. Signing credential 운영
 

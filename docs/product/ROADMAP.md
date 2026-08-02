@@ -437,12 +437,12 @@ ToDoLab 적용 방향:
 
 #### E4. 설치와 업데이트 운영
 
-- [ ] APK 저장 위치와 기기로 전달하는 방법을 정한다.
-- [ ] 출처를 알 수 없는 앱 설치 권한은 APK 설치 직후 다시 제한할지 운영 방식을 정한다.
-- [ ] release note에 version, API 호환 범위, 필수 migration 여부를 남긴다.
-- [ ] 백엔드 API breaking change가 있으면 호환 APK 설치 완료 전 기존 API를 제거하지 않는다.
-- [ ] APK rollback이 필요할 때 Android versionCode와 앱 데이터 호환성을 확인한다.
-- [ ] Play Store 배포는 개인 APK 사용이 안정된 뒤 별도 결정으로 남긴다.
+- [x] APK 저장 위치와 기기로 전달하는 방법을 정한다.
+- [x] 출처를 알 수 없는 앱 설치 권한은 APK 설치 직후 다시 제한하는 운영 방식을 정한다.
+- [x] release note에 version, API 호환 범위, 필수 migration 여부를 남기는 형식을 정한다.
+- [x] 백엔드 API breaking change가 있으면 호환 APK 설치 완료 전 기존 API를 제거하지 않는 운영 기준을 정한다.
+- [x] APK rollback이 필요할 때 Android versionCode와 앱 데이터 호환성을 확인하는 기준을 정한다.
+- [x] Play Store 배포는 개인 APK 사용이 안정된 뒤 별도 결정으로 남긴다.
 
 완료 기준:
 

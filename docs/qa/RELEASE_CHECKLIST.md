@@ -134,6 +134,16 @@ Expo project owner, project id, signing credential이 연결되기 전에는 실
 관련 이슈 또는 문서:
 ```
 
+## 11. 개인 APK release note
+
+Android 개인 APK 후보를 만들 때 [`ANDROID_APK_RUNBOOK.md`](../integration/ANDROID_APK_RUNBOOK.md)의 release note 형식을 사용한다.
+
+- [ ] version, versionCode, frontend commit을 기록했다.
+- [ ] backend commit 또는 image tag와 API URL을 기록했다.
+- [ ] 필수 migration과 breaking API 의존성을 기록했다.
+- [ ] rollback target과 데이터 호환성을 확인했다.
+- [ ] APK link 또는 파일 위치를 저장소가 아닌 개인 보관 위치에 남겼다.
+
 릴리즈 보류 기준:
 
 - 로그인 또는 Today 핵심 흐름이 real 모드에서 실패한다.
