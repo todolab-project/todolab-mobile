@@ -98,6 +98,12 @@ Mock Web 화면에서 확인한 항목:
 - light/dark에서 section 색상, calendar rule, hairline 대비
 - 일정 label과 여러 날 일정 bar가 날짜 cell 밖으로 튀지 않는지
 
+2026-08-02 재확인:
+
+- `xcrun simctl list devices available`은 `unable to find utility "simctl"`로 실패한다.
+- `adb devices`는 `command not found: adb`로 실패한다.
+- native smoke는 Xcode simulator runtime, Android Platform Tools, 또는 실제 기기 연결 후 진행한다.
+
 ## 2026-07-30 mock Web responsive smoke
 
 환경:
