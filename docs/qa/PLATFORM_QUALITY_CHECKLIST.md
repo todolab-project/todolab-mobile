@@ -127,9 +127,10 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 현재 상태:
 
 - `app.json`에 `scheme: "todolab"`은 설정되어 있다.
-- `android.package`는 아직 설정하지 않았다.
-- `ios.bundleIdentifier`는 아직 설정하지 않았다.
-- `eas.json`은 아직 없다.
+- Android package는 `com.todolab.mobile`로 설정했다.
+- iOS bundle identifier는 `com.todolab.mobile`로 설정했다.
+- Android versionCode는 `1`로 시작한다.
+- `eas.json`에 `development`, `preview`, `production` profile을 추가했다.
 - Expo project `owner`, `runtimeVersion`, OTA `updates` 정책도 아직 정하지 않았다.
 
 확정 시 입력 위치:
@@ -158,12 +159,12 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 
 후보 형식:
 
-| 항목                  | 후보 또는 기준                             | 확정 필요 |
-| --------------------- | ------------------------------------------ | --------- |
-| Android package       | `com.todolab.mobile` 또는 조직 도메인 기준 | 예        |
-| iOS bundle identifier | `com.todolab.mobile` 또는 Apple Team 기준  | 예        |
-| EAS project owner     | Expo 계정/조직                             | 예        |
-| scheme                | `todolab` 유지                             | 필요 시   |
+| 항목                  | 후보 또는 기준       | 확정 필요      |
+| --------------------- | -------------------- | -------------- |
+| Android package       | `com.todolab.mobile` | 출시 전 재검토 |
+| iOS bundle identifier | `com.todolab.mobile` | 출시 전 재검토 |
+| EAS project owner     | Expo 계정/조직       | 예             |
+| scheme                | `todolab` 유지       | 필요 시        |
 
 식별자를 확정하면 같은 커밋에서 확인할 항목:
 

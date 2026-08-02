@@ -8,9 +8,12 @@
     "scheme": "todolab",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.todolab.mobile",
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.todolab.mobile",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

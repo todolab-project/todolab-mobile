@@ -381,12 +381,13 @@ ToDoLab 적용 방향:
 
 #### E1. 앱 식별자와 내부 배포 빌드
 
-- [ ] Android package를 확정하고 `app.json`의 `expo.android.package`에 설정한다.
+- [x] Android package를 `com.todolab.mobile`로 정하고 `app.json`의 `expo.android.package`에 설정한다.
+- [x] iOS bundle identifier를 Android와 같은 기준인 `com.todolab.mobile`로 설정한다. iOS 배포 전 Apple Team 기준으로 재검토한다.
 - [ ] Expo project owner와 project id를 확정하고 EAS project를 연결한다.
-- [ ] `eas.json`에 Android `development`, `preview`, `production` profile을 구분한다.
-- [ ] `preview` profile은 `distribution: internal` 또는 `android.buildType: apk`로 직접 설치 가능한 APK를 생성한다.
-- [ ] production API 빌드는 `EXPO_PUBLIC_API_MODE=real`을 사용하고 mock fallback이 일어나지 않게 한다.
-- [ ] 앱 version과 Android versionCode 증가 정책을 정한다.
+- [x] `eas.json`에 Android `development`, `preview`, `production` profile을 구분한다.
+- [x] `preview` profile은 `distribution: internal`과 `android.buildType: apk`로 직접 설치 가능한 APK를 생성하도록 설정한다.
+- [x] production API 빌드는 `EXPO_PUBLIC_API_MODE=real`을 사용하고 mock fallback이 일어나지 않게 한다.
+- [x] 앱 version은 `1.0.0`, Android versionCode는 `1`로 시작한다.
 - [ ] Android signing keystore의 소유 위치와 복구 방법을 기록하되 실제 credential은 저장소에 넣지 않는다.
 - [ ] 생성한 APK를 실제 기기에 설치하고 Expo Go와 Metro 없이 cold start 되는지 확인한다.
 
@@ -535,8 +536,8 @@ Today 작업 목록 표시
 
 다음 작업은 실제 화면 품질과 기기별 QA를 우선한다. 2026-07-28 기준 local real API full smoke test는 통과했으므로, 이후 real API 검증은 화면 QA와 배포 전 회귀 테스트로 반복한다.
 
-1. Android package와 Expo/EAS project를 확정하고 `app.json`, `eas.json`에 development/preview/production profile을 구성한다.
-2. 백엔드에서 확정한 Tailscale HTTPS URL을 Android production API URL로 주입하고 APK를 생성한다.
+1. Expo project owner와 project id를 확정하고 EAS project를 연결한다.
+2. 백엔드에서 확정한 Tailscale HTTPS URL을 EAS `EXPO_PUBLIC_API_URL`로 등록하고 APK를 생성한다.
 3. 생성한 APK를 실제 Android 기기에 설치해 Expo Go와 Metro 없이 cold start, 로그인, Today 핵심 흐름을 확인한다.
 4. 430dp, font scale 1.5, light/dark에서 Today와 Calendar, Android back/keyboard/navigation bar가 깨지지 않는지 실기기로 확인한다.
 5. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)와 [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)에 맞춰 Android real-mode 전체 smoke를 기록한다.

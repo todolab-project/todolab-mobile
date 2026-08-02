@@ -107,9 +107,9 @@ API URL:
 출시 빌드 전 확정해야 한다.
 
 - [ ] 앱 표시 이름
-- [ ] Android package
-- [ ] iOS bundle identifier
-- [ ] EAS profile
+- [x] Android package: `com.todolab.mobile`
+- [x] iOS bundle identifier: `com.todolab.mobile`
+- [x] EAS profile 뼈대: `development`, `preview`, `production`
 - [ ] scheme 유지 여부: `todolab`
 - [ ] API 환경별 빌드 설정
 - [ ] 앱 아이콘, splash, favicon 최종 asset
