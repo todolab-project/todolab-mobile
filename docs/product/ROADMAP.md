@@ -383,7 +383,7 @@ ToDoLab 적용 방향:
 
 - [x] Android package를 `com.todolab.mobile`로 정하고 `app.json`의 `expo.android.package`에 설정한다.
 - [x] iOS bundle identifier를 Android와 같은 기준인 `com.todolab.mobile`로 설정한다. iOS 배포 전 Apple Team 기준으로 재검토한다.
-- [ ] Expo project owner와 project id를 확정하고 EAS project를 연결한다.
+- [x] Expo project owner와 project id를 확정하고 EAS project를 연결한다. 현재 owner는 `hyunseung2`, project id는 `f49103dc-1d93-47a9-8972-4b5a4cc9e395`다.
 - [x] `eas.json`에 Android `development`, `preview`, `production` profile을 구분한다.
 - [x] `preview` profile은 `distribution: internal`과 `android.buildType: apk`로 직접 설치 가능한 APK를 생성하도록 설정한다.
 - [x] production API 빌드는 `EXPO_PUBLIC_API_MODE=real`을 사용하고 mock fallback이 일어나지 않게 한다.
@@ -405,8 +405,8 @@ ToDoLab 적용 방향:
 #### E2. Tailscale production API 연동
 
 - [ ] PC와 Android에 Tailscale을 설치하고 동일 tailnet 로그인을 확인한다.
-- [ ] 백엔드에서 확정한 `https://<device>.<tailnet>.ts.net` 주소를 production `EXPO_PUBLIC_API_URL`로 사용한다.
-- [ ] production APK에 `localhost`, `10.0.2.2`, LAN IP가 남지 않는지 빌드 전 확인한다.
+- [x] 백엔드에서 확정한 Tailscale HTTPS 주소 `https://macmini.tail68d2d1.ts.net`을 production `EXPO_PUBLIC_API_URL`로 사용한다.
+- [x] production APK에 `localhost`, `10.0.2.2`, LAN IP가 남지 않는지 빌드 전 정적 검사한다.
 - [x] 앱 번들의 `EXPO_PUBLIC_*` 값은 공개 정보로 간주하고 secret, token, password를 넣지 않는다.
 - [ ] Android에서 Tailscale 연결 전·후의 network error와 재시도 UX를 확인한다.
 - [ ] Wi-Fi와 모바일 데이터 전환 뒤 Auth, Today, Calendar query가 정상 복구되는지 확인한다.
@@ -456,7 +456,7 @@ ToDoLab 적용 방향:
 | 보류 조건                                   | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Android/iOS simulator 또는 실기기 실행 가능 | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-02 재확인 기준으로 `xcrun`은 있으나 `simctl` utility를 찾을 수 없고 `adb`도 없어 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다. Xcode Command Line Tools의 simulator runtime 또는 Android Platform Tools/실기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
-| Expo 계정과 EAS project 연결                | project owner, project id, Android signing credential, EAS env                             | Expo 로그인 뒤 `eas init`으로 project id를 연결하고, `npm run check:eas-setup`으로 누락 항목을 확인한다. 이후 EAS managed Android signing credential 생성과 접근 권한을 확인한다.                                                                                                                                                                                                                                                                                            |
+| EAS Android signing credential 확인         | Android signing credential, preview APK build                                              | `npm run check:eas-setup`은 통과했다. 다음은 EAS managed Android signing credential 생성과 접근 권한을 확인하고 preview APK를 생성한다.                                                                                                                                                                                                                                                                                                                                      |
 
 ## 8. 커밋 운영 기준
 
@@ -541,8 +541,8 @@ Today 작업 목록 표시
 
 다음 작업은 실제 화면 품질과 기기별 QA를 우선한다. 2026-07-28 기준 local real API full smoke test는 통과했으므로, 이후 real API 검증은 화면 QA와 배포 전 회귀 테스트로 반복한다.
 
-1. Expo project owner와 project id를 확정하고 EAS project를 연결한다.
-2. 백엔드에서 확정한 Tailscale HTTPS URL을 EAS `EXPO_PUBLIC_API_URL`로 등록하고 APK를 생성한다.
+1. EAS managed Android signing credential 생성과 접근 권한을 확인한다.
+2. Tailscale HTTPS URL이 들어간 preview APK를 생성한다.
 3. 생성한 APK를 실제 Android 기기에 설치해 Expo Go와 Metro 없이 cold start, 로그인, Today 핵심 흐름을 확인한다.
 4. 430dp, font scale 1.5, light/dark에서 Today와 Calendar, Android back/keyboard/navigation bar가 깨지지 않는지 실기기로 확인한다.
 5. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)와 [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)에 맞춰 Android real-mode 전체 smoke를 기록한다.

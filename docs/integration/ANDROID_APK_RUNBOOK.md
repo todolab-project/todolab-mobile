@@ -4,14 +4,16 @@ ToDoLab Mobile을 Expo Go나 Metro 없이 Android 기기에 직접 설치해 실
 
 ## 1. 현재 확정한 앱 식별자
 
-| 항목                  | 값                   | 메모                                                                             |
-| --------------------- | -------------------- | -------------------------------------------------------------------------------- |
-| 앱 이름               | `ToDoLab`            | `app.json`                                                                       |
-| Android package       | `com.todolab.mobile` | 개인 APK용 기준값. Play Store 또는 조직 도메인 정책이 생기면 출시 전 재검토한다. |
-| iOS bundle identifier | `com.todolab.mobile` | iOS 배포는 후순위지만 Android와 같은 기준값을 먼저 맞춘다.                       |
-| App version           | `1.0.0`              | `package.json`, `app.json`                                                       |
-| Android versionCode   | `1`                  | APK update install 전 증가 정책을 유지한다.                                      |
-| Scheme                | `todolab`            | deep link 정책 확정 전까지 유지한다.                                             |
+| 항목                  | 값                                     | 메모                                                                             |
+| --------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
+| 앱 이름               | `ToDoLab`                              | `app.json`                                                                       |
+| Android package       | `com.todolab.mobile`                   | 개인 APK용 기준값. Play Store 또는 조직 도메인 정책이 생기면 출시 전 재검토한다. |
+| iOS bundle identifier | `com.todolab.mobile`                   | iOS 배포는 후순위지만 Android와 같은 기준값을 먼저 맞춘다.                       |
+| App version           | `1.0.0`                                | `package.json`, `app.json`                                                       |
+| Android versionCode   | `1`                                    | APK update install 전 증가 정책을 유지한다.                                      |
+| Scheme                | `todolab`                              | deep link 정책 확정 전까지 유지한다.                                             |
+| Expo owner            | `hyunseung2`                           | `app.json`                                                                       |
+| EAS project id        | `f49103dc-1d93-47a9-8972-4b5a4cc9e395` | `app.json`                                                                       |
 
 식별자를 변경하면 기존 Android 앱과 다른 앱으로 설치될 수 있고, 기존 SecureStore 로그인 상태와 앱 데이터가 이어지지 않을 수 있다.
 
@@ -29,7 +31,7 @@ ToDoLab Mobile을 Expo Go나 Metro 없이 Android 기기에 직접 설치해 실
 
 ## 3. Production API URL 주입
 
-Tailscale HTTPS URL이 확정되면 EAS 환경변수에 public API origin만 등록한다.
+개인 APK의 production API origin은 Tailscale HTTPS URL을 사용한다.
 
 ```text
 EXPO_PUBLIC_API_URL=https://macmini.tail68d2d1.ts.net
@@ -58,7 +60,7 @@ npm run check:eas-setup
 - 커밋된 `EXPO_PUBLIC_API_URL`이 있다면 HTTPS인지
 - Android production APK config에서 cleartext traffic 허용을 켜지 않았는지
 - EAS CLI가 설치되어 있고 Expo project id가 연결되어 있는지
-- EAS에 `EXPO_PUBLIC_API_URL`이 profile에 맞게 등록되어 있는지
+- `preview`, `production` profile의 `EXPO_PUBLIC_API_URL`이 Tailscale HTTPS URL인지
 - `.env.local`이 커밋되지 않았는지
 - 백엔드 production API가 Tailscale HTTPS로 접근 가능한지
 
@@ -66,7 +68,7 @@ npm run check:eas-setup
 
 ## 5. EAS project 연결
 
-Expo 계정 로그인이 끝난 뒤 한 번만 project를 연결한다.
+Expo 계정 로그인이 끝난 뒤 한 번만 project를 연결한다. 현재 연결 상태는 `owner: hyunseung2`, project id `f49103dc-1d93-47a9-8972-4b5a4cc9e395`이다.
 
 ```bash
 eas login

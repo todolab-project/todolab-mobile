@@ -133,7 +133,8 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 - 앱 표시 이름은 `ToDoLab`, scheme은 `todolab`으로 유지한다.
 - `npm run check:release-assets`로 앱 이름, slug, scheme, icon/splash/favicon 경로와 PNG 크기를 자동 점검한다.
 - `eas.json`에 `development`, `preview`, `production` profile을 추가했다.
-- Expo project `owner`, `runtimeVersion`, OTA `updates` 정책도 아직 정하지 않았다.
+- Expo project `owner`는 `hyunseung2`, project id는 `f49103dc-1d93-47a9-8972-4b5a4cc9e395`로 연결했다.
+- `runtimeVersion`, OTA `updates` 정책은 아직 정하지 않았다.
 
 확정 시 입력 위치:
 
@@ -165,7 +166,7 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 | --------------------- | -------------------- | ---------------------------------------- |
 | Android package       | `com.todolab.mobile` | 개인 APK 기준 확정, store 전 재검토      |
 | iOS bundle identifier | `com.todolab.mobile` | 개인 APK 기준 확정, Apple Team 전 재검토 |
-| EAS project owner     | Expo 계정/조직       | 예                                       |
+| EAS project owner     | `hyunseung2`         | 개인 APK 기준 확정                       |
 | scheme                | `todolab` 유지       | 필요 시                                  |
 
 식별자 또는 EAS project를 변경하면 같은 커밋에서 확인할 항목:
