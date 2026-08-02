@@ -291,13 +291,16 @@ Mock Web 화면에서 확인한 항목:
 - 미룸 처리한 occurrence가 Today 재조회에서 `deferReason`을 유지
 - 완료 처리한 occurrence가 완료 처리일 기준 `GET /api/v1/tasks/done?date=YYYY-MM-DD`에 포함
 - 첫 occurrence 완료 후 다음 occurrence는 `DONE`으로 함께 바뀌지 않음
+- `DELETE /api/v1/tasks/{thirdOccurrenceId}?recurrenceScope=THIS`
+- 건너뛴 occurrence가 Today 재조회와 Calendar 월간 조회에서 제외
+- 건너뛴 occurrence 이후의 다음 occurrence는 계속 표시
 - `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup
 
 판정:
 
-- 백엔드 수정 후 materialize된 반복 occurrence의 완료·미룸 상태 변경은 모바일 smoke 기준으로 통과한다.
+- 백엔드 수정 후 materialize된 반복 occurrence의 완료·미룸·건너뛰기 상태 변경은 모바일 smoke 기준으로 통과한다.
 - 완료 목록은 occurrence 예정일이 아니라 실제 완료 처리일 기준 `date`로 조회된다. Today/Completed 화면의 “완료한 일” 의미와 일치하므로 모바일 smoke도 완료 처리일 기준으로 맞춘다.
-- 남은 계약 확인 대상은 occurrence 건너뛰기다. `DELETE recurrenceScope=THIS`로 처리할지 별도 skip endpoint로 처리할지 확정이 필요하다.
+- occurrence 건너뛰기는 `DELETE recurrenceScope=THIS` 계약으로 확인했다.
 
 ## 2026-07-30 local real API auth smoke 재확인
 

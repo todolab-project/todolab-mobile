@@ -338,7 +338,7 @@ ToDoLab 적용 방향:
 - [x] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.
 - [x] Today와 Calendar 범위 조회에 occurrence를 표시한다.
 - [x] occurrence별 완료, 미룸과 완료 기록을 연결한다. 2026-08-02 real smoke에서 materialize된 occurrence의 `/done`, `/defer-reason`, 완료 처리일 기준 done list 조회가 통과했다.
-- [ ] occurrence별 건너뛰기 계약을 확정하고 모바일 API client와 smoke에 연결한다.
+- [x] occurrence별 건너뛰기 계약을 확정하고 모바일 smoke에 연결한다. 2026-08-02 real smoke에서 `DELETE recurrenceScope=THIS`가 해당 occurrence만 숨기고 이후 occurrence를 유지하는 것을 확인했다.
 - [x] 모바일 API client는 `GET /api/v1/tasks/notification-candidates` 응답 타입과 조회 method를 제공한다.
 - [ ] 반복 일정과 로컬 알림의 예약·취소 책임을 실제 구현 기준으로 검증한다.
 
@@ -358,7 +358,7 @@ ToDoLab 적용 방향:
 - [x] Google Play와 App Store Connect screenshot 규격을 공식 문서로 확인하고 [`APP_STORE_ASSETS.md`](../marketing/APP_STORE_ASSETS.md)에 반영했다.
 - [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [x] Web mock responsive smoke와 real auth API smoke를 반복 실행하고 결과를 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
-- [ ] Android/iOS에서 mock/real 화면 smoke test를 반복한다. 반복 occurrence smoke는 백엔드 500으로 보류 중이다.
+- [ ] Android/iOS에서 mock/real 화면 smoke test를 반복한다. 반복 occurrence real API smoke는 Web/Node 기준 통과했고, native 화면 smoke는 simulator 또는 실기기 준비 후 확인한다.
 - [x] Web mock에서 Today와 Calendar의 focusable label, 읽기 순서, keyboard focus smoke를 점검하고 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
 - [ ] iOS VoiceOver와 Android TalkBack에서 일정 bar, checkbox, tab, 빠른 기록 동선을 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md)의 최소 smoke 순서와 기록 양식으로 최종 점검한다.
 - [x] Web mock에서 Today와 Calendar의 초기 진입, DOM 크기, horizontal overflow 기준 렌더링 smoke를 점검하고 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
@@ -376,7 +376,6 @@ ToDoLab 적용 방향:
 
 | 보류 조건                                   | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| occurrence별 건너뛰기 계약 확인             | occurrence별 상태 변경, 완료 기록, 로컬 알림 연동 검증                                     | 2026-08-02 real smoke에서 반복 occurrence의 `/done`, `/defer-reason`, 완료 처리일 기준 done list 조회는 통과했다. 남은 항목은 건너뛰기를 `DELETE recurrenceScope=THIS`로 볼지 별도 skip endpoint로 볼지 계약 확정한 뒤 모바일 API client와 smoke에 연결하는 것이다.                                                                                                                                                 |
 | Android/iOS simulator 또는 실기기 실행 가능 | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-01 현재 작업 환경에는 `xcrun`은 있으나 `simctl` utility를 찾을 수 없고 `adb`도 없어 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다. 도구 또는 실제 기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
 | 출시 계정과 앱 식별자 결정                  | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                                                                                                                                                                                                                    |
 

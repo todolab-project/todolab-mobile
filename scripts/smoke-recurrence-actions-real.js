@@ -7,6 +7,8 @@ const password = `M-recur-act-${runId}`;
 const displayName = `반복 동작 스모크 ${runId.slice(-6)}`;
 const firstDate = '2026-08-04';
 const secondDate = '2026-08-11';
+const thirdDate = '2026-08-18';
+const fourthDate = '2026-08-25';
 const title = `반복동작${runId.slice(-6)}`;
 const completedDate = formatLocalDate(new Date());
 let authHeaders = null;
@@ -104,7 +106,7 @@ async function main() {
         frequency: 'WEEKLY',
         interval: 1,
         byDays: ['TU'],
-        recurrenceCount: 3,
+        recurrenceCount: 4,
       },
     }),
   });
@@ -126,6 +128,14 @@ async function main() {
   assert(secondOccurrence, 'second occurrence missing from Today');
   assert(secondOccurrence.id !== firstOccurrence.id, 'second occurrence should use a distinct row');
   console.log('✓ next occurrence materialized in Today');
+
+  const thirdToday = await request(`/api/v1/tasks/today?date=${thirdDate}`, {
+    headers: authHeaders,
+  });
+  const thirdOccurrence = findOccurrence(thirdToday, thirdDate);
+  assert(thirdOccurrence, 'third occurrence missing from Today');
+  assert(thirdOccurrence.id !== secondOccurrence.id, 'third occurrence should use a distinct row');
+  console.log('✓ third occurrence materialized in Today');
 
   const deferred = await request(
     `/api/v1/tasks/${secondOccurrence.id}/defer-reason?reason=WAITING_OTHER`,
@@ -175,6 +185,31 @@ async function main() {
     'second occurrence defer reason changed',
   );
   console.log('✓ completing one occurrence does not complete the next one');
+
+  await request(`/api/v1/tasks/${thirdOccurrence.id}?recurrenceScope=THIS`, {
+    method: 'DELETE',
+    headers: authHeaders,
+  });
+  console.log('✓ skip one occurrence with THIS scope');
+
+  const thirdAfterSkip = await request(`/api/v1/tasks/today?date=${thirdDate}`, {
+    headers: authHeaders,
+  });
+  assert(!findOccurrence(thirdAfterSkip, thirdDate), 'skipped occurrence should be hidden');
+  console.log('✓ skipped occurrence hidden from Today');
+
+  const fourthToday = await request(`/api/v1/tasks/today?date=${fourthDate}`, {
+    headers: authHeaders,
+  });
+  assert(findOccurrence(fourthToday, fourthDate), 'future occurrence should remain after skip');
+  console.log('✓ future occurrence remains visible after skip');
+
+  const monthTasks = await request('/api/v1/tasks?type=MONTH&taskType=SCHEDULE&date=2026-08', {
+    headers: authHeaders,
+  });
+  assert(!findOccurrence(monthTasks, thirdDate), 'skipped occurrence should be hidden from month');
+  assert(findOccurrence(monthTasks, fourthDate), 'future occurrence should remain in month');
+  console.log('✓ skipped occurrence hidden from month list');
 
   await request(`/api/v1/tasks/${created.id}?recurrenceScope=ALL`, {
     method: 'DELETE',
