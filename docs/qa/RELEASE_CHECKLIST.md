@@ -22,7 +22,7 @@ API URL:
 - [ ] 작업 트리에 의도하지 않은 변경이 없다.
 - [ ] 실제 비밀 값, `.env.local`, 로컬 인증 정보가 포함되지 않았다.
 - [ ] `npm run validate`가 통과했다.
-- [ ] Android APK 후보라면 `npm run check:android-apk`가 통과했다.
+- [ ] Android APK 후보라면 `npm run check:release-static`이 통과했다.
 - [ ] EAS 빌드 후보라면 `npm run check:eas-setup`이 통과했다.
 - [ ] 새 의존성을 추가했다면 Expo SDK 56, React Native 0.85 호환성을 확인했다.
 - [ ] 플랫폼별 코드 변경이 있으면 Android, iOS, Web 영향 범위를 기록했다.
@@ -119,7 +119,7 @@ API URL:
 - [ ] EAS preview/production `EXPO_PUBLIC_API_URL` 등록
 - [ ] 앱 아이콘, splash, favicon 최종 asset
 
-`npm run check:release-assets`로 앱 이름, slug, scheme, icon/splash/favicon 파일 존재와 PNG 크기를 확인한다.
+`npm run check:release-static`으로 앱 이름, slug, scheme, icon/splash/favicon 파일 존재, PNG 크기, Android APK profile과 public 환경값을 함께 확인한다. `npm run check:eas-setup`은 Expo 로그인과 EAS project 연결 후 별도로 실행한다.
 
 Expo project owner, project id, signing credential이 연결되기 전에는 실제 배포용 build를 만들지 않는다.
 

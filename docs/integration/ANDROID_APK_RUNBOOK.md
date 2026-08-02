@@ -45,13 +45,14 @@ EXPO_PUBLIC_API_URL=https://<device>.<tailnet>.ts.net
 
 ```bash
 npm run validate
-npm run check:android-apk
+npm run check:release-static
 npm run check:eas-setup
 ```
 
 확인할 것:
 
 - `app.json`의 `android.package`와 `android.versionCode`
+- 앱 표시 이름, scheme, icon/splash/favicon 파일 존재와 PNG 크기
 - `eas.json`의 target profile
 - EAS CLI가 설치되어 있고 Expo project id가 연결되어 있는지
 - EAS에 `EXPO_PUBLIC_API_URL`이 profile에 맞게 등록되어 있는지

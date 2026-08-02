@@ -392,6 +392,7 @@ ToDoLab 적용 방향:
 - [x] EAS CLI와 project id 연결 여부를 확인하는 `npm run check:eas-setup` preflight를 추가한다.
 - [x] Android signing credential은 EAS managed를 기본으로 사용하고, keystore/password는 저장소에 넣지 않는 운영 기준을 문서화한다.
 - [x] 앱 이름, scheme, icon/splash/favicon 파일 존재와 PNG 크기를 확인하는 `npm run check:release-assets`를 추가한다.
+- [x] `npm run validate`에 EAS 계정 없이 통과 가능한 release static 검사(`check:release-static`)를 포함한다.
 - [ ] EAS project 연결 후 실제 Android signing credential 생성과 접근 권한을 확인한다.
 - [ ] 생성한 APK를 실제 기기에 설치하고 Expo Go와 Metro 없이 cold start 되는지 확인한다.
 
@@ -475,7 +476,7 @@ ToDoLab 적용 방향:
 - 백엔드 변경은 모바일 커밋에 섞지 않는다.
 - API 변경이 필요하면 모바일 요구 계약을 먼저 문서화하고 백엔드 저장소에서 별도 브랜치와 커밋으로 처리한다.
 - 커밋 메시지는 `feat:`, `fix:`, `chore:` 같은 prefix 없이 변경 결과를 나타내는 짧은 한국어 명사형으로 작성한다.
-- 변경 후와 커밋 전에는 `npm run validate`로 typecheck, lint, format, docs link, test를 모두 확인한다.
+- 변경 후와 커밋 전에는 `npm run validate`로 typecheck, lint, format, docs link, release static check, test를 모두 확인한다.
 - 플랫폼별 코드 변경은 사용자 전달 내용에 영향을 받는 Android, iOS, Web 범위를 명시한다.
 - 코드와 문서 변경 및 검증까지만 먼저 진행하고, 사용자가 명시적으로 승인한 경우에만 커밋과 푸시를 실행한다.
 - 실제 비밀 값과 `.env.local` 같은 로컬 환경 파일은 커밋하지 않는다.
