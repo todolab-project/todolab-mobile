@@ -509,15 +509,19 @@ export function TaskForm({
           </View>
         ) : null}
 
-        <Button
+        <Pressable
+          accessibilityRole="button"
           accessibilityState={{ expanded: isDetailsExpanded }}
-          size="compact"
-          variant="ghost"
           onPress={() => setIsDetailsExpanded((current) => !current)}
-          style={styles.detailsToggle}
+          style={({ pressed }) => [
+            styles.detailsToggle,
+            { backgroundColor: pressed ? theme.colors.surfaceMuted : 'transparent' },
+          ]}
         >
-          {isDetailsExpanded ? '추가 정보 접기' : '설명·카테고리 추가'}
-        </Button>
+          <AppText tone="secondary" variant="label" weight="semibold">
+            {isDetailsExpanded ? '추가 정보 접기' : '설명·카테고리 추가'} ›
+          </AppText>
+        </Pressable>
 
         {isDetailsExpanded ? (
           <View style={styles.field}>
@@ -727,6 +731,10 @@ const styles = StyleSheet.create({
   },
   detailsToggle: {
     alignSelf: 'flex-start',
+    borderRadius: radii.full,
+    minHeight: 32,
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
   },
   actions: {
     gap: spacing[2],

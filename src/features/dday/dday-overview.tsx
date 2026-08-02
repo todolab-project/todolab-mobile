@@ -229,21 +229,21 @@ function DdayGoalCard({
         </Button>
       </View>
       {menuOpen ? (
-        <View style={styles.goalMenu}>
+        <View style={[styles.goalMenu, { borderTopColor: theme.colors.border }]}>
           <Button
             accessibilityLabel={`${goal.title} 목표의 Today 할 일 만들기`}
-            fullWidth
             size="compact"
             variant="ghost"
+            style={styles.goalMenuAction}
             onPress={onCreateTodayTask}
           >
-            Today 할 일 추가
+            할 일 추가
           </Button>
           <Button
             accessibilityLabel={`${goal.title} D-Day 삭제`}
-            fullWidth
             size="compact"
             variant="ghost"
+            style={styles.goalMenuAction}
             onPress={onRequestDelete}
           >
             삭제
@@ -359,11 +359,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[2],
   },
   goalMenu: {
-    alignItems: 'stretch',
-    borderTopWidth: 0,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
     gap: spacing[1],
-    paddingBottom: spacing[2],
-    paddingHorizontal: spacing[2],
+    justifyContent: 'flex-end',
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[1],
+  },
+  goalMenuAction: {
+    minHeight: 36,
   },
   goalCopy: {
     flex: 1,

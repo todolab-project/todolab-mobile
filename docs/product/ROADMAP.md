@@ -358,6 +358,7 @@ ToDoLab 적용 방향:
 - [x] 마켓·소개용 1080×1920 편집 PNG 초안을 실제 화면 캡쳐 기반으로 `docs/marketing/`에 생성했다.
 - [x] Google Play와 App Store Connect screenshot 규격을 공식 문서로 확인하고 [`APP_STORE_ASSETS.md`](../marketing/APP_STORE_ASSETS.md)에 반영했다.
 - [x] route 기준 전체 화면 screenshot과 Product Design audit 전수 확인을 완료했다. 상태별 추가 확인 범위는 [`SCREEN_GUIDE.md`](../design/SCREEN_GUIDE.md)의 화면 점검 범위 표를 기준으로 관리한다.
+- [x] Search 상세 필터/빈 상태, Task 작성 일정·추가 정보 확장, D-Day 생성/menu/삭제/연결 Task 상태를 Product Design audit으로 확인하고 즉시 수정 포인트를 반영했다.
 - [ ] Android package, iOS bundle identifier, EAS profile은 출시 계정과 식별자 결정 후 설정한다. 확정 전 입력 위치와 결정 기준은 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 문서화했다.
 - [x] Web mock responsive smoke와 real auth API smoke를 반복 실행하고 결과를 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다.
 - [ ] Android/iOS에서 mock/real 화면 smoke test를 반복한다. 반복 occurrence real API smoke는 Web/Node 기준 통과했고, native 화면 smoke는 simulator 또는 실기기 준비 후 확인한다.

@@ -46,10 +46,11 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - 수정 후 재감사에서 Calendar/Profile tab root의 하단 inset을 Today와 맞춰 scroll 끝 영역이 tab bar에 가려지지 않게 했다.
 - pass 3 기준 Web screenshot에서 즉시 수정할 큰 충돌은 더 발견하지 못했다.
 - full route audit에서 D-Day의 isolated `+` action을 `새 목표` 버튼으로 바꾸고, 정리할 항목의 section marker dot을 제거해 Today와 같은 title/count/list rhythm으로 맞췄다.
+- state audit에서 Search 상세 필터와 빈 상태, Task 작성 일정/추가 정보 확장, D-Day 생성/menu/삭제/연결 Task 상태를 확인했다. Task 작성의 추가 정보 toggle은 ghost button에서 조용한 text action으로 낮췄고, D-Day menu는 카드 하단의 우측 action row로 정리했다.
 
 남은 확인:
 
-- 상태별 audit을 추가한다. 특히 Search 상세 필터, Task 작성 schedule/recurrence 확장, D-Day 메뉴/생성/삭제/연결 Task, 인증 error/loading을 별도 캡쳐한다.
+- 남은 상태 audit은 Search pagination/reset, Auth error/loading/validation, Task custom recurrence, D-Day linked task creation/failure, native keyboard/date picker 중심으로 진행한다.
 - 실제 iOS/Android font scale 1.5, safe area, VoiceOver/TalkBack은 Web screenshot만으로 확정할 수 없다.
 - Calendar의 일정 pill은 좁은 column에서 여전히 빨리 잘리므로 native font scale에서 cell overflow를 확인한다.
 - icon-only FAB의 screen reader label, touch target, keyboard focus는 native QA에서 확인한다.
