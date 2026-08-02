@@ -25,14 +25,14 @@ ToDoLab Mobile을 Expo Go나 Metro 없이 Android 기기에 직접 설치해 실
 | `preview`     | 개인 설치용 real API APK       | APK                      | `real`   |
 | `production`  | 추후 store 또는 정식 후보      | 기본 production artifact | `real`   |
 
-`preview`와 `production`은 `EXPO_PUBLIC_API_MODE=real`만 커밋한다. 실제 API URL은 환경마다 달라질 수 있으므로 저장소에 고정하지 않고 EAS 환경변수로 주입한다.
+`preview`와 `production`은 `EXPO_PUBLIC_API_MODE=real`을 사용하고, 개인 production의 고정 Tailscale HTTPS origin을 `EXPO_PUBLIC_API_URL`로 주입한다. 이 URL은 공개 정보이며 서버 secret이 아니다.
 
 ## 3. Production API URL 주입
 
 Tailscale HTTPS URL이 확정되면 EAS 환경변수에 public API origin만 등록한다.
 
 ```text
-EXPO_PUBLIC_API_URL=https://<device>.<tailnet>.ts.net
+EXPO_PUBLIC_API_URL=https://macmini.tail68d2d1.ts.net
 ```
 
 주의:
@@ -40,6 +40,7 @@ EXPO_PUBLIC_API_URL=https://<device>.<tailnet>.ts.net
 - `EXPO_PUBLIC_*` 값은 앱 번들에 포함되는 공개 값이다.
 - token, password, API key, 서버 secret은 절대 넣지 않는다.
 - `localhost`, `10.0.2.2`, LAN IP는 개인 production APK에 남기지 않는다.
+- production APK는 HTTPS API 경로를 기본으로 하며, Android cleartext HTTP 허용 설정을 켜지 않는다.
 
 ## 4. 빌드 전 확인
 
@@ -54,6 +55,8 @@ npm run check:eas-setup
 - `app.json`의 `android.package`와 `android.versionCode`
 - 앱 표시 이름, scheme, icon/splash/favicon 파일 존재와 PNG 크기
 - `eas.json`의 target profile
+- 커밋된 `EXPO_PUBLIC_API_URL`이 있다면 HTTPS인지
+- Android production APK config에서 cleartext traffic 허용을 켜지 않았는지
 - EAS CLI가 설치되어 있고 Expo project id가 연결되어 있는지
 - EAS에 `EXPO_PUBLIC_API_URL`이 profile에 맞게 등록되어 있는지
 - `.env.local`이 커밋되지 않았는지

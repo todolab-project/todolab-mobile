@@ -407,11 +407,11 @@ ToDoLab 적용 방향:
 - [ ] PC와 Android에 Tailscale을 설치하고 동일 tailnet 로그인을 확인한다.
 - [ ] 백엔드에서 확정한 `https://<device>.<tailnet>.ts.net` 주소를 production `EXPO_PUBLIC_API_URL`로 사용한다.
 - [ ] production APK에 `localhost`, `10.0.2.2`, LAN IP가 남지 않는지 빌드 전 확인한다.
-- [ ] 앱 번들의 `EXPO_PUBLIC_*` 값은 공개 정보로 간주하고 secret, token, password를 넣지 않는다.
+- [x] 앱 번들의 `EXPO_PUBLIC_*` 값은 공개 정보로 간주하고 secret, token, password를 넣지 않는다.
 - [ ] Android에서 Tailscale 연결 전·후의 network error와 재시도 UX를 확인한다.
 - [ ] Wi-Fi와 모바일 데이터 전환 뒤 Auth, Today, Calendar query가 정상 복구되는지 확인한다.
 - [ ] Tailscale이 꺼져 있을 때 사용자가 이해할 수 있는 연결 오류와 재시도 동선을 제공한다.
-- [ ] HTTPS production 경로를 기본으로 하고 Android cleartext HTTP 허용은 개발 build에만 필요한지 검토한다.
+- [x] HTTPS production 경로를 기본으로 하고 Android cleartext HTTP 허용을 production APK config에서 켜지 않는 기준을 정적 검사에 반영한다.
 
 완료 기준:
 

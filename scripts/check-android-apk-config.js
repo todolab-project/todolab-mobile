@@ -15,6 +15,7 @@ const easConfig = readJson('eas.json');
 const androidPackage = appConfig.android?.package;
 const iosBundleIdentifier = appConfig.ios?.bundleIdentifier;
 const androidVersionCode = appConfig.android?.versionCode;
+const androidUsesCleartextTraffic = appConfig.android?.usesCleartextTraffic;
 
 if (androidPackage !== 'com.todolab.mobile') {
   fail(`android.package must be com.todolab.mobile, got ${androidPackage ?? 'undefined'}`);
@@ -28,6 +29,10 @@ if (iosBundleIdentifier !== 'com.todolab.mobile') {
 
 if (!Number.isInteger(androidVersionCode) || androidVersionCode < 1) {
   fail(`android.versionCode must be a positive integer, got ${androidVersionCode}`);
+}
+
+if (androidUsesCleartextTraffic === true) {
+  fail('android.usesCleartextTraffic must not be enabled for production APK config');
 }
 
 const buildProfiles = easConfig.build ?? {};
@@ -54,6 +59,10 @@ for (const profileName of ['preview', 'production']) {
 
   if (apiUrl && /localhost|127\.0\.0\.1|10\.0\.2\.2|192\.168\.|172\.16\.|0\.0\.0\.0/.test(apiUrl)) {
     fail(`${profileName} profile must not commit local API URL: ${apiUrl}`);
+  }
+
+  if (apiUrl && !apiUrl.startsWith('https://')) {
+    fail(`${profileName} profile must use HTTPS API URL when EXPO_PUBLIC_API_URL is committed`);
   }
 }
 
