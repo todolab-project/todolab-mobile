@@ -1,5 +1,7 @@
 # ToDoLab Mobile Roadmap
 
+Last updated: 2026-08-02
+
 ## 1. 문서 목적
 
 이 문서는 ToDoLab 백엔드의 제품 방향, 서버 렌더링 화면, API를 기준으로 모바일 앱을 단계적으로 구현하기 위한 기준 문서다.
@@ -373,6 +375,74 @@ ToDoLab 적용 방향:
 - 배포 환경별 API 설정과 앱 식별자가 분리되어 있다.
 - 비밀 값이 앱 번들이나 저장소에 포함되지 않는다.
 
+### E. Android 개인 production APK
+
+목표: Expo Go나 Metro 개발 서버 없이 단독 실행되는 ToDoLab APK를 Android 기기에 설치하고, 이 PC의 Docker production API에 Tailscale HTTPS로 접속해 매일 사용한다. APK 설치 자체에는 Tailscale이 필요하지 않으며, 설치된 앱이 집 밖에서 production API에 접속할 때 Tailscale이 필요하다.
+
+#### E1. 앱 식별자와 내부 배포 빌드
+
+- [ ] Android package를 확정하고 `app.json`의 `expo.android.package`에 설정한다.
+- [ ] Expo project owner와 project id를 확정하고 EAS project를 연결한다.
+- [ ] `eas.json`에 Android `development`, `preview`, `production` profile을 구분한다.
+- [ ] `preview` profile은 `distribution: internal` 또는 `android.buildType: apk`로 직접 설치 가능한 APK를 생성한다.
+- [ ] production API 빌드는 `EXPO_PUBLIC_API_MODE=real`을 사용하고 mock fallback이 일어나지 않게 한다.
+- [ ] 앱 version과 Android versionCode 증가 정책을 정한다.
+- [ ] Android signing keystore의 소유 위치와 복구 방법을 기록하되 실제 credential은 저장소에 넣지 않는다.
+- [ ] 생성한 APK를 실제 기기에 설치하고 Expo Go와 Metro 없이 cold start 되는지 확인한다.
+
+완료 기준:
+
+- 홈 화면에 독립된 ToDoLab 아이콘이 설치된다.
+- PC에서 `expo start`를 실행하지 않아도 앱이 시작된다.
+- 같은 package의 다음 APK가 기존 앱 데이터와 로그인 상태를 유지한 채 update install 된다.
+
+#### E2. Tailscale production API 연동
+
+- [ ] PC와 Android에 Tailscale을 설치하고 동일 tailnet 로그인을 확인한다.
+- [ ] 백엔드에서 확정한 `https://<device>.<tailnet>.ts.net` 주소를 production `EXPO_PUBLIC_API_URL`로 사용한다.
+- [ ] production APK에 `localhost`, `10.0.2.2`, LAN IP가 남지 않는지 빌드 전 확인한다.
+- [ ] 앱 번들의 `EXPO_PUBLIC_*` 값은 공개 정보로 간주하고 secret, token, password를 넣지 않는다.
+- [ ] Android에서 Tailscale 연결 전·후의 network error와 재시도 UX를 확인한다.
+- [ ] Wi-Fi와 모바일 데이터 전환 뒤 Auth, Today, Calendar query가 정상 복구되는지 확인한다.
+- [ ] Tailscale이 꺼져 있을 때 사용자가 이해할 수 있는 연결 오류와 재시도 동선을 제공한다.
+- [ ] HTTPS production 경로를 기본으로 하고 Android cleartext HTTP 허용은 개발 build에만 필요한지 검토한다.
+
+완료 기준:
+
+- 같은 Wi-Fi와 외부 모바일 데이터 환경에서 동일한 production URL로 접속한다.
+- LAN IP 변경이나 PC 재부팅 때문에 APK를 다시 빌드하지 않는다.
+- Tailscale이 끊겼다가 복구되어도 앱 재설치나 로그인 초기화 없이 다시 동기화된다.
+
+#### E3. Android 실기기 release smoke
+
+- [ ] `npm run validate`를 통과한다.
+- [ ] 회원가입/로그인, access token SecureStore 복원, 로그아웃을 실제 APK에서 확인한다.
+- [ ] Today 조회·추가·수정·완료·재정렬을 실제 production DB로 확인한다.
+- [ ] Calendar 일정 생성·수정, 반복 occurrence, D-Day, Search를 실제 production DB로 확인한다.
+- [ ] 앱 강제 종료, 백그라운드 복귀, 기기 재부팅 후 상태 복원을 확인한다.
+- [ ] Android back 버튼, 키보드, navigation bar, safe area, font scale 1.5, TalkBack을 확인한다.
+- [ ] 긴 목록과 Calendar 렌더링, Wi-Fi/모바일 데이터 전환, API timeout을 확인한다.
+- [ ] release 후보의 앱 commit, 백엔드 commit/image, API URL, 기기, 결과를 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록한다.
+
+완료 기준:
+
+- [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)의 Android/real 항목이 통과한다.
+- 최소 하루 실제 사용 후 데이터 유실, 중복 생성, 날짜 경계, 세션 복원 문제가 없다.
+
+#### E4. 설치와 업데이트 운영
+
+- [ ] APK 저장 위치와 기기로 전달하는 방법을 정한다.
+- [ ] 출처를 알 수 없는 앱 설치 권한은 APK 설치 직후 다시 제한할지 운영 방식을 정한다.
+- [ ] release note에 version, API 호환 범위, 필수 migration 여부를 남긴다.
+- [ ] 백엔드 API breaking change가 있으면 호환 APK 설치 완료 전 기존 API를 제거하지 않는다.
+- [ ] APK rollback이 필요할 때 Android versionCode와 앱 데이터 호환성을 확인한다.
+- [ ] Play Store 배포는 개인 APK 사용이 안정된 뒤 별도 결정으로 남긴다.
+
+완료 기준:
+
+- 새 APK 배포, update install, 문제 발생 시 이전 호환 버전 복구 절차가 문서화되어 있다.
+- APK 파일이나 다운로드 링크가 없어져도 같은 commit과 credential로 다시 빌드할 수 있다.
+
 ### 현재 미완료 항목의 보류 조건
 
 모바일 저장소에서 바로 끝낼 수 있는 Web mock/real 검증과 문서 정리는 완료했다. 남은 체크박스는 아래 조건이 충족되면 커밋 단위로 이어서 진행한다.
@@ -465,11 +535,12 @@ Today 작업 목록 표시
 
 다음 작업은 실제 화면 품질과 기기별 QA를 우선한다. 2026-07-28 기준 local real API full smoke test는 통과했으므로, 이후 real API 검증은 화면 QA와 배포 전 회귀 테스트로 반복한다.
 
-1. 320px, 430dp, font scale 1.5, light/dark에서 Today와 Calendar가 깨지지 않는지 실제 기기 또는 simulator로 확인한다.
-2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
-3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
-4. 마켓·소개용 편집 이미지는 폰 목업 크기와 카피 줄바꿈 A/B를 비교한 뒤 App Store 지정 크기와 Google Play feature graphic까지 최종 export한다.
-5. 반복 Task와 일정의 작성·수정 UI는 real smoke가 통과한 계약 안에서 노출한다. 회귀는 반복 생성 smoke와 occurrence action smoke로 확인한다.
-6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
+1. Android package와 Expo/EAS project를 확정하고 `app.json`, `eas.json`에 development/preview/production profile을 구성한다.
+2. 백엔드에서 확정한 Tailscale HTTPS URL을 Android production API URL로 주입하고 APK를 생성한다.
+3. 생성한 APK를 실제 Android 기기에 설치해 Expo Go와 Metro 없이 cold start, 로그인, Today 핵심 흐름을 확인한다.
+4. 430dp, font scale 1.5, light/dark에서 Today와 Calendar, Android back/keyboard/navigation bar가 깨지지 않는지 실기기로 확인한다.
+5. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)와 [`RELEASE_CHECKLIST.md`](../qa/RELEASE_CHECKLIST.md)에 맞춰 Android real-mode 전체 smoke를 기록한다.
+6. 최소 하루 실제 사용하면서 네트워크 전환, 앱 강제 종료, 기기 재부팅, 날짜 경계, 중복 생성과 세션 복원을 확인한다.
+7. Android 개인 APK가 안정된 뒤 알림, Play Store, iOS/Web 배포 범위를 별도로 결정한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.
