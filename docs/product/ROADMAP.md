@@ -389,6 +389,7 @@ ToDoLab 적용 방향:
 - [x] production API 빌드는 `EXPO_PUBLIC_API_MODE=real`을 사용하고 mock fallback이 일어나지 않게 한다.
 - [x] 앱 version은 `1.0.0`, Android versionCode는 `1`로 시작한다.
 - [x] Android APK 빌드 전 공개 환경값과 local URL 혼입을 확인하는 `npm run check:android-apk`를 추가한다.
+- [x] EAS CLI와 project id 연결 여부를 확인하는 `npm run check:eas-setup` preflight를 추가한다.
 - [ ] Android signing keystore의 소유 위치와 복구 방법을 기록하되 실제 credential은 저장소에 넣지 않는다.
 - [ ] 생성한 APK를 실제 기기에 설치하고 Expo Go와 Metro 없이 cold start 되는지 확인한다.
 

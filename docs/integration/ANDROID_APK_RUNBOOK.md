@@ -46,17 +46,32 @@ EXPO_PUBLIC_API_URL=https://<device>.<tailnet>.ts.net
 ```bash
 npm run validate
 npm run check:android-apk
+npm run check:eas-setup
 ```
 
 확인할 것:
 
 - `app.json`의 `android.package`와 `android.versionCode`
 - `eas.json`의 target profile
+- EAS CLI가 설치되어 있고 Expo project id가 연결되어 있는지
 - EAS에 `EXPO_PUBLIC_API_URL`이 profile에 맞게 등록되어 있는지
 - `.env.local`이 커밋되지 않았는지
 - 백엔드 production API가 Tailscale HTTPS로 접근 가능한지
 
-## 5. 개인 APK 생성
+`npm run check:eas-setup`은 Expo 로그인과 `eas init` 전에는 실패하는 것이 정상이다. 실패 메시지에서 남은 준비 항목을 확인한다.
+
+## 5. EAS project 연결
+
+Expo 계정 로그인이 끝난 뒤 한 번만 project를 연결한다.
+
+```bash
+eas login
+eas init
+```
+
+연결 뒤 `app.json`에 `expo.extra.eas.projectId`가 추가됐는지 확인한다. `.expo/` 로컬 상태는 Git에 커밋하지 않는다.
+
+## 6. 개인 APK 생성
 
 EAS 계정과 project 연결이 끝난 뒤 preview APK를 생성한다.
 
@@ -71,7 +86,7 @@ eas build --platform android --profile preview
 - Today, Calendar, Search, D-Day 주요 흐름이 production DB로 동작한다.
 - Tailscale이 꺼져 있을 때 오류 문구와 재시도 동선이 이해된다.
 
-## 6. 업데이트 운영
+## 7. 업데이트 운영
 
 - 같은 package로 update install하려면 `android.versionCode`를 증가시킨다.
 - signing keystore는 EAS managed credential 또는 별도 보관 위치를 정하되 저장소에 넣지 않는다.
