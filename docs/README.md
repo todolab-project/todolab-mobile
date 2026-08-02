@@ -14,7 +14,7 @@
 | [`marketing`](./marketing/APP_STORE_ASSETS.md)                | 앱 마켓, 소개 이미지, 문구 산출물                  | `APP_STORE_ASSETS.md`                                                |
 | [`screenshots`](./screenshots/.gitkeep)                       | 실제 앱 화면 캡쳐                                  | 화면별 PNG                                                           |
 
-현재 `screenshots/`에는 mock Web 390×844 기준 실제 화면 PNG가 있다. 마켓용 편집 이미지는 아직 생성 전이며, [`marketing/APP_STORE_ASSETS.md`](./marketing/APP_STORE_ASSETS.md)의 구성에 맞춰 `marketing/`에 별도로 만든다.
+현재 `screenshots/`에는 mock Web 390×844 기준 실제 화면 PNG가 있다. 마켓용 편집 이미지는 `marketing/`에 초안으로 생성되어 있으며, 최종 제출 전에는 [`marketing/APP_STORE_ASSETS.md`](./marketing/APP_STORE_ASSETS.md)의 규격에 맞춰 다시 export한다.
 
 ## 관리 기준
 

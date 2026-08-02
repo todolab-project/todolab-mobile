@@ -29,7 +29,7 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 범위:
 
 - 이번 Product Design 반복 감사는 핵심 탭과 Today 정리 흐름을 우선했다.
-- route 전수 visual audit은 아직 완료가 아니다. Search, Completed, D-Day, Task 상세, Task 작성, 로그인, 회원가입, 설정은 screenshot 문서 또는 smoke test 기준은 있으나 Product Design 재감사 루프가 남아 있다.
+- route-level visual audit은 완료했다. Search, Completed, D-Day, Task 상세, Task 작성, 로그인, 회원가입, 설정을 390×844 mock static Web export 기준으로 추가 캡쳐했고, D-Day와 정리할 항목의 즉시 수정 포인트를 반영 후 재캡쳐했다.
 
 전반 판단:
 
@@ -45,10 +45,11 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - 수정 후 캡처 기준으로 완료 section과의 충돌은 줄었다.
 - 수정 후 재감사에서 Calendar/Profile tab root의 하단 inset을 Today와 맞춰 scroll 끝 영역이 tab bar에 가려지지 않게 했다.
 - pass 3 기준 Web screenshot에서 즉시 수정할 큰 충돌은 더 발견하지 못했다.
+- full route audit에서 D-Day의 isolated `+` action을 `새 목표` 버튼으로 바꾸고, 정리할 항목의 section marker dot을 제거해 Today와 같은 title/count/list rhythm으로 맞췄다.
 
 남은 확인:
 
-- `SCREEN_GUIDE.md`의 화면 점검 범위 표를 기준으로 미감사 route의 screenshot과 Product Design audit을 추가한다.
+- 상태별 audit을 추가한다. 특히 Search 상세 필터, Task 작성 schedule/recurrence 확장, D-Day 메뉴/생성/삭제/연결 Task, 인증 error/loading을 별도 캡쳐한다.
 - 실제 iOS/Android font scale 1.5, safe area, VoiceOver/TalkBack은 Web screenshot만으로 확정할 수 없다.
 - Calendar의 일정 pill은 좁은 column에서 여전히 빨리 잘리므로 native font scale에서 cell overflow를 확인한다.
 - icon-only FAB의 screen reader label, touch target, keyboard focus는 native QA에서 확인한다.

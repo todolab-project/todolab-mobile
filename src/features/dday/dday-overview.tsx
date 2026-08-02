@@ -57,17 +57,14 @@ export function DdayOverview() {
         }
         action={
           isCreating ? undefined : (
-            <IconButton
+            <Button
               accessibilityLabel="새 D-Day 목표 만들기"
+              size="compact"
+              variant="secondary"
               onPress={() => setIsCreating(true)}
-              style={styles.headerButton}
             >
-              <SymbolView
-                name={{ ios: 'plus', android: 'add', web: 'add' }}
-                size={20}
-                tintColor={theme.colors.primary}
-              />
-            </IconButton>
+              새 목표
+            </Button>
           )
         }
       />

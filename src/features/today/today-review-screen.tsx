@@ -87,7 +87,6 @@ export function TodayReviewScreen() {
               title="지난 미완료"
               description="놓친 일을 오늘 다시 볼지 결정해요."
               count={overview.staleTasks.length}
-              tone="stale"
             >
               {overview.staleTasks.map((task) => (
                 <TaskCard
@@ -115,7 +114,6 @@ export function TodayReviewScreen() {
               title="추천"
               description="오늘 처리하기 좋은 항목이에요."
               count={overview.recommendations.length}
-              tone="recommendation"
             >
               {overview.recommendations.map(({ task }) => (
                 <TaskCard
@@ -143,7 +141,6 @@ export function TodayReviewScreen() {
               title="기록함"
               description="날짜를 정하지 않은 기록이에요."
               count={overview.inboxTasks.length}
-              tone="inbox"
             >
               {overview.inboxTasks.map((task) => (
                 <TaskCard
@@ -175,36 +172,13 @@ type ReviewSectionProps = {
   title: string;
   description: string;
   count: number;
-  tone: 'stale' | 'recommendation' | 'inbox';
   children: ReactNode;
 };
 
-function ReviewSection({ title, description, count, tone, children }: ReviewSectionProps) {
-  const theme = useAppTheme();
-  const marker = {
-    stale: {
-      color: theme.colors.warningSoft,
-      borderColor: theme.colors.warning,
-    },
-    recommendation: {
-      color: theme.colors.primarySoft,
-      borderColor: theme.colors.primary,
-    },
-    inbox: {
-      color: theme.colors.highlightBlue,
-      borderColor: theme.colors.primaryPressed,
-    },
-  }[tone];
-
+function ReviewSection({ title, description, count, children }: ReviewSectionProps) {
   return (
     <View style={styles.section}>
-      <SectionHeader
-        title={title}
-        description={description}
-        count={count}
-        markerColor={marker.color}
-        markerBorderColor={marker.borderColor}
-      />
+      <SectionHeader title={title} description={description} count={count} />
       <View style={styles.list}>{children}</View>
     </View>
   );
