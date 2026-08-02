@@ -64,6 +64,12 @@ function findOccurrence(tasks, occurrenceDate) {
   return tasks.find((task) => task.title === title && task.occurrenceDate === occurrenceDate);
 }
 
+function findNotificationCandidate(candidates, occurrenceDate) {
+  return candidates.find(
+    (candidate) => candidate.task?.title === title && candidate.occurrenceDate === occurrenceDate,
+  );
+}
+
 function formatLocalDate(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -210,6 +216,26 @@ async function main() {
   assert(!findOccurrence(monthTasks, thirdDate), 'skipped occurrence should be hidden from month');
   assert(findOccurrence(monthTasks, fourthDate), 'future occurrence should remain in month');
   console.log('✓ skipped occurrence hidden from month list');
+
+  const notificationCandidates = await request(
+    '/api/v1/tasks/notification-candidates?from=2026-08-01&to=2026-08-31',
+    {
+      headers: authHeaders,
+    },
+  );
+  assert(
+    !findNotificationCandidate(notificationCandidates, firstDate),
+    'completed occurrence should be excluded from notification candidates',
+  );
+  assert(
+    !findNotificationCandidate(notificationCandidates, thirdDate),
+    'skipped occurrence should be excluded from notification candidates',
+  );
+  assert(
+    findNotificationCandidate(notificationCandidates, fourthDate),
+    'future occurrence should remain in notification candidates',
+  );
+  console.log('✓ notification candidates exclude completed and skipped occurrences');
 
   await request(`/api/v1/tasks/${created.id}?recurrenceScope=ALL`, {
     method: 'DELETE',

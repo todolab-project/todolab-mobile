@@ -294,6 +294,9 @@ Mock Web 화면에서 확인한 항목:
 - `DELETE /api/v1/tasks/{thirdOccurrenceId}?recurrenceScope=THIS`
 - 건너뛴 occurrence가 Today 재조회와 Calendar 월간 조회에서 제외
 - 건너뛴 occurrence 이후의 다음 occurrence는 계속 표시
+- `GET /api/v1/tasks/notification-candidates?from=2026-08-01&to=2026-08-31`
+- 완료한 occurrence와 건너뛴 occurrence는 알림 후보에서 제외
+- 이후 살아있는 occurrence는 알림 후보에 유지
 - `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup
 
 판정:
@@ -301,6 +304,7 @@ Mock Web 화면에서 확인한 항목:
 - 백엔드 수정 후 materialize된 반복 occurrence의 완료·미룸·건너뛰기 상태 변경은 모바일 smoke 기준으로 통과한다.
 - 완료 목록은 occurrence 예정일이 아니라 실제 완료 처리일 기준 `date`로 조회된다. Today/Completed 화면의 “완료한 일” 의미와 일치하므로 모바일 smoke도 완료 처리일 기준으로 맞춘다.
 - occurrence 건너뛰기는 `DELETE recurrenceScope=THIS` 계약으로 확인했다.
+- 반복 occurrence 로컬 알림 후보는 완료·건너뛰기 상태 변경 후 재조회했을 때 예약 대상에서 제외된다. 실제 기기 알림 예약·취소는 native 권한과 OS scheduler가 필요하므로 실기기 QA에서 별도 확인한다.
 
 ## 2026-07-30 local real API auth smoke 재확인
 

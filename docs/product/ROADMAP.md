@@ -340,7 +340,7 @@ ToDoLab 적용 방향:
 - [x] occurrence별 완료, 미룸과 완료 기록을 연결한다. 2026-08-02 real smoke에서 materialize된 occurrence의 `/done`, `/defer-reason`, 완료 처리일 기준 done list 조회가 통과했다.
 - [x] occurrence별 건너뛰기 계약을 확정하고 모바일 smoke에 연결한다. 2026-08-02 real smoke에서 `DELETE recurrenceScope=THIS`가 해당 occurrence만 숨기고 이후 occurrence를 유지하는 것을 확인했다.
 - [x] 모바일 API client는 `GET /api/v1/tasks/notification-candidates` 응답 타입과 조회 method를 제공한다.
-- [ ] 반복 일정과 로컬 알림의 예약·취소 책임을 실제 구현 기준으로 검증한다.
+- [x] 반복 일정과 로컬 알림의 예약·취소 책임을 실제 API 후보 기준으로 검증한다. 2026-08-02 real smoke에서 완료·건너뛴 occurrence가 notification candidates에서 제외되고 이후 occurrence가 유지되는 것을 확인했다. 실제 OS 알림 예약·취소는 native 실기기 QA에서 확인한다.
 
 완료 기준:
 
