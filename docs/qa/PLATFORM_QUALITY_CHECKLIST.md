@@ -173,3 +173,18 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 - README 실행/빌드 설명
 - Release checklist의 배포 식별자 항목
 - `npm run validate`
+
+## Android signing credential
+
+현재 방침:
+
+- 개인 APK 단계에서는 EAS managed credential을 우선 사용한다.
+- 실제 keystore, password, key alias, key password는 저장소와 문서에 남기지 않는다.
+- `.gitignore`는 `.jks`, `.p8`, `.p12`, `.key`, `.mobileprovision`, `.pem`을 제외한다.
+
+EAS 연결 후 확인:
+
+- `eas credentials --platform android`에서 managed credential이 생성 또는 연결되어 있는지 확인한다.
+- credential 접근 권한이 Expo 개인 계정 또는 조직에 남아 있는지 확인한다.
+- keystore export가 필요하면 안전한 vault에 별도 보관하고, 저장소에는 `EAS managed` 또는 `secure vault backup`처럼 비밀 없는 상태만 기록한다.
+- credential을 변경하면 기존 APK update install과 Play Store 업로드 호환성에 영향을 줄 수 있으므로 release note에 남긴다.

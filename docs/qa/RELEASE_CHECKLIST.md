@@ -114,6 +114,7 @@ API URL:
 - [x] EAS profile 뼈대: `development`, `preview`, `production`
 - [ ] scheme 유지 여부: `todolab`
 - [ ] API 환경별 빌드 설정
+- [ ] Android signing credential 소유 방식과 복구 절차
 - [ ] 앱 아이콘, splash, favicon 최종 asset
 
 식별자가 확정되기 전에는 store 제출용 build를 만들지 않는다.
