@@ -52,6 +52,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "docs:check": "node scripts/check-doc-links.js",
+    "check:android-apk": "node scripts/check-android-apk-config.js",
     "smoke:auth:real": "node scripts/smoke-auth-real.js",
     "smoke:search:real": "node scripts/smoke-search-real.js",
     "smoke:recurrence:real": "node scripts/smoke-recurrence-real.js",

@@ -45,6 +45,7 @@ EXPO_PUBLIC_API_URL=https://<device>.<tailnet>.ts.net
 
 ```bash
 npm run validate
+npm run check:android-apk
 ```
 
 확인할 것:
