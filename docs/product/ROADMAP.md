@@ -142,7 +142,7 @@ type ApiResponse<T> = {
 
 - staging, production API URL 확정
 - 네트워크 재시도와 중복 생성 방지를 위한 idempotency 또는 client request id 정책
-- 반복 Task·일정은 백엔드 문서상 생성 계약이 추가된 상태로 보이나, 백엔드 상태 문서 정합성과 real smoke가 끝날 때까지 모바일 저장 UI 노출은 보류
+- 반복 Task·일정은 생성, occurrence 조회, 완료, 미룸, 건너뛰기, 알림 후보 제외까지 real smoke가 통과했다. 이후 회귀는 `npm run smoke:recurrence:real`과 `npm run smoke:recurrence-actions:real`로 확인한다.
 - 로컬 알림은 백엔드 [`NOTIFICATION_CONTRACT.md`](../../../backend/docs/api/NOTIFICATION_CONTRACT.md)에 따라 가까운 미래 occurrence만 모바일에서 best-effort로 예약
 - real API 화면 smoke에서 검색 cursor 정렬, 기간 filter, timezone 경계는 계속 회귀 확인
 
@@ -298,6 +298,7 @@ ToDoLab 적용 방향:
 - [x] Product Design audit 기준 Calendar 일정 bar의 최소 크기, 텍스트 생략, column overflow, touch target을 다시 마감한다.
 - [x] Today section별 카드·border 무게를 낮추고 일정/오늘 할 일/정리할 항목/완료의 역할 차이를 더 명확히 만든다.
 - [x] Quick Capture 열린 상태의 기본 파란 focus border를 앱 primary soft border와 bottom sheet형 composer visual로 교체한다.
+- [x] Product Design audit 기준 Today 접힌 Quick Capture FAB가 완료 section과 겹치지 않도록 icon-only 54px FAB로 줄인다.
 - [x] 하단 tab active icon·label의 선택 상태와 실제 스크린샷을 갱신해 Today/Calendar/Profile의 현재 위치가 분명히 보이는지 확인한다.
 - [x] Profile 상단 로그인 card와 shortcut row를 “나의 플래너 공간”처럼 보이도록 여백, 동기화 상태 copy, icon 리듬을 다듬는다.
 - [x] 320px, 짧은 viewport, font scale 1.5에서는 Today와 Calendar 달력이 dense grid로 전환되도록 공통 responsive 기준을 추가했다.
@@ -316,7 +317,7 @@ ToDoLab 적용 방향:
 - [x] 검색 API의 키워드, 상태 filter, 종류 filter, 빈 상태, cursor pagination을 real API로 smoke test하고 [`SMOKE_TEST_LOG.md`](../qa/SMOKE_TEST_LOG.md)에 기록했다. 기간 filter와 timezone은 실제 화면 회귀에서 계속 확인한다.
 - [x] Today와 Calendar의 여러 날 일정 겹침 기준, 원본 일정 ID, 월간 범위 조회 응답을 실제 데이터로 재검증했다. 2026-07-28 real API smoke에서 2026-07-28–2026-07-30 기간 일정이 해당 날짜 Today에만 포함되고 Calendar 월간 조회에는 원본 ID 1회로 반환됨을 확인했다.
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
-- [x] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약을 정리했고, 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 UI를 열지 않는 기준을 확정했다.
+- [x] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약을 정리했고, real smoke 통과 계약 안에서 실제 저장 UI를 제공하는 기준을 확정했다.
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 - [x] `.env.local` mock 기본값과 real smoke 실행값이 섞이지 않도록 `EXPO_PUBLIC_API_MODE_OVERRIDE` / `EXPO_PUBLIC_API_URL_OVERRIDE`와 `npm run web:real`을 추가한다.
@@ -466,7 +467,7 @@ Today 작업 목록 표시
 2. Calendar 여러 날 일정 bar overflow와 320px 폭에서의 월 선택 panel 밀도를 더 자연스럽게 조정한다.
 3. [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 맞춰 Android, iOS, Web에서 mock/real 화면 smoke test를 반복한다.
 4. 마켓·소개용 편집 이미지는 폰 목업 크기와 카피 줄바꿈 A/B를 비교한 뒤 App Store 지정 크기와 Google Play feature graphic까지 최종 export한다.
-5. 반복 Task와 일정의 작성·수정 UI는 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 기능처럼 노출하지 않는다.
+5. 반복 Task와 일정의 작성·수정 UI는 real smoke가 통과한 계약 안에서 노출한다. 회귀는 반복 생성 smoke와 occurrence action smoke로 확인한다.
 6. Android package, iOS bundle identifier, EAS profile은 출시 명칭과 배포 계정이 확정된 뒤 [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 따라 구성한다.
 
 그전에도 사용을 막는 접근성, 키보드, 오류 상태와 명백한 정보 중복은 발견 즉시 수정한다.

@@ -175,12 +175,9 @@ export function QuickCapture({ isExpanded, onExpandedChange }: QuickCaptureProps
             },
           ]}
         >
-          <View style={[styles.quickBarIcon, { backgroundColor: theme.colors.primarySoft }]}>
-            <AppText tone="primary" variant="bodyLarge" weight="bold">
-              +
-            </AppText>
-          </View>
-          <AppText weight="semibold">기록</AppText>
+          <AppText tone="primary" variant="bodyLarge" weight="bold">
+            +
+          </AppText>
         </Pressable>
       )}
     </View>
@@ -237,24 +234,14 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     borderWidth: 1,
     elevation: 8,
-    flexDirection: 'row',
-    gap: spacing[2],
-    minHeight: 50,
-    paddingLeft: spacing[2],
-    paddingRight: spacing[4],
-    paddingVertical: spacing[1],
+    height: 54,
+    justifyContent: 'center',
     shadowOffset: {
       height: 8,
       width: 0,
     },
     shadowOpacity: 0.1,
     shadowRadius: 16,
-  },
-  quickBarIcon: {
-    alignItems: 'center',
-    borderRadius: radii.full,
-    height: 34,
-    justifyContent: 'center',
-    width: 34,
+    width: 54,
   },
 });

@@ -15,6 +15,35 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 
 ## 현재 화면 판단
 
+## 2026-08-02 Product Design audit 요약
+
+캡처 기준:
+
+- [`01 Today`](../audits/product-design-2026-08-02/01-today.png)
+- [`02 Calendar`](../audits/product-design-2026-08-02/02-calendar.png)
+- [`03 Profile`](../audits/product-design-2026-08-02/03-profile.png)
+- [`04 정리할 항목`](../audits/product-design-2026-08-02/04-organize.png)
+- [`05 Today FAB 수정 후`](../audits/product-design-2026-08-02/05-today-after-fab.png)
+
+전반 판단:
+
+- 흰 배경, 얇은 선, 낮은 채도의 section 색, 3-tab 구조는 `Quiet Paper Planner`와 “네이버 모바일 앱처럼 가볍게 여는” 방향에 맞다.
+- Today는 첫 viewport에서 주간 strip, 일정, 오늘 할 일이 바로 보여 실행 중심성이 좋다.
+- Calendar는 3주 grid와 선택 날짜 목록이 한 흐름으로 연결되어 오늘 주변 맥락을 빠르게 본다.
+- Profile과 정리할 항목은 이전보다 단정하고 목적이 분명하다.
+
+수정 반영:
+
+- Today의 접힌 Quick Capture FAB가 `+ 기록` 라벨 폭 때문에 완료 section count와 충돌했다.
+- 접힌 FAB를 54×54 icon-only 버튼으로 줄이고 접근성 label은 유지했다.
+- 수정 후 캡처 기준으로 완료 section과의 충돌은 줄었다.
+
+남은 확인:
+
+- 실제 iOS/Android font scale 1.5, safe area, VoiceOver/TalkBack은 Web screenshot만으로 확정할 수 없다.
+- Calendar의 일정 pill은 좁은 column에서 여전히 빨리 잘리므로 native font scale에서 cell overflow를 확인한다.
+- icon-only FAB의 screen reader label, touch target, keyboard focus는 native QA에서 확인한다.
+
 ## 2026-07-30 Product Design audit 요약
 
 Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다시 확인했다. 실시간 browser capture는 로컬 Expo 포트 연결 거절로 완료하지 못했으므로, 이 섹션은 `docs/screenshots/*.png` 기준의 visual audit이다.
@@ -205,7 +234,7 @@ Product Design plugin의 audit 기준으로 저장된 최신 screenshot을 다�
 2. iOS VoiceOver와 Android TalkBack에서 Calendar 일정 bar, checkbox, tab, 빠른 기록 동선 확인
 3. Search 상세 필터 discoverability와 real API pagination 화면 확인
 4. 마켓 이미지의 폰 목업 크기와 카피 줄바꿈 A/B 비교
-5. 반복 occurrence 조회 500이 해소되면 반복 작성·수정 UI audit 재개
+5. 반복 작성·수정 UI는 real smoke 통과 기준으로 열려 있으므로, 이후에는 실제 기기에서 form 입력과 scope 선택 흐름을 확인
 
 ## 다음 리뷰 때 추가할 것
 

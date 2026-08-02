@@ -230,7 +230,7 @@ docs/screenshots/
 
 개발 참고:
 
-- 반복 정보는 표시만 제공하며, 반복 작성/수정 UI는 백엔드 계약 확정 전까지 실제 기능처럼 노출하지 않는다.
+- 반복 정보와 작성/수정 UI는 real smoke가 통과한 계약 안에서 제공한다. 생성, occurrence 조회, 완료, 미룸, 건너뛰기 회귀는 `npm run smoke:recurrence:real`과 `npm run smoke:recurrence-actions:real`로 확인한다.
 
 ## D-Day
 
