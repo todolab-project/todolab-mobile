@@ -8,7 +8,27 @@ ToDoLab Mobile의 주요 화면을 실제 캡쳐와 함께 설명하는 문서�
 
 - 화면 설명과 캡쳐 기준은 최신 UI 구조 기준으로 정리되어 있다.
 - mock Web 390×844 viewport 기준 실제 PNG 캡쳐를 생성했다.
+- Product Design audit은 2026-08-02 기준 Today, Calendar, Profile, 정리할 항목 중심으로 반복 점검했다. Search, Completed, D-Day, Task 상세, 작성 form, 인증, 설정 화면은 screenshot 문서 또는 smoke 기준으로 관리하며, 동일한 강도의 visual audit 전수 확인은 아직 남아 있다.
 - 화면 구조가 바뀌면 아래 파일명을 유지한 채 다시 캡쳐한다.
+
+## 화면 점검 범위
+
+현재 앱 route 기준으로 확인 범위를 아래처럼 관리한다. “문서화”는 화면 가이드 또는 screenshot이 있는 상태를 뜻하고, “Product Design audit”은 실제 캡쳐 기반으로 디자인 피드백을 받고 수정 후 재확인한 상태를 뜻한다.
+
+| Route             | 화면        | 문서화          | Product Design audit | 남은 확인                                      |
+| ----------------- | ----------- | --------------- | -------------------- | ---------------------------------------------- |
+| `/`               | Today       | 완료            | 완료                 | native font scale, safe area, screen reader    |
+| `/calendar`       | Calendar    | 완료            | 완료                 | native font scale, 일정 label overflow         |
+| `/profile`        | Profile     | 완료            | 완료                 | native bottom tab overlap, screen reader       |
+| `/today/review`   | 정리할 항목 | audit 캡쳐 완료 | 완료                 | `docs/screenshots/organize.png` 정식 캡쳐 추가 |
+| `/search`         | Search      | 완료            | 미완료               | 상세 필터, 빈 상태, pagination visual audit    |
+| `/completed`      | Completed   | 완료            | 미완료               | 긴 제목, 다시 열기 affordance visual audit     |
+| `/dday`           | D-Day       | 완료            | 미완료               | 목표 메뉴, 연결 Task visual audit              |
+| `/tasks/[taskId]` | Task 상세   | 완료            | 미완료               | 반복 occurrence, scope action visual audit     |
+| `/tasks/new`      | Task 작성   | 미완료          | 미완료               | 반복/일정 입력 form screenshot과 visual audit  |
+| `/login`          | 로그인      | 미완료          | 미완료               | 보안 copy, error/loading state screenshot      |
+| `/register`       | 회원가입    | 미완료          | 미완료               | validation, error/loading state screenshot     |
+| `/settings`       | 설정        | 미완료          | 미완료               | 계정/앱 설정 정보 구조 screenshot              |
 
 ## 캡쳐 파일 위치
 
@@ -20,8 +40,13 @@ docs/screenshots/
   search.png
   completed.png
   profile.png
+  organize.png
   task-detail.png
+  task-new.png
   dday.png
+  login.png
+  register.png
+  settings.png
 ```
 
 ## 캡쳐 기준

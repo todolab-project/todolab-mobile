@@ -146,9 +146,10 @@ API 단독 smoke는 다음 script를 사용합니다.
 ```bash
 EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:auth:real
 EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:recurrence:real
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8080 npm run smoke:recurrence-actions:real
 ```
 
-반복 일정 smoke는 2026-07-30 기준 생성과 cleanup은 통과하지만 Today occurrence 조회에서 백엔드 HTTP 500/code `99999`가 재현되어 UI 노출은 보류 중입니다. 최신 상태는 [Smoke test 로그](./docs/qa/SMOKE_TEST_LOG.md)를 확인합니다.
+반복 일정 smoke는 2026-08-02 기준 생성, Today/Calendar occurrence 조회, 완료, 미룸, 건너뛰기, notification candidates 제외 조건까지 통과했습니다. 최신 상태는 [Smoke test 로그](./docs/qa/SMOKE_TEST_LOG.md)를 확인합니다.
 
 ### 검증
 

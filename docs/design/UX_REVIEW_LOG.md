@@ -26,6 +26,11 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - [`05 Today FAB 수정 후`](../audits/product-design-2026-08-02/05-today-after-fab.png)
 - [`Pass 3 Calendar bottom`](../audits/product-design-2026-08-02-pass3/03-calendar-bottom.png)
 
+범위:
+
+- 이번 Product Design 반복 감사는 핵심 탭과 Today 정리 흐름을 우선했다.
+- route 전수 visual audit은 아직 완료가 아니다. Search, Completed, D-Day, Task 상세, Task 작성, 로그인, 회원가입, 설정은 screenshot 문서 또는 smoke test 기준은 있으나 Product Design 재감사 루프가 남아 있다.
+
 전반 판단:
 
 - 흰 배경, 얇은 선, 낮은 채도의 section 색, 3-tab 구조는 `Quiet Paper Planner`와 “네이버 모바일 앱처럼 가볍게 여는” 방향에 맞다.
@@ -43,6 +48,7 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 
 남은 확인:
 
+- `SCREEN_GUIDE.md`의 화면 점검 범위 표를 기준으로 미감사 route의 screenshot과 Product Design audit을 추가한다.
 - 실제 iOS/Android font scale 1.5, safe area, VoiceOver/TalkBack은 Web screenshot만으로 확정할 수 없다.
 - Calendar의 일정 pill은 좁은 column에서 여전히 빨리 잘리므로 native font scale에서 cell overflow를 확인한다.
 - icon-only FAB의 screen reader label, touch target, keyboard focus는 native QA에서 확인한다.
