@@ -9,6 +9,9 @@
 - [03 Profile](./03-profile.png)
 - [04 정리할 항목](./04-organize.png)
 - [05 Today FAB 수정 후](./05-today-after-fab.png)
+- [Pass 2 Today](../product-design-2026-08-02-pass2/01-today.png)
+- [Pass 2 Calendar](../product-design-2026-08-02-pass2/02-calendar.png)
+- [Pass 3 Calendar bottom](../product-design-2026-08-02-pass3/03-calendar-bottom.png)
 
 ## 판단
 
@@ -26,12 +29,16 @@
 - Today의 접힌 Quick Capture FAB가 `+ 기록` 라벨 폭 때문에 완료 section count와 시각적으로 충돌했다.
 - 접힌 FAB를 54×54 icon-only 버튼으로 줄이고, 접근성 label은 `빠르게 기록 열기`로 유지했다.
 - 수정 후 [05 Today FAB 수정 후](./05-today-after-fab.png) 기준으로 완료 section과 충돌이 줄었다.
+- 수정 후 재감사에서 Calendar/Profile tab root의 하단 inset이 Today보다 작아 scroll 끝 영역이 덜 여유롭게 보이는 리스크를 확인했다.
+- Calendar/Profile scroll content에 tab bar 회피용 104px bottom inset을 맞췄다.
+- [Pass 3 Calendar bottom](../product-design-2026-08-02-pass3/03-calendar-bottom.png) 기준으로 Calendar 마지막 완료 card는 tab bar에 가려지지 않는다.
 
 ## 남은 UX/접근성 리스크
 
 - Calendar의 하루 일정 pill은 좁은 column에서 여전히 빠르게 잘린다. 다만 아래 예정 목록이 상세 정보를 보완하므로 현재는 허용 가능한 축약으로 본다.
 - 실제 iOS/Android font scale 1.5, safe area, VoiceOver/TalkBack은 이 Web screenshot만으로 판단할 수 없다.
 - icon-only FAB는 시각적으로는 정리됐지만 실제 screen reader label, touch target, keyboard focus는 native QA에서 확인해야 한다.
+- Web screenshot 기반 pass 3에서는 즉시 수정할 큰 충돌은 더 발견하지 못했다.
 
 ## 다음 확인
 

@@ -238,6 +238,7 @@ function WebShortcutIcon({ color, name }: { color: ColorValue; name: ProfileItem
 const styles = StyleSheet.create({
   screen: {
     gap: spacing[5],
+    paddingBottom: 104,
     paddingTop: spacing[8],
   },
   identityCard: {

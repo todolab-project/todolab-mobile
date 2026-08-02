@@ -423,6 +423,7 @@ function CalendarDateButton({
 const styles = StyleSheet.create({
   screen: {
     gap: spacing[4],
+    paddingBottom: 104,
     paddingTop: spacing[4],
   },
   calendarSurface: {

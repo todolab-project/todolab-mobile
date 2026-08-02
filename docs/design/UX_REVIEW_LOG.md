@@ -24,6 +24,7 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - [`03 Profile`](../audits/product-design-2026-08-02/03-profile.png)
 - [`04 정리할 항목`](../audits/product-design-2026-08-02/04-organize.png)
 - [`05 Today FAB 수정 후`](../audits/product-design-2026-08-02/05-today-after-fab.png)
+- [`Pass 3 Calendar bottom`](../audits/product-design-2026-08-02-pass3/03-calendar-bottom.png)
 
 전반 판단:
 
@@ -37,6 +38,8 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 - Today의 접힌 Quick Capture FAB가 `+ 기록` 라벨 폭 때문에 완료 section count와 충돌했다.
 - 접힌 FAB를 54×54 icon-only 버튼으로 줄이고 접근성 label은 유지했다.
 - 수정 후 캡처 기준으로 완료 section과의 충돌은 줄었다.
+- 수정 후 재감사에서 Calendar/Profile tab root의 하단 inset을 Today와 맞춰 scroll 끝 영역이 tab bar에 가려지지 않게 했다.
+- pass 3 기준 Web screenshot에서 즉시 수정할 큰 충돌은 더 발견하지 못했다.
 
 남은 확인:
 
