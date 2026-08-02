@@ -337,7 +337,8 @@ ToDoLab 적용 방향:
 - [x] Task 작성 화면에서 일정 날짜와 시작·종료 시간을 입력할 수 있게 해 Calendar real smoke data를 앱 흐름으로 만들 수 있게 한다.
 - [x] 수정·삭제 시 `이번만 / 이후 모두 / 전체` 범위 선택 UI를 제공한다.
 - [x] Today와 Calendar 범위 조회에 occurrence를 표시한다.
-- [ ] occurrence별 완료, 미룸, 건너뛰기와 완료 기록을 연결한다.
+- [x] occurrence별 완료, 미룸과 완료 기록을 연결한다. 2026-08-02 real smoke에서 materialize된 occurrence의 `/done`, `/defer-reason`, 완료 처리일 기준 done list 조회가 통과했다.
+- [ ] occurrence별 건너뛰기 계약을 확정하고 모바일 API client와 smoke에 연결한다.
 - [x] 모바일 API client는 `GET /api/v1/tasks/notification-candidates` 응답 타입과 조회 method를 제공한다.
 - [ ] 반복 일정과 로컬 알림의 예약·취소 책임을 실제 구현 기준으로 검증한다.
 
@@ -375,7 +376,7 @@ ToDoLab 적용 방향:
 
 | 보류 조건                                   | 연결 항목                                                                                  | 다음 행동                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| occurrence별 완료·미룸·건너뛰기 계약 확인   | occurrence별 상태 변경, 완료 기록, 로컬 알림 연동 검증                                     | 반복 조회 smoke는 통과했다. 다음에는 occurrence 하나만 완료/미룸/건너뛰기 했을 때 원본 series와 다른 occurrence가 안전한지 real smoke로 확인한다.                                                                                                                                                                                                                                                                   |
+| occurrence별 건너뛰기 계약 확인             | occurrence별 상태 변경, 완료 기록, 로컬 알림 연동 검증                                     | 2026-08-02 real smoke에서 반복 occurrence의 `/done`, `/defer-reason`, 완료 처리일 기준 done list 조회는 통과했다. 남은 항목은 건너뛰기를 `DELETE recurrenceScope=THIS`로 볼지 별도 skip endpoint로 볼지 계약 확정한 뒤 모바일 API client와 smoke에 연결하는 것이다.                                                                                                                                                 |
 | Android/iOS simulator 또는 실기기 실행 가능 | font scale, safe area, light/dark, mock/real 화면 smoke, VoiceOver/TalkBack, 네이티브 성능 | 2026-08-01 현재 작업 환경에는 `xcrun`은 있으나 `simctl` utility를 찾을 수 없고 `adb`도 없어 iOS/Android simulator 또는 Android device 목록을 확인할 수 없다. 도구 또는 실제 기기가 준비되면 [`ACCESSIBILITY_CHECKLIST.md`](../qa/ACCESSIBILITY_CHECKLIST.md), [`PERFORMANCE_CHECKLIST.md`](../qa/PERFORMANCE_CHECKLIST.md), [`PLATFORM_QUALITY_CHECKLIST.md`](../qa/PLATFORM_QUALITY_CHECKLIST.md)에 맞춰 기록한다. |
 | 출시 계정과 앱 식별자 결정                  | Android package, iOS bundle identifier, EAS profile                                        | 결정값을 받은 뒤 `app.json`/EAS 설정을 확정한다.                                                                                                                                                                                                                                                                                                                                                                    |
 

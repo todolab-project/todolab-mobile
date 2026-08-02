@@ -129,7 +129,7 @@ Mock Web 화면에서 확인한 항목:
 4. 실패 시 사용자에게 보이는 문구, 기존 데이터 유지 여부, retry 가능 여부 기록
 5. 새로 발견한 API 계약 차이는 모바일 문서에 먼저 적고 백엔드 저장소에서 별도 처리
 
-반복 Task·일정은 백엔드 문서 정합성과 real smoke가 끝날 때까지 실제 저장 UI smoke 범위에 넣지 않는다. 조회 표시와 문서 계약만 확인한다.
+반복 Task·일정은 생성, Today/Calendar 조회, 수정·삭제 범위 선택까지 모바일에서 열어둔다. occurrence별 완료·미룸·건너뛰기는 백엔드 상태 변경 API가 통과한 뒤 실제 사용 flow에 포함한다.
 
 ## 2026-08-01 local real API search smoke
 
@@ -213,30 +213,6 @@ Mock Web 화면에서 확인한 항목:
 - 2026-07-30 후속 실행에서도 회원가입, 로그인, 반복 생성, `recurrenceScope=ALL` cleanup은 통과했다.
 - `GET /api/v1/tasks/today?date=2026-08-04`는 동일하게 HTTP 500, error code `99999`로 실패했다.
 
-## 2026-08-01 local real API recurrence smoke 재확인
-
-환경:
-
-- API URL: `http://localhost:8080`
-- 백엔드: local server `8080` 접근 가능
-- 실행 명령: `npm run smoke:recurrence:real`
-- 보안: access token과 비밀번호는 출력하지 않음
-
-결과:
-
-- 회원가입, 로그인, `POST /api/v1/tasks` 반복 일정 생성 통과
-- `GET /api/v1/tasks/today?date=2026-08-04` 실패
-- HTTP status: `500`
-- error code: `99999`
-- 실패 후 `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup 통과
-
-판정:
-
-- 2026-07-29, 2026-07-30과 같은 실패가 계속 재현된다.
-- 모바일 반복 생성 UI, occurrence별 완료·미룸·건너뛰기, 반복 알림 예약 검증은 백엔드 Today/Calendar occurrence materialize path가 수정된 뒤 다시 진행한다.
-- 2026-08-01 후속 실행에서 register, login, 반복 생성, `recurrenceScope=ALL` cleanup은 다시 통과했고 같은 Today 조회 500/code `99999`가 재현됐다.
-- smoke 스크립트는 이후 네트워크·런타임 실패와 API 실패를 구분할 수 있도록 `error.cause` 진단 출력을 추가했다.
-
 ## 2026-08-01 local real API recurrence smoke 통과
 
 환경:
@@ -262,6 +238,66 @@ Mock Web 화면에서 확인한 항목:
 - 반복 occurrence Today/Calendar materialize 500은 백엔드 수정 후 모바일 smoke 기준으로 해소됐다.
 - 모바일은 반복 작성 UI를 다시 열 수 있다.
 - 다음 확인은 occurrence별 완료, 미룸, 건너뛰기, 로컬 알림 후보 예약·취소 흐름이다.
+
+## 2026-08-01 local real API recurrence occurrence action smoke
+
+환경:
+
+- API URL: `http://localhost:8080`
+- 백엔드: local server `8080` 접근 가능
+- 실행 명령: `npm run smoke:recurrence-actions:real`
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 회원가입
+- 로그인
+- `POST /api/v1/tasks` 주간 반복 일정 생성
+- `GET /api/v1/tasks/today?date=2026-08-04` 첫 occurrence 조회
+- `GET /api/v1/tasks/today?date=2026-08-11` 다음 occurrence materialize 조회
+- 실패 후 `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup
+
+실패:
+
+- `PATCH /api/v1/tasks/{firstOccurrenceId}/done`
+- `PATCH /api/v1/tasks/{secondOccurrenceId}/defer-reason?reason=WAITING_OTHER`
+- 결과: HTTP 500, error code `99999`
+
+판정:
+
+- 백엔드 반복 조회와 Calendar/Today materialize는 해소됐지만, materialize된 occurrence row의 상태 변경 path는 아직 확인이 필요하다.
+- 모바일은 발생분을 개별 Task처럼 호출하고 있으므로, 백엔드에서 occurrence row의 완료·미룸 처리와 완료 목록(`GET /api/v1/tasks/done?date=...`) 반영을 보강해야 한다.
+- `SKIPPED` 타입은 응답 모델에 있으나 모바일 문서와 API client에는 건너뛰기 전용 endpoint가 아직 없다. 백엔드에서 건너뛰기를 `DELETE recurrenceScope=THIS`로 처리하는지, 별도 `skip` endpoint로 처리하는지 확정이 필요하다.
+
+## 2026-08-02 local real API recurrence occurrence action 통과
+
+환경:
+
+- API URL: `http://localhost:8080`
+- 백엔드: local server `8080` 접근 가능
+- 실행 명령: `npm run smoke:recurrence-actions:real`
+- 추가 확인: 완료 목록 조회 기준일 probe
+- 보안: access token과 비밀번호는 출력하지 않음
+
+통과:
+
+- 회원가입
+- 로그인
+- `POST /api/v1/tasks` 주간 반복 일정 생성
+- 첫 occurrence Today 조회
+- 다음 occurrence Today materialize 조회
+- `PATCH /api/v1/tasks/{secondOccurrenceId}/defer-reason?reason=WAITING_OTHER`
+- `PATCH /api/v1/tasks/{firstOccurrenceId}/done`
+- 미룸 처리한 occurrence가 Today 재조회에서 `deferReason`을 유지
+- 완료 처리한 occurrence가 완료 처리일 기준 `GET /api/v1/tasks/done?date=YYYY-MM-DD`에 포함
+- 첫 occurrence 완료 후 다음 occurrence는 `DONE`으로 함께 바뀌지 않음
+- `DELETE /api/v1/tasks/{id}?recurrenceScope=ALL` cleanup
+
+판정:
+
+- 백엔드 수정 후 materialize된 반복 occurrence의 완료·미룸 상태 변경은 모바일 smoke 기준으로 통과한다.
+- 완료 목록은 occurrence 예정일이 아니라 실제 완료 처리일 기준 `date`로 조회된다. Today/Completed 화면의 “완료한 일” 의미와 일치하므로 모바일 smoke도 완료 처리일 기준으로 맞춘다.
+- 남은 계약 확인 대상은 occurrence 건너뛰기다. `DELETE recurrenceScope=THIS`로 처리할지 별도 skip endpoint로 처리할지 확정이 필요하다.
 
 ## 2026-07-30 local real API auth smoke 재확인
 
