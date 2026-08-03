@@ -115,7 +115,7 @@ API URL:
 - [x] scheme 유지 여부: `todolab`
 - [x] API mode별 빌드 설정: mock development, real preview/production
 - [x] Android signing credential 운영 기준과 비밀 값 제외 원칙
-- [ ] EAS project 연결 후 Android signing credential 생성과 접근 권한 확인
+- [x] EAS project 연결 후 Android signing credential 생성과 접근 권한 확인
 - [x] EAS preview/production `EXPO_PUBLIC_API_URL` 등록: `https://macmini.tail68d2d1.ts.net`
 - [ ] 앱 아이콘, splash, favicon 최종 asset
 

@@ -187,7 +187,7 @@ Phase 7에서 Android, iOS, Web 출시 전 확인할 네이티브 품질 기준�
 
 EAS 연결 후 확인:
 
-- `eas credentials --platform android`에서 managed credential이 생성 또는 연결되어 있는지 확인한다.
-- credential 접근 권한이 Expo 개인 계정 또는 조직에 남아 있는지 확인한다.
+- `eas credentials --platform android`에서 managed credential이 생성 또는 연결되어 있는지 확인한다. 2026-08-03 preview profile 기준 EAS managed JKS credential을 확인했다.
+- credential 접근 권한이 Expo 개인 계정 또는 조직에 남아 있는지 확인한다. 2026-08-03 현재 `hyunseung2` owner project에서 접근 가능하다.
 - keystore export가 필요하면 안전한 vault에 별도 보관하고, 저장소에는 `EAS managed` 또는 `secure vault backup`처럼 비밀 없는 상태만 기록한다.
 - credential을 변경하면 기존 APK update install과 Play Store 업로드 호환성에 영향을 줄 수 있으므로 release note에 남긴다.

@@ -164,6 +164,16 @@ EAS project 연결 후 확인할 것:
 eas credentials --platform android
 ```
 
+현재 preview credential 확인 결과:
+
+```text
+Android credential: EAS managed JKS
+Application identifier: com.todolab.mobile
+SHA1 fingerprint: 97:3E:D0:6D:E7:2F:14:96:C8:32:25:92:07:05:2E:B3:BA:86:14:24
+SHA256 fingerprint: 9C:F2:93:D1:4A:41:B9:9E:E3:DD:7F:24:C0:CC:89:22:DD:11:65:08:A5:55:4B:B4:AD:3D:BE:FA:DA:48:46:13
+Checked at: 2026-08-03
+```
+
 확인 결과는 비밀 값을 제외하고 release smoke log에 다음 수준으로만 기록한다.
 
 ```text

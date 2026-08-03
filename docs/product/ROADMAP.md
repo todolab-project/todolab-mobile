@@ -393,7 +393,7 @@ ToDoLab 적용 방향:
 - [x] Android signing credential은 EAS managed를 기본으로 사용하고, keystore/password는 저장소에 넣지 않는 운영 기준을 문서화한다.
 - [x] 앱 이름, scheme, icon/splash/favicon 파일 존재와 PNG 크기를 확인하는 `npm run check:release-assets`를 추가한다.
 - [x] `npm run validate`에 EAS 계정 없이 통과 가능한 release static 검사(`check:release-static`)를 포함한다.
-- [ ] EAS project 연결 후 실제 Android signing credential 생성과 접근 권한을 확인한다.
+- [x] EAS project 연결 후 실제 Android signing credential 생성과 접근 권한을 확인한다. preview profile에서 EAS managed JKS credential과 SHA1/SHA256 fingerprint를 확인했다.
 - [ ] 생성한 APK를 실제 기기에 설치하고 Expo Go와 Metro 없이 cold start 되는지 확인한다.
 
 완료 기준:
