@@ -2,6 +2,27 @@
 
 이 문서는 모바일 앱이 실제 사용 가능한 상태인지 확인한 최신 smoke test 기준선만 남긴다. 오래된 조사 과정과 해결된 원인 분석은 git history와 각 커밋에 맡기고, 재실행에 필요한 사실과 남은 확인 항목만 관리한다.
 
+## 2026-08-03 EAS Android preview APK build 요청
+
+환경:
+
+- EAS owner/project: `hyunseung2/todolab-mobile`
+- EAS project id: `f49103dc-1d93-47a9-8972-4b5a4cc9e395`
+- Build profile: `preview`
+- Platform: Android
+- Distribution: internal
+- API mode: `real`
+- API URL: `https://macmini.tail68d2d1.ts.net`
+- Build id: `684720b7-aa78-4a55-920d-d34995dd7a86`
+- Build URL: `https://expo.dev/accounts/hyunseung2/projects/todolab-mobile/builds/684720b7-aa78-4a55-920d-d34995dd7a86`
+- Build 대상 frontend commit: `987c90d13216efddab3c70127f5d543704437bd8`
+
+상태:
+
+- project upload, fingerprint 계산, remote Android credential 적용까지 통과했다.
+- 2026-08-03 확인 시점의 EAS 상태는 `IN_QUEUE`다.
+- APK artifact가 생성되면 Android 기기에 설치한 뒤 Expo Go와 Metro 없이 cold start, 로그인, Today, Calendar, Search, D-Day 흐름을 확인한다.
+
 ## 현재 기준선: 2026-07-28 local real API full smoke
 
 환경:
