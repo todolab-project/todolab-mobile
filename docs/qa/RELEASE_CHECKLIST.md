@@ -104,7 +104,17 @@ API URL:
 - [ ] query retry가 무한 반복처럼 보이지 않는다.
 - [ ] pull-to-refresh 후 데이터가 중복 표시되지 않는다.
 
-## 9. 배포 식별자와 빌드
+## 9. Web 배포 캐시
+
+Web 배포 후보라면 [`WEB_DEPLOYMENT_CACHE.md`](../integration/WEB_DEPLOYMENT_CACHE.md)를 기준으로 확인한다.
+
+- [ ] `index.html`이 `no-cache, must-revalidate` 또는 동등한 재검증 정책을 가진다.
+- [ ] hashed JS/CSS/image/font asset이 `public, max-age=31536000, immutable` 또는 동등한 장기 캐시 정책을 가진다.
+- [ ] API 응답, 인증, 개인정보 관련 endpoint가 정적 asset 장기 캐시 정책과 섞이지 않는다.
+- [ ] service worker/PWA cache를 쓰지 않는다면 배포 산출물에 의도치 않은 service worker가 없다.
+- [ ] 새 Web 배포 후 사용자가 브라우저 캐시를 수동 초기화하지 않아도 최신 화면으로 진입한다.
+
+## 10. 배포 식별자와 빌드
 
 출시 빌드 전 확정해야 한다.
 
@@ -123,7 +133,7 @@ API URL:
 
 Expo project owner, project id, signing credential이 연결되기 전에는 실제 배포용 build를 만들지 않는다.
 
-## 10. 릴리즈 판정
+## 11. 릴리즈 판정
 
 ```text
 결과: 통과 / 보류
@@ -134,7 +144,7 @@ Expo project owner, project id, signing credential이 연결되기 전에는 실
 관련 이슈 또는 문서:
 ```
 
-## 11. 개인 APK release note
+## 12. 개인 APK release note
 
 Android 개인 APK 후보를 만들 때 [`ANDROID_APK_RUNBOOK.md`](../integration/ANDROID_APK_RUNBOOK.md)의 release note 형식을 사용한다.
 
