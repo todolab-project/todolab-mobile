@@ -26,7 +26,7 @@ ToDoLab Mobile의 주요 화면을 실제 캡쳐와 함께 설명하는 문서�
 | `/dday`           | D-Day       | 완료   | 완료                 | 목표 메뉴, 생성 form, 삭제 확인, 연결 Task    |
 | `/tasks/[taskId]` | Task 상세   | 완료   | 완료                 | 반복 occurrence, scope action, 긴 상세 내용   |
 | `/tasks/new`      | Task 작성   | 완료   | 완료                 | 반복/일정 입력 form 확장 상태                 |
-| `/login`          | 로그인      | 완료   | 완료                 | error/loading, 보안 copy 필요 여부            |
+| `/login`          | 로그인      | 완료   | 완료                 | native keyboard, screen reader, brand asset   |
 | `/register`       | 회원가입    | 완료   | 완료                 | validation, error/loading                     |
 | `/settings`       | 설정        | 완료   | 완료                 | real token 상태, 로그아웃/계정 설정 확장 상태 |
 

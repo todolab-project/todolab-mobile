@@ -66,6 +66,29 @@ describe('api client authorization', () => {
     unsubscribe();
   });
 
+  it('access token 없이 받은 401은 첫 진입 세션 만료로 알리지 않는다', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      text: async () =>
+        JSON.stringify({
+          status: 'fail',
+          data: null,
+          error: { code: 401, message: '로그인이 필요해요.' },
+          timestamp: '2026-07-14T10:00:00',
+        }),
+    });
+
+    const listener = jest.fn();
+    const unsubscribe = subscribeSessionExpired(listener);
+
+    await expect(request('/api/v1/auth/me')).rejects.toThrow('로그인이 필요해요.');
+
+    expect(getAccessToken()).toBeNull();
+    expect(listener).not.toHaveBeenCalled();
+    unsubscribe();
+  });
+
   it('403 응답은 access token을 유지하고 세션 만료로 처리하지 않는다', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue({
       ok: false,

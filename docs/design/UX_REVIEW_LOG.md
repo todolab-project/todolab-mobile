@@ -15,6 +15,32 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 
 ## 현재 화면 판단
 
+## 2026-08-04 Login Product Design audit 요약
+
+캡처 기준:
+
+- [`01 로그인 기본`](../audits/login-ui-2026-08-04/01-login-current.png)
+- [`02 로그인 validation`](../audits/login-ui-2026-08-04/02-login-validation.png)
+- [`03 세션 만료 안내`](../audits/login-ui-2026-08-04/03-login-expired.png)
+
+범위:
+
+- 로그인 화면은 앱을 처음 설치한 사용자가 처음 마주할 수 있는 화면이므로, 뒤로가기보다 시작점 성격을 우선한다.
+- NAVER/Kakao처럼 브랜드 신뢰, 짧은 사용 가치, 입력 form, 명확한 CTA, 낮은 강조의 가입 진입을 한 흐름으로 배치한다.
+
+수정 반영:
+
+- 로그인 title 옆 뒤로가기 버튼을 제거하고 brand mark, headline, 설명 copy를 상단에 배치했다.
+- 이메일/비밀번호 입력과 로그인 CTA를 하나의 form card로 묶어 화면 밀도를 정리했다.
+- access token 없이 받은 401은 첫 진입 세션 만료 안내로 처리하지 않게 했다.
+- 세션 만료 안내는 기존 로그인 세션이 있었던 경우에만 form card 내부 warning notice로 보여준다.
+
+남은 확인:
+
+- 실제 iOS/Android keyboard open 시 CTA가 tab/safe area와 충돌하지 않는지 확인한다.
+- VoiceOver/TalkBack reading order와 password 보기 버튼 label을 확인한다.
+- 현재 `assets/images/icon.png`는 Expo 기본 icon이므로 최종 brand asset 확정 후 로그인 brand mark 교체 여부를 결정한다.
+
 ## 2026-08-02 Product Design audit 요약
 
 캡처 기준:

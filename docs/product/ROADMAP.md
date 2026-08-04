@@ -321,6 +321,7 @@ ToDoLab 적용 방향:
 - [x] D-Day 삭제 성공 응답 형식은 백엔드 v1 기준 `data: null`로 확정했고, 모바일 타입도 `null` 기준으로 맞췄다.
 - [x] 반복 Task·일정은 백엔드 저장 모델과 occurrence 조회 계약을 정리했고, real smoke 통과 계약 안에서 실제 저장 UI를 제공하는 기준을 확정했다.
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
+- [x] access token 없이 받은 401은 첫 설치/첫 진입 세션 만료 안내로 처리하지 않고, 기존 token이 있었던 401에서만 세션 만료 안내를 표시한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 - [x] `.env.local` mock 기본값과 real smoke 실행값이 섞이지 않도록 `EXPO_PUBLIC_API_MODE_OVERRIDE` / `EXPO_PUBLIC_API_URL_OVERRIDE`와 `npm run web:real`을 추가한다.
 - [x] 반복 일정 real smoke를 2026-08-01 재실행했고, 백엔드 수정 후 Today/Calendar occurrence materialize 조회와 cleanup까지 통과했다.
