@@ -27,7 +27,7 @@ ToDoLab Mobile의 주요 화면을 실제 캡쳐와 함께 설명하는 문서�
 | `/tasks/[taskId]` | Task 상세   | 완료   | 완료                 | 반복 occurrence, scope action, 긴 상세 내용   |
 | `/tasks/new`      | Task 작성   | 완료   | 완료                 | 반복/일정 입력 form 확장 상태                 |
 | `/login`          | 로그인      | 완료   | 완료                 | native keyboard, screen reader, brand asset   |
-| `/register`       | 회원가입    | 완료   | 완료                 | validation, error/loading                     |
+| `/register`       | 계정 만들기 | 완료   | 완료                 | native keyboard, password reset 진입          |
 | `/settings`       | 설정        | 완료   | 완료                 | real token 상태, 로그아웃/계정 설정 확장 상태 |
 
 2026-08-02 상태별 Product Design audit에서 Search 상세 필터와 빈 상태, Task 작성 일정/추가 정보 확장, D-Day 생성/menu/삭제/연결 Task 상태를 추가 확인했다. 남은 것은 pagination, auth validation, custom recurrence, native keyboard와 접근성 상태다.

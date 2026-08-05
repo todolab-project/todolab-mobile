@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import type { Href } from 'expo-router';
 import { useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
 import { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -12,7 +11,7 @@ import {
   View,
 } from 'react-native';
 
-import { AppText, Button, IconButton, InlineNotice, PageHeader, Screen } from '@/components/ui';
+import { AppText, Button, InlineNotice, Screen } from '@/components/ui';
 import { authApi, getUserFacingApiErrorMessage } from '@/services/api';
 import { radii, spacing, typography, useAppTheme } from '@/theme';
 
@@ -62,23 +61,40 @@ export function RegisterOverview() {
   };
 
   return (
-    <Screen contentContainerStyle={styles.screen}>
-      <PageHeader
-        title="회원가입"
-        leading={
-          <IconButton accessibilityLabel="이전 화면으로 돌아가기" onPress={router.back}>
-            <SymbolView
-              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
-              size={20}
-              tintColor={theme.colors.text}
-            />
-          </IconButton>
-        }
-      />
+    <Screen scroll contentContainerStyle={styles.screen}>
+      <View style={styles.hero}>
+        <View style={styles.brandRow}>
+          <View
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+            style={[styles.brandMark, { backgroundColor: theme.colors.primarySoft }]}
+          >
+            <AppText tone="primary" variant="bodyLarge" weight="heavy">
+              T
+            </AppText>
+          </View>
+          <AppText variant="label" weight="bold">
+            ToDoLab
+          </AppText>
+        </View>
+        <View style={styles.heroCopy}>
+          <AppText accessibilityRole="header" variant="display" weight="heavy">
+            계정을 만들고
+            {'\n'}
+            오늘부터 정리해요
+          </AppText>
+          <AppText tone="secondary" variant="body">
+            이메일과 이름만 입력하면 일정과 할 일을 안전하게 동기화할 수 있어요.
+          </AppText>
+        </View>
+      </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.form}
+        style={[
+          styles.formCard,
+          { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+        ]}
       >
         <View style={styles.fields}>
           <View style={styles.field}>
@@ -181,18 +197,31 @@ export function RegisterOverview() {
                 </AppText>
               </Pressable>
             </View>
+            <AppText tone="secondary" variant="caption">
+              8자 이상으로 설정해 주세요.
+            </AppText>
           </View>
         </View>
 
         {errorMessage ? <InlineNotice tone="danger" message={errorMessage} /> : null}
 
         <Button fullWidth loading={register.isPending} onPress={submit} size="large">
-          회원가입
-        </Button>
-        <Button fullWidth disabled={register.isPending} onPress={router.back} variant="ghost">
-          로그인으로 돌아가기
+          계정 만들기
         </Button>
       </KeyboardAvoidingView>
+
+      <View style={styles.secondaryAction}>
+        <AppText tone="secondary" variant="label">
+          이미 계정이 있나요?
+        </AppText>
+        <Button
+          disabled={register.isPending}
+          onPress={() => router.replace('/login' as Href)}
+          variant="ghost"
+        >
+          로그인하기
+        </Button>
+      </View>
     </Screen>
   );
 }
@@ -200,11 +229,34 @@ export function RegisterOverview() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    gap: spacing[6],
-    paddingTop: spacing[4],
+    gap: spacing[5],
+    justifyContent: 'center',
+    paddingBottom: spacing[8],
+    paddingTop: spacing[8],
   },
-  form: {
+  hero: {
+    gap: spacing[5],
+  },
+  brandRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing[2],
+  },
+  brandMark: {
+    alignItems: 'center',
+    borderRadius: radii.full,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  heroCopy: {
+    gap: spacing[2],
+  },
+  formCard: {
+    borderRadius: radii.xl,
+    borderWidth: 1,
     gap: spacing[4],
+    padding: spacing[4],
   },
   fields: {
     gap: spacing[4],
@@ -213,20 +265,20 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   input: {
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     borderWidth: 1,
     fontSize: typography.size.body,
-    minHeight: 48,
-    paddingHorizontal: spacing[3],
+    minHeight: 52,
+    paddingHorizontal: spacing[4],
     paddingVertical: spacing[2],
   },
   passwordField: {
     alignItems: 'center',
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     borderWidth: 1,
     flexDirection: 'row',
-    minHeight: 48,
-    paddingLeft: spacing[3],
+    minHeight: 52,
+    paddingLeft: spacing[4],
     paddingRight: spacing[2],
   },
   passwordInput: {
@@ -238,5 +290,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 44,
     paddingHorizontal: spacing[2],
+  },
+  secondaryAction: {
+    alignItems: 'center',
+    gap: spacing[1],
   },
 });

@@ -15,6 +15,31 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 
 ## 현재 화면 판단
 
+## 2026-08-05 Register Product Design audit 요약
+
+캡처 기준:
+
+- [`01 계정 만들기 기본`](../audits/register-ui-2026-08-05/01-register-current.jpg)
+- [`02 계정 만들기 validation`](../audits/register-ui-2026-08-05/02-register-validation.jpg)
+
+범위:
+
+- 계정 만들기는 로그인 화면에서 이어지는 인증 flow의 형제 화면이므로, 같은 brand mark, headline, form card, secondary action 구조를 쓴다.
+- 직접 URL로 진입한 사용자도 안전하게 로그인 화면으로 돌아갈 수 있어야 한다.
+
+수정 반영:
+
+- 상단 PageHeader와 큰 뒤로가기 버튼을 제거하고 로그인 화면과 같은 브랜드/설명/카드 구조로 정리했다.
+- CTA copy를 `계정 만들기`로 맞추고, 이미 계정이 있는 사용자는 하단 `로그인하기`로 이동하게 했다.
+- 비밀번호 최소 조건을 password field 근처 caption으로 노출했다.
+- 로그인 이동은 `router.back()`이 아니라 `/login` replace를 사용해 직접 진입 상태에서도 안정적으로 동작한다.
+
+남은 확인:
+
+- 실제 iOS/Android keyboard open 시 CTA와 마지막 field가 가려지지 않는지 확인한다.
+- 이메일/비밀번호 기반 실사용에는 비밀번호 찾기/재설정 흐름이 필요하므로 백엔드 계약과 화면을 추가한다.
+- 현재 browser capture는 데스크톱 폭에서 저장되어, native/mobile viewport 캡처를 별도로 갱신한다.
+
 ## 2026-08-04 Login Product Design audit 요약
 
 캡처 기준:
