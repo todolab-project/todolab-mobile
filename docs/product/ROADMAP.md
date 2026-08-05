@@ -323,7 +323,7 @@ ToDoLab 적용 방향:
 - [x] 401 응답 시 access token을 삭제하고 로그인 화면으로 이동해 세션 만료 안내를 표시한다. refresh token 흐름은 현재 백엔드 계약상 미도입으로 유지한다.
 - [x] access token 없이 받은 401은 첫 설치/첫 진입 세션 만료 안내로 처리하지 않고, 기존 token이 있었던 401에서만 세션 만료 안내를 표시한다.
 - [x] 계정 만들기 화면은 로그인 화면과 같은 brand/headline/form card 구조로 정리하고, 직접 진입 상태에서도 `/login`으로 돌아가도록 했다.
-- [ ] 이메일/비밀번호 기반 실사용을 위해 비밀번호 찾기/재설정 API 계약과 모바일 화면 진입을 추가한다.
+- [x] 이메일/비밀번호 기반 실사용을 위해 비밀번호 찾기/재설정 API 계약과 모바일 화면 진입을 추가했다. 실제 메일 발송/토큰 검증/새 비밀번호 저장은 백엔드 API 준비 후 연결한다.
 - [x] network, timeout, 5xx 오류는 Query retry 정책으로 최대 2회 재시도하고, Calendar/Search 조회 전환은 기존 데이터를 유지한다. real API 화면 smoke는 위 항목에서 별도 확인한다.
 - [x] `.env.local` mock 기본값과 real smoke 실행값이 섞이지 않도록 `EXPO_PUBLIC_API_MODE_OVERRIDE` / `EXPO_PUBLIC_API_URL_OVERRIDE`와 `npm run web:real`을 추가한다.
 - [x] 반복 일정 real smoke를 2026-08-01 재실행했고, 백엔드 수정 후 Today/Calendar occurrence materialize 조회와 cleanup까지 통과했다.
