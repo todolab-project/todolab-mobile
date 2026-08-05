@@ -36,6 +36,7 @@ API URL:
 - [ ] `EXPO_PUBLIC_API_URL`이 대상 환경을 가리킨다.
 - [ ] `EXPO_PUBLIC_*`에 secret, token, password, API key가 없다.
 - [ ] real 모드에서는 [`BACKEND_INTEGRATION_RUNBOOK.md`](../integration/BACKEND_INTEGRATION_RUNBOOK.md)에 따라 Auth, Today, Calendar, D-Day, Search 흐름을 확인했다.
+- [ ] 비밀번호 재설정 API가 미구현이면 로그인 화면의 재설정 진입점이 안내 화면으로 안전하게 연결되고, 구현 후에는 [`API_PASSWORD_RESET.md`](../api/API_PASSWORD_RESET.md) 기준으로 메일 요청·token 검증·새 비밀번호 저장을 확인했다.
 - [ ] 401 세션 만료 시 access token 삭제와 로그인 동선이 자연스럽다.
 - [ ] network, timeout, 5xx 오류에서 기존 데이터 유지, 오류 문구, retry가 동작한다.
 - [ ] 백엔드 변경이 필요하면 모바일 요구 계약만 문서화하고 백엔드 저장소에서 별도로 추적한다.
@@ -44,7 +45,7 @@ API URL:
 
 [`SMOKE_TEST_CHECKLIST.md`](./SMOKE_TEST_CHECKLIST.md)를 기준으로 확인한다.
 
-- [ ] 회원가입, 로그인, 내 정보 조회, 로그아웃
+- [ ] 회원가입, 로그인, 비밀번호 재설정 진입, 내 정보 조회, 로그아웃
 - [ ] 빠른 기록 추가
 - [ ] 기록함/정리할 항목에서 오늘 할 일로 이동 또는 추가
 - [ ] Today 일정 표시, 오늘 할 일 완료, 완료 다시 열기
