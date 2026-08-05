@@ -85,4 +85,37 @@ describe('Auth API', () => {
 
     expect(getMock).toHaveBeenCalledWith('/api/v1/auth/me', { signal: undefined });
   });
+
+  it('비밀번호 재설정 메일 요청 API를 호출한다', async () => {
+    postMock.mockResolvedValue({ accepted: true });
+    const request = { email: 'user@example.com' };
+
+    await authApi.requestPasswordReset(request);
+
+    expect(postMock).toHaveBeenCalledWith('/api/v1/auth/password-reset/request', request, {
+      signal: undefined,
+    });
+  });
+
+  it('비밀번호 재설정 token 검증 API를 호출한다', async () => {
+    postMock.mockResolvedValue({ valid: true, emailHint: 'u***@example.com' });
+    const request = { token: 'reset-token' };
+
+    await authApi.verifyPasswordResetToken(request);
+
+    expect(postMock).toHaveBeenCalledWith('/api/v1/auth/password-reset/verify', request, {
+      signal: undefined,
+    });
+  });
+
+  it('새 비밀번호 저장 API를 호출한다', async () => {
+    postMock.mockResolvedValue(null);
+    const request = { token: 'reset-token', newPassword: 'new-password123' };
+
+    await authApi.confirmPasswordReset(request);
+
+    expect(postMock).toHaveBeenCalledWith('/api/v1/auth/password-reset/confirm', request, {
+      signal: undefined,
+    });
+  });
 });

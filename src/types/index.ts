@@ -1,6 +1,11 @@
 export type {
   AuthenticatedUserResponse,
   LoginRequest,
+  PasswordResetConfirmRequest,
+  PasswordResetRequest,
+  PasswordResetRequestResponse,
+  PasswordResetVerifyRequest,
+  PasswordResetVerifyResponse,
   RegisterRequest,
   TokenResponse,
   UserResponse,

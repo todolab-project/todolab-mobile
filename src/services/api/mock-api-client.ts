@@ -688,6 +688,18 @@ export const mockApiClient = {
       return createTokenResponse(user) as T;
     }
 
+    if (path === `${AUTH_PATH}/password-reset/request`) {
+      return { accepted: true } as T;
+    }
+
+    if (path === `${AUTH_PATH}/password-reset/verify`) {
+      return { valid: true, emailHint: 'm***@example.com' } as T;
+    }
+
+    if (path === `${AUTH_PATH}/password-reset/confirm`) {
+      return null as T;
+    }
+
     if (path === TASKS_PATH) {
       const request = body as TaskUpsertRequest;
       const task = createTask({

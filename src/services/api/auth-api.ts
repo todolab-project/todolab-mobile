@@ -1,6 +1,11 @@
 import type {
   AuthenticatedUserResponse,
   LoginRequest,
+  PasswordResetConfirmRequest,
+  PasswordResetRequest,
+  PasswordResetRequestResponse,
+  PasswordResetVerifyRequest,
+  PasswordResetVerifyResponse,
   RegisterRequest,
   TokenResponse,
   UserResponse,
@@ -24,6 +29,30 @@ export const authApi = {
 
   me(signal?: AbortSignal) {
     return apiClient.get<AuthenticatedUserResponse>(`${AUTH_PATH}/me`, { signal });
+  },
+
+  requestPasswordReset(request: PasswordResetRequest, signal?: AbortSignal) {
+    return apiClient.post<PasswordResetRequestResponse>(
+      `${AUTH_PATH}/password-reset/request`,
+      request,
+      {
+        signal,
+      },
+    );
+  },
+
+  verifyPasswordResetToken(request: PasswordResetVerifyRequest, signal?: AbortSignal) {
+    return apiClient.post<PasswordResetVerifyResponse>(
+      `${AUTH_PATH}/password-reset/verify`,
+      request,
+      {
+        signal,
+      },
+    );
+  },
+
+  confirmPasswordReset(request: PasswordResetConfirmRequest, signal?: AbortSignal) {
+    return apiClient.post<null>(`${AUTH_PATH}/password-reset/confirm`, request, { signal });
   },
 
   logout() {

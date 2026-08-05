@@ -22,6 +22,28 @@ export type LoginRequest = {
   password: string;
 };
 
+export type PasswordResetRequest = {
+  email: string;
+};
+
+export type PasswordResetRequestResponse = {
+  accepted: boolean;
+};
+
+export type PasswordResetVerifyRequest = {
+  token: string;
+};
+
+export type PasswordResetVerifyResponse = {
+  valid: boolean;
+  emailHint: string | null;
+};
+
+export type PasswordResetConfirmRequest = {
+  token: string;
+  newPassword: string;
+};
+
 export type TokenResponse = {
   tokenType: 'Bearer';
   accessToken: string;
