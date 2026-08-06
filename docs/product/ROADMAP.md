@@ -425,7 +425,7 @@ ToDoLab 적용 방향:
 
 #### E3. Android 실기기 release smoke
 
-- [ ] `npm run validate`를 통과한다.
+- [x] `npm run validate`를 통과한다. 2026-08-06 기준 비밀번호 재설정 API 계약 추가 후 typecheck, lint, format, docs link, release static check, test가 모두 통과했다.
 - [ ] 회원가입/로그인, access token SecureStore 복원, 로그아웃을 실제 APK에서 확인한다.
 - [ ] Today 조회·추가·수정·완료·재정렬을 실제 production DB로 확인한다.
 - [ ] Calendar 일정 생성·수정, 반복 occurrence, D-Day, Search를 실제 production DB로 확인한다.
