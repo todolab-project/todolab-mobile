@@ -37,7 +37,7 @@ ToDoLab Mobile의 화면을 “매일 열어도 피로하지 않은 네이버 �
 남은 확인:
 
 - 실제 iOS/Android keyboard open 시 CTA와 마지막 field가 가려지지 않는지 확인한다.
-- 이메일/비밀번호 기반 실사용에는 비밀번호 찾기/재설정 흐름이 필요하므로 백엔드 계약과 화면을 추가한다.
+- 이메일/비밀번호 기반 실사용에는 비밀번호 찾기/재설정 흐름이 필요하다. 현재 진입점과 안내 화면, API 계약은 추가했고, 백엔드 준비 후 이메일 입력 form과 token 검증 화면을 연결한다.
 - 현재 browser capture는 데스크톱 폭에서 저장되어, native/mobile viewport 캡처를 별도로 갱신한다.
 
 ## 2026-08-04 Login Product Design audit 요약
