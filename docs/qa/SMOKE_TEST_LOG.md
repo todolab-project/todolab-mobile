@@ -15,13 +15,17 @@
 - API URL: `https://macmini.tail68d2d1.ts.net`
 - Build id: `684720b7-aa78-4a55-920d-d34995dd7a86`
 - Build URL: `https://expo.dev/accounts/hyunseung2/projects/todolab-mobile/builds/684720b7-aa78-4a55-920d-d34995dd7a86`
+- APK artifact URL: `https://expo.dev/artifacts/eas/g6wzSfaqBYf2a56vseLGY9qsoO0zxBfHx-78ExMhWt8.apk`
 - Build 대상 frontend commit: `987c90d13216efddab3c70127f5d543704437bd8`
+- App version/build: `1.0.0` / `1`
+- Artifact expiration: `2026-08-17T14:13:56.913Z`
 
 상태:
 
 - project upload, fingerprint 계산, remote Android credential 적용까지 통과했다.
-- 2026-08-03 확인 시점의 EAS 상태는 `IN_QUEUE`다.
-- APK artifact가 생성되면 Android 기기에 설치한 뒤 Expo Go와 Metro 없이 cold start, 로그인, Today, Calendar, Search, D-Day 흐름을 확인한다.
+- 2026-08-08 재확인 기준 EAS 상태는 `FINISHED`다.
+- APK artifact가 생성되었으므로 Android 기기에 설치한 뒤 Expo Go와 Metro 없이 cold start, 로그인, Today, Calendar, Search, D-Day 흐름을 확인한다.
+- 이 build는 2026-08-03 기준 frontend commit이므로, 이후 로그인/계정 만들기/비밀번호 재설정 UI 커밋은 포함하지 않는다. 최신 UI가 필요하면 현재 `main` 기준으로 preview APK를 다시 생성한다.
 
 ## 현재 기준선: 2026-07-28 local real API full smoke
 
