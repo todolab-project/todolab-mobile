@@ -49,6 +49,7 @@ docs/screenshots/
   dday.png
   login.png
   register.png
+  password-reset.png
   settings.png
 ```
 
@@ -285,6 +286,41 @@ docs/screenshots/
 개발 참고:
 
 - D-Day v1 endpoint를 사용한다. legacy `/api/ddays/**` alias는 모바일 신규 계약에 추가하지 않는다.
+
+## Auth
+
+![로그인 화면](../screenshots/login.png)
+
+![계정 만들기 화면](../screenshots/register.png)
+
+![비밀번호 재설정 안내](../screenshots/password-reset.png)
+
+목적:
+
+- 사용자가 계정을 만들고 로그인해 실제 데이터 동기화를 시작한다.
+- 비밀번호를 잊은 사용자가 막다른 길에 갇히지 않도록 재설정 진입점과 안내 화면을 제공한다.
+
+사용 흐름:
+
+1. 로그인 화면에서 이메일과 비밀번호를 입력한다.
+2. 계정이 없으면 계정 만들기 화면에서 이메일, 이름, 비밀번호를 입력한다.
+3. 비밀번호를 잊은 경우 로그인 화면의 재설정 링크를 누른다.
+4. API 연결 전에는 재설정 준비 안내와 로그인 복귀 버튼을 확인한다.
+5. API 연결 후에는 이메일 입력, 메일 발송, token 검증, 새 비밀번호 저장 순서로 확장한다.
+
+주요 UI:
+
+- 브랜드 mark와 짧은 설명
+- 이메일/비밀번호 form card
+- password 보기 action
+- 계정 만들기/로그인하기 보조 action
+- 비밀번호 재설정 안내 card
+
+개발 참고:
+
+- 첫 설치 상태에서 access token 없이 받은 401은 세션 만료 안내로 보여주지 않는다.
+- 비밀번호 재설정 API 계약은 [`API_PASSWORD_RESET.md`](../api/API_PASSWORD_RESET.md)를 따른다.
+- 현재 `assets/images/icon.png`는 Expo 기본 icon이므로 최종 brand asset 확정 후 인증 화면의 임시 `T` mark를 함께 교체한다.
 
 ## 캡쳐 후 업데이트 체크리스트
 
