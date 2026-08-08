@@ -85,6 +85,24 @@ EAS 계정과 project 연결이 끝난 뒤 preview APK를 생성한다.
 eas build --platform android --profile preview
 ```
 
+생성될 APK의 로컬 보관 파일명은 아래 명령으로 먼저 확인한다.
+
+```bash
+npm run apk:filename
+```
+
+EAS artifact URL을 받은 뒤에는 APK를 Git 저장소 밖 개인 보관 위치에 저장한다.
+
+```bash
+npm run apk:save -- --url <EAS_APK_ARTIFACT_URL>
+```
+
+기본 저장 위치와 파일명:
+
+```text
+~/Downloads/todolab-apk/todolab-android-preview-v<version>-<versionCode>-<shortCommit>.apk
+```
+
 빌드 결과 APK를 Android 기기에 설치한 뒤 다음을 확인한다.
 
 - Expo Go와 Metro 없이 cold start 된다.
